@@ -1,35 +1,14 @@
-const CHAINS = {
-  ethereum: 1,
-  polygon: 137,
-  arbitrum: 42161,
-  base: 8453,
-  bsc: 56
-};
+async function getQuote() {
+  const fromChain = "ethereum";
+  const toChain = "bsc";
+  const fromToken = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"; // USDC sur Ethereum
+  const toToken = "0x55d398326f99059fF775485246999027B3197955";   // USDT sur BSC
+  const fromAmount = "1000000000"; // 1000 USDC avec 6 décimales
 
-document.getElementById('getQuote').addEventListener('click', async () => {
-  const from = document.getElementById('fromChain').value;
-  const to = document.getElementById('toChain').value;
-  const amount = Number(document.getElementById('amount').value);
+  const url = `https://li.quest/v1/quote?fromChain=${fromChain}&toChain=${toChain}&fromToken=${fromToken}&toToken=${toToken}&fromAmount=${fromAmount}`;
 
-  const fromChainId = CHAINS[from];
-  const toChainId = CHAINS[to];
+  const response = await fetch(url);
+  const data = await response.json();
 
-  const resultBox = document.getElementById('quoteResult');
-  resultBox.textContent = "Fetching best route via LI.FI...";
-
-  try {
-    const res = await fetch(`https://li.quest/v1/quote?fromChain=${fromChainId}&toChain=${toChainId}&fromToken=0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174&toToken=0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174&fromAmount=${amount * 1e6}`);
-    const data = await res.json();
-
-    const eta = data.estimatedExecutionDuration || 60;
-    const estOut = data.toAmount ? (Number(data.toAmount) / 1e6).toFixed(2) : "N/A";
-
-    resultBox.innerHTML = `
-      <p>From: ${from} → To: ${to}</p>
-      <p>ETA: ${eta}s</p>
-      <p>Estimated Output: ${estOut} USDC</p>
-    `;
-  } catch (e) {
-    resultBox.textContent = "Error fetching quote.";
-  }
-});
+  console.log(data);
+}
