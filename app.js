@@ -9,6 +9,7 @@ const CHAIN_OPTIONS = [
 ];
 
 const LI_FI_QUOTE = 'https://li.quest/v1/quote';
+const DEMO_EVM_ADDRESS = '0x0000000000000000000000000000000000000001';
 
 const els = {
   overlay: document.getElementById('ponia-overlay'),
@@ -50,13 +51,16 @@ function getQueryParam(name) {
 
 let platformChain = null;
 
-async function fetchQuote({ fromChain, toChain, amountWei }) {
+async function fetchQuote({ fromChain, toChain, amountWei, fromAddress = DEMO_EVM_ADDRESS, toAddress = DEMO_EVM_ADDRESS }) {
   const params = new URLSearchParams({
     fromChain,
     toChain,
     fromToken: '0x0000000000000000000000000000000000000000',
     toToken:   '0x0000000000000000000000000000000000000000',
-    fromAmount: amountWei
+    fromAmount: amountWei,
+    fromAddress,
+    toAddress,
+    integrator: 'ponia-demo'
   });
 
   const res = await fetch(`${LI_FI_QUOTE}?${params.toString()}`);
