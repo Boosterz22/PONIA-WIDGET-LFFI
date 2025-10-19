@@ -1,0 +1,24 @@
+:root{
+  --bg:#0E0E0E; --card:#141414; --text:#fff; --muted:#b8b8b8; --accent:#FFD73F;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Space Grotesk',system-ui,Arial}
+.wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.widget{width:420px;max-width:95vw;background:linear-gradient(180deg,rgba(255,255,255,.02),transparent);
+  border-radius:16px;padding:18px 18px 22px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.brand{display:flex;gap:10px;align-items:center}
+.bolt{width:34px;height:34px;border-radius:8px;background:var(--accent);color:#111;display:grid;place-items:center;font-weight:800}
+.ttl{font-weight:700}
+.sub{font-size:12px;color:var(--muted)}
+#detected{font-size:12px;color:var(--muted)}
+.row{display:flex;flex-direction:column;gap:6px;margin:10px 0}
+input,select{background:#0f0f0f;border:1px solid #1f1f1f;color:var(--text);padding:10px;border-radius:10px;font-size:14px}
+.actions{display:flex;gap:8px;margin:12px 0}
+button{background:#1c1c1c;border:1px solid #2a2a2a;color:var(--text);padding:10px 14px;border-radius:10px;cursor:pointer}
+button.primary{background:var(--accent);border-color:var(--accent);color:#111;font-weight:800}
+.status{min-height:18px;font-size:12px;color:var(--muted);margin:6px 0}
+.card{background:#0f0f0f;border:1px solid #1f1f1f;padding:12px;border-radius:12px}
+.line{display:flex;align-items:center;justify-content:space-between;margin:6px 0;font-size:14px}
+.hidden{display:none}
+.success{margin-top:12px;padding:12px;background:#102a10;border:1px solid #1b441b;border-radius:10px}
