@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PONIA Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="page">
+    <h1 class="hero">Pay with any crypto, on any chain</h1>
+    <p class="sub">One lightweight widget to convert funds cross-chain with LI.FI under the hood.</p>
+    <div class="cta-row">
+      <button class="btn btn-primary" onclick="openPonia({ chain: 'polygon' })">Try Demo (Polygon)</button>
+      <button class="btn btn-ghost" onclick="openPonia()">Open Demo (no preset)</button>
+    </div>
+  </main>
+
+  <div id="ponia-overlay" class="overlay hidden" onclick="closePonia()"></div>
+
+  <div id="ponia-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="poniaTitle">
+    <div class="modal-header">
+      <div class="brand">
+        <div class="bolt" aria-hidden="true"></div>
+        <span class="brand-name">PONIA Demo</span>
+        <span class="sup">Universal cross-chain checkout (LI.FI)</span>
+      </div>
+      <button class="close" aria-label="Close" onclick="closePonia()">×</button>
+    </div>
+
+    <div class="detected">
+      Detected platform chain:
+      <strong id="detectedChain">–</strong>
+    </div>
+
+    <div class="form-grid">
+      <label class="field">
+        <span class="label">From chain</span>
+        <select id="fromChain" class="input">
+        </select>
+      </label>
+
+      <label class="field">
+        <span class="label">Amount (native)</span>
+        <input id="fromAmount" class="input" type="number" inputmode="decimal" step="0.0001" placeholder="0.10" />
+      </label>
+
+      <label class="field">
+        <span class="label">Destination chain</span>
+        <select id="toChain" class="input">
+        </select>
+      </label>
+    </div>
+
+    <div class="actions">
+      <button id="quoteBtn" class="btn btn-primary">Get quote</button>
+    </div>
+
+    <div id="result" class="result">
+      <div class="result-row"><span>Route:</span><strong id="routeLabel">–</strong></div>
+      <div class="result-row"><span>Tool:</span><strong id="toolLabel">–</strong></div>
+      <div class="result-row"><span>ETA:</span><strong id="etaLabel">–</strong></div>
+      <div class="result-row"><span>Estimated output:</span><strong id="outLabel">–</strong></div>
+      <pre id="errorBox" class="error hidden"></pre>
+    </div>
+
+    <div class="tiny">
+      Tip: you can preset the platform chain with <code>openPonia({ chain: 'polygon' })</code> or via URL <code>?chain=polygon</code>.
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

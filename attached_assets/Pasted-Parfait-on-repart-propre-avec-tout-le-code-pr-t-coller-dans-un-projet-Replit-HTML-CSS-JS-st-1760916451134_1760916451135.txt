@@ -1,0 +1,485 @@
+Parfait — on repart propre, avec tout le code prêt à coller dans un projet Replit “HTML, CSS, JS (static)”.
+Ce widget Ponia :
+	•	ouvre un modal “PONIA Demo” (noir & jaune),
+	•	détecte/force la blockchain cible (ex. polygon) si tu la passes à openPonia({ chain: 'polygon' }),
+	•	permet de choisir la blockchain d’origine, saisir un montant en natif (ETH, MATIC, BNB, etc.),
+	•	appelle l’API LI.FI (https://li.quest/v1/quote) et affiche ETA + montant estimé,
+	•	gère les erreurs proprement.
+
+Remarque : pour rester simple et fiable sans clé API ni adresses de tokens, cette version “quote” utilise les natifs EVM (ETH/MATIC/BNB/… → ETH/MATIC/BNB/…). On ajoute USDC / Solana ensuite si tu veux, en mappant les adresses.
+
+⸻
+
+1) index.html
+
+Colle ceci tel quel.
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PONIA Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Page de démo -->
+  <main class="page">
+    <h1 class="hero">Pay with any crypto, on any chain</h1>
+    <p class="sub">One lightweight widget to convert funds cross-chain with LI.FI under the hood.</p>
+    <div class="cta-row">
+      <button class="btn btn-primary" onclick="openPonia({ chain: 'polygon' })">Try Demo (Polygon)</button>
+      <button class="btn btn-ghost" onclick="openPonia()">Open Demo (no preset)</button>
+    </div>
+  </main>
+
+  <!-- Overlay & Modal du widget -->
+  <div id="ponia-overlay" class="overlay hidden" onclick="closePonia()"></div>
+
+  <div id="ponia-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="poniaTitle">
+    <div class="modal-header">
+      <div class="brand">
+        <div class="bolt" aria-hidden="true"></div>
+        <span class="brand-name">PONIA Demo</span>
+        <span class="sup">Universal cross-chain checkout (LI.FI)</span>
+      </div>
+      <button class="close" aria-label="Close" onclick="closePonia()">×</button>
+    </div>
+
+    <div class="detected">
+      Detected platform chain:
+      <strong id="detectedChain">–</strong>
+    </div>
+
+    <div class="form-grid">
+      <label class="field">
+        <span class="label">From chain</span>
+        <select id="fromChain" class="input">
+          <!-- options injectées par JS -->
+        </select>
+      </label>
+
+      <label class="field">
+        <span class="label">Amount (native)</span>
+        <input id="fromAmount" class="input" type="number" inputmode="decimal" step="0.0001" placeholder="0.10" />
+      </label>
+
+      <label class="field">
+        <span class="label">Destination chain</span>
+        <select id="toChain" class="input">
+          <!-- options injectées par JS -->
+        </select>
+      </label>
+    </div>
+
+    <div class="actions">
+      <button id="quoteBtn" class="btn btn-primary">Get quote</button>
+    </div>
+
+    <div id="result" class="result">
+      <div class="result-row"><span>Route:</span><strong id="routeLabel">–</strong></div>
+      <div class="result-row"><span>Tool:</span><strong id="toolLabel">–</strong></div>
+      <div class="result-row"><span>ETA:</span><strong id="etaLabel">–</strong></div>
+      <div class="result-row"><span>Estimated output:</span><strong id="outLabel">–</strong></div>
+      <pre id="errorBox" class="error hidden"></pre>
+    </div>
+
+    <div class="tiny">
+      Tip: you can preset the platform chain with <code>openPonia({ chain: 'polygon' })</code> or via URL <code>?chain=polygon</code>.
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
+
+
+⸻
+
+2) styles.css
+
+Palette Ponia : noir #0B0B0C et jaune #FFD73F (texte Space Grotesk).
+
+:root{
+  --bg:#0B0B0C;
+  --panel:#141417;
+  --muted:#8B8B92;
+  --text:#F3F3F5;
+  --brand:#FFD73F;
+  --ring:#2a2a2f;
+  --ok:#16a34a;
+  --err:#ef4444;
+  --radius:14px;
+}
+
+*{ box-sizing:border-box }
+html,body{ height:100% }
+body{
+  margin:0;
+  font-family:"Space Grotesk", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  background: radial-gradient(1000px 600px at 50% -200px, #151515 0%, var(--bg) 60%);
+  color:var(--text);
+}
+
+.page{
+  max-width:920px;
+  margin:80px auto;
+  padding:0 20px;
+  text-align:center;
+}
+.hero{
+  margin:0 0 10px;
+  font-size:clamp(28px, 4vw, 44px);
+  letter-spacing:0.2px;
+}
+.sub{
+  margin:0 auto 28px;
+  max-width:700px;
+  color:var(--muted);
+}
+.cta-row{ display:flex; gap:12px; justify-content:center; }
+
+.btn{
+  padding:14px 18px;
+  border-radius:12px;
+  border:1px solid transparent;
+  cursor:pointer;
+  font-weight:700;
+  transition:transform .06s ease, filter .2s ease, background .2s ease, border-color .2s;
+}
+.btn:active{ transform:translateY(1px); }
+.btn-primary{
+  background:var(--brand);
+  color:#111;
+}
+.btn-primary:hover{ filter:brightness(0.98) }
+.btn-ghost{
+  background:transparent;
+  border-color:#2a2a2f;
+  color:var(--text);
+}
+.btn-ghost:hover{ border-color:#3a3a42 }
+
+.overlay{
+  position:fixed; inset:0;
+  background:rgba(0,0,0,.55);
+  backdrop-filter:saturate(140%) blur(6px);
+  opacity:0; pointer-events:none; transition:opacity .2s ease;
+}
+.modal{
+  position:fixed; inset:0; display:grid; place-items:center;
+  pointer-events:none; opacity:0; transition:opacity .2s ease;
+}
+.modal > *{
+  pointer-events:auto;
+}
+.modal .modal-header{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:16px;
+}
+.modal .brand{
+  display:flex; align-items:center; gap:12px;
+}
+.bolt{
+  width:28px; height:28px; border-radius:7px;
+  background:conic-gradient(from 210deg at 70% 40%, #FFED9E, var(--brand) 40%);
+  -webkit-mask:
+    radial-gradient(14px 14px at 10px 7px, #0000 98%, #000) subtract,
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44"><path fill="%23000" d="M22.6 2 12 21h8.9L20 42l12.4-20H23.3L22.6 2z"/></svg>') center/70% 70% no-repeat;
+  mask:
+    radial-gradient(14px 14px at 10px 7px, #0000 98%, #000) subtract,
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44"><path fill="%23000" d="M22.6 2 12 21h8.9L20 42l12.4-20H23.3L22.6 2z"/></svg>') center/70% 70% no-repeat;
+}
+.brand-name{ font-weight:800; letter-spacing:.3px }
+.sup{ color:var(--muted); font-size:13px; margin-left:6px }
+
+.close{
+  width:36px; height:36px; border-radius:10px; border:1px solid #2a2a2f;
+  background:#16161a; color:var(--text); font-size:20px; line-height:0;
+  cursor:pointer;
+}
+
+#ponia-modal > .modal-header,
+#ponia-modal .form-grid,
+#ponia-modal .actions,
+#ponia-modal .result,
+#ponia-modal .tiny{
+  width:min(640px, 92vw);
+}
+
+#ponia-modal{
+  opacity:0; transform:translateY(6px);
+}
+#ponia-modal .card{
+  background:var(--panel);
+  border:1px solid var(--ring);
+}
+
+#ponia-modal{
+  display:flex; align-items:center; justify-content:center; flex-direction:column;
+  gap:18px;
+  padding:28px 18px 24px;
+  background:var(--panel);
+  border:1px solid var(--ring);
+  border-radius:var(--radius);
+  box-shadow:0 20px 80px rgba(0,0,0,.45);
+}
+
+.detected{
+  width:min(640px, 92vw);
+  padding:10px 12px; border-radius:10px;
+  background:#0f0f12; border:1px dashed #2a2a2f; color:var(--muted);
+}
+
+.form-grid{
+  display:grid; grid-template-columns:1fr 1fr; gap:14px;
+}
+@media (max-width:700px){
+  .form-grid{ grid-template-columns:1fr }
+}
+
+.field{ display:flex; flex-direction:column; gap:8px; }
+.label{ color:var(--muted); font-size:14px }
+.input{
+  background:#101014; border:1px solid #24242a; color:var(--text);
+  padding:12px 12px; border-radius:12px; font-size:15px;
+  outline: none;
+}
+.input:focus{ border-color:#3a3a42 }
+
+.actions{ display:flex; gap:10px; justify-content:flex-end }
+
+.result{
+  display:grid; gap:8px;
+  background:#0f0f12; border:1px solid #23232a; border-radius:12px;
+  padding:12px;
+}
+.result-row{ display:flex; justify-content:space-between; gap:10px; }
+.error{
+  margin:0; padding:10px; border-radius:10px; white-space:pre-wrap;
+  background:#1a1010; border:1px solid #3a1b1b; color:#ffb4b4;
+}
+
+.tiny{
+  color:var(--muted); font-size:12px
+}
+
+.hidden{ display:none }
+.show{ opacity:1 !important; pointer-events:auto !important }
+.overlay.show{ opacity:1 }
+.modal.show{ opacity:1; transform:translateY(0) }
+
+
+⸻
+
+3) app.js
+
+Toute la logique : ouverture du modal, présélection de la chaîne, appel de l’API LI.FI, affichage des résultats.
+
+/* ===== PONIA Demo – app.js ===== */
+
+const CHAIN_OPTIONS = [
+  { key: 'ethereum', label: 'Ethereum (ETH)', decimals: 18 },
+  { key: 'polygon',  label: 'Polygon (MATIC)', decimals: 18 },
+  { key: 'bsc',      label: 'BNB Chain (BNB)', decimals: 18 },
+  { key: 'arbitrum', label: 'Arbitrum (ETH)', decimals: 18 },
+  { key: 'base',     label: 'Base (ETH)', decimals: 18 },
+  { key: 'optimism', label: 'Optimism (ETH)', decimals: 18 },
+  { key: 'avalanche',label: 'Avalanche (AVAX)', decimals: 18 },
+  // Tu pourras ajouter d’autres chains ici.
+];
+
+const LI_FI_QUOTE = 'https://li.quest/v1/quote';
+
+const els = {
+  overlay: document.getElementById('ponia-overlay'),
+  modal: document.getElementById('ponia-modal'),
+  detected: document.getElementById('detectedChain'),
+  fromChain: document.getElementById('fromChain'),
+  toChain: document.getElementById('toChain'),
+  amount: document.getElementById('fromAmount'),
+  quoteBtn: document.getElementById('quoteBtn'),
+  routeLabel: document.getElementById('routeLabel'),
+  toolLabel: document.getElementById('toolLabel'),
+  etaLabel: document.getElementById('etaLabel'),
+  outLabel: document.getElementById('outLabel'),
+  errorBox: document.getElementById('errorBox')
+};
+
+/* --- helpers --- */
+
+// remplit les <select>
+function populateChains(selectEl, selectedKey) {
+  selectEl.innerHTML = '';
+  CHAIN_OPTIONS.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.key;
+    opt.textContent = c.label;
+    if (selectedKey && c.key === selectedKey) opt.selected = true;
+    selectEl.appendChild(opt);
+  });
+}
+
+// convertit un string decimal vers wei (BigInt)
+function toWei(amountStr, decimals = 18) {
+  if (!amountStr || isNaN(+amountStr)) return '0';
+  const [intPart, fracPart = ''] = amountStr.split('.');
+  const frac = (fracPart + '0'.repeat(decimals)).slice(0, decimals);
+  return BigInt(intPart + frac).toString();
+}
+
+// lecture paramètre d’URL
+function getQueryParam(name) {
+  const url = new URL(window.location.href);
+  return url.searchParams.get(name);
+}
+
+/* --- état du widget --- */
+let platformChain = null;
+
+/* --- API call --- */
+/**
+ * On quote le natif -> natif pour rester simple (pas besoin d’adresse de token).
+ * Sur LI.FI, l’adresse 0x0 indique le token natif de la chain.
+ */
+async function fetchQuote({ fromChain, toChain, amountWei }) {
+  const params = new URLSearchParams({
+    fromChain,
+    toChain,
+    fromToken: '0x0000000000000000000000000000000000000000',
+    toToken:   '0x0000000000000000000000000000000000000000',
+    fromAmount: amountWei
+  });
+
+  const res = await fetch(`${LI_FI_QUOTE}?${params.toString()}`);
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(`LI.FI error ${res.status}: ${txt}`);
+  }
+  return res.json();
+}
+
+/* --- UI logique --- */
+
+function resetResult() {
+  els.routeLabel.textContent = '–';
+  els.toolLabel.textContent = '–';
+  els.etaLabel.textContent = '–';
+  els.outLabel.textContent = '–';
+  els.errorBox.classList.add('hidden');
+  els.errorBox.textContent = '';
+}
+
+async function onQuote() {
+  try {
+    resetResult();
+
+    const fromKey = els.fromChain.value;
+    const toKey   = els.toChain.value;
+    const amount  = els.amount.value.trim();
+
+    if (!amount || Number(amount) <= 0) {
+      throw new Error('Please enter a valid amount.');
+    }
+    if (fromKey === toKey) {
+      throw new Error('From chain and destination chain must be different.');
+    }
+
+    const decFrom = CHAIN_OPTIONS.find(c => c.key === fromKey)?.decimals ?? 18;
+    const wei = toWei(amount, decFrom);
+
+    els.quoteBtn.disabled = true;
+    els.quoteBtn.textContent = 'Quoting…';
+
+    const data = await fetchQuote({ fromChain: fromKey, toChain: toKey, amountWei: wei });
+
+    // LI.FI renvoie un objet avec estimate. On lit prudemment.
+    const est = data?.estimate || data?.toAmount ? data : null;
+
+    const tool = data?.tools?.[0]?.name || data?.tool || '—';
+    const etaSec = data?.estimate?.executionDuration || data?.estimate?.duration || null;
+    const toAmount = data?.estimate?.toAmount || data?.toAmount || null;
+
+    els.routeLabel.textContent = `${fromKey} → ${toKey}`;
+    els.toolLabel.textContent  = tool;
+    els.etaLabel.textContent   = etaSec ? `${etaSec}s` : '—';
+    els.outLabel.textContent   = toAmount ? `${toAmount} (wei native)` : '—';
+
+  } catch (err) {
+    els.errorBox.classList.remove('hidden');
+    els.errorBox.textContent = String(err.message || err);
+  } finally {
+    els.quoteBtn.disabled = false;
+    els.quoteBtn.textContent = 'Get quote';
+  }
+}
+
+/* --- API publique pour ton site : window.openPonia({...}) --- */
+window.openPonia = function(config = {}) {
+  // 1) Détermine la chain plateforme (priorité: param URL > config.chain)
+  platformChain = getQueryParam('chain') || config.chain || null;
+
+  // 2) UI init
+  populateChains(els.fromChain);
+  populateChains(els.toChain, platformChain || 'polygon');
+  resetResult();
+  els.amount.value = '';
+
+  els.detected.textContent = platformChain || '—';
+
+  // 3) Ouvre le modal
+  els.overlay.classList.add('show');
+  els.modal.classList.add('show');
+};
+
+/* Fermer */
+window.closePonia = function() {
+  els.overlay.classList.remove('show');
+  els.modal.classList.remove('show');
+};
+
+/* Bouton "Get quote" */
+els.quoteBtn.addEventListener('click', onQuote);
+
+/* Ouverture auto si ?chain=… est présent (pratique pour démo) */
+const auto = getQueryParam('chain');
+if (auto) {
+  openPonia({ chain: auto });
+}
+
+
+⸻
+
+Ce que tu obtiens
+	•	Un bouton de démo sur la page.
+	•	Un modal PONIA propre et cohérent avec ta charte (noir & jaune).
+	•	Une pré-détection/forçage de la chain de la plateforme :
+	•	par appel JS openPonia({ chain: 'polygon' }),
+	•	ou par URL ?chain=polygon.
+	•	Un appel réel à LI.FI (/v1/quote) qui renvoie ETA, route, outil, montant.
+	•	Des messages d’erreur lisibles si un paramètre n’est pas bon.
+
+Quand tu voudras supporter USDC / Solana comme ta démo précédente, on ajoute un petit mapping d’adresses de tokens par chain (ou on déclenche le LI.FI Widget complet pour l’exécution, et on garde ce module pour l’estimation).
+
+⸻
+
+Intégration dans ton site vitrine (snippet)
+
+Côté site Ponia, tu pourras proposer un snippet aux partenaires (ou pour ta propre démo) :
+
+<!-- Charge ton script widget -->
+<script src="https://ton-domaine.com/ponia-widget/app.js"></script>
+
+<!-- Bouton qui ouvre le widget avec la chain de la plateforme -->
+<button onclick="openPonia({ chain: 'polygon' })">Pay with Ponia</button>
+
+Dans tes Docs, explique en une ligne :
+
+“Passez la blockchain de votre application à openPonia({ chain: '<chainKey>' }) (ex. polygon, ethereum, bsc, …). Vous pouvez aussi ouvrir la démo en ajoutant ?chain=<chainKey> à l’URL.”
+
+⸻
+
+Si tu veux, je te prépare la version USDC multi-chain (EVM + Solana) en ajoutant les adresses sûres et un sélecteur de token. Tu me dis les chaînes prioritaires et on ship 👌
