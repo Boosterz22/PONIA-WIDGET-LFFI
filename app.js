@@ -1,11 +1,11 @@
 const CHAIN_OPTIONS = [
-  { key: 'ethereum', label: 'Ethereum (ETH)', decimals: 18 },
-  { key: 'polygon',  label: 'Polygon (MATIC)', decimals: 18 },
-  { key: 'bsc',      label: 'BNB Chain (BNB)', decimals: 18 },
-  { key: 'arbitrum', label: 'Arbitrum (ETH)', decimals: 18 },
-  { key: 'base',     label: 'Base (ETH)', decimals: 18 },
-  { key: 'optimism', label: 'Optimism (ETH)', decimals: 18 },
-  { key: 'avalanche',label: 'Avalanche (AVAX)', decimals: 18 },
+  { key: '1',     label: 'Ethereum (ETH)', decimals: 18 },
+  { key: '137',   label: 'Polygon (MATIC)', decimals: 18 },
+  { key: '56',    label: 'BNB Chain (BNB)', decimals: 18 },
+  { key: '42161', label: 'Arbitrum (ETH)', decimals: 18 },
+  { key: '8453',  label: 'Base (ETH)', decimals: 18 },
+  { key: '10',    label: 'Optimism (ETH)', decimals: 18 },
+  { key: '43114', label: 'Avalanche (AVAX)', decimals: 18 }
 ];
 
 const LI_FI_QUOTE = 'https://li.quest/v1/quote';
