@@ -22,10 +22,13 @@
   .row { display:flex; gap:16px; }
   .col { flex:1; }
   button { background:var(--accent); border:none; padding:10px 16px; border-radius:10px; cursor:pointer; color:#111; font-weight:700; }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
   .muted { color:var(--muted); font-size:13px; }
   pre { background:#080808; padding:12px; border-radius:8px; overflow:auto; color:#ffd; }
-  .controls { margin-top:14px; display:flex; gap:10px; flex-wrap:wrap; align-items: center; }
+  .controls { margin-top:14px; display:flex; gap:10px; flex-wrap:wrap; }
   .status { margin-top:12px; color:var(--muted); font-size:13px; }
+  .wallet-status { margin-top: 10px; padding: 10px; background: rgba(255,215,63,.1); border-radius: 8px; font-size: 13px; }
+  .wallet-status.connected { background: rgba(76,175,80,.1); color: #4CAF50; }
   footer { text-align:center; margin-top:18px; color:var(--muted); font-size:13px; }
 </style>
 </head>
@@ -61,13 +64,17 @@
         </div>
       </div>
 
+      <div id="walletStatus" class="wallet-status">
+        <strong>Wallet:</strong> <span id="walletInfo">Détection en cours...</span>
+      </div>
+
       <div class="controls">
-        <appkit-button></appkit-button>
+        <button id="btnConnect">Connect Wallet</button>
         <button id="btnGetQuote">Get Quote</button>
         <button id="btnExecute">(Optional) Execute Route</button>
       </div>
 
-      <div class="status" id="status">Ready. Click connect button above.</div>
+      <div class="status" id="status">Ready.</div>
 
       <div style="margin-top:14px">
         <div class="muted">Quote / Route JSON</div>
@@ -75,62 +82,48 @@
       </div>
     </div>
 
-    <footer>Test only — Demo Ponia / LI.FI. Universal wallet support via Reown AppKit.</footer>
+    <footer>Test only — Demo Ponia / LI.FI. Auto-detects MetaMask, Coinbase Wallet, Trust Wallet, and other Web3 wallets.</footer>
   </div>
 
-<script type="module">
-import { createAppKit } from 'https://cdn.jsdelivr.net/npm/@reown/appkit@1.2.1/dist/esm/index.js';
-import { EthersAdapter } from 'https://cdn.jsdelivr.net/npm/@reown/appkit-adapter-ethers@1.2.1/dist/esm/index.js';
-import { mainnet, polygon, bsc, arbitrum } from 'https://cdn.jsdelivr.net/npm/@reown/appkit@1.2.1/dist/esm/networks/index.js';
-
+<script>
 const statusEl = document.getElementById('status');
 const out = document.getElementById('output');
+const btnConnect = document.getElementById('btnConnect');
 const btnGetQuote = document.getElementById('btnGetQuote');
 const btnExecute = document.getElementById('btnExecute');
 const platformInput = document.getElementById('platformChain');
+const walletStatusDiv = document.getElementById('walletStatus');
+const walletInfoSpan = document.getElementById('walletInfo');
 
+let connectedAddress = null;
 let lastQuote = null;
-let appKitModal = null;
-let ethersAdapter = null;
 
 function log(...args){
   console.log(...args);
   out.textContent = args.map(a => typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)).join(' ');
 }
 
-// Initialize Reown AppKit
-try {
-  const projectId = 'f83cf00007509459345871b429d32db0';
-  
-  const metadata = {
-    name: 'PONIA Widget',
-    description: 'Cross-chain payment widget powered by LI.FI',
-    url: window.location.origin,
-    icons: ['https://avatars.githubusercontent.com/u/37784886']
-  };
-
-  ethersAdapter = new EthersAdapter();
-
-  appKitModal = createAppKit({
-    adapters: [ethersAdapter],
-    networks: [mainnet, polygon, bsc, arbitrum],
-    projectId,
-    metadata,
-    features: {
-      analytics: true
+function updateWalletStatus() {
+  if (connectedAddress) {
+    walletStatusDiv.classList.add('connected');
+    walletInfoSpan.textContent = `Connected (${connectedAddress.slice(0,6)}...${connectedAddress.slice(-4)})`;
+  } else {
+    walletStatusDiv.classList.remove('connected');
+    const wallets = [];
+    if (window.ethereum) {
+      if (window.ethereum.isMetaMask) wallets.push('MetaMask');
+      else if (window.ethereum.isCoinbaseWallet) wallets.push('Coinbase Wallet');
+      else if (window.ethereum.isTrust) wallets.push('Trust Wallet');
+      else wallets.push('Web3 Wallet');
     }
-  });
-
-  statusEl.textContent = 'Ready. Click "Connect Wallet" button above.';
-  log('AppKit initialized with multi-wallet support');
-} catch (error) {
-  console.error('AppKit init error:', error);
-  statusEl.textContent = 'Error initializing wallet connection: ' + error.message;
+    walletInfoSpan.textContent = wallets.length > 0 
+      ? `Detected: ${wallets.join(', ')} - Click "Connect Wallet" to connect`
+      : 'No Web3 wallet detected. Please install MetaMask, Coinbase Wallet, or Trust Wallet.';
+  }
 }
 
 function toSmallestUnit(chain, readableAmount){
   if(!readableAmount) return "0";
-
   const ra = String(readableAmount).trim();
   const parts = ra.split('.');
   const whole = BigInt(parts[0] || 0);
@@ -154,31 +147,45 @@ function nativeTokenForChain(chain){
   return '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 }
 
-async function getConnectedAddress() {
-  try {
-    const provider = ethersAdapter.getProvider();
-    if (!provider) {
-      throw new Error('No provider available. Please connect your wallet first.');
-    }
-    
-    const signer = await provider.getSigner();
-    const address = await signer.getAddress();
-    return address;
-  } catch (error) {
-    throw new Error('Wallet not connected. Click "Connect Wallet" button first.');
+async function connectWallet() {
+  if (!window.ethereum) {
+    throw new Error('No Web3 wallet detected. Please install MetaMask, Coinbase Wallet, or Trust Wallet.');
+  }
+  
+  const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+  if (accounts && accounts[0]) {
+    connectedAddress = accounts[0];
+    updateWalletStatus();
+    return connectedAddress;
+  } else {
+    throw new Error('No account returned from wallet');
   }
 }
 
+btnConnect.addEventListener('click', async () => {
+  try {
+    statusEl.textContent = 'Connecting to wallet...';
+    await connectWallet();
+    statusEl.textContent = 'Wallet connected successfully!';
+    log('Connected address:', connectedAddress);
+  } catch (e) {
+    statusEl.textContent = 'Connection failed: ' + (e.message || e);
+    log('connect error', e);
+  }
+});
+
 btnGetQuote.addEventListener('click', async () => {
-  try{
+  try {
     statusEl.textContent = 'Building quote...';
     const fromChain = document.getElementById('fromChain').value;
     const toChain = document.getElementById('toChain').value;
     const readableAmount = document.getElementById('amount').value;
 
-    // Get connected wallet address
-    const fromAddress = await getConnectedAddress();
-    statusEl.textContent = 'Connected: ' + fromAddress.slice(0,6) + '...' + fromAddress.slice(-4);
+    // Auto-connect if not connected
+    if (!connectedAddress) {
+      statusEl.textContent = 'Connecting wallet...';
+      await connectWallet();
+    }
 
     const fromAmount = toSmallestUnit(fromChain, readableAmount);
     const fromToken = nativeTokenForChain(fromChain);
@@ -194,7 +201,7 @@ btnGetQuote.addEventListener('click', async () => {
       fromToken: fromToken,
       toToken: toToken,
       fromAmount: fromAmount,
-      fromAddress: fromAddress,
+      fromAddress: connectedAddress,
       toAddress: toAddress
     });
 
@@ -204,82 +211,92 @@ btnGetQuote.addEventListener('click', async () => {
     log('fetching quote url', url);
 
     const r = await fetch(url);
-    if(!r.ok){
+    if (!r.ok) {
       const txt = await r.text();
       throw new Error('LI.FI error ' + r.status + ': ' + txt);
     }
     const json = await r.json();
     lastQuote = json;
-    statusEl.textContent = 'Quote fetched (see output).';
+    statusEl.textContent = 'Quote fetched successfully! See details below.';
     log(json);
     out.textContent = JSON.stringify(json, null, 2);
 
-  } catch(err){
+  } catch (err) {
     statusEl.textContent = 'Quote failed: ' + (err.message || err);
     log('quote failed', err);
   }
 });
 
 btnExecute.addEventListener('click', async () => {
-  try{
-    if(!lastQuote) throw new Error('No quote in memory. Get quote first.');
-    statusEl.textContent = 'Preparing to execute route (demo)...';
+  try {
+    if (!lastQuote) throw new Error('No quote in memory. Get quote first.');
+    if (!connectedAddress) throw new Error('Wallet not connected');
+    
+    statusEl.textContent = 'Preparing to execute route...';
 
     let found = null;
-    for(const step of lastQuote.steps || []){
-      if(step.calls && step.calls.length){
-        for(const call of step.calls){
-          if(call.to && call.data && call.value !== undefined){
+    for (const step of lastQuote.steps || []) {
+      if (step.calls && step.calls.length) {
+        for (const call of step.calls) {
+          if (call.to && call.data && call.value !== undefined) {
             found = { step, call };
             break;
           }
         }
       }
-      if(found) break;
+      if (found) break;
     }
 
-    if(!found){
+    if (!found) {
       statusEl.textContent = 'No simple EVM tx found — use LI.FI widget/SDK to execute full route.';
       log('execute: route details', lastQuote);
       return;
     }
 
-    const provider = ethersAdapter.getProvider();
-    if (!provider) {
-      throw new Error('Wallet not connected');
-    }
-
-    const signer = await provider.getSigner();
     const call = found.call;
-    
     const tx = {
+      from: connectedAddress,
       to: call.to,
       data: call.data,
-      value: call.value ? BigInt(call.value) : 0n
+      value: call.value ? '0x' + BigInt(call.value).toString(16) : '0x0'
     };
 
     statusEl.textContent = 'Sending transaction via wallet...';
-    const txResponse = await signer.sendTransaction(tx);
-    statusEl.textContent = 'Transaction submitted: ' + txResponse.hash;
-    log('txHash', txResponse.hash);
+    const txHash = await window.ethereum.request({ method: 'eth_sendTransaction', params: [tx] });
+    statusEl.textContent = 'Transaction submitted: ' + txHash;
+    log('txHash', txHash);
 
-    statusEl.textContent = 'Waiting for confirmation...';
-    await txResponse.wait();
-    statusEl.textContent = 'Transaction confirmed! Hash: ' + txResponse.hash;
-
-  } catch(e){
+  } catch (e) {
     statusEl.textContent = 'Execute failed: ' + (e.message || e);
     log('execute error', e);
   }
 });
 
-function autoDetectPlatform(){
+function autoDetectPlatform() {
   const url = new URL(location.href);
   const chainParam = url.searchParams.get('chain');
-  if(chainParam){ platformInput.value = chainParam; return; }
+  if (chainParam) {
+    platformInput.value = chainParam;
+  }
+}
+
+// Listen for account changes
+if (window.ethereum) {
+  window.ethereum.on('accountsChanged', function (accounts) {
+    if (accounts.length > 0) {
+      connectedAddress = accounts[0];
+      statusEl.textContent = 'Account changed to: ' + connectedAddress;
+    } else {
+      connectedAddress = null;
+      statusEl.textContent = 'Wallet disconnected';
+    }
+    updateWalletStatus();
+  });
 }
 
 autoDetectPlatform();
+updateWalletStatus();
+log('Ready. Waiting for user action...');
 </script>
 </body>
 </html>
