@@ -24,7 +24,7 @@
   button { background:var(--accent); border:none; padding:10px 16px; border-radius:10px; cursor:pointer; color:#111; font-weight:700; }
   .muted { color:var(--muted); font-size:13px; }
   pre { background:#080808; padding:12px; border-radius:8px; overflow:auto; color:#ffd; }
-  .controls { margin-top:14px; display:flex; gap:10px; flex-wrap:wrap; }
+  .controls { margin-top:14px; display:flex; gap:10px; flex-wrap:wrap; align-items: center; }
   .status { margin-top:12px; color:var(--muted); font-size:13px; }
   footer { text-align:center; margin-top:18px; color:var(--muted); font-size:13px; }
 </style>
@@ -42,7 +42,6 @@
         <option value="ethereum">Ethereum</option>
         <option value="polygon">Polygon</option>
         <option value="bsc">BNB Chain</option>
-        <option value="solana">Solana</option>
         <option value="arbitrum">Arbitrum</option>
       </select>
 
@@ -57,18 +56,18 @@
             <option value="polygon">Polygon</option>
             <option value="ethereum">Ethereum</option>
             <option value="bsc">BNB Chain</option>
-            <option value="solana">Solana</option>
+            <option value="arbitrum">Arbitrum</option>
           </select>
         </div>
       </div>
 
       <div class="controls">
-        <button id="btnConnect">Connect Wallet</button>
+        <appkit-button></appkit-button>
         <button id="btnGetQuote">Get Quote</button>
         <button id="btnExecute">(Optional) Execute Route</button>
       </div>
 
-      <div class="status" id="status">Status: ready</div>
+      <div class="status" id="status">Ready. Click connect button above.</div>
 
       <div style="margin-top:14px">
         <div class="muted">Quote / Route JSON</div>
@@ -76,47 +75,69 @@
       </div>
     </div>
 
-    <footer>Test only — Demo Ponia / LI.FI. Use Phantom for Solana, MetaMask for EVM chains.</footer>
+    <footer>Test only — Demo Ponia / LI.FI. Universal wallet support via Reown AppKit.</footer>
   </div>
 
-<script>
+<script type="module">
+import { createAppKit } from 'https://cdn.jsdelivr.net/npm/@reown/appkit@1.2.1/dist/esm/index.js';
+import { EthersAdapter } from 'https://cdn.jsdelivr.net/npm/@reown/appkit-adapter-ethers@1.2.1/dist/esm/index.js';
+import { mainnet, polygon, bsc, arbitrum } from 'https://cdn.jsdelivr.net/npm/@reown/appkit@1.2.1/dist/esm/networks/index.js';
+
 const statusEl = document.getElementById('status');
 const out = document.getElementById('output');
-const btnConnect = document.getElementById('btnConnect');
 const btnGetQuote = document.getElementById('btnGetQuote');
 const btnExecute = document.getElementById('btnExecute');
 const platformInput = document.getElementById('platformChain');
 
-let walletType = null;
-let evmAddress = null;
-let solanaProvider = null;
-let phantomAddress = null;
 let lastQuote = null;
+let appKitModal = null;
+let ethersAdapter = null;
 
 function log(...args){
   console.log(...args);
   out.textContent = args.map(a => typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)).join(' ');
 }
 
+// Initialize Reown AppKit
+try {
+  const projectId = 'f83cf00007509459345871b429d32db0';
+  
+  const metadata = {
+    name: 'PONIA Widget',
+    description: 'Cross-chain payment widget powered by LI.FI',
+    url: window.location.origin,
+    icons: ['https://avatars.githubusercontent.com/u/37784886']
+  };
+
+  ethersAdapter = new EthersAdapter();
+
+  appKitModal = createAppKit({
+    adapters: [ethersAdapter],
+    networks: [mainnet, polygon, bsc, arbitrum],
+    projectId,
+    metadata,
+    features: {
+      analytics: true
+    }
+  });
+
+  statusEl.textContent = 'Ready. Click "Connect Wallet" button above.';
+  log('AppKit initialized with multi-wallet support');
+} catch (error) {
+  console.error('AppKit init error:', error);
+  statusEl.textContent = 'Error initializing wallet connection: ' + error.message;
+}
+
 function toSmallestUnit(chain, readableAmount){
   if(!readableAmount) return "0";
 
   const ra = String(readableAmount).trim();
-  if(chain === 'solana'){
-    const parts = ra.split('.');
-    const whole = BigInt(parts[0] || 0);
-    const frac = parts[1] || '';
-    const fracPadded = (frac + '0'.repeat(9)).slice(0,9);
-    const val = whole * BigInt(1_000_000_000) + BigInt(fracPadded || '0');
-    return val.toString();
-  } else {
-    const parts = ra.split('.');
-    const whole = BigInt(parts[0] || 0);
-    const frac = parts[1] || '';
-    const fracPadded = (frac + '0'.repeat(18)).slice(0,18);
-    const val = whole * BigInt("1000000000000000000") + BigInt(fracPadded || '0');
-    return val.toString();
-  }
+  const parts = ra.split('.');
+  const whole = BigInt(parts[0] || 0);
+  const frac = parts[1] || '';
+  const fracPadded = (frac + '0'.repeat(18)).slice(0,18);
+  const val = whole * BigInt("1000000000000000000") + BigInt(fracPadded || '0');
+  return val.toString();
 }
 
 function getChainId(chainName){
@@ -124,63 +145,29 @@ function getChainId(chainName){
     'ethereum': 1,
     'polygon': 137,
     'bsc': 56,
-    'arbitrum': 42161,
-    'solana': 'SOL'
+    'arbitrum': 42161
   };
   return chainMap[chainName] || chainName;
 }
 
 function nativeTokenForChain(chain){
-  if(chain === 'solana') return 'So11111111111111111111111111111111111111112';
   return '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 }
 
-function autoDetectPlatform(){
-  const url = new URL(location.href);
-  const chainParam = url.searchParams.get('chain');
-  if(chainParam){ platformInput.value = chainParam; return; }
-}
-
-async function connectMetaMask(){
-  if(!window.ethereum) throw new Error('MetaMask not found');
-  const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-  if(accounts && accounts[0]){
-    evmAddress = accounts[0];
-    walletType = 'metamask';
-    statusEl.textContent = 'Connected MetaMask: ' + evmAddress;
-    log('EVM address', evmAddress);
-    return evmAddress;
-  } else throw new Error('No account returned');
-}
-
-async function connectPhantom(){
-  if(window.solana && window.solana.isPhantom){
-    solanaProvider = window.solana;
-    const res = await solanaProvider.connect();
-    phantomAddress = solanaProvider.publicKey.toString();
-    walletType = 'phantom';
-    statusEl.textContent = 'Connected Phantom: ' + phantomAddress;
-    log('Phantom address', phantomAddress);
-    return phantomAddress;
-  } else {
-    throw new Error('Phantom not detected in window.solana');
-  }
-}
-
-btnConnect.addEventListener('click', async () => {
-  try{
-    const fromChain = document.getElementById('fromChain').value;
-    statusEl.textContent = 'Connecting...';
-    if(fromChain === 'solana'){
-      await connectPhantom();
-    } else {
-      await connectMetaMask();
+async function getConnectedAddress() {
+  try {
+    const provider = ethersAdapter.getProvider();
+    if (!provider) {
+      throw new Error('No provider available. Please connect your wallet first.');
     }
-  } catch(e){
-    statusEl.textContent = 'Connect failed: ' + (e.message || e);
-    log('connect error', e);
+    
+    const signer = await provider.getSigner();
+    const address = await signer.getAddress();
+    return address;
+  } catch (error) {
+    throw new Error('Wallet not connected. Click "Connect Wallet" button first.');
   }
-});
+}
 
 btnGetQuote.addEventListener('click', async () => {
   try{
@@ -189,37 +176,15 @@ btnGetQuote.addEventListener('click', async () => {
     const toChain = document.getElementById('toChain').value;
     const readableAmount = document.getElementById('amount').value;
 
-    if(fromChain === 'solana'){
-      if(!phantomAddress){
-        if(window.solana && window.solana.isPhantom){
-          try { await connectPhantom(); } catch(e){ }
-        }
-      }
-    } else {
-      if(!evmAddress){
-        if(window.ethereum){
-          try { await connectMetaMask(); } catch(e){ }
-        }
-      }
-    }
-
-    let fromAddress;
-    if(walletType === 'phantom' && phantomAddress){
-      fromAddress = phantomAddress;
-    } else if(walletType === 'metamask' && evmAddress){
-      fromAddress = evmAddress;
-    } else {
-      throw new Error('Wallet not connected. Click Connect Wallet first and accept.');
-    }
+    // Get connected wallet address
+    const fromAddress = await getConnectedAddress();
+    statusEl.textContent = 'Connected: ' + fromAddress.slice(0,6) + '...' + fromAddress.slice(-4);
 
     const fromAmount = toSmallestUnit(fromChain, readableAmount);
-
     const fromToken = nativeTokenForChain(fromChain);
     const toToken = nativeTokenForChain(toChain);
-
     const fromChainId = getChainId(fromChain);
     const toChainId = getChainId(toChain);
-
     const toAddress = '0x000000000000000000000000000000000000dEaD';
 
     const base = 'https://li.quest/v1/quote';
@@ -279,21 +244,28 @@ btnExecute.addEventListener('click', async () => {
       return;
     }
 
-    if(walletType !== 'metamask' || !evmAddress){
-      throw new Error('Detected EVM transaction but MetaMask not connected.');
+    const provider = ethersAdapter.getProvider();
+    if (!provider) {
+      throw new Error('Wallet not connected');
     }
 
+    const signer = await provider.getSigner();
     const call = found.call;
+    
     const tx = {
       to: call.to,
       data: call.data,
-      value: call.value ? '0x' + BigInt(call.value).toString(16) : '0x0',
+      value: call.value ? BigInt(call.value) : 0n
     };
 
-    statusEl.textContent = 'Sending transaction via MetaMask...';
-    const txHash = await window.ethereum.request({ method: 'eth_sendTransaction', params: [tx] });
-    statusEl.textContent = 'Transaction submitted: ' + txHash;
-    log('txHash', txHash);
+    statusEl.textContent = 'Sending transaction via wallet...';
+    const txResponse = await signer.sendTransaction(tx);
+    statusEl.textContent = 'Transaction submitted: ' + txResponse.hash;
+    log('txHash', txResponse.hash);
+
+    statusEl.textContent = 'Waiting for confirmation...';
+    await txResponse.wait();
+    statusEl.textContent = 'Transaction confirmed! Hash: ' + txResponse.hash;
 
   } catch(e){
     statusEl.textContent = 'Execute failed: ' + (e.message || e);
@@ -301,15 +273,13 @@ btnExecute.addEventListener('click', async () => {
   }
 });
 
-autoDetectPlatform();
+function autoDetectPlatform(){
+  const url = new URL(location.href);
+  const chainParam = url.searchParams.get('chain');
+  if(chainParam){ platformInput.value = chainParam; return; }
+}
 
-(function detectWalletsOnLoad(){
-  let info = 'Ready.';
-  if(window.ethereum) info += ' MetaMask available.';
-  if(window.solana && window.solana.isPhantom) info += ' Phantom available.';
-  statusEl.textContent = info;
-  log('wallet detect', { metamask: !!window.ethereum, phantom: !!(window.solana && window.solana.isPhantom) });
-})();
+autoDetectPlatform();
 </script>
 </body>
 </html>
