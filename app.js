@@ -1,150 +1,186 @@
-const CHAIN_OPTIONS = [
-  { key: '1',     label: 'Ethereum (ETH)', decimals: 18 },
-  { key: '137',   label: 'Polygon (MATIC)', decimals: 18 },
-  { key: '56',    label: 'BNB Chain (BNB)', decimals: 18 },
-  { key: '42161', label: 'Arbitrum (ETH)', decimals: 18 },
-  { key: '8453',  label: 'Base (ETH)', decimals: 18 },
-  { key: '10',    label: 'Optimism (ETH)', decimals: 18 },
-  { key: '43114', label: 'Avalanche (AVAX)', decimals: 18 }
-];
+const statusEl = document.getElementById('status');
+const outputEl = document.getElementById('output');
 
-const LI_FI_QUOTE = 'https://li.quest/v1/quote';
-const DEMO_EVM_ADDRESS = '0x0000000000000000000000000000000000000001';
+let providerEVM = null;
+let signer = null;
+let walletType = null;
+let solanaProvider = null;
+let lastQuote = null;
 
-const els = {
-  overlay: document.getElementById('ponia-overlay'),
-  modal: document.getElementById('ponia-modal'),
-  detected: document.getElementById('detectedChain'),
-  fromChain: document.getElementById('fromChain'),
-  toChain: document.getElementById('toChain'),
-  amount: document.getElementById('fromAmount'),
-  quoteBtn: document.getElementById('quoteBtn'),
-  routeLabel: document.getElementById('routeLabel'),
-  toolLabel: document.getElementById('toolLabel'),
-  etaLabel: document.getElementById('etaLabel'),
-  outLabel: document.getElementById('outLabel'),
-  errorBox: document.getElementById('errorBox')
-};
-
-function populateChains(selectEl, selectedKey) {
-  selectEl.innerHTML = '';
-  CHAIN_OPTIONS.forEach(c => {
-    const opt = document.createElement('option');
-    opt.value = c.key;
-    opt.textContent = c.label;
-    if (selectedKey && c.key === selectedKey) opt.selected = true;
-    selectEl.appendChild(opt);
-  });
+function log(...args){
+  console.log(...args);
+  outputEl.textContent = (outputEl.textContent + '\n' + args.map(a => typeof a === 'object' ? JSON.stringify(a,null,2) : String(a)).join(' ')).slice(-20000);
 }
+function setStatus(s){ statusEl.textContent = s; log('[status]', s); }
 
-function toWei(amountStr, decimals = 18) {
-  if (!amountStr || isNaN(+amountStr)) return '0';
-  const [intPart, fracPart = ''] = amountStr.split('.');
-  const frac = (fracPart + '0'.repeat(decimals)).slice(0, decimals);
-  return BigInt(intPart + frac).toString();
-}
-
-function getQueryParam(name) {
-  const url = new URL(window.location.href);
-  return url.searchParams.get(name);
-}
-
-let platformChain = null;
-
-async function fetchQuote({ fromChain, toChain, amountWei, fromAddress = DEMO_EVM_ADDRESS, toAddress = DEMO_EVM_ADDRESS }) {
-  const params = new URLSearchParams({
-    fromChain,
-    toChain,
-    fromToken: '0x0000000000000000000000000000000000000000',
-    toToken:   '0x0000000000000000000000000000000000000000',
-    fromAmount: amountWei,
-    fromAddress,
-    toAddress,
-    integrator: 'ponia-demo'
-  });
-
-  const res = await fetch(`${LI_FI_QUOTE}?${params.toString()}`);
-  if (!res.ok) {
-    const txt = await res.text();
-    throw new Error(`LI.FI error ${res.status}: ${txt}`);
-  }
-  return res.json();
-}
-
-function resetResult() {
-  els.routeLabel.textContent = '–';
-  els.toolLabel.textContent = '–';
-  els.etaLabel.textContent = '–';
-  els.outLabel.textContent = '–';
-  els.errorBox.classList.add('hidden');
-  els.errorBox.textContent = '';
-}
-
-async function onQuote() {
-  try {
-    resetResult();
-
-    const fromKey = els.fromChain.value;
-    const toKey   = els.toChain.value;
-    const amount  = els.amount.value.trim();
-
-    if (!amount || Number(amount) <= 0) {
-      throw new Error('Please enter a valid amount.');
-    }
-    if (fromKey === toKey) {
-      throw new Error('From chain and destination chain must be different.');
-    }
-
-    const decFrom = CHAIN_OPTIONS.find(c => c.key === fromKey)?.decimals ?? 18;
-    const wei = toWei(amount, decFrom);
-
-    els.quoteBtn.disabled = true;
-    els.quoteBtn.textContent = 'Quoting…';
-
-    const data = await fetchQuote({ fromChain: fromKey, toChain: toKey, amountWei: wei });
-
-    const est = data?.estimate || data?.toAmount ? data : null;
-
-    const tool = data?.tools?.[0]?.name || data?.tool || '—';
-    const etaSec = data?.estimate?.executionDuration || data?.estimate?.duration || null;
-    const toAmount = data?.estimate?.toAmount || data?.toAmount || null;
-
-    els.routeLabel.textContent = `${fromKey} → ${toKey}`;
-    els.toolLabel.textContent  = tool;
-    els.etaLabel.textContent   = etaSec ? `${etaSec}s` : '—';
-    els.outLabel.textContent   = toAmount ? `${toAmount} (wei native)` : '—';
-
-  } catch (err) {
-    els.errorBox.classList.remove('hidden');
-    els.errorBox.textContent = String(err.message || err);
-  } finally {
-    els.quoteBtn.disabled = false;
-    els.quoteBtn.textContent = 'Get quote';
+async function connectInjectedEVM(){
+  if(window.ethereum){
+    try{
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+      providerEVM = new ethers.BrowserProvider(window.ethereum);
+      signer = await providerEVM.getSigner();
+      walletType = 'injected';
+      const addr = await signer.getAddress();
+      setStatus('Connected (injected) ' + addr);
+      log('connected injected', addr);
+      return addr;
+    }catch(e){ setStatus('User rejected'); throw e; }
+  } else {
+    throw new Error('No injected wallet found');
   }
 }
 
-window.openPonia = function(config = {}) {
-  platformChain = getQueryParam('chain') || config.chain || null;
-
-  populateChains(els.fromChain);
-  populateChains(els.toChain, platformChain || 'polygon');
-  resetResult();
-  els.amount.value = '';
-
-  els.detected.textContent = platformChain || '—';
-
-  els.overlay.classList.add('show');
-  els.modal.classList.add('show');
-};
-
-window.closePonia = function() {
-  els.overlay.classList.remove('show');
-  els.modal.classList.remove('show');
-};
-
-els.quoteBtn.addEventListener('click', onQuote);
-
-const auto = getQueryParam('chain');
-if (auto) {
-  openPonia({ chain: auto });
+async function connectWalletConnect(){
+  const WalletConnectProvider = window.WalletConnectProvider.default;
+  const wcProvider = new WalletConnectProvider({
+    rpc: {
+      1: "https://rpc.ankr.com/eth",
+      137: "https://rpc.ankr.com/polygon",
+      56: "https://bsc-dataseed.binance.org/",
+    },
+  });
+  await wcProvider.enable();
+  providerEVM = new ethers.BrowserProvider(wcProvider);
+  signer = await providerEVM.getSigner();
+  walletType = 'walletconnect';
+  const addr = await signer.getAddress();
+  setStatus('Connected (WalletConnect) ' + addr);
+  log('wc connected', addr);
+  return addr;
 }
+
+async function connectPhantom(){
+  if(window.solana && window.solana.isPhantom){
+    solanaProvider = window.solana;
+    await solanaProvider.connect();
+    walletType = 'phantom';
+    setStatus('Connected Phantom ' + solanaProvider.publicKey.toString());
+    log('phantom connected', solanaProvider.publicKey.toString());
+    return solanaProvider.publicKey.toString();
+  } else {
+    throw new Error('Phantom not found');
+  }
+}
+
+async function connectAny(preferred){
+  try{
+    if(preferred === 'phantom'){
+      return await connectPhantom();
+    }
+    if(window.ethereum && (preferred === 'injected' || !preferred)){
+      return await connectInjectedEVM();
+    }
+    return await connectWalletConnect();
+  } catch(e){
+    log('connect error', e);
+    throw e;
+  }
+}
+
+async function getQuoteFromLIFI(params){
+  const query = new URLSearchParams(params).toString();
+  const url = `https://li.quest/v1/quote?${query}`;
+  setStatus('Fetching quote from LI.FI...');
+  const r = await fetch(url);
+  if(!r.ok){
+    const text = await r.text();
+    throw new Error('LI.FI error ' + r.status + ' ' + text);
+  }
+  const data = await r.json();
+  lastQuote = data;
+  setStatus('Quote received');
+  log('quote', data);
+  return data;
+}
+
+async function executeRoute(route){
+  if(!route) throw new Error('No route supplied');
+  setStatus('Executing route, steps: ' + (route.steps?.length || 0));
+
+  for(let i=0;i<route.steps.length;i++){
+    const step = route.steps[i];
+    log('step', i, step);
+    if(step.action && step.action.fromType === 'EVM' || step.chain?.toLowerCase && ['ethereum','polygon','bsc','arbitrum','optimism'].includes(String(step.chain).toLowerCase())){
+      const tx = step.tx;
+      if(!tx){
+        log('no tx in step (maybe native bridging or external). skipping.');
+        continue;
+      }
+      if(!signer){
+        throw new Error('No EVM signer connected');
+      }
+      const txReq = {
+        to: tx.to,
+        data: tx.data || '0x',
+        value: tx.value ? ethers.BigInt(tx.value) : undefined,
+        gasLimit: tx.gasLimit ? ethers.BigInt(tx.gasLimit) : undefined,
+      };
+      setStatus(`Sending tx on ${step.chain} -> ${txReq.to}`);
+      log('sending evm tx', txReq);
+      const txResponse = await signer.sendTransaction(txReq);
+      log('txResponse', txResponse);
+      setStatus('Tx sent: ' + txResponse.hash);
+      await txResponse.wait();
+      log('tx mined', txResponse.hash);
+    } else if(step.chain && String(step.chain).toLowerCase() === 'solana'){
+      if(!solanaProvider) throw new Error('No Solana wallet connected');
+      const raw = step.transaction;
+      if(!raw){
+        log('no solana tx in step, skipping');
+        continue;
+      }
+      const txBytes = Buffer.from(raw, 'base64');
+      const { Connection, Transaction } = solanaWeb3;
+      const resp = await solanaProvider.signAndSendTransaction({ serializedTransaction: txBytes });
+      log('solana resp', resp);
+    } else {
+      log('Unknown step kind, skipping', step);
+    }
+  }
+
+  setStatus('Route execution finished');
+}
+
+document.getElementById('connectBtn').addEventListener('click', async ()=>{
+  try{
+    const choice = prompt('connect with: injected | walletconnect | phantom (type one)');
+    await connectAny(choice || undefined);
+  } catch(err){
+    log('connect error', err.message || err);
+    setStatus('connect failed: ' + (err.message || err));
+  }
+});
+
+document.getElementById('getQuoteBtn').addEventListener('click', async ()=>{
+  try{
+    const fromChain = document.getElementById('fromChain').value;
+    const toChain   = document.getElementById('toChain').value;
+    const amount = (document.querySelector('input#amount') && document.querySelector('input#amount').value) || '100000000000000000';
+    const query = {
+      fromChain: fromChain,
+      toChain: toChain,
+      fromToken: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+      toToken: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+      fromAmount: amount
+    };
+    const quote = await getQuoteFromLIFI(query);
+    log('best route', quote);
+    alert('Quote received; see logs');
+  } catch(e){
+    log('quote error', e);
+    setStatus('Quote failed: ' + (e.message || e));
+  }
+});
+
+document.getElementById('executeBtn').addEventListener('click', async ()=>{
+  try{
+    if(!lastQuote) throw new Error('No quote in memory. Get quote first.');
+    const route = lastQuote.route || lastQuote.routes?.[0] || lastQuote;
+    if(!route) throw new Error('No route found in quote');
+    await executeRoute(route);
+    alert('Execution done. Check logs');
+  } catch(e){
+    log('execute error', e);
+    setStatus('Execution failed: ' + (e.message || e));
+  }
+});
