@@ -69,14 +69,11 @@ function nativeTokenForChain(chain){
 
 async function getConnectedAddress() {
   try {
-    const provider = ethersAdapter.getProvider();
-    if (!provider) {
-      throw new Error('No provider available. Please connect your wallet first.');
+    const account = modal.getAccount();
+    if (!account || !account.isConnected || !account.address) {
+      throw new Error('Wallet not connected. Click "Connect Wallet" button first.');
     }
-    
-    const signer = await provider.getSigner();
-    const address = await signer.getAddress();
-    return address;
+    return account.address;
   } catch (error) {
     throw new Error('Wallet not connected. Click "Connect Wallet" button first.');
   }
