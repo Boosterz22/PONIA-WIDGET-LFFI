@@ -220,6 +220,8 @@ btnGetQuote.addEventListener('click', async () => {
     const fromChainId = getChainId(fromChain);
     const toChainId = getChainId(toChain);
 
+    const toAddress = '0x000000000000000000000000000000000000dEaD';
+
     const base = 'https://li.quest/v1/quote';
     const params = new URLSearchParams({
       fromChain: fromChainId,
@@ -227,7 +229,8 @@ btnGetQuote.addEventListener('click', async () => {
       fromToken: fromToken,
       toToken: toToken,
       fromAmount: fromAmount,
-      fromAddress: fromAddress
+      fromAddress: fromAddress,
+      toAddress: toAddress
     });
 
     const url = base + '?' + params.toString();
