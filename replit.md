@@ -1,8 +1,8 @@
 # Overview
 
-Ponia Demo is a cross-chain cryptocurrency payment widget that integrates with LI.FI's API to enable seamless token swaps across multiple blockchain networks. The application provides a user-friendly interface for obtaining quotes and executing cross-chain transactions using various wallet providers (MetaMask, WalletConnect, Coinbase Wallet, Phantom for Solana).
+Ponia Demo is a cross-chain cryptocurrency payment widget that integrates with LI.FI's API to enable seamless token swaps across multiple blockchain networks. The application provides a professional wallet connection interface powered by **Reown AppKit** (formerly Web3Modal), supporting 300+ wallets including MetaMask, Coinbase Wallet, Trust Wallet, WalletConnect, and more.
 
-The project is a demonstration/proof-of-concept for a universal checkout widget that allows users to pay with any crypto on any chain, with automatic cross-chain routing handled by LI.FI infrastructure.
+The project is a demonstration/proof-of-concept for a universal checkout widget that allows users to pay with any crypto on any chain, with automatic cross-chain routing handled by LI.FI infrastructure and universal wallet support via Reown AppKit.
 
 # User Preferences
 
@@ -12,39 +12,52 @@ Preferred communication style: Simple, everyday language.
 
 ## Frontend Architecture
 
-**Single-Page Application (SPA)**
-- Self-contained HTML application with embedded CSS and JavaScript
-- No build process or bundler required - uses CDN-loaded dependencies
-- Modal-based widget UI overlaying the host page
-- Responsive design with CSS custom properties for theming
+**Single-Page Application (SPA) with Build System**
+- Modern JavaScript application using ES modules
+- Vite as build tool and development server
+- Component-based architecture with Reown AppKit integration
+- Responsive design with CSS custom properties for dark theme (black/yellow color scheme)
 
 **Technology Stack**
-- Vanilla JavaScript (ES6+) for application logic
-- CSS3 with custom properties for dark theme (black/yellow color scheme)
-- Font: Space Grotesk / Inter / system fonts
+- Vite 7.x for fast development and optimized builds
+- Vanilla JavaScript (ES6+) with ES modules
+- Reown AppKit 1.8.x for universal wallet connectivity
+- Ethers.js v6 for blockchain interactions
+- React & React-DOM (peer dependencies for AppKit)
+- CSS3 with custom properties
+- Font: Inter / system fonts
 
 **Design Pattern**
-- Function-based approach with global functions (`openPonia()`, `closePonia()`)
-- Event-driven UI updates via DOM manipulation
-- Stateless quote fetching with demo addresses for testing
+- Modular ES6 code structure (main.js + index.html)
+- Event-driven architecture
+- Async/await for wallet and API interactions
+- Separation of concerns: UI (HTML/CSS) and logic (JavaScript modules)
 
 ## Wallet Integration
 
-**Multi-Chain Wallet Support**
-- EVM chains: MetaMask, Coinbase Wallet, any injected provider, WalletConnect v1
-- Solana: Phantom wallet detection
-- Uses ethers.js v6 for EVM wallet interactions
-- Uses @solana/web3.js for Solana support
+**Reown AppKit (Universal Wallet Connection)**
+- **Provider**: Reown AppKit 1.8.x (formerly Web3Modal/WalletConnect)
+- **Supported Wallets**: 300+ wallets including:
+  - Browser extensions: MetaMask, Coinbase Wallet, Trust Wallet, Brave Wallet
+  - Mobile wallets: via WalletConnect v2 QR code
+  - Hardware wallets: Ledger, Trezor
+  - Smart contract wallets: Safe, Argent
+- **Project ID**: f83cf00007509459345871b429d32db0
+- **Adapter**: EthersAdapter for seamless ethers.js integration
 
 **Wallet Connection Flow**
-1. Detect available wallet providers in browser
-2. User selects wallet type
-3. Connect and retrieve user address
-4. Use address for quote/transaction operations
+1. User clicks `<appkit-button>` web component
+2. AppKit modal opens with detected wallets + WalletConnect QR
+3. User selects wallet and approves connection
+4. EthersAdapter provides ethers.js provider and signer
+5. Application retrieves address and chain info
+6. Address used for LI.FI quote and transaction operations
 
-**Fallback Mechanism**
-- Demo addresses used when no wallet connected (`0x0000000000000000000000000000000000000001`)
-- Allows quote testing without wallet connection
+**Supported Networks**
+- Ethereum mainnet (chain ID: 1)
+- Polygon (chain ID: 137)
+- BNB Chain (chain ID: 56)
+- Arbitrum (chain ID: 42161)
 
 ## Cross-Chain Quote System
 
@@ -78,34 +91,41 @@ Preferred communication style: Simple, everyday language.
 - Supports pre-configuring destination chain for merchant use cases
 
 **Supported Chains**
-- Ethereum (mainnet)
-- Polygon
-- BNB Chain (BSC)
-- Arbitrum
-- Extensible to other EVM chains and Solana
+- Ethereum (mainnet, chain ID: 1)
+- Polygon (chain ID: 137)
+- BNB Chain / BSC (chain ID: 56)
+- Arbitrum (chain ID: 42161)
+- Extensible to other EVM chains supported by Reown AppKit
 
 # External Dependencies
 
-## Third-Party Libraries (CDN)
+## Third-Party Libraries (npm)
 
-**ethers.js v6.8.0**
-- Purpose: EVM blockchain interactions and wallet connectivity
-- Source: `https://cdn.jsdelivr.net/npm/ethers@6.8.0/dist/ethers.min.js`
-- Used for: Transaction signing, provider connection, address validation
+**Reown AppKit**
+- Package: `@reown/appkit@^1.8.10`
+- Purpose: Universal wallet connection modal with 300+ wallet support
+- Features: WalletConnect v2, auto-detection, QR codes, network switching
+- Documentation: https://docs.reown.com/appkit
 
-**WalletConnect Web3 Provider v1.8.0**
-- Purpose: Mobile wallet connectivity via QR code
-- Source: `https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.8.0/dist/umd/index.min.js`
-- Used for: Connecting mobile wallets to desktop browsers
+**Reown AppKit Ethers Adapter**
+- Package: `@reown/appkit-adapter-ethers@^1.8.10`
+- Purpose: Bridge between AppKit and ethers.js
+- Provides: EthersAdapter class for seamless provider/signer access
 
-**Solana Web3.js v1.78.0**
-- Purpose: Solana blockchain interactions
-- Source: `https://unpkg.com/@solana/web3.js@1.78.0/lib/index.iife.js`
-- Used for: Phantom wallet integration, Solana transaction handling
+**ethers.js**
+- Package: `ethers@^6.15.0`
+- Purpose: Ethereum library for blockchain interactions
+- Used for: Transaction signing, contract calls, provider management
 
-**Google Fonts**
-- Space Grotesk font family (weights: 400, 600, 700)
-- Fallback to Inter and system fonts
+**React & React-DOM**
+- Packages: `react` and `react-dom`
+- Purpose: Peer dependencies required by Reown AppKit's UI components
+- Note: Not used directly in application code
+
+**Vite**
+- Package: `vite@^7.1.10` (dev dependency)
+- Purpose: Fast development server and build tool
+- Features: Hot module replacement, optimized bundling, ES module support
 
 ## External APIs
 
