@@ -4,10 +4,8 @@ import { mainnet, polygon, bsc, arbitrum } from '@reown/appkit/networks'
 
 const statusEl = document.getElementById('status');
 const out = document.getElementById('output');
-const btnGetQuote = document.getElementById('btnGetQuote');
-const btnConfirm = document.getElementById('btnConfirm');
+const btnSendTransfer = document.getElementById('btnSendTransfer');
 const platformInput = document.getElementById('platformChain');
-const recapEl = document.getElementById('recap');
 
 let lastQuote = null;
 let ethersAdapter = null;
@@ -78,15 +76,6 @@ function getChainName(chainId) {
   return names[chainId] || `Chain ${chainId}`;
 }
 
-function formatAmount(amount, decimals = 18) {
-  const val = BigInt(amount);
-  const divisor = BigInt(10 ** decimals);
-  const whole = val / divisor;
-  const frac = val % divisor;
-  const fracStr = frac.toString().padStart(decimals, '0').slice(0, 6);
-  return `${whole}.${fracStr}`;
-}
-
 async function getConnectedAddress() {
   try {
     const account = modal.getAccount();
@@ -99,17 +88,14 @@ async function getConnectedAddress() {
   }
 }
 
-btnGetQuote.addEventListener('click', async () => {
+btnSendTransfer.addEventListener('click', async () => {
   try {
-    recapEl.style.display = 'none';
-    statusEl.textContent = 'Building quote...';
+    statusEl.textContent = 'Preparing transfer...';
     const fromChain = document.getElementById('fromChain').value;
     const toChain = document.getElementById('toChain').value;
     const readableAmount = document.getElementById('amount').value;
 
     const fromAddress = await getConnectedAddress();
-    statusEl.textContent = 'Connected: ' + fromAddress.slice(0,6) + '...' + fromAddress.slice(-4);
-
     const fromAmount = toSmallestUnit(fromChain, readableAmount);
     const fromToken = nativeTokenForChain(fromChain);
     const toToken = nativeTokenForChain(toChain);
@@ -130,60 +116,25 @@ btnGetQuote.addEventListener('click', async () => {
 
     const url = base + '?' + params.toString();
 
-    statusEl.textContent = 'Fetching quote from LI.FI...';
-    log('fetching quote url', url);
+    statusEl.textContent = 'Getting best route...';
+    log('Fetching quote:', url);
 
     const r = await fetch(url);
     if (!r.ok) {
       const txt = await r.text();
       throw new Error('LI.FI error ' + r.status + ': ' + txt);
     }
-    const json = await r.json();
-    lastQuote = json;
-    
-    displayRecap(json, fromChain, toChain, readableAmount);
-    
-    statusEl.textContent = 'Quote ready! Review and confirm below.';
-    log(json);
-    out.textContent = JSON.stringify(json, null, 2);
+    const quote = await r.json();
+    log('Quote received:', quote);
+    out.textContent = JSON.stringify(quote, null, 2);
 
-  } catch (err) {
-    statusEl.textContent = 'Quote failed: ' + (err.message || err);
-    log('quote failed', err);
-    recapEl.style.display = 'none';
-  }
-});
-
-function displayRecap(quote, fromChain, toChain, readableAmount) {
-  const fromChainId = getChainId(fromChain);
-  const toChainId = getChainId(toChain);
-  const fromToken = quote.action.fromToken.symbol || 'ETH';
-  const toToken = quote.action.toToken.symbol || 'POL';
-  const toAmount = formatAmount(quote.estimate.toAmount, quote.action.toToken.decimals);
-  const bridge = quote.toolDetails?.name || 'LI.FI';
-  const duration = quote.estimate.executionDuration || 0;
-
-  document.getElementById('recapFrom').textContent = getChainName(fromChainId);
-  document.getElementById('recapTo').textContent = getChainName(toChainId);
-  document.getElementById('recapSend').textContent = `${readableAmount} ${fromToken}`;
-  document.getElementById('recapReceive').textContent = `~${toAmount} ${toToken}`;
-  document.getElementById('recapBridge').textContent = bridge;
-  document.getElementById('recapTime').textContent = `~${duration}s`;
-
-  recapEl.style.display = 'block';
-}
-
-btnConfirm.addEventListener('click', async () => {
-  try {
-    if (!lastQuote) throw new Error('No quote available. Get a quote first.');
-    if (!lastQuote.transactionRequest) {
+    if (!quote.transactionRequest) {
       throw new Error('No transaction data in quote. Please try again.');
     }
 
-    const txReq = lastQuote.transactionRequest;
-    const toChainName = getChainName(lastQuote.action.toChainId);
-    
-    statusEl.textContent = 'Preparing transaction...';
+    const txReq = quote.transactionRequest;
+    const toChainName = getChainName(toChainId);
+    const toTokenSymbol = quote.action.toToken.symbol || 'tokens';
 
     const provider = ethersAdapter.getProvider();
     if (!provider) {
@@ -200,25 +151,24 @@ btnConfirm.addEventListener('click', async () => {
       gasPrice: txReq.gasPrice
     };
 
-    statusEl.textContent = '⏳ Please confirm the transaction in your wallet...';
+    statusEl.textContent = '⏳ Please confirm in your wallet...';
     const txResponse = await signer.sendTransaction(tx);
     
     statusEl.textContent = `✅ Transaction submitted! Hash: ${txResponse.hash.slice(0,10)}...`;
     log('Transaction hash:', txResponse.hash);
 
-    statusEl.textContent = '⏳ Processing your transfer... This may take a few seconds.';
+    statusEl.textContent = '⏳ Processing transfer...';
     await txResponse.wait();
     
-    statusEl.textContent = `🎉 Transfer complete! You'll receive your tokens on ${toChainName} shortly.`;
-    recapEl.style.display = 'none';
+    statusEl.textContent = `🎉 Transfer complete! You'll receive your ${toTokenSymbol} on ${toChainName} shortly.`;
 
-  } catch (e) {
-    if (e.code === 'ACTION_REJECTED') {
-      statusEl.textContent = 'Transaction cancelled by user.';
+  } catch (err) {
+    if (err.code === 'ACTION_REJECTED') {
+      statusEl.textContent = '❌ Transaction cancelled.';
     } else {
-      statusEl.textContent = 'Transfer failed: ' + (e.message || e);
+      statusEl.textContent = 'Transfer failed: ' + (err.message || err);
     }
-    log('Execute error:', e);
+    log('Transfer error:', err);
   }
 });
 

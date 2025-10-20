@@ -6,11 +6,12 @@ The project is a demonstration/proof-of-concept for a universal checkout widget 
 
 # Recent Changes (October 20, 2025)
 
-- ✅ **Transaction Confirmation UI**: Added transaction summary/recap interface
-- ✅ **Real Address Support**: Now uses connected wallet address for both fromAddress and toAddress (no more dummy addresses)
-- ✅ **Improved User Flow**: Quote → Review Summary → Confirm Transfer
+- ✅ **One-Click Transfer**: Simplified to single "Send Transfer" button - no manual quote step
+- ✅ **Real Address Support**: Uses connected wallet address for both fromAddress and toAddress
+- ✅ **Ultra-Fast UX**: Automatic quote fetching + immediate transaction execution
 - ✅ **LI.FI Transaction Execution**: Integrated proper transaction submission using LI.FI's transactionRequest data
-- ✅ **User Feedback**: Added clear status messages and emoji indicators for transaction states
+- ✅ **User Feedback**: Clear status messages with emoji indicators for transaction states
+- ✅ **Streamlined Flow**: Connect wallet → Send Transfer → Done (2 clicks total)
 
 # User Preferences
 
@@ -96,16 +97,20 @@ Preferred communication style: Simple, everyday language.
   - Bridge protocol used
   - Estimated execution time
 
-**Transaction Execution Flow**
-1. User clicks "Get Quote" after connecting wallet
-2. LI.FI returns quote with `transactionRequest` object
-3. Application displays transaction summary/recap
-4. User reviews details (chains, amounts, bridge, time)
-5. User clicks "Confirm Transfer" button
-6. Wallet prompts for transaction signature
-7. Transaction submitted to blockchain
-8. Status updates: submitted → processing → complete
-9. Success message with destination chain info
+**Transaction Execution Flow (One-Click)**
+1. User connects wallet via Reown AppKit button
+2. User clicks "Send Transfer" button
+3. Application fetches LI.FI quote automatically in background
+4. Transaction immediately prompted in wallet for signature
+5. Transaction submitted to blockchain
+6. Status updates: preparing → getting route → confirm wallet → submitted → processing → complete
+7. Success message with destination chain info
+
+**User Experience**
+- Total clicks: 2 (Connect Wallet + Send Transfer)
+- No manual quote review step for speed
+- Quote fetching happens automatically behind the scenes
+- Transaction executes immediately after quote is retrieved
 
 ## Platform Chain Detection
 
