@@ -1,3 +1,15 @@
+Parfait — je vais tout te donner dans un seul coup : la page HTML complète (style + JS) qui corrige les erreurs que tu avais (notamment fromAddress manquant), détecte automatiquement Phantom (Solana) et MetaMask (EVM), convertit correctement les montants selon la chaîne, demande un quote à LI.FI et affiche la route retournée.
+Je t’explique aussi les étapes suivantes (exécution du route) et comment tester pas-à-pas.
+
+Important : ce code ne signe pas automatiquement les transactions cross-chain pour toi (l’exécution complète d’un route LI.FI peut nécessiter leur Widget ou le SDK côté client/serveur). Ici on s’assure d’avoir un quote valide et toutes les données nécessaires pour exécuter ensuite la route via le widget/SDK.
+Tu peux utiliser ce code directement dans ton Replit.
+
+⸻
+
+1) Fichier à copier-coller (index.html)
+
+Crée un projet web statique (HTML/CSS/JS). Copie ce fichier index.html (tout dans un seul fichier pour la simplicité).
+
 <!doctype html>
 <html lang="fr">
 <head>
@@ -80,6 +92,15 @@
   </div>
 
 <script>
+/*
+  Demo JS:
+  - detect wallets (MetaMask / Phantom)
+  - build LI.FI quote query with required fromAddress
+  - convert user amount to smallest unit depending on chain
+  - fetch quote and show results
+  - NOTE: executing a full cross-chain route is not done automatically here.
+*/
+
 const statusEl = document.getElementById('status');
 const out = document.getElementById('output');
 const btnConnect = document.getElementById('btnConnect');
@@ -87,10 +108,10 @@ const btnGetQuote = document.getElementById('btnGetQuote');
 const btnExecute = document.getElementById('btnExecute');
 const platformInput = document.getElementById('platformChain');
 
-let walletType = null;
-let evmAddress = null;
-let solanaProvider = null;
-let phantomAddress = null;
+let walletType = null;        // 'metamask' | 'phantom' | null
+let evmAddress = null;        // 0x...
+let solanaProvider = null;    // window.solana
+let phantomAddress = null;    // base58 address
 let lastQuote = null;
 
 function log(...args){
@@ -98,11 +119,16 @@ function log(...args){
   out.textContent = args.map(a => typeof a === 'object' ? JSON.stringify(a, null, 2) : String(a)).join(' ');
 }
 
+// small helper: convert human amount to smallest unit (string)
 function toSmallestUnit(chain, readableAmount){
+  // readableAmount is string like "0.01"
   if(!readableAmount) return "0";
 
+  // Use BigInt for integer math
   const ra = String(readableAmount).trim();
   if(chain === 'solana'){
+    // SOL decimals = 9 -> lamports
+    // lamports = amount * 1e9
     const parts = ra.split('.');
     const whole = BigInt(parts[0] || 0);
     const frac = parts[1] || '';
@@ -110,6 +136,7 @@ function toSmallestUnit(chain, readableAmount){
     const val = whole * BigInt(1_000_000_000) + BigInt(fracPadded || '0');
     return val.toString();
   } else {
+    // assume EVM-like chain with 18 decimals
     const parts = ra.split('.');
     const whole = BigInt(parts[0] || 0);
     const frac = parts[1] || '';
@@ -119,19 +146,27 @@ function toSmallestUnit(chain, readableAmount){
   }
 }
 
+// map default fromToken for chain (native)
 function nativeTokenForChain(chain){
-  if(chain === 'solana') return 'So11111111111111111111111111111111111111112';
+  if(chain === 'solana') return 'So11111111111111111111111111111111111111112'; // wrapped SOL token (commonly used)
+  // EVM native placeholder:
   return '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 }
 
+// try detect platform chain from URL or from input
 function autoDetectPlatform(){
+  // example: ?chain=polygon in URL
   const url = new URL(location.href);
   const chainParam = url.searchParams.get('chain');
   if(chainParam){ platformInput.value = chainParam; return; }
+
+  // else leave empty for manual input
 }
 
+// connect functions
 async function connectMetaMask(){
   if(!window.ethereum) throw new Error('MetaMask not found');
+  // request accounts
   const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
   if(accounts && accounts[0]){
     evmAddress = accounts[0];
@@ -145,7 +180,8 @@ async function connectMetaMask(){
 async function connectPhantom(){
   if(window.solana && window.solana.isPhantom){
     solanaProvider = window.solana;
-    const res = await solanaProvider.connect();
+    // request connect
+    const res = await solanaProvider.connect(); // will open modal in phantom
     phantomAddress = solanaProvider.publicKey.toString();
     walletType = 'phantom';
     statusEl.textContent = 'Connected Phantom: ' + phantomAddress;
@@ -156,8 +192,10 @@ async function connectPhantom(){
   }
 }
 
+// unified connect button
 btnConnect.addEventListener('click', async () => {
   try{
+    // choose connect depending on selected fromChain
     const fromChain = document.getElementById('fromChain').value;
     statusEl.textContent = 'Connecting...';
     if(fromChain === 'solana'){
@@ -171,41 +209,51 @@ btnConnect.addEventListener('click', async () => {
   }
 });
 
+// Get quote button
 btnGetQuote.addEventListener('click', async () => {
   try{
     statusEl.textContent = 'Building quote...';
+    // ensure we have fromAddress
     const fromChain = document.getElementById('fromChain').value;
     const toChain = document.getElementById('toChain').value;
     const readableAmount = document.getElementById('amount').value;
 
+    // if not connected, attempt to auto connect minimal
     if(fromChain === 'solana'){
       if(!phantomAddress){
+        // try to connect Phantom silently
         if(window.solana && window.solana.isPhantom){
-          try { await connectPhantom(); } catch(e){ }
+          try { await connectPhantom(); } catch(e){ /* user may reject */ }
         }
       }
     } else {
       if(!evmAddress){
         if(window.ethereum){
-          try { await connectMetaMask(); } catch(e){ }
+          try { await connectMetaMask(); } catch(e){ /* user may reject */ }
         }
       }
     }
 
+    // Build fromAddress
     let fromAddress;
     if(walletType === 'phantom' && phantomAddress){
       fromAddress = phantomAddress;
     } else if(walletType === 'metamask' && evmAddress){
       fromAddress = evmAddress;
     } else {
+      // no wallet connected: show error and stop
       throw new Error('Wallet not connected. Click Connect Wallet first and accept.');
     }
 
+    // convert amount to smallest unit
     const fromAmount = toSmallestUnit(fromChain, readableAmount);
 
+    // choose fromToken and toToken defaults
     const fromToken = nativeTokenForChain(fromChain);
     const toToken = nativeTokenForChain(toChain);
 
+    // Construct LI.FI quote URL
+    // Note: li.quest/v1/quote is the documented endpoint
     const base = 'https://li.quest/v1/quote';
     const params = new URLSearchParams({
       fromChain: fromChain,
@@ -238,14 +286,24 @@ btnGetQuote.addEventListener('click', async () => {
   }
 });
 
+// Execute route (demo)
 btnExecute.addEventListener('click', async () => {
+  // WARNING: executing a cross-chain route fully is non-trivial.
+  // Here we provide a minimal demo: if LI.FI returns a single step EVM transaction
+  // we show how to send it using window.ethereum. For Solana steps you'd need to
+  // use phantom.signTransaction etc. Best path for full integration is to use
+  // LI.FI widget or SDK in production.
   try{
     if(!lastQuote) throw new Error('No quote in memory. Get quote first.');
     statusEl.textContent = 'Preparing to execute route (demo)...';
 
+    // Find an onChain transaction step in the route
+    // LI.FI route structure: route.steps[*].transactions[*] ...
+    // We'll scan for a step with a 'transactionRequest' or 'txRequest' for EVM.
     let found = null;
     for(const step of lastQuote.steps || []){
       if(step.calls && step.calls.length){
+        // some steps include calls (EVM)
         for(const call of step.calls){
           if(call.to && call.data && call.value !== undefined){
             found = { step, call };
@@ -257,20 +315,24 @@ btnExecute.addEventListener('click', async () => {
     }
 
     if(!found){
+      // fallback: just display the route and tell user to use LI.FI widget / SDK
       statusEl.textContent = 'No simple EVM tx found — use LI.FI widget/SDK to execute full route.';
       log('execute: route details', lastQuote);
       return;
     }
 
+    // If we have an EVM call and user has MetaMask connected -> sendTransaction
     if(walletType !== 'metamask' || !evmAddress){
       throw new Error('Detected EVM transaction but MetaMask not connected.');
     }
 
     const call = found.call;
+    // Prepare tx for metamask
     const tx = {
       to: call.to,
       data: call.data,
       value: call.value ? '0x' + BigInt(call.value).toString(16) : '0x0',
+      // chainId may be required by MetaMask, but omitted here for simplicity
     };
 
     statusEl.textContent = 'Sending transaction via MetaMask...';
@@ -284,8 +346,10 @@ btnExecute.addEventListener('click', async () => {
   }
 });
 
+// auto detect platform chain
 autoDetectPlatform();
 
+// convenience: detect and show if Phantom/MetaMask available
 (function detectWalletsOnLoad(){
   let info = 'Ready.';
   if(window.ethereum) info += ' MetaMask available.';
@@ -296,3 +360,6 @@ autoDetectPlatform();
 </script>
 </body>
 </html>
+
+
+
