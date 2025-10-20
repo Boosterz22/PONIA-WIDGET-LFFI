@@ -119,6 +119,17 @@ function toSmallestUnit(chain, readableAmount){
   }
 }
 
+function getChainId(chainName){
+  const chainMap = {
+    'ethereum': 1,
+    'polygon': 137,
+    'bsc': 56,
+    'arbitrum': 42161,
+    'solana': 'SOL'
+  };
+  return chainMap[chainName] || chainName;
+}
+
 function nativeTokenForChain(chain){
   if(chain === 'solana') return 'So11111111111111111111111111111111111111112';
   return '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
@@ -206,10 +217,13 @@ btnGetQuote.addEventListener('click', async () => {
     const fromToken = nativeTokenForChain(fromChain);
     const toToken = nativeTokenForChain(toChain);
 
+    const fromChainId = getChainId(fromChain);
+    const toChainId = getChainId(toChain);
+
     const base = 'https://li.quest/v1/quote';
     const params = new URLSearchParams({
-      fromChain: fromChain,
-      toChain: toChain,
+      fromChain: fromChainId,
+      toChain: toChainId,
       fromToken: fromToken,
       toToken: toToken,
       fromAmount: fromAmount,
