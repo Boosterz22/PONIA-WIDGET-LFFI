@@ -5,8 +5,9 @@ import { mainnet, polygon, bsc, arbitrum } from '@reown/appkit/networks'
 const statusEl = document.getElementById('status');
 const out = document.getElementById('output');
 const btnGetQuote = document.getElementById('btnGetQuote');
-const btnExecute = document.getElementById('btnExecute');
+const btnConfirm = document.getElementById('btnConfirm');
 const platformInput = document.getElementById('platformChain');
+const recapEl = document.getElementById('recap');
 
 let lastQuote = null;
 let ethersAdapter = null;
@@ -67,6 +68,25 @@ function nativeTokenForChain(chain){
   return '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
 }
 
+function getChainName(chainId) {
+  const names = {
+    1: 'Ethereum',
+    137: 'Polygon',
+    56: 'BNB Chain',
+    42161: 'Arbitrum'
+  };
+  return names[chainId] || `Chain ${chainId}`;
+}
+
+function formatAmount(amount, decimals = 18) {
+  const val = BigInt(amount);
+  const divisor = BigInt(10 ** decimals);
+  const whole = val / divisor;
+  const frac = val % divisor;
+  const fracStr = frac.toString().padStart(decimals, '0').slice(0, 6);
+  return `${whole}.${fracStr}`;
+}
+
 async function getConnectedAddress() {
   try {
     const account = modal.getAccount();
@@ -81,6 +101,7 @@ async function getConnectedAddress() {
 
 btnGetQuote.addEventListener('click', async () => {
   try {
+    recapEl.style.display = 'none';
     statusEl.textContent = 'Building quote...';
     const fromChain = document.getElementById('fromChain').value;
     const toChain = document.getElementById('toChain').value;
@@ -94,7 +115,7 @@ btnGetQuote.addEventListener('click', async () => {
     const toToken = nativeTokenForChain(toChain);
     const fromChainId = getChainId(fromChain);
     const toChainId = getChainId(toChain);
-    const toAddress = '0x000000000000000000000000000000000000dEaD';
+    const toAddress = fromAddress;
 
     const base = 'https://li.quest/v1/quote';
     const params = new URLSearchParams({
@@ -119,39 +140,50 @@ btnGetQuote.addEventListener('click', async () => {
     }
     const json = await r.json();
     lastQuote = json;
-    statusEl.textContent = 'Quote fetched successfully!';
+    
+    displayRecap(json, fromChain, toChain, readableAmount);
+    
+    statusEl.textContent = 'Quote ready! Review and confirm below.';
     log(json);
     out.textContent = JSON.stringify(json, null, 2);
 
   } catch (err) {
     statusEl.textContent = 'Quote failed: ' + (err.message || err);
     log('quote failed', err);
+    recapEl.style.display = 'none';
   }
 });
 
-btnExecute.addEventListener('click', async () => {
+function displayRecap(quote, fromChain, toChain, readableAmount) {
+  const fromChainId = getChainId(fromChain);
+  const toChainId = getChainId(toChain);
+  const fromToken = quote.action.fromToken.symbol || 'ETH';
+  const toToken = quote.action.toToken.symbol || 'POL';
+  const toAmount = formatAmount(quote.estimate.toAmount, quote.action.toToken.decimals);
+  const bridge = quote.toolDetails?.name || 'LI.FI';
+  const duration = quote.estimate.executionDuration || 0;
+
+  document.getElementById('recapFrom').textContent = getChainName(fromChainId);
+  document.getElementById('recapTo').textContent = getChainName(toChainId);
+  document.getElementById('recapSend').textContent = `${readableAmount} ${fromToken}`;
+  document.getElementById('recapReceive').textContent = `~${toAmount} ${toToken}`;
+  document.getElementById('recapBridge').textContent = bridge;
+  document.getElementById('recapTime').textContent = `~${duration}s`;
+
+  recapEl.style.display = 'block';
+}
+
+btnConfirm.addEventListener('click', async () => {
   try {
-    if (!lastQuote) throw new Error('No quote in memory. Get quote first.');
-    statusEl.textContent = 'Preparing to execute route...';
-
-    let found = null;
-    for (const step of lastQuote.steps || []) {
-      if (step.calls && step.calls.length) {
-        for (const call of step.calls) {
-          if (call.to && call.data && call.value !== undefined) {
-            found = { step, call };
-            break;
-          }
-        }
-      }
-      if (found) break;
+    if (!lastQuote) throw new Error('No quote available. Get a quote first.');
+    if (!lastQuote.transactionRequest) {
+      throw new Error('No transaction data in quote. Please try again.');
     }
 
-    if (!found) {
-      statusEl.textContent = 'No simple EVM tx found — use LI.FI widget/SDK to execute full route.';
-      log('execute: route details', lastQuote);
-      return;
-    }
+    const txReq = lastQuote.transactionRequest;
+    const toChainName = getChainName(lastQuote.action.toChainId);
+    
+    statusEl.textContent = 'Preparing transaction...';
 
     const provider = ethersAdapter.getProvider();
     if (!provider) {
@@ -159,26 +191,34 @@ btnExecute.addEventListener('click', async () => {
     }
 
     const signer = await provider.getSigner();
-    const call = found.call;
     
     const tx = {
-      to: call.to,
-      data: call.data,
-      value: call.value ? BigInt(call.value) : 0n
+      to: txReq.to,
+      data: txReq.data,
+      value: txReq.value || '0x0',
+      gasLimit: txReq.gasLimit,
+      gasPrice: txReq.gasPrice
     };
 
-    statusEl.textContent = 'Sending transaction via wallet...';
+    statusEl.textContent = '⏳ Please confirm the transaction in your wallet...';
     const txResponse = await signer.sendTransaction(tx);
-    statusEl.textContent = 'Transaction submitted: ' + txResponse.hash;
-    log('txHash', txResponse.hash);
+    
+    statusEl.textContent = `✅ Transaction submitted! Hash: ${txResponse.hash.slice(0,10)}...`;
+    log('Transaction hash:', txResponse.hash);
 
-    statusEl.textContent = 'Waiting for confirmation...';
+    statusEl.textContent = '⏳ Processing your transfer... This may take a few seconds.';
     await txResponse.wait();
-    statusEl.textContent = 'Transaction confirmed! Hash: ' + txResponse.hash;
+    
+    statusEl.textContent = `🎉 Transfer complete! You'll receive your tokens on ${toChainName} shortly.`;
+    recapEl.style.display = 'none';
 
   } catch (e) {
-    statusEl.textContent = 'Execute failed: ' + (e.message || e);
-    log('execute error', e);
+    if (e.code === 'ACTION_REJECTED') {
+      statusEl.textContent = 'Transaction cancelled by user.';
+    } else {
+      statusEl.textContent = 'Transfer failed: ' + (e.message || e);
+    }
+    log('Execute error:', e);
   }
 });
 

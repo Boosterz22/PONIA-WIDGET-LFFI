@@ -27,6 +27,13 @@
   .controls { margin-top:14px; display:flex; gap:10px; flex-wrap:wrap; align-items: center; }
   .status { margin-top:12px; color:var(--muted); font-size:13px; }
   footer { text-align:center; margin-top:18px; color:var(--muted); font-size:13px; }
+  .recap { background:#1a1a1c; border:1px solid rgba(255,215,63,.15); border-radius:10px; padding:16px; margin-top:16px; display:none; }
+  .recap h3 { margin:0 0 12px 0; color:var(--accent); font-size:15px; }
+  .recap-row { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,.05); }
+  .recap-row:last-child { border-bottom:none; }
+  .recap-label { color:var(--muted); font-size:13px; }
+  .recap-value { color:var(--text); font-weight:600; }
+  .hidden { display:none !important; }
 </style>
 </head>
 <body>
@@ -64,10 +71,38 @@
       <div class="controls">
         <appkit-button></appkit-button>
         <button id="btnGetQuote">Get Quote</button>
-        <button id="btnExecute">(Optional) Execute Route</button>
       </div>
 
       <div class="status" id="status">Initializing Reown AppKit...</div>
+
+      <div class="recap" id="recap">
+        <h3>🔄 Transaction Summary</h3>
+        <div class="recap-row">
+          <span class="recap-label">From</span>
+          <span class="recap-value" id="recapFrom">-</span>
+        </div>
+        <div class="recap-row">
+          <span class="recap-label">To</span>
+          <span class="recap-value" id="recapTo">-</span>
+        </div>
+        <div class="recap-row">
+          <span class="recap-label">You send</span>
+          <span class="recap-value" id="recapSend">-</span>
+        </div>
+        <div class="recap-row">
+          <span class="recap-label">You receive (estimated)</span>
+          <span class="recap-value" id="recapReceive">-</span>
+        </div>
+        <div class="recap-row">
+          <span class="recap-label">Bridge</span>
+          <span class="recap-value" id="recapBridge">-</span>
+        </div>
+        <div class="recap-row">
+          <span class="recap-label">Estimated time</span>
+          <span class="recap-value" id="recapTime">-</span>
+        </div>
+        <button id="btnConfirm" style="width:100%; margin-top:16px; padding:14px;">Confirm Transfer</button>
+      </div>
 
       <div style="margin-top:14px">
         <div class="muted">Quote / Route JSON</div>

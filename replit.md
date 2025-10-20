@@ -4,6 +4,14 @@ Ponia Demo is a cross-chain cryptocurrency payment widget that integrates with L
 
 The project is a demonstration/proof-of-concept for a universal checkout widget that allows users to pay with any crypto on any chain, with automatic cross-chain routing handled by LI.FI infrastructure and universal wallet support via Reown AppKit.
 
+# Recent Changes (October 20, 2025)
+
+- ✅ **Transaction Confirmation UI**: Added transaction summary/recap interface
+- ✅ **Real Address Support**: Now uses connected wallet address for both fromAddress and toAddress (no more dummy addresses)
+- ✅ **Improved User Flow**: Quote → Review Summary → Confirm Transfer
+- ✅ **LI.FI Transaction Execution**: Integrated proper transaction submission using LI.FI's transactionRequest data
+- ✅ **User Feedback**: Added clear status messages and emoji indicators for transaction states
+
 # User Preferences
 
 Preferred communication style: Simple, everyday language.
@@ -82,6 +90,22 @@ Preferred communication style: Simple, everyday language.
 - Extract estimated output amount
 - Display ETA and bridging protocol
 - Error handling with user-friendly messages
+- Transaction summary recap with clear details:
+  - Source and destination chains
+  - Token amounts (send/receive)
+  - Bridge protocol used
+  - Estimated execution time
+
+**Transaction Execution Flow**
+1. User clicks "Get Quote" after connecting wallet
+2. LI.FI returns quote with `transactionRequest` object
+3. Application displays transaction summary/recap
+4. User reviews details (chains, amounts, bridge, time)
+5. User clicks "Confirm Transfer" button
+6. Wallet prompts for transaction signature
+7. Transaction submitted to blockchain
+8. Status updates: submitted → processing → complete
+9. Success message with destination chain info
 
 ## Platform Chain Detection
 
