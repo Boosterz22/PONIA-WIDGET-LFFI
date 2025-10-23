@@ -1,14 +1,64 @@
 # Overview
 
-PONIA is a cross-chain cryptocurrency payment widget designed for Web3 gaming and gambling platforms. The widget enables instant deposits/withdrawals across multiple blockchains, allowing users to top-up accounts with any crypto from any supported chain without external conversions.
+PONIA is a cross-chain cryptocurrency payment widget designed for Web3 applications including gaming dApps, NFT marketplaces, crypto casinos, and DeFi platforms. The widget enables instant deposits/withdrawals across multiple blockchains, allowing users to top-up accounts with any crypto from any supported chain without external conversions.
 
 **Business Model:** 1.5% fee on every cross-chain transaction, providing sustainable revenue from day one.
 
 The application provides a professional wallet connection interface powered by **Reown AppKit** (300+ wallets) and ultra-fast cross-chain bridging via **Across Protocol** (1-3 minute transfers).
 
-**Target Market:** Small-to-medium crypto casinos and gaming sites looking for seamless cross-chain payment integration.
+**Target Market:** Gaming dApps, NFT marketplaces, crypto casinos, DeFi platforms - any Web3 app needing cross-chain payment functionality.
 
 # Recent Changes (October 23, 2025)
+
+## 🏗️ MULTI-PAGE ARCHITECTURE COMPLETE (Oct 23, 2025 - Latest)
+
+**Professional 3-page structure implemented:**
+
+**📁 Project Structure:**
+```
+ponia/
+├── index.html          → Landing page (/)
+├── widget/
+│   └── index.html      → Widget demo (/widget)
+├── docs/
+│   └── index.html      → Documentation (/docs)
+├── src/
+│   └── widget.js       → Widget code
+└── vite.config.js      → Multi-page routing
+```
+
+**✅ Landing Page (/):**
+- Modern hero section with animated gradient background
+- Stats bar: 8 blockchains | 1.5% fees | 1-3 min speed
+- Features section highlighting speed, multi-chain, stablecoins, simple integration
+- Use cases grid: Gaming dApps, NFT Marketplaces, Crypto Casinos, DeFi
+- Supported blockchains showcase with logos
+- CTA buttons: "Try Live Demo" → /widget | "Read Documentation" → /docs
+- Professional animations with CSS (fade-in, hover effects)
+
+**✅ Widget Page (/widget):**
+- Full functional widget (previously at /)
+- Top navigation bar with links to Home and Docs
+- All existing features: token selector, route visualization, fee preview
+- Logo-based chain selection, USDC/USDT support
+
+**✅ Documentation Page (/docs):**
+- **Sidebar navigation** with sticky positioning
+- **Sections:** Introduction, Quick Start, Use Cases, Configuration, Examples, Supported Chains, Fees, FAQ
+- **Quick Start:** Copy-paste iframe code with "Copy" button
+- **Use Cases:** Gaming dApps, NFT Marketplaces, Crypto Casinos, DeFi (detailed cards)
+- **Configuration:** URL parameters table (chain, token)
+- **Integration Examples:** React, Vue.js, Plain HTML with syntax highlighting
+- **Supported Chains:** Visual grid of 8 blockchains with logos
+- **Fee Structure:** Transparent breakdown (1.5% PONIA + ~0.1% bridge)
+- **FAQ:** 7+ common questions answered
+- Professional GitBook-style design with code blocks and copy buttons
+
+**Business Impact:**
+- ✅ Professional presentation for investor demos
+- ✅ Self-service documentation for developers
+- ✅ Clear separation: marketing (landing) vs. functionality (widget) vs. technical (docs)
+- ✅ Ready for custom domain deployment (ponia.io)
 
 ## 💰 USDC/USDT Token Selector Live (Oct 23, 2025 - Latest Update)
 
