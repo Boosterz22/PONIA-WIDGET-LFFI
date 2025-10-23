@@ -148,7 +148,18 @@ function initializeUI() {
     const config = CHAIN_CONFIG[chainKey];
     const button = document.createElement('button');
     button.className = 'chain-btn';
-    button.textContent = config.name;
+    
+    // Add logo
+    const logo = document.createElement('img');
+    logo.src = config.logo;
+    logo.alt = config.name;
+    logo.className = 'chain-btn-logo';
+    button.appendChild(logo);
+    
+    // Add text
+    const text = document.createTextNode(config.name);
+    button.appendChild(text);
+    
     button.onclick = () => selectSourceChain(chainKey);
     
     if (chainKey === selectedSourceChain) {
@@ -163,12 +174,16 @@ function initializeUI() {
   selectedSourceChain = availableChains[0];
   updateSourceChainSelection();
   updateTokenAvailability();
+  updateRouteVisual();
+  updateFeePreview();
 }
 
 function selectSourceChain(chainKey) {
   selectedSourceChain = chainKey;
   updateSourceChainSelection();
   updateTokenAvailability();
+  updateRouteVisual();
+  updateFeePreview();
 }
 
 function updateSourceChainSelection() {
@@ -185,7 +200,65 @@ window.selectToken = function(tokenType) {
   selectedToken = tokenType;
   updateTokenSelection();
   updateAmountPlaceholder();
+  updateFeePreview();
 }
+
+// Update route visualization
+function updateRouteVisual() {
+  const routeVisual = document.getElementById('routeVisual');
+  if (!routeVisual) return;
+  
+  const sourceConfig = CHAIN_CONFIG[selectedSourceChain];
+  const destConfig = CHAIN_CONFIG[destinationChain];
+  
+  document.getElementById('routeSourceLogo').src = sourceConfig.logo;
+  document.getElementById('routeSourceName').textContent = sourceConfig.name;
+  document.getElementById('routeDestLogo').src = destConfig.logo;
+  document.getElementById('routeDestName').textContent = destConfig.name;
+  
+  routeVisual.classList.remove('hidden');
+}
+
+// Update fee preview
+function updateFeePreview() {
+  const feePreview = document.getElementById('feePreview');
+  if (!feePreview) return;
+  
+  const amount = document.getElementById('amountInput').value;
+  if (!amount || parseFloat(amount) <= 0) {
+    feePreview.classList.add('hidden');
+    return;
+  }
+  
+  const sourceConfig = CHAIN_CONFIG[selectedSourceChain];
+  let tokenSymbol;
+  
+  if (selectedToken === 'native') {
+    tokenSymbol = sourceConfig.symbol;
+  } else if (selectedToken === 'usdc') {
+    tokenSymbol = 'USDC';
+  } else if (selectedToken === 'usdt') {
+    tokenSymbol = 'USDT';
+  }
+  
+  const poniaFee = (parseFloat(amount) * 0.015).toFixed(selectedToken === 'native' ? 6 : 2);
+  const bridgeFee = '~0.1%';
+  const estimatedTime = '1-3 min';
+  
+  document.getElementById('previewPoniaFee').textContent = `${poniaFee} ${tokenSymbol}`;
+  document.getElementById('previewBridgeFee').textContent = bridgeFee;
+  document.getElementById('previewTime').textContent = estimatedTime;
+  
+  feePreview.classList.remove('hidden');
+}
+
+// Listen to amount changes
+document.addEventListener('DOMContentLoaded', () => {
+  const amountInput = document.getElementById('amountInput');
+  if (amountInput) {
+    amountInput.addEventListener('input', updateFeePreview);
+  }
+});
 
 function updateTokenSelection() {
   document.querySelectorAll('.token-btn').forEach(btn => {

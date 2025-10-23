@@ -113,7 +113,7 @@
     margin-bottom: 16px;
   }
   .chain-btn {
-    padding: 10px 20px;
+    padding: 10px 16px;
     border-radius: 10px;
     border: 1px solid var(--border);
     background: var(--card);
@@ -122,6 +122,15 @@
     font-size: 13px;
     cursor: pointer;
     transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .chain-btn-logo {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    object-fit: contain;
   }
   .chain-btn:hover {
     background: var(--card-light);
@@ -131,6 +140,73 @@
     background: rgba(255, 215, 63, 0.1);
     color: var(--text);
     border-color: rgba(255, 215, 63, 0.2);
+  }
+  
+  /* Route Visualization */
+  .route-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 20px 0;
+    padding: 16px;
+    background: rgba(255, 215, 63, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 215, 63, 0.15);
+  }
+  .route-chain {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .route-chain-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    padding: 6px;
+    background: var(--card-light);
+    border: 1px solid var(--border);
+  }
+  .route-chain-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .route-chain-name {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .route-arrow {
+    font-size: 24px;
+    color: var(--accent);
+    margin: 0 8px;
+  }
+  
+  /* Fee Preview */
+  .fee-preview {
+    background: var(--card-light);
+    border: 1px solid rgba(255, 215, 63, 0.15);
+    border-radius: 10px;
+    padding: 12px;
+    margin: 16px 0;
+    font-size: 12px;
+  }
+  .fee-preview-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 4px 0;
+  }
+  .fee-preview-label {
+    color: var(--muted);
+  }
+  .fee-preview-value {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .fee-preview-value.highlight {
+    color: var(--accent);
   }
   
   /* Token Selector */
@@ -432,9 +508,42 @@
           </button>
         </div>
 
+        <!-- Route Visualization -->
+        <div class="route-visual hidden" id="routeVisual">
+          <div class="route-chain">
+            <div class="route-chain-logo">
+              <img id="routeSourceLogo" src="" alt="Source">
+            </div>
+            <div class="route-chain-name" id="routeSourceName">Ethereum</div>
+          </div>
+          <div class="route-arrow">→</div>
+          <div class="route-chain">
+            <div class="route-chain-logo">
+              <img id="routeDestLogo" src="" alt="Destination">
+            </div>
+            <div class="route-chain-name" id="routeDestName">Polygon</div>
+          </div>
+        </div>
+
         <div class="input-group">
           <label class="input-label">Amount to send</label>
           <input type="text" class="input-field" id="amountInput" value="0.01" placeholder="0.01" />
+        </div>
+
+        <!-- Fee Preview -->
+        <div class="fee-preview hidden" id="feePreview">
+          <div class="fee-preview-row">
+            <span class="fee-preview-label">PONIA fee (1.5%)</span>
+            <span class="fee-preview-value" id="previewPoniaFee">-</span>
+          </div>
+          <div class="fee-preview-row">
+            <span class="fee-preview-label">Bridge fee</span>
+            <span class="fee-preview-value" id="previewBridgeFee">~0.1%</span>
+          </div>
+          <div class="fee-preview-row">
+            <span class="fee-preview-label">Estimated time</span>
+            <span class="fee-preview-value highlight" id="previewTime">1-3 min</span>
+          </div>
         </div>
 
         <div class="wallet-btn-container">
