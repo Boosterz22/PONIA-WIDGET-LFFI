@@ -421,8 +421,9 @@ function getAffiliateFeeRecipient(chainId) {
     return import.meta.env.PONIA_TRON_FEE_ADDRESS || 'T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb';
   }
   
-  // EVM chains (default) - use your test address
-  return import.meta.env.PONIA_EVM_FEE_ADDRESS || '0xE16C0f75AC560df3B37428a8670574679Fbcfa3e';
+  // EVM chains (default) - use checksummed address
+  const evmAddress = import.meta.env.PONIA_EVM_FEE_ADDRESS || '0xE16C0f75AC560df3B37428a8670574679Fbcfa3e';
+  return ethers.getAddress(evmAddress); // Convert to checksummed format
 }
 
 // Convert amount to smallest unit (wei for native, mwei for USDC/USDT)
@@ -451,8 +452,9 @@ function getPlatformAddress(chainId) {
   
   // For testing: use placeholder addresses for each chain type
   if (chainConfig.type === 'evm') {
-    // EVM chains - use env variable or test address
-    return import.meta.env.PONIA_PLATFORM_EVM_ADDRESS || '0xE16C0f75AC560df3B37428a8670574679Fbcfa3e';
+    // EVM chains - use env variable or test address (checksummed)
+    const evmAddress = import.meta.env.PONIA_PLATFORM_EVM_ADDRESS || '0xE16C0f75AC560df3B37428a8670574679Fbcfa3e';
+    return ethers.getAddress(evmAddress); // Convert to checksummed format
   } else if (chainConfig.type === 'solana') {
     // Solana - use env variable or test address
     return import.meta.env.PONIA_PLATFORM_SOLANA_ADDRESS || '9aHhLYXj1YbFLxNqBJzQZXd4rJYz9YQBv6g3dP7KHM8d';
@@ -479,9 +481,11 @@ async function handleConfirmSwap() {
     
     // Get user's wallet address for the source chain (works for EVM, Solana, TRON)
     const sourceAddress = await getConnectedAddress(sourceConfig.id);
+    console.log('Source address:', sourceAddress);
     
     // Get platform destination address (where funds will be deposited)
     const destinationAddress = getPlatformAddress(destConfig.id);
+    console.log('Destination address:', destinationAddress);
     
     // Calculate fees
     const userAmount = toSmallestUnit(amount, selectedToken);
@@ -531,6 +535,10 @@ async function handleConfirmSwap() {
     // Show processing stage
     showStage('processing');
     
+    // Get affiliate fee recipient
+    const affiliateFeeRecipient = getAffiliateFeeRecipient(sourceConfig.id);
+    console.log('Affiliate fee recipient:', affiliateFeeRecipient);
+    
     // Fetch complete order from deBridge (quote + transaction in one call)
     const orderParams = {
       srcChainId: sourceConfig.id,
@@ -543,7 +551,7 @@ async function handleConfirmSwap() {
       srcChainOrderAuthorityAddress: sourceAddress,  // Source wallet address
       dstChainOrderAuthorityAddress: destinationAddress,  // Destination address (cross-chain compatible)
       affiliateFeePercent: '0.15',  // 0.15% = our additional fee on top of user's amount
-      affiliateFeeRecipient: getAffiliateFeeRecipient(sourceConfig.id),  // Chain-specific format
+      affiliateFeeRecipient: affiliateFeeRecipient,  // Chain-specific format
       prependOperatingExpenses: 'true'  // Add fees to input, don't deduct from output
     };
     
