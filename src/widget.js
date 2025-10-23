@@ -39,55 +39,77 @@ const TOKENS = {
   }
 };
 
-// Chain configuration with logos
+// Chain configuration with logos (10 chains: 8 EVM + Solana + TRON)
 const CHAIN_CONFIG = {
+  solana: {
+    id: 7565164,
+    name: 'Solana',
+    logo: '/assets/chains/solana.png',
+    symbol: 'SOL',
+    type: 'solana'
+  },
   ethereum: {
     id: 1,
     name: 'Ethereum',
     logo: '/assets/chains/ethereum.png',
-    symbol: 'ETH'
+    symbol: 'ETH',
+    type: 'evm'
   },
   polygon: {
     id: 137,
     name: 'Polygon',
     logo: '/assets/chains/polygon.png',
-    symbol: 'POL'
+    symbol: 'POL',
+    type: 'evm'
   },
   arbitrum: {
     id: 42161,
     name: 'Arbitrum',
     logo: '/assets/chains/arbitrum.png',
-    symbol: 'ETH'
+    symbol: 'ETH',
+    type: 'evm'
   },
   base: {
     id: 8453,
     name: 'Base',
     logo: '/assets/chains/base.png',
-    symbol: 'ETH'
+    symbol: 'ETH',
+    type: 'evm'
   },
   optimism: {
     id: 10,
     name: 'Optimism',
     logo: '/assets/chains/optimism.png',
-    symbol: 'ETH'
+    symbol: 'ETH',
+    type: 'evm'
   },
   bsc: {
     id: 56,
     name: 'BNB Chain',
     logo: '/assets/chains/bnb.png',
-    symbol: 'BNB'
+    symbol: 'BNB',
+    type: 'evm'
   },
   zksync: {
     id: 324,
     name: 'zkSync',
     logo: '/assets/chains/zksync.png',
-    symbol: 'ETH'
+    symbol: 'ETH',
+    type: 'evm'
   },
   worldchain: {
     id: 480,
     name: 'World Chain',
     logo: '/assets/chains/worldchain.png',
-    symbol: 'ETH'
+    symbol: 'ETH',
+    type: 'evm'
+  },
+  tron: {
+    id: 728126428,
+    name: 'TRON',
+    logo: '/assets/chains/tron.png',
+    symbol: 'TRX',
+    type: 'tron'
   }
 };
 
@@ -242,8 +264,8 @@ function updateFeePreview() {
   }
   
   const poniaFee = (parseFloat(amount) * 0.015).toFixed(selectedToken === 'native' ? 6 : 2);
-  const bridgeFee = '~0.1%';
-  const estimatedTime = '1-3 min';
+  const bridgeFee = '~0.04%';
+  const estimatedTime = '~43 sec';
   
   document.getElementById('previewPoniaFee').textContent = `${poniaFee} ${tokenSymbol}`;
   document.getElementById('previewBridgeFee').textContent = bridgeFee;
@@ -417,42 +439,83 @@ async function handleConfirmSwap() {
     // Show processing stage
     showStage('processing');
     
-    // Fetch Across Protocol quote
-    const params = new URLSearchParams({
-      originChainId: sourceConfig.id,
-      destinationChainId: destConfig.id,
-      inputToken: inputTokenAddress,
-      outputToken: outputTokenAddress,
-      amount: totalAmount.toString(),
-      depositor: fromAddress,
-      recipient: fromAddress,
-      tradeType: 'exactInput',
-      integratorId: '0x504F'
-    });
+    // Fetch deBridge quote (instant transfers via Zero-TVL)
+    const quoteParams = {
+      srcChainId: sourceConfig.id,
+      srcChainTokenIn: inputTokenAddress,
+      srcChainTokenInAmount: totalAmount.toString(),
+      dstChainId: destConfig.id,
+      dstChainTokenOut: outputTokenAddress,
+      dstChainTokenOutRecipient: fromAddress,
+      srcChainOrderAuthorityAddress: fromAddress,
+      dstChainOrderAuthorityAddress: fromAddress,
+      affiliateFeePercent: 1.5,
+      affiliateFeeRecipient: '0x504F4E49410000000000000000000000000000',
+      prependOperatingExpenses: false
+    };
     
-    const url = `https://app.across.to/api/swap/approval?${params.toString()}`;
-    const response = await fetch(url);
+    const quoteUrl = `https://dln.debridge.finance/v1.0/dln/order/quote?${new URLSearchParams(quoteParams).toString()}`;
+    console.log('Fetching deBridge quote:', quoteUrl);
     
-    if (!response.ok) {
-      const error = await response.text();
-      throw new Error(`Across API error: ${error}`);
+    const quoteResponse = await fetch(quoteUrl);
+    
+    if (!quoteResponse.ok) {
+      const error = await quoteResponse.text();
+      throw new Error(`deBridge API error: ${error}`);
     }
     
-    const quote = await response.json();
+    const quote = await quoteResponse.json();
+    console.log('deBridge quote received:', quote);
     
-    if (!quote.swapTx) {
-      throw new Error('No transaction data received');
+    if (!quote.estimation) {
+      throw new Error('No quote received from deBridge');
     }
     
     // Update fee breakdown with quote data
-    const expectedOutput = quote.expectedOutputAmount || '0';
-    const expectedTime = quote.expectedFillTime || 3;
+    const expectedOutput = quote.estimation.dstChainTokenOut?.amount || '0';
+    const expectedTime = quote.estimation.approximateFulfillmentDelay || 60;
     
     document.getElementById('feeOutputAmount').textContent = `${formatAmount(expectedOutput, selectedToken)} ${tokenSymbol}`;
-    document.getElementById('feeEstimatedTime').textContent = `~${expectedTime} min`;
+    document.getElementById('feeEstimatedTime').textContent = `~${Math.ceil(expectedTime / 60)} min`;
     
     // Start progress animation
     startProgress();
+    
+    // Create order on deBridge
+    const orderParams = {
+      srcChainId: sourceConfig.id,
+      srcChainTokenIn: inputTokenAddress,
+      srcChainTokenInAmount: totalAmount.toString(),
+      dstChainId: destConfig.id,
+      dstChainTokenOut: outputTokenAddress,
+      dstChainTokenOutAmount: expectedOutput,
+      dstChainTokenOutRecipient: fromAddress,
+      srcChainOrderAuthorityAddress: fromAddress,
+      dstChainOrderAuthorityAddress: fromAddress,
+      affiliateFeePercent: 1.5,
+      affiliateFeeRecipient: '0x504F4E49410000000000000000000000000000'
+    };
+    
+    const orderUrl = `https://dln.debridge.finance/v1.0/dln/order/create-tx`;
+    const orderResponse = await fetch(orderUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(orderParams)
+    });
+    
+    if (!orderResponse.ok) {
+      const error = await orderResponse.text();
+      throw new Error(`deBridge order creation error: ${error}`);
+    }
+    
+    const orderData = await orderResponse.json();
+    console.log('deBridge order created:', orderData);
+    
+    if (!orderData.tx) {
+      throw new Error('No transaction data received from deBridge');
+    }
     
     // Get provider and execute transaction
     const provider = ethersAdapter.getProvider();
@@ -463,14 +526,13 @@ async function handleConfirmSwap() {
     const signer = await provider.getSigner();
     
     const tx = {
-      to: quote.swapTx.to,
-      data: quote.swapTx.data,
-      value: '0x0',
-      gasLimit: quote.swapTx.gas,
-      maxFeePerGas: quote.swapTx.maxFeePerGas,
-      maxPriorityFeePerGas: quote.swapTx.maxPriorityFeePerGas
+      to: orderData.tx.to,
+      data: orderData.tx.data,
+      value: orderData.tx.value || '0x0',
+      gasLimit: orderData.tx.gas || '500000'
     };
     
+    console.log('Sending transaction:', tx);
     const txResponse = await signer.sendTransaction(tx);
     console.log('Transaction submitted:', txResponse.hash);
     
