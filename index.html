@@ -1057,7 +1057,7 @@
               <polyline points="12 6 12 12 16 14"/>
             </svg>
           </div>
-          <div class="stat-value">43s</div>
+          <div class="stat-value" data-target="43" data-suffix="s">0s</div>
           <div class="stat-label">Average ETA</div>
         </div>
         
@@ -1068,7 +1068,7 @@
               <polyline points="22 4 12 14.01 9 11.01"/>
             </svg>
           </div>
-          <div class="stat-value">99.2%</div>
+          <div class="stat-value" data-target="99.2" data-suffix="%">0%</div>
           <div class="stat-label">Success rate</div>
         </div>
         
@@ -1078,7 +1078,7 @@
               <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
             </svg>
           </div>
-          <div class="stat-value">1.5%</div>
+          <div class="stat-value" data-target="1.5" data-suffix="%">0%</div>
           <div class="stat-label">Average fee</div>
         </div>
       </div>
@@ -1296,6 +1296,53 @@
     
     // Initialize Lucide icons
     lucide.createIcons();
+    
+    // Animated counter for stats
+    function animateCounter(element) {
+      const target = parseFloat(element.getAttribute('data-target'));
+      const suffix = element.getAttribute('data-suffix');
+      const duration = 2000; // 2 seconds
+      const increment = target / (duration / 16); // 60fps
+      let current = 0;
+      
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          current = target;
+          clearInterval(timer);
+        }
+        
+        // Format number based on target
+        if (target % 1 !== 0) {
+          // Has decimal (like 99.2 or 1.5)
+          element.textContent = current.toFixed(1) + suffix;
+        } else {
+          // Whole number (like 43)
+          element.textContent = Math.floor(current) + suffix;
+        }
+      }, 16);
+    }
+    
+    // Intersection Observer for stats animation
+    const statsObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
+          entry.target.classList.add('animated');
+          const statValues = entry.target.querySelectorAll('.stat-value[data-target]');
+          statValues.forEach((stat, index) => {
+            setTimeout(() => {
+              animateCounter(stat);
+            }, index * 100); // Stagger animation by 100ms
+          });
+        }
+      });
+    }, { threshold: 0.3 });
+    
+    // Observe transparency stats section
+    const transparencyStats = document.querySelector('.transparency-stats');
+    if (transparencyStats) {
+      statsObserver.observe(transparencyStats);
+    }
     
     // Tab switching functionality with smooth slide animation
     function showTab(tab) {
