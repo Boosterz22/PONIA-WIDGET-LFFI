@@ -367,7 +367,7 @@ function showStage(stage) {
   currentStage = stage;
 }
 
-// Get connected wallet address
+// Get connected EVM wallet address
 async function getConnectedAddress() {
   try {
     const account = modal.getAccount();
@@ -378,6 +378,27 @@ async function getConnectedAddress() {
   } catch (error) {
     throw new Error('Please connect your wallet first');
   }
+}
+
+// Check if chain is EVM-compatible
+function isEVMChain(chainId) {
+  return ![7565164, 728126428].includes(chainId); // Solana and TRON are non-EVM
+}
+
+// Get affiliate fee recipient address for the specific chain
+function getAffiliateFeeRecipient(chainId) {
+  // Solana chain
+  if (chainId === 7565164) {
+    return 'PoNiA1111111111111111111111111111111111111'; // Valid Solana base58 address
+  }
+  
+  // TRON chain
+  if (chainId === 728126428) {
+    return 'TPoNiA1111111111111111111111111111111'; // Valid TRON address
+  }
+  
+  // EVM chains (default)
+  return '0x504F4E49410000000000000000000000000000';
 }
 
 // Convert amount to smallest unit (wei for native, mwei for USDC/USDT)
@@ -408,17 +429,23 @@ async function handleConfirmSwap() {
       return;
     }
     
-    // Get wallet address
-    const fromAddress = await getConnectedAddress();
+    // Get chain configs
+    const sourceConfig = CHAIN_CONFIG[selectedSourceChain];
+    const destConfig = CHAIN_CONFIG[destinationChain];
+    
+    // Validate that source chain is EVM (Solana/TRON sources not yet supported)
+    if (!isEVMChain(sourceConfig.id)) {
+      alert('⚠️ Sending from Solana/TRON is coming soon! For now, please send from EVM chains (Ethereum, Polygon, Arbitrum, Base, Optimism, BNB Chain).');
+      return;
+    }
+    
+    // Get EVM wallet address
+    const userAddress = await getConnectedAddress();
     
     // Calculate fees
     const userAmount = toSmallestUnit(amount, selectedToken);
     const poniaFee = (userAmount * BigInt(150)) / BigInt(10000); // 1.5%
     const totalAmount = userAmount + poniaFee;
-    
-    // Update UI
-    const sourceConfig = CHAIN_CONFIG[selectedSourceChain];
-    const destConfig = CHAIN_CONFIG[destinationChain];
     
     // Get token addresses based on chain type
     let inputTokenAddress, outputTokenAddress;
@@ -471,11 +498,11 @@ async function handleConfirmSwap() {
       dstChainId: destConfig.id,
       dstChainTokenOut: outputTokenAddress,
       dstChainTokenOutAmount: 'auto',  // Let deBridge calculate optimal output
-      dstChainTokenOutRecipient: fromAddress,
-      srcChainOrderAuthorityAddress: fromAddress,
-      dstChainOrderAuthorityAddress: fromAddress,
+      dstChainTokenOutRecipient: userAddress,  // User's EVM address
+      srcChainOrderAuthorityAddress: userAddress,  // User's EVM address
+      dstChainOrderAuthorityAddress: userAddress,  // User's EVM address
       affiliateFeePercent: '0.15',  // 0.15% = our additional fee on top of user's amount
-      affiliateFeeRecipient: '0x504F4E49410000000000000000000000000000',
+      affiliateFeeRecipient: getAffiliateFeeRecipient(sourceConfig.id),  // Chain-specific format
       prependOperatingExpenses: 'true'  // Add fees to input, don't deduct from output
     };
     

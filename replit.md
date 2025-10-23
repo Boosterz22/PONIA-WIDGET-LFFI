@@ -15,6 +15,8 @@ PONIA is a cross-chain cryptocurrency payment widget designed for Web3 applicati
 - **Fixed token addresses:** Changed native token addresses from `0xEeee...` to `0x0000...` (address zero) as required by deBridge API
 - **Fixed API calls:** Changed from POST to GET with query parameters, added `prependOperatingExpenses=true`, set `dstChainTokenOutAmount='auto'` for optimal quotes
 - **Fixed fee structure:** Changed `affiliateFeePercent` from 1.5 to '0.15' (0.15% fee on top of bridge fees)
+- **Added multi-chain address handling:** Chain-specific affiliate recipient addresses (Solana base58, TRON, EVM formats)
+- **Current limitation:** Solana and TRON are supported as DESTINATIONS only; sending FROM these chains requires native wallet integration (coming soon)
 
 # User Preferences
 
