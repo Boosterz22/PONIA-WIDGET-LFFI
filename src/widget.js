@@ -2,6 +2,7 @@ import { createAppKit } from '@reown/appkit'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { mainnet, polygon, bsc, arbitrum, base, optimism, solana, solanaTestnet, solanaDevnet } from '@reown/appkit/networks'
+import { ethers } from 'ethers'
 
 // Token configuration (EVM + Solana + TRON)
 const TOKENS = {
