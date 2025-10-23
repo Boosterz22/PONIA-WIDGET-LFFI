@@ -97,6 +97,7 @@ let modal = null;
 let currentStage = 'select';
 let selectedSourceChain = 'ethereum';
 let destinationChain = 'polygon';
+let selectedToken = 'native';
 
 // Initialize Reown AppKit
 const projectId = 'f83cf00007509459345871b429d32db0';
@@ -161,11 +162,13 @@ function initializeUI() {
   const availableChains = Object.keys(CHAIN_CONFIG).filter(c => c !== destinationChain);
   selectedSourceChain = availableChains[0];
   updateSourceChainSelection();
+  updateTokenAvailability();
 }
 
 function selectSourceChain(chainKey) {
   selectedSourceChain = chainKey;
   updateSourceChainSelection();
+  updateTokenAvailability();
 }
 
 function updateSourceChainSelection() {
@@ -175,6 +178,61 @@ function updateSourceChainSelection() {
       btn.classList.add('active');
     }
   });
+}
+
+// Token selection
+window.selectToken = function(tokenType) {
+  selectedToken = tokenType;
+  updateTokenSelection();
+  updateAmountPlaceholder();
+}
+
+function updateTokenSelection() {
+  document.querySelectorAll('.token-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  
+  const activeBtn = document.getElementById(`btn${selectedToken.charAt(0).toUpperCase() + selectedToken.slice(1)}`);
+  if (activeBtn) {
+    activeBtn.classList.add('active');
+  }
+}
+
+function updateTokenAvailability() {
+  const chainId = CHAIN_CONFIG[selectedSourceChain].id;
+  
+  // Check USDC availability
+  const usdcBtn = document.getElementById('btnUsdc');
+  if (TOKENS.usdc.addresses[chainId]) {
+    usdcBtn.classList.remove('disabled');
+  } else {
+    usdcBtn.classList.add('disabled');
+    if (selectedToken === 'usdc') {
+      selectToken('native');
+    }
+  }
+  
+  // Check USDT availability
+  const usdtBtn = document.getElementById('btnUsdt');
+  if (TOKENS.usdt.addresses[chainId]) {
+    usdtBtn.classList.remove('disabled');
+  } else {
+    usdtBtn.classList.add('disabled');
+    if (selectedToken === 'usdt') {
+      selectToken('native');
+    }
+  }
+}
+
+function updateAmountPlaceholder() {
+  const amountInput = document.getElementById('amountInput');
+  if (selectedToken === 'native') {
+    amountInput.value = '0.01';
+    amountInput.placeholder = '0.01';
+  } else {
+    amountInput.value = '100';
+    amountInput.placeholder = '100';
+  }
 }
 
 // Stage transitions
@@ -207,19 +265,23 @@ async function getConnectedAddress() {
   }
 }
 
-// Convert amount to wei
-function toWei(amount) {
+// Convert amount to smallest unit (wei for native, mwei for USDC/USDT)
+function toSmallestUnit(amount, tokenType) {
+  const decimals = tokenType === 'native' ? 18 : 6;
   const parts = String(amount).split('.');
   const whole = BigInt(parts[0] || 0);
-  const frac = (parts[1] || '').padEnd(18, '0').slice(0, 18);
-  return whole * BigInt("1000000000000000000") + BigInt(frac || '0');
+  const fracPadded = (parts[1] || '').padEnd(decimals, '0').slice(0, decimals);
+  const multiplier = BigInt(10) ** BigInt(decimals);
+  return whole * multiplier + BigInt(fracPadded || '0');
 }
 
-// Format wei to readable
-function formatAmount(weiAmount, decimals = 6) {
-  const wei = BigInt(weiAmount);
-  const eth = Number(wei) / 1e18;
-  return eth.toFixed(decimals);
+// Format smallest unit to readable
+function formatAmount(smallestUnit, tokenType = 'native') {
+  const decimals = tokenType === 'native' ? 18 : 6;
+  const units = BigInt(smallestUnit);
+  const divisor = 10 ** decimals;
+  const amount = Number(units) / divisor;
+  return amount.toFixed(tokenType === 'native' ? 6 : 2);
 }
 
 // Handle swap confirmation
@@ -235,7 +297,7 @@ async function handleConfirmSwap() {
     const fromAddress = await getConnectedAddress();
     
     // Calculate fees
-    const userAmount = toWei(amount);
+    const userAmount = toSmallestUnit(amount, selectedToken);
     const poniaFee = (userAmount * BigInt(150)) / BigInt(10000); // 1.5%
     const totalAmount = userAmount + poniaFee;
     
@@ -243,26 +305,51 @@ async function handleConfirmSwap() {
     const sourceConfig = CHAIN_CONFIG[selectedSourceChain];
     const destConfig = CHAIN_CONFIG[destinationChain];
     
+    // Get token addresses
+    let inputTokenAddress, outputTokenAddress;
+    let tokenSymbol;
+    
+    if (selectedToken === 'native') {
+      inputTokenAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
+      outputTokenAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
+      tokenSymbol = sourceConfig.symbol;
+    } else if (selectedToken === 'usdc') {
+      inputTokenAddress = TOKENS.usdc.addresses[sourceConfig.id];
+      outputTokenAddress = TOKENS.usdc.addresses[destConfig.id];
+      tokenSymbol = 'USDC';
+      
+      if (!inputTokenAddress || !outputTokenAddress) {
+        throw new Error('USDC not available on selected chains');
+      }
+    } else if (selectedToken === 'usdt') {
+      inputTokenAddress = TOKENS.usdt.addresses[sourceConfig.id];
+      outputTokenAddress = TOKENS.usdt.addresses[destConfig.id];
+      tokenSymbol = 'USDT';
+      
+      if (!inputTokenAddress || !outputTokenAddress) {
+        throw new Error('USDT not available on selected chains');
+      }
+    }
+    
     // Set swap animation logos
     document.getElementById('sourceLogoAnim').src = sourceConfig.logo;
     document.getElementById('destLogoAnim').src = destConfig.logo;
     document.getElementById('swapRoute').textContent = `${sourceConfig.name} → ${destConfig.name}`;
     
     // Set fee breakdown
-    document.getElementById('feeUserAmount').textContent = `${formatAmount(userAmount)} ${sourceConfig.symbol}`;
-    document.getElementById('feePoniaFee').textContent = `${formatAmount(poniaFee)} ${sourceConfig.symbol} (1.5%)`;
-    document.getElementById('feeTotalAmount').textContent = `${formatAmount(totalAmount)} ${sourceConfig.symbol}`;
+    document.getElementById('feeUserAmount').textContent = `${formatAmount(userAmount, selectedToken)} ${tokenSymbol}`;
+    document.getElementById('feePoniaFee').textContent = `${formatAmount(poniaFee, selectedToken)} ${tokenSymbol} (1.5%)`;
+    document.getElementById('feeTotalAmount').textContent = `${formatAmount(totalAmount, selectedToken)} ${tokenSymbol}`;
     
     // Show processing stage
     showStage('processing');
     
     // Fetch Across Protocol quote
-    const nativeToken = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
     const params = new URLSearchParams({
       originChainId: sourceConfig.id,
       destinationChainId: destConfig.id,
-      inputToken: nativeToken,
-      outputToken: nativeToken,
+      inputToken: inputTokenAddress,
+      outputToken: outputTokenAddress,
       amount: totalAmount.toString(),
       depositor: fromAddress,
       recipient: fromAddress,
@@ -288,7 +375,7 @@ async function handleConfirmSwap() {
     const expectedOutput = quote.expectedOutputAmount || '0';
     const expectedTime = quote.expectedFillTime || 3;
     
-    document.getElementById('feeOutputAmount').textContent = `${formatAmount(expectedOutput)} ${destConfig.symbol}`;
+    document.getElementById('feeOutputAmount').textContent = `${formatAmount(expectedOutput, selectedToken)} ${tokenSymbol}`;
     document.getElementById('feeEstimatedTime').textContent = `~${expectedTime} min`;
     
     // Start progress animation

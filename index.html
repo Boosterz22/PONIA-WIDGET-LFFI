@@ -163,6 +163,53 @@
     border-color: rgba(255, 215, 63, 0.2);
   }
   
+  /* Token Selector */
+  .token-selector-title {
+    text-align: center;
+    font-weight: 700;
+    font-size: 14px;
+    margin: 20px 0 12px;
+  }
+  .token-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .token-btn {
+    flex: 1;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .token-btn-icon {
+    font-size: 20px;
+  }
+  .token-btn:hover {
+    background: var(--card-light);
+    transform: translateY(-2px);
+  }
+  .token-btn.active {
+    background: rgba(255, 215, 63, 0.1);
+    color: var(--text);
+    border-color: rgba(255, 215, 63, 0.2);
+  }
+  .token-btn.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  
   /* Input */
   .input-group {
     margin: 16px 0;
@@ -402,6 +449,22 @@
 
         <div class="chain-selector-title">Send from which chain?</div>
         <div class="chain-buttons" id="chainButtons"></div>
+
+        <div class="token-selector-title">Select token</div>
+        <div class="token-buttons">
+          <button class="token-btn active" id="btnNative" onclick="selectToken('native')">
+            <span class="token-btn-icon">⚡</span>
+            <span>Native</span>
+          </button>
+          <button class="token-btn" id="btnUsdc" onclick="selectToken('usdc')">
+            <span class="token-btn-icon">💵</span>
+            <span>USDC</span>
+          </button>
+          <button class="token-btn" id="btnUsdt" onclick="selectToken('usdt')">
+            <span class="token-btn-icon">💲</span>
+            <span>USDT</span>
+          </button>
+        </div>
 
         <div class="input-group">
           <label class="input-label">Amount to send</label>
