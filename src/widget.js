@@ -421,11 +421,11 @@ async function getConnectedAddress(chainId) {
 
 // Get affiliate fee recipient address for the specific chain
 function getAffiliateFeeRecipient(chainId) {
-  // Use environment variables for production addresses, fallback to valid placeholder for testing
+  // Use environment variables for production addresses, fallback to valid test addresses
   
-  // Solana chain - use a valid Solana address format
+  // Solana chain - use a valid Solana base58 address
   if (chainId === 7565164) {
-    return import.meta.env.PONIA_SOLANA_FEE_ADDRESS || '11111111111111111111111111111111';
+    return import.meta.env.PONIA_SOLANA_FEE_ADDRESS || '9aHhLYXj1YbFLxNqBJzQZXd4rJYz9YQBv6g3dP7KHM8d';
   }
   
   // TRON chain - use a valid TRON address format
@@ -433,8 +433,8 @@ function getAffiliateFeeRecipient(chainId) {
     return import.meta.env.PONIA_TRON_FEE_ADDRESS || 'T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb';
   }
   
-  // EVM chains (default)
-  return import.meta.env.PONIA_EVM_FEE_ADDRESS || '0x0000000000000000000000000000000000000000';
+  // EVM chains (default) - use your test address
+  return import.meta.env.PONIA_EVM_FEE_ADDRESS || '0xE16C0f75AC560df3B37428a8670574679Fbcfa3e';
 }
 
 // Convert amount to smallest unit (wei for native, mwei for USDC/USDT)
