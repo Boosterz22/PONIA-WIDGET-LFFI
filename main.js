@@ -76,6 +76,12 @@ function getChainName(chainId) {
   return names[chainId] || `Chain ${chainId}`;
 }
 
+function formatAmount(weiAmount) {
+  const wei = BigInt(weiAmount);
+  const eth = Number(wei) / 1e18;
+  return eth.toFixed(6);
+}
+
 async function getConnectedAddress() {
   try {
     const account = modal.getAccount();
@@ -103,38 +109,50 @@ btnSendTransfer.addEventListener('click', async () => {
     const toChainId = getChainId(toChain);
     const toAddress = fromAddress;
 
-    const base = 'https://li.quest/v1/quote';
+    const poniaFeePercent = 1.5;
+    const userAmount = BigInt(fromAmount);
+    const poniaFee = (userAmount * BigInt(150)) / BigInt(10000);
+    const totalAmount = userAmount + poniaFee;
+
+    statusEl.textContent = `💰 PONIA fee: ${poniaFeePercent}% (${formatAmount(poniaFee)} extra)`;
+
+    const base = 'https://app.across.to/api/swap/approval';
     const params = new URLSearchParams({
-      fromChain: fromChainId,
-      toChain: toChainId,
-      fromToken: fromToken,
-      toToken: toToken,
-      fromAmount: fromAmount,
-      fromAddress: fromAddress,
-      toAddress: toAddress
+      originChainId: fromChainId,
+      destinationChainId: toChainId,
+      inputToken: fromToken,
+      outputToken: toToken,
+      amount: totalAmount.toString(),
+      depositor: fromAddress,
+      recipient: toAddress,
+      tradeType: 'exactInput',
+      integratorId: 'ponia-demo'
     });
 
     const url = base + '?' + params.toString();
 
-    statusEl.textContent = 'Getting best route...';
-    log('Fetching quote:', url);
+    statusEl.textContent = '⚡ Getting fastest route via Across Protocol...';
+    log('Fetching Across quote:', url);
 
     const r = await fetch(url);
     if (!r.ok) {
       const txt = await r.text();
-      throw new Error('LI.FI error ' + r.status + ': ' + txt);
+      throw new Error('Across Protocol error ' + r.status + ': ' + txt);
     }
     const quote = await r.json();
-    log('Quote received:', quote);
+    log('Across quote received:', quote);
     out.textContent = JSON.stringify(quote, null, 2);
 
-    if (!quote.transactionRequest) {
-      throw new Error('No transaction data in quote. Please try again.');
+    if (!quote.swapTx) {
+      throw new Error('No transaction data from Across. Please try again.');
     }
 
-    const txReq = quote.transactionRequest;
+    const swapTx = quote.swapTx;
     const toChainName = getChainName(toChainId);
-    const toTokenSymbol = quote.action.toToken.symbol || 'tokens';
+    const toTokenSymbol = quote.outputToken?.symbol || 'tokens';
+    const expectedOutput = quote.expectedOutputAmount || '0';
+
+    statusEl.textContent = `📊 You'll receive ~${formatAmount(expectedOutput)} ${toTokenSymbol} on ${toChainName}`;
 
     const provider = ethersAdapter.getProvider();
     if (!provider) {
@@ -144,11 +162,12 @@ btnSendTransfer.addEventListener('click', async () => {
     const signer = await provider.getSigner();
     
     const tx = {
-      to: txReq.to,
-      data: txReq.data,
-      value: txReq.value || '0x0',
-      gasLimit: txReq.gasLimit,
-      gasPrice: txReq.gasPrice
+      to: swapTx.to,
+      data: swapTx.data,
+      value: '0x0',
+      gasLimit: swapTx.gas,
+      maxFeePerGas: swapTx.maxFeePerGas,
+      maxPriorityFeePerGas: swapTx.maxPriorityFeePerGas
     };
 
     statusEl.textContent = '⏳ Please confirm in your wallet...';
