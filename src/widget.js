@@ -401,6 +401,11 @@ async function getConnectedAddress(chainId) {
       throw new Error('Please connect your wallet first');
     }
     
+    // For EVM chains, checksum the address
+    if (sourceConfig?.type === 'evm') {
+      return ethers.getAddress(address);
+    }
+    
     return address;
   } catch (error) {
     throw new Error(error.message || 'Please connect your wallet first');
@@ -538,6 +543,8 @@ async function handleConfirmSwap() {
     // Get affiliate fee recipient
     const affiliateFeeRecipient = getAffiliateFeeRecipient(sourceConfig.id);
     console.log('Affiliate fee recipient:', affiliateFeeRecipient);
+    console.log('Input token address:', inputTokenAddress);
+    console.log('Output token address:', outputTokenAddress);
     
     // Fetch complete order from deBridge (quote + transaction in one call)
     const orderParams = {
@@ -554,6 +561,8 @@ async function handleConfirmSwap() {
       affiliateFeeRecipient: affiliateFeeRecipient,  // Chain-specific format
       prependOperatingExpenses: 'true'  // Add fees to input, don't deduct from output
     };
+    
+    console.log('Full deBridge params:', JSON.stringify(orderParams, null, 2));
     
     const orderUrl = `https://dln.debridge.finance/v1.0/dln/order/create-tx?${new URLSearchParams(orderParams).toString()}`;
     console.log('Fetching deBridge order:', orderUrl);
