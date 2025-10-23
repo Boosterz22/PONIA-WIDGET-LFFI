@@ -26,7 +26,7 @@ The widget features a modern, professional design with a 3-stage user flow (sele
 
 - **Frontend:** Single-Page Application (SPA) architecture using Vanilla JavaScript (ES6+) with ES modules, built with Vite for fast development and optimized builds.
 - **Wallet Integration:** Reown AppKit 1.8.x is used for universal wallet connectivity (300+ wallets) and integrates with `ethers.js` via `Reown AppKit Ethers Adapter`.
-- **Cross-Chain Bridging:** Across Protocol is the primary bridging solution, offering 1-3 minute transfer speeds and low bridge fees. PONIA integrates its 1.5% transaction fee directly into the quote.
+- **Cross-Chain Bridging:** Across Protocol is the sole bridging solution, offering 1-3 minute transfer speeds and low bridge fees. PONIA integrates its 1.5% transaction fee directly into the quote. (Note: LI.FI and Socket were mentioned in early design docs but were not implemented.)
 - **Supported Chains:** Currently supports 8 major EVM-compatible chains: Ethereum, Polygon, Arbitrum, Base, Optimism, BNB Chain, zkSync, and World Chain.
 - **Token Support:** Comprehensive support for native tokens, USDC (on 7 chains), and USDT (on 6 chains), with automatic mapping of correct token addresses and decimal handling.
 - **Platform Chain Detection:** The widget can auto-detect the target blockchain or be configured via URL parameters.

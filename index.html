@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ponia - Universal Cross-Chain Checkout for Web3</title>
-  <meta name="description" content="Accept deposits & withdrawals from any chain — in 60 seconds. Non-custodial, 1.5% fee, built on LI.FI/Socket.">
+  <meta name="description" content="Accept deposits & withdrawals from any chain — in 60 seconds. Non-custodial, 1.5% fee, powered by Across Protocol.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -685,12 +685,61 @@
       box-shadow: 0 8px 24px rgba(255, 215, 63, 0.4);
     }
     
+    /* Powered By */
+    .powered-by {
+      background: rgba(18, 18, 18, 0.5);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 80px 0;
+      text-align: center;
+    }
+    
+    .powered-by-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    
+    .powered-by-subtitle {
+      color: var(--muted);
+      font-size: 16px;
+      margin-bottom: 60px;
+    }
+    
+    .powered-by-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 48px;
+      justify-content: center;
+      align-items: center;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    .partner-logo {
+      opacity: 0.6;
+      transition: all 0.3s;
+      filter: grayscale(100%);
+    }
+    
+    .partner-logo:hover {
+      opacity: 1;
+      filter: grayscale(0%);
+      transform: translateY(-4px);
+    }
+    
+    .partner-logo img {
+      height: 48px;
+      width: auto;
+      object-fit: contain;
+    }
+    
     /* Footer */
     footer {
       text-align: center;
       padding: 80px 0 40px;
-      border-top: 1px solid var(--border);
-      margin-top: 100px;
+      margin-top: 0;
     }
     
     .footer-logo {
@@ -804,8 +853,8 @@
           1.5% fee
         </div>
         <div class="badge">
-          <div class="badge-icon"><i data-lucide="check"></i></div>
-          Built on LI.FI/Socket
+          <div class="badge-icon"><i data-lucide="zap"></i></div>
+          Powered by Across Protocol
         </div>
       </div>
       
@@ -824,7 +873,7 @@
   <section class="section" id="how-it-works">
     <div class="container">
       <h2 class="section-title">How Ponia works in 3 steps</h2>
-      <p class="section-subtitle">Built on LI.FI & Socket.tech — fast, secure, and non-custodial.</p>
+      <p class="section-subtitle">Powered by Across Protocol — fast, secure, and non-custodial.</p>
       
       <div class="tabs">
         <button class="tab active" onclick="showTab('deposit')">Deposit</button>
@@ -1116,6 +1165,38 @@
           
           <button type="submit" class="form-submit">Submit <i data-lucide="arrow-up-right"></i></button>
         </form>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Powered By -->
+  <section class="powered-by">
+    <div class="container">
+      <h2 class="powered-by-title">Powered by the most trusted cross-chain infrastructure</h2>
+      <p class="powered-by-subtitle">Built on proven protocols. Compatible with all major wallets.</p>
+      
+      <div class="powered-by-grid">
+        <div class="partner-logo">
+          <img src="/assets/partners/across.jpg" alt="Across Protocol">
+        </div>
+        <div class="partner-logo">
+          <img src="/assets/partners/reown.jpg" alt="Reown">
+        </div>
+        <div class="partner-logo">
+          <img src="/assets/partners/ethers.png" alt="Ethers.js">
+        </div>
+        <div class="partner-logo">
+          <img src="/assets/partners/metamask.png" alt="MetaMask">
+        </div>
+        <div class="partner-logo">
+          <img src="/assets/partners/coinbase.jpg" alt="Coinbase Wallet">
+        </div>
+        <div class="partner-logo">
+          <img src="/assets/partners/phantom.png" alt="Phantom">
+        </div>
+        <div class="partner-logo">
+          <img src="/assets/partners/walletconnect.png" alt="WalletConnect">
+        </div>
       </div>
     </div>
   </section>
