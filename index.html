@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PONIA - Cross-Chain Payments for Web3 Apps</title>
-  <meta name="description" content="Instant cross-chain deposits and withdrawals for Gaming dApps, NFT Marketplaces, Crypto Casinos, and DeFi platforms. 1-3 minute transfers across 8 blockchains.">
+  <title>Ponia - Universal Cross-Chain Checkout for Web3</title>
+  <meta name="description" content="Accept deposits & withdrawals from any chain — in 60 seconds. Non-custodial, 1.5% fee, built on LI.FI/Socket.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -30,7 +30,7 @@
       color: var(--text);
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
       line-height: 1.6;
-      overflow-x: hidden;
+      padding-top: 70px;
     }
     
     /* Animated gradient background */
@@ -41,25 +41,27 @@
       width: 100%;
       height: 100%;
       z-index: 0;
-      background: linear-gradient(135deg, #0a0a0b 0%, #1a1a2e 50%, #0a0a0b 100%);
-      background-size: 200% 200%;
-      animation: gradientShift 15s ease infinite;
+      background: radial-gradient(ellipse at 50% 20%, rgba(255, 215, 63, 0.08) 0%, transparent 50%),
+                  radial-gradient(ellipse at 80% 80%, rgba(255, 165, 0, 0.05) 0%, transparent 50%);
     }
     
-    @keyframes gradientShift {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-    }
-    
-    .gradient-overlay {
+    .stars {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: 1;
-      pointer-events: none;
-      background: radial-gradient(circle at 50% 20%, rgba(255, 215, 63, 0.08), transparent 50%);
+      z-index: 0;
+      background-image: 
+        radial-gradient(2px 2px at 20% 30%, white, transparent),
+        radial-gradient(2px 2px at 60% 70%, white, transparent),
+        radial-gradient(1px 1px at 50% 50%, white, transparent),
+        radial-gradient(1px 1px at 80% 10%, white, transparent),
+        radial-gradient(2px 2px at 90% 60%, white, transparent),
+        radial-gradient(1px 1px at 33% 80%, white, transparent),
+        radial-gradient(1px 1px at 15% 55%, white, transparent);
+      background-size: 200% 200%;
+      opacity: 0.5;
     }
     
     .container {
@@ -67,10 +69,10 @@
       z-index: 2;
       max-width: 1200px;
       margin: 0 auto;
-      padding: 0 24px;
+      padding: 0 32px;
     }
     
-    /* Navigation Header */
+    /* Header Navigation */
     .header {
       position: fixed;
       top: 0;
@@ -154,79 +156,95 @@
       box-shadow: 0 4px 12px rgba(255, 215, 63, 0.4);
     }
     
-    body {
-      padding-top: 70px;
-    }
-    
     /* Hero Section */
     .hero {
       text-align: center;
-      padding: 100px 0 80px;
+      padding: 120px 0 100px;
     }
     
-    .hero h1 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 64px;
-      font-weight: 700;
-      line-height: 1.1;
-      margin-bottom: 24px;
-      background: linear-gradient(135deg, #ffffff 0%, var(--accent) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: fadeInUp 0.8s ease;
-    }
-    
-    .hero .subtitle {
-      font-size: 20px;
-      color: var(--muted);
-      max-width: 600px;
-      margin: 0 auto 40px;
-      animation: fadeInUp 0.8s ease 0.2s backwards;
-    }
-    
-    .stats-bar {
+    .hero-logo {
+      margin: 0 auto 48px;
       display: flex;
-      gap: 48px;
+      align-items: center;
       justify-content: center;
-      margin: 60px 0;
-      animation: fadeInUp 0.8s ease 0.4s backwards;
-    }
-    
-    .stat {
-      text-align: center;
-    }
-    
-    .stat-value {
+      gap: 16px;
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 36px;
+      font-size: 72px;
       font-weight: 700;
       color: var(--accent);
     }
     
-    .stat-label {
-      font-size: 14px;
-      color: var(--muted);
-      margin-top: 4px;
+    .hero-logo img {
+      width: 100px;
+      height: 100px;
     }
     
-    /* CTA Buttons */
-    .cta-buttons {
+    .hero h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 56px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 24px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .hero h1 .highlight {
+      color: var(--accent);
+    }
+    
+    .hero-badges {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      margin: 40px 0;
+      flex-wrap: wrap;
+    }
+    
+    .badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    
+    .badge-icon {
+      width: 16px;
+      height: 16px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: #0a0a0b;
+    }
+    
+    .hero-cta {
       display: flex;
       gap: 16px;
       justify-content: center;
-      animation: fadeInUp 0.8s ease 0.6s backwards;
+      margin-top: 48px;
     }
     
     .btn {
-      padding: 16px 32px;
-      border-radius: 12px;
+      padding: 14px 32px;
+      border-radius: 8px;
       font-weight: 600;
-      font-size: 16px;
+      font-size: 15px;
       text-decoration: none;
       transition: all 0.3s;
       cursor: pointer;
       border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
     }
     
     .btn-primary {
@@ -240,7 +258,7 @@
     }
     
     .btn-secondary {
-      background: var(--card);
+      background: transparent;
       color: var(--text);
       border: 1px solid var(--border);
     }
@@ -250,9 +268,10 @@
       border-color: rgba(255, 215, 63, 0.2);
     }
     
-    /* Features Section */
+    /* Section */
     .section {
-      padding: 80px 0;
+      padding: 100px 0;
+      position: relative;
     }
     
     .section-title {
@@ -260,16 +279,241 @@
       font-size: 48px;
       font-weight: 700;
       text-align: center;
+      margin-bottom: 24px;
+    }
+    
+    .section-subtitle {
+      text-align: center;
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 700px;
+      margin: 0 auto 60px;
+    }
+    
+    /* How it works */
+    .tabs {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
       margin-bottom: 60px;
     }
     
+    .tab {
+      padding: 10px 24px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .tab.active {
+      background: var(--accent);
+      color: #0a0a0b;
+      border-color: var(--accent);
+    }
+    
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    
+    .step {
+      text-align: center;
+    }
+    
+    .step-number {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0 auto 24px;
+    }
+    
+    .step-icon {
+      font-size: 36px;
+      margin-bottom: 16px;
+    }
+    
+    .step-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    
+    .step-description {
+      color: var(--muted);
+      font-size: 15px;
+    }
+    
+    /* Features Grid */
     .features-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+      max-width: 1000px;
+      margin: 0 auto;
     }
     
     .feature-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px;
+      transition: all 0.3s;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 215, 63, 0.2);
+    }
+    
+    .feature-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+    
+    .feature-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    
+    .feature-description {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    
+    /* Integration Section */
+    .integration-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    
+    .integration-text h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 48px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    
+    .integration-text p {
+      color: var(--muted);
+      font-size: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .code-block {
+      background: #1e1e1e;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      font-family: 'Fira Code', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #e6e6e6;
+      position: relative;
+      overflow-x: auto;
+    }
+    
+    .code-block::before {
+      content: 'HTML';
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 10px;
+      color: var(--muted);
+      background: var(--card);
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    
+    /* Pricing */
+    .pricing-box {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    
+    .pricing-value {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 96px;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 40px 0;
+    }
+    
+    .pricing-label {
+      font-size: 18px;
+      color: var(--muted);
+      margin-bottom: 48px;
+    }
+    
+    .pricing-features {
+      display: flex;
+      gap: 40px;
+      justify-content: center;
+      margin-bottom: 48px;
+    }
+    
+    .pricing-feature {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .pricing-feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-size: 24px;
+    }
+    
+    .pricing-feature-text {
+      font-size: 15px;
+      color: var(--text);
+    }
+    
+    .pricing-subtext {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+    
+    /* Solutions Grid */
+    .solutions-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      margin-top: 60px;
+    }
+    
+    .solution-card {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 16px;
@@ -277,142 +521,162 @@
       transition: all 0.3s;
     }
     
-    .feature-card:hover {
+    .solution-card:hover {
       transform: translateY(-4px);
       border-color: rgba(255, 215, 63, 0.2);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
     }
     
-    .feature-icon {
-      font-size: 48px;
-      margin-bottom: 16px;
+    .solution-icon {
+      font-size: 40px;
+      margin-bottom: 20px;
     }
     
-    .feature-title {
+    .solution-title {
       font-family: 'Space Grotesk', sans-serif;
       font-size: 20px;
       font-weight: 600;
       margin-bottom: 12px;
     }
     
-    .feature-description {
+    .solution-description {
       color: var(--muted);
       font-size: 14px;
+      line-height: 1.6;
     }
     
-    /* Use Cases Section */
-    .use-cases-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
+    /* Contact Form */
+    .contact-section {
+      max-width: 700px;
+      margin: 0 auto;
     }
     
-    .use-case {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px;
-      text-align: center;
-      transition: all 0.3s;
+    .form-group {
+      margin-bottom: 24px;
     }
     
-    .use-case:hover {
-      border-color: rgba(255, 215, 63, 0.2);
-      transform: translateY(-2px);
-    }
-    
-    .use-case-icon {
-      font-size: 40px;
-      margin-bottom: 12px;
-    }
-    
-    .use-case-title {
-      font-weight: 600;
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
       margin-bottom: 8px;
     }
     
-    .use-case-description {
-      color: var(--muted);
-      font-size: 13px;
-    }
-    
-    /* Chains Section */
-    .chains-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      justify-content: center;
-    }
-    
-    .chain-badge {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: var(--card);
+    .form-input,
+    .form-textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 8px;
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px 24px;
+      background: var(--card);
+      color: var(--text);
+      font-size: 15px;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.2s;
+    }
+    
+    .form-input:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    
+    .form-textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    
+    .form-submit {
+      width: 100%;
+      padding: 14px 24px;
+      background: var(--accent);
+      color: #0a0a0b;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
       transition: all 0.3s;
     }
     
-    .chain-badge:hover {
-      border-color: rgba(255, 215, 63, 0.2);
+    .form-submit:hover {
       transform: translateY(-2px);
-    }
-    
-    .chain-badge img {
-      width: 32px;
-      height: 32px;
-      border-radius: 6px;
-    }
-    
-    .chain-badge span {
-      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(255, 215, 63, 0.4);
     }
     
     /* Footer */
     footer {
       text-align: center;
-      padding: 60px 0 40px;
-      color: var(--muted);
-      font-size: 14px;
+      padding: 80px 0 40px;
+      border-top: 1px solid var(--border);
+      margin-top: 100px;
     }
     
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .footer-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    
+    .footer-logo img {
+      width: 64px;
+      height: 64px;
+    }
+    
+    .footer-tagline {
+      font-size: 16px;
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+    
+    .footer-links {
+      display: flex;
+      gap: 32px;
+      justify-content: center;
+      margin-bottom: 32px;
+    }
+    
+    .footer-link {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 15px;
+      transition: color 0.2s;
+    }
+    
+    .footer-link:hover {
+      color: var(--text);
+    }
+    
+    .footer-copyright {
+      font-size: 14px;
+      color: var(--muted);
     }
     
     /* Responsive */
     @media (max-width: 768px) {
       .hero h1 {
-        font-size: 40px;
+        font-size: 36px;
       }
       
-      .stats-bar {
-        flex-direction: column;
-        gap: 24px;
+      .steps,
+      .features-grid,
+      .solutions-grid {
+        grid-template-columns: 1fr;
       }
       
-      .cta-buttons {
-        flex-direction: column;
-      }
-      
-      .nav-links {
-        gap: 16px;
+      .integration-container {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 <body>
   <div class="gradient-bg"></div>
-  <div class="gradient-overlay"></div>
+  <div class="stars"></div>
   
   <!-- Header Navigation -->
   <header class="header">
@@ -435,148 +699,259 @@
     </div>
   </header>
   
-  <div class="container">
-    
-    <!-- Hero Section -->
-    <section class="hero">
-      <h1>Cross-Chain Payments<br>in 1-3 Minutes</h1>
-      <p class="subtitle">
-        Instant deposits and withdrawals for Gaming dApps, NFT Marketplaces, Crypto Casinos, and DeFi platforms. 
-        One widget, 8 blockchains, zero complexity.
-      </p>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-logo">
+        <img src="/assets/ponia-logo.png" alt="PONIA">
+        PONIA
+      </div>
       
-      <div class="stats-bar">
-        <div class="stat">
-          <div class="stat-value">8</div>
-          <div class="stat-label">Blockchains</div>
+      <h1>Accept deposits & withdrawals from any chain — in <span class="highlight">60 seconds.</span></h1>
+      
+      <div class="hero-badges">
+        <div class="badge">
+          <div class="badge-icon">✓</div>
+          Non-custodial
         </div>
-        <div class="stat">
-          <div class="stat-value">1.5%</div>
-          <div class="stat-label">Transaction Fee</div>
+        <div class="badge">
+          <div class="badge-icon">✓</div>
+          1.5% fee
         </div>
-        <div class="stat">
-          <div class="stat-value">1-3 min</div>
-          <div class="stat-label">Transfer Speed</div>
+        <div class="badge">
+          <div class="badge-icon">✓</div>
+          Built on LI.FI/Socket
         </div>
       </div>
       
-      <div class="cta-buttons">
-        <a href="/widget" class="btn btn-primary">Try Live Demo</a>
-        <a href="/docs" class="btn btn-secondary">Read Documentation</a>
+      <div class="hero-cta">
+        <a href="/widget" class="btn btn-primary">
+          ⚡ Try Demo
+        </a>
+        <a href="/docs" class="btn btn-secondary">
+          &lt;/&gt; Integrate in 1 min
+        </a>
       </div>
-    </section>
-    
-    <!-- Features Section -->
-    <section class="section">
-      <h2 class="section-title">Why Choose PONIA?</h2>
+    </div>
+  </section>
+  
+  <!-- How it works -->
+  <section class="section" id="how-it-works">
+    <div class="container">
+      <h2 class="section-title">How Ponia works in 3 steps</h2>
+      <p class="section-subtitle">Built on LI.FI & Socket.tech — fast, secure, and non-custodial.</p>
+      
+      <div class="tabs">
+        <button class="tab active">Deposit</button>
+        <button class="tab">Withdraw</button>
+      </div>
+      
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-icon">💰</div>
+          <h3 class="step-title">Connect wallet</h3>
+          <p class="step-description">User connects via Ponia widget with their preferred wallet</p>
+        </div>
+        
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-icon">⇄</div>
+          <h3 class="step-title">Choose token & chain</h3>
+          <p class="step-description">Instant quote + ETA for any token on any supported chain</p>
+        </div>
+        
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-icon">✓</div>
+          <h3 class="step-title">Confirm</h3>
+          <p class="step-description">Swap completes automatically, funds arrive ready to use</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Why top dApps use Ponia -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Why top dApps use Ponia</h2>
+      
       <div class="features-grid">
         <div class="feature-card">
           <div class="feature-icon">⚡</div>
-          <h3 class="feature-title">Lightning Fast</h3>
-          <p class="feature-description">
-            Powered by Across Protocol. Transfers complete in 1-3 minutes with ultra-low fees (0.06-0.12%).
-          </p>
+          <h3 class="feature-title">Instant UX</h3>
+          <p class="feature-description">Less than 60 seconds, real-time ETA updates for complete transparency</p>
         </div>
         
         <div class="feature-card">
-          <div class="feature-icon">🌐</div>
-          <h3 class="feature-title">Multi-Chain</h3>
-          <p class="feature-description">
-            Support for 8 major blockchains: Ethereum, Polygon, Arbitrum, Base, Optimism, BNB Chain, zkSync, World Chain.
-          </p>
+          <div class="feature-icon">⇄</div>
+          <h3 class="feature-title">Deposit & Withdraw</h3>
+          <p class="feature-description">One widget for both directions — seamless user experience</p>
         </div>
         
         <div class="feature-card">
-          <div class="feature-icon">💵</div>
-          <h3 class="feature-title">Stablecoin Support</h3>
-          <p class="feature-description">
-            USDC available on 7 chains, USDT on 6 chains. Perfect for high-volume gaming and gambling platforms.
-          </p>
+          <div class="feature-icon">👁️</div>
+          <h3 class="feature-title">Transparent Fees</h3>
+          <p class="feature-description">Always 1.5%, no hidden costs or surprise charges</p>
         </div>
         
         <div class="feature-card">
-          <div class="feature-icon">🔧</div>
-          <h3 class="feature-title">Simple Integration</h3>
-          <p class="feature-description">
-            Embed in 30 seconds with an iframe. No backend changes required. Works with any Web3 app.
-          </p>
+          <div class="feature-icon">🔌</div>
+          <h3 class="feature-title">Plug & Play</h3>
+          <p class="feature-description">1 line of code, no partnership needed — integrate in minutes</p>
         </div>
       </div>
-    </section>
-    
-    <!-- Use Cases Section -->
-    <section class="section">
-      <h2 class="section-title">Perfect For</h2>
-      <div class="use-cases-grid">
-        <div class="use-case">
-          <div class="use-case-icon">🎮</div>
-          <h3 class="use-case-title">Gaming dApps</h3>
-          <p class="use-case-description">Top-up in-game tokens from any blockchain instantly</p>
+    </div>
+  </section>
+  
+  <!-- Integration -->
+  <section class="section">
+    <div class="container">
+      <div class="integration-container">
+        <div class="integration-text">
+          <h2>Integration made simple</h2>
+          <p>Add Ponia in one minute. Let your users deposit from any chain.</p>
+          <a href="/docs" class="btn btn-secondary">📄 View full documentation</a>
         </div>
         
-        <div class="use-case">
-          <div class="use-case-icon">🖼️</div>
-          <h3 class="use-case-title">NFT Marketplaces</h3>
-          <p class="use-case-description">Accept payments from any supported chain</p>
+        <div class="code-block"><script src="https://ponia.io/widget.js"></script>
+<button onclick="openPonia()">
+  Swap with Ponia
+</button></div>
+      </div>
+      
+      <h2 class="section-title" style="margin-top: 100px;">Transparency is built in.</h2>
+    </div>
+  </section>
+  
+  <!-- Pricing -->
+  <section class="section" id="fees">
+    <div class="container">
+      <h2 class="section-title">Simple, transparent pricing</h2>
+      
+      <div class="pricing-box">
+        <div class="pricing-value">1.5%</div>
+        <div class="pricing-label">Flat fee on all transactions</div>
+        
+        <div class="pricing-features">
+          <div class="pricing-feature">
+            <div class="pricing-feature-icon">✓</div>
+            <div class="pricing-feature-text">No hidden costs</div>
+          </div>
+          
+          <div class="pricing-feature">
+            <div class="pricing-feature-icon">✓</div>
+            <div class="pricing-feature-text">No setup fees</div>
+          </div>
+          
+          <div class="pricing-feature">
+            <div class="pricing-feature-icon">✓</div>
+            <div class="pricing-feature-text">No monthly charges</div>
+          </div>
         </div>
         
-        <div class="use-case">
-          <div class="use-case-icon">🎰</div>
-          <h3 class="use-case-title">Crypto Casinos</h3>
-          <p class="use-case-description">Fast deposits & withdrawals with stablecoins</p>
+        <p class="pricing-subtext">
+          You only pay for what you use. The 1.5% fee covers cross-chain routing, gas optimization, and infrastructure costs. No surprises, ever.
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Solutions -->
+  <section class="section" id="solutions">
+    <div class="container">
+      <h2 class="section-title">Join the universal Web3 checkout network</h2>
+      <p class="section-subtitle">Whether you're building a game, a prediction market, or an NFT app, Ponia lets your users deposit or withdraw from any chain instantly — without bridges, delays, or complexity.</p>
+      
+      <p class="section-subtitle" style="color: var(--accent); max-width: 900px;">
+        By keeping every transaction inside your platform, Ponia eliminates the usual friction points that make users leave. No redirects, no external bridges, no confusion. Your users stay where they are — and they complete more actions. That means higher retention, stronger engagement, and better conversions across your product.
+      </p>
+      
+      <div class="solutions-grid">
+        <div class="solution-card">
+          <div class="solution-icon">🎮</div>
+          <h3 class="solution-title">For Web3 games</h3>
+          <p class="solution-description">Ponia enables frictionless top-ups from any chain, keeping players focused on the experience instead of the transaction.</p>
         </div>
         
-        <div class="use-case">
-          <div class="use-case-icon">💎</div>
-          <h3 class="use-case-title">DeFi Platforms</h3>
-          <p class="use-case-description">Cross-chain liquidity without manual bridging</p>
+        <div class="solution-card">
+          <div class="solution-icon">📈</div>
+          <h3 class="solution-title">For prediction markets & DeFi</h3>
+          <p class="solution-description">It allows users to move liquidity instantly, improving retention and overall volume.</p>
+        </div>
+        
+        <div class="solution-card">
+          <div class="solution-icon">🖼️</div>
+          <h3 class="solution-title">For NFT platforms</h3>
+          <p class="solution-description">Ponia makes cross-chain transactions simple and seamless so that creators and collectors can interact freely without technical barriers.</p>
         </div>
       </div>
-    </section>
-    
-    <!-- Supported Chains Section -->
-    <section class="section">
-      <h2 class="section-title">Supported Blockchains</h2>
-      <div class="chains-grid">
-        <div class="chain-badge">
-          <img src="/assets/chains/ethereum.png" alt="Ethereum">
-          <span>Ethereum</span>
-        </div>
-        <div class="chain-badge">
-          <img src="/assets/chains/polygon.png" alt="Polygon">
-          <span>Polygon</span>
-        </div>
-        <div class="chain-badge">
-          <img src="/assets/chains/arbitrum.png" alt="Arbitrum">
-          <span>Arbitrum</span>
-        </div>
-        <div class="chain-badge">
-          <img src="/assets/chains/base.png" alt="Base">
-          <span>Base</span>
-        </div>
-        <div class="chain-badge">
-          <img src="/assets/chains/optimism.png" alt="Optimism">
-          <span>Optimism</span>
-        </div>
-        <div class="chain-badge">
-          <img src="/assets/chains/bnb.png" alt="BNB Chain">
-          <span>BNB Chain</span>
-        </div>
-        <div class="chain-badge">
-          <img src="/assets/chains/zksync.png" alt="zkSync">
-          <span>zkSync</span>
-        </div>
-        <div class="chain-badge">
-          <img src="/assets/chains/worldchain.png" alt="World Chain">
-          <span>World Chain</span>
-        </div>
+      
+      <p class="section-subtitle" style="margin-top: 60px;">
+        Beyond these categories, Ponia is designed for every Web3 application that needs instant and transparent cross-chain value movement. From staking dashboards to launchpads and other decentralized experiences, it provides a universal foundation that keeps the user experience fluid.
+      </p>
+      
+      <div style="text-align: center; margin-top: 60px;">
+        <h3 style="font-size: 24px; margin-bottom: 24px;">Join the growing network of Web3 builders shaping the next generation of interoperability.</h3>
+        <a href="#contact" class="btn btn-primary">Become a Launch Partner — Apply now</a>
+        <p style="color: var(--muted); margin-top: 16px;">Early partners receive priority access and reduced fees.</p>
       </div>
-    </section>
-    
-    <!-- Footer -->
-    <footer>
-      <p>&copy; 2025 PONIA. Cross-chain payments for Web3 apps.</p>
-    </footer>
-  </div>
+    </div>
+  </section>
+  
+  <!-- Contact Form -->
+  <section class="section" id="contact">
+    <div class="container">
+      <div class="contact-section">
+        <h2 class="section-title">Ready to integrate Ponia?</h2>
+        <p class="section-subtitle">We're onboarding our first partners. Let's build the future of Web3 payments together.</p>
+        
+        <form>
+          <div class="form-group">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-input" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Email / Discord</label>
+            <input type="text" class="form-input" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Project URL</label>
+            <input type="url" class="form-input" placeholder="https://" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Message</label>
+            <textarea class="form-textarea"></textarea>
+          </div>
+          
+          <button type="submit" class="form-submit">Submit ↗</button>
+        </form>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-logo">
+        <img src="/assets/ponia-logo.png" alt="PONIA">
+        PONIA
+      </div>
+      
+      <p class="footer-tagline">Instant. Transparent. Universal.</p>
+      
+      <div class="footer-links">
+        <a href="#" class="footer-link">𝕏 X</a>
+        <a href="#" class="footer-link">💬 Discord</a>
+        <a href="/docs" class="footer-link">📄 Docs</a>
+        <a href="#" class="footer-link">📊 Status</a>
+      </div>
+      
+      <p class="footer-copyright">© 2025 Ponia — Non-custodial cross-chain checkout for Web3 apps.</p>
+    </div>
+  </footer>
 </body>
 </html>
