@@ -143,7 +143,7 @@ btnSendTransfer.addEventListener('click', async () => {
       depositor: fromAddress,
       recipient: toAddress,
       tradeType: 'exactInput',
-      integratorId: 'ponia-demo'
+      integratorId: '0xP0N1'
     });
 
     const url = base + '?' + params.toString();
