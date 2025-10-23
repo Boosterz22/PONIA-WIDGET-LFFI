@@ -464,7 +464,7 @@ function getPlatformAddress(chainId) {
   // For testing: use placeholder addresses for each chain type
   if (chainConfig.type === 'evm') {
     // EVM chains - use env variable or test address
-    return import.meta.env.PONIA_PLATFORM_EVM_ADDRESS || '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb';
+    return import.meta.env.PONIA_PLATFORM_EVM_ADDRESS || '0xE16C0f75AC560df3B37428a8670574679Fbcfa3e';
   } else if (chainConfig.type === 'solana') {
     // Solana - use env variable or test address
     return import.meta.env.PONIA_PLATFORM_SOLANA_ADDRESS || '9aHhLYXj1YbFLxNqBJzQZXd4rJYz9YQBv6g3dP7KHM8d';
