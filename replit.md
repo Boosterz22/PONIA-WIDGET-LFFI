@@ -10,20 +10,6 @@ The application provides a professional wallet connection interface powered by *
 
 # Recent Changes (October 23, 2025)
 
-## 🎨 UI Optimization - Compact Widget + Enlarged Logo (Oct 23, 2025 - Latest)
-
-- ✅ **Logo PONIA agrandi de 40%** - Passé de 100px à 140px pour plus d'impact visuel
-- ✅ **Widget compacté** - Réduction de tous les espaces (padding, margins) pour une interface plus dense
-- ✅ **Boutons optimisés** - Chaînes et tokens plus compacts (8-10px padding vs 12-14px)
-- ✅ **Espaces réduits** - Gaps de 6px au lieu de 8-16px entre éléments
-- ✅ **Body remonté** - Padding réduit de 24px à 18px, header de 20px à 16px
-- ✅ **Route et preview ajustés** - Logos 36px, texte 10-11px pour garder lisibilité
-
-**Impact UX:**
-- Interface plus professionnelle et moins "vide"
-- Logo PONIA immédiatement reconnaissable
-- Widget adapté aux petits écrans et modales
-
 ## 💰 USDC/USDT Token Selector Live (Oct 23, 2025 - Latest Update)
 
 - ✅ **Token selector UI implemented** - Users can now choose between Native/USDC/USDT
