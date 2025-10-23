@@ -331,12 +331,12 @@
     <main class="content">
       <h1>Documentation</h1>
       <p style="font-size: 18px; color: var(--muted); margin-bottom: 48px;">
-        Integrate Ponia cross-chain checkout into your Web3 application in minutes. Accept deposits and withdrawals from any supported blockchain with a single line of code.
+        Integrate Ponia cross-chain payment widget into your Web3 application in minutes. Accept <strong>deposits</strong> and process <strong>withdrawals</strong> across any supported blockchain with a single line of code.
       </p>
       
       <h2 id="introduction">Introduction</h2>
       <p>
-        Ponia is a universal cross-chain payment widget that enables your users to deposit and withdraw funds from any supported blockchain instantly. With support for 10 major chains including Ethereum, Solana, and TRON, Ponia provides a seamless cross-chain experience with transfers completing in approximately 60 seconds.
+        Ponia is a universal cross-chain payment widget that enables your users to <strong>deposit</strong> and <strong>withdraw</strong> funds across any supported blockchain instantly. With support for 10 major chains including Ethereum, Solana, and TRON, Ponia provides a seamless bidirectional cross-chain experience with transfers completing in approximately 60 seconds.
       </p>
       
       <h3>Key Features</h3>
@@ -345,6 +345,7 @@
         <li>🔗 <strong>10 blockchains supported</strong> — EVM chains, Solana, and TRON</li>
         <li>💰 <strong>Transparent pricing</strong> — Flat 1.5% fee on all transactions</li>
         <li>🔒 <strong>Non-custodial</strong> — Users remain in full control of their funds</li>
+        <li>🔄 <strong>Bidirectional flows</strong> — Deposits AND withdrawals supported</li>
         <li>🎯 <strong>Plug & play</strong> — One line of code to integrate</li>
       </ul>
       
@@ -353,17 +354,24 @@
         Get started with Ponia in less than 60 seconds. Add the script tag to your HTML and trigger the widget with a button click.
       </p>
       
+      <h3>Deposit Example</h3>
       <div class="code-block"><pre><span style="color: #569cd6;">&lt;!-- Add Ponia script --&gt;</span>
 <span style="color: #569cd6;">&lt;script</span> <span style="color: #9cdcfe;">src</span>=<span style="color: #ce9178;">"https://ponia.io/widget.js"</span><span style="color: #569cd6;">&gt;&lt;/script&gt;</span>
 
-<span style="color: #569cd6;">&lt;!-- Add deposit button --&gt;</span>
+<span style="color: #569cd6;">&lt;!-- Deposit button --&gt;</span>
 <span style="color: #569cd6;">&lt;button</span> <span style="color: #9cdcfe;">onclick</span>=<span style="color: #ce9178;">"openPonia({ targetChain: 'base', targetToken: 'USDC' })"</span><span style="color: #569cd6;">&gt;</span>
   Deposit with Ponia
 <span style="color: #569cd6;">&lt;/button&gt;</span></pre></div>
       
+      <h3>Withdrawal Example</h3>
+      <div class="code-block"><pre><span style="color: #569cd6;">&lt;!-- Withdrawal button --&gt;</span>
+<span style="color: #569cd6;">&lt;button</span> <span style="color: #9cdcfe;">onclick</span>=<span style="color: #ce9178;">"openPonia({ mode: 'withdraw', targetChain: 'solana', targetToken: 'USDC' })"</span><span style="color: #569cd6;">&gt;</span>
+  Withdraw to Solana
+<span style="color: #569cd6;">&lt;/button&gt;</span></pre></div>
+      
       <div class="note">
         <div class="note-title">⚡ That's it!</div>
-        <p>Your users can now deposit from any supported chain to your Base USDC wallet.</p>
+        <p>Your users can now deposit from any chain OR withdraw to any chain with instant cross-chain transfers.</p>
       </div>
       
       <h2 id="installation">Installation</h2>
@@ -391,13 +399,16 @@ openPonia({
       <p>Configure Ponia to match your application's needs using the options object:</p>
       
       <div class="code-block"><pre>openPonia({
+  <span style="color: #608b4e;">// Optional: 'deposit' (default) or 'withdraw'</span>
+  mode: <span style="color: #ce9178;">'deposit'</span>,
+  
   <span style="color: #608b4e;">// Required: Target blockchain</span>
   targetChain: <span style="color: #ce9178;">'ethereum'</span>,
   
   <span style="color: #608b4e;">// Required: Target token</span>
   targetToken: <span style="color: #ce9178;">'USDC'</span>,
   
-  <span style="color: #608b4e;">// Optional: Pre-fill deposit amount</span>
+  <span style="color: #608b4e;">// Optional: Pre-fill amount</span>
   amount: <span style="color: #ce9178;">'100'</span>,
   
   <span style="color: #608b4e;">// Optional: User wallet address</span>
@@ -424,6 +435,12 @@ openPonia({
         </thead>
         <tbody>
           <tr>
+            <td><span class="param-name">mode</span></td>
+            <td>string</td>
+            <td>No</td>
+            <td>Transaction type: <code>deposit</code> (default) or <code>withdraw</code></td>
+          </tr>
+          <tr>
             <td><span class="param-name">targetChain</span></td>
             <td>string</td>
             <td>Yes</td>
@@ -439,7 +456,7 @@ openPonia({
             <td><span class="param-name">amount</span></td>
             <td>string</td>
             <td>No</td>
-            <td>Pre-fill deposit amount (in token units)</td>
+            <td>Pre-fill transaction amount (in token units)</td>
           </tr>
           <tr>
             <td><span class="param-name">recipientAddress</span></td>
@@ -583,6 +600,9 @@ openPonia({
       
       <h3>Can users pay with any token?</h3>
       <p>Users can pay from any supported chain with any supported token (Native, USDC, USDT). Ponia handles the cross-chain routing automatically.</p>
+      
+      <h3>How do withdrawals work?</h3>
+      <p>Withdrawals work exactly like deposits, but in reverse. Set <code>mode: 'withdraw'</code> and users can send funds from your platform to any supported blockchain. Perfect for casinos, gaming platforms, and exchanges.</p>
       
       <h2 id="support">Support</h2>
       

@@ -2,6 +2,16 @@
 
 PONIA is a cross-chain cryptocurrency payment widget designed for Web3 applications (gaming dApps, NFT marketplaces, crypto casinos, DeFi platforms). It enables instant deposits/withdrawals across multiple blockchains, allowing users to top-up accounts with any crypto from any supported chain without external conversions. The business model involves a 1.5% fee on every cross-chain transaction. It integrates Reown AppKit for professional wallet connection (300+ wallets) and deBridge for instant cross-chain bridging (~2 second transfers). The project aims to provide a professional, self-service solution for Web3 apps needing cross-chain payment functionality, supporting 10 major chains including EVM networks, Solana, and TRON.
 
+# Recent Changes
+
+**October 23, 2025:**
+- Created comprehensive developer documentation page (`/docs.html`) with full integration guides
+- Documented bidirectional flows: deposits AND withdrawals
+- Added Quick Start examples for both deposit and withdrawal modes
+- Included API Reference with `mode` parameter for transaction type selection
+- Added real-world examples for Web3 Gaming, NFT Marketplaces, and Crypto Casinos
+- Implemented FAQ section with withdrawal-specific guidance
+
 # User Preferences
 
 Preferred communication style: Simple, everyday language.
@@ -10,7 +20,7 @@ Preferred communication style: Simple, everyday language.
 
 ## Multi-Page Application
 
-PONIA utilizes a multi-page structure with a landing page (`/`), a widget demo (`/widget`), and comprehensive documentation (`/docs`). The landing page focuses on marketing with features and use cases, the widget page hosts the functional payment widget, and the documentation provides self-service integration guides for developers.
+PONIA utilizes a multi-page structure with a landing page (`/`), a widget demo (`/widget`), and comprehensive documentation (`/docs.html`). The landing page focuses on marketing with features and use cases, the widget page hosts the functional payment widget, and the documentation provides self-service integration guides for developers with complete code examples for both deposits and withdrawals.
 
 ## User Interface (UI/UX)
 
