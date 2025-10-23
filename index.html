@@ -92,17 +92,12 @@
     .logo {
       display: flex;
       align-items: center;
-      gap: 10px;
       text-decoration: none;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--accent);
     }
     
     .logo img {
-      width: 36px;
-      height: 36px;
+      width: 48px;
+      height: 48px;
     }
     
     .nav-center {
@@ -171,8 +166,8 @@
     }
     
     .hero-logo img {
-      width: 200px;
-      height: 200px;
+      width: 160px;
+      height: 160px;
     }
     
     .hero h1 {
@@ -409,27 +404,50 @@
       line-height: 1.6;
     }
     
-    /* Integration Section */
-    .integration-container {
+    /* Transparency Stats */
+    .transparency-stats {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: center;
-      max-width: 1100px;
-      margin: 0 auto;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      max-width: 1000px;
+      margin: 60px auto 0;
     }
     
-    .integration-text h2 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 48px;
-      font-weight: 700;
-      margin-bottom: 16px;
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px 32px;
+      text-align: center;
+      transition: all 0.3s;
     }
     
-    .integration-text p {
-      color: var(--muted);
-      font-size: 16px;
+    .stat-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 215, 63, 0.2);
+    }
+    
+    .stat-card .stat-icon {
       margin-bottom: 24px;
+      display: flex;
+      justify-content: center;
+    }
+    
+    .stat-card .stat-icon svg {
+      color: var(--accent);
+    }
+    
+    .stat-card .stat-value {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 56px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    
+    .stat-card .stat-label {
+      font-size: 16px;
+      color: var(--muted);
     }
     
     .code-block {
@@ -519,6 +537,44 @@
       line-height: 1.8;
     }
     
+    /* Chains Grid */
+    .chains-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    .chain-badge {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.3s;
+    }
+    
+    .chain-badge:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 215, 63, 0.2);
+    }
+    
+    .chain-badge img {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+    }
+    
+    .chain-badge span {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+    
     /* Solutions Grid */
     .solutions-grid {
       display: grid;
@@ -591,6 +647,11 @@
       font-size: 15px;
       font-family: 'Inter', sans-serif;
       transition: border-color 0.2s;
+    }
+    
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+      color: rgba(154, 160, 166, 0.5);
     }
     
     .form-input:focus,
@@ -686,12 +747,13 @@
       
       .steps,
       .features-grid,
-      .solutions-grid {
+      .solutions-grid,
+      .transparency-stats {
         grid-template-columns: 1fr;
       }
       
-      .integration-container {
-        grid-template-columns: 1fr;
+      .chains-grid {
+        grid-template-columns: repeat(2, 1fr);
       }
     }
   </style>
@@ -704,7 +766,6 @@
   <header class="header">
     <a href="/" class="logo">
       <img src="/assets/ponia-logo.png" alt="PONIA">
-      PONIA
     </a>
     
     <nav class="nav-center">
@@ -828,20 +889,55 @@
   <!-- Integration -->
   <section class="section">
     <div class="container">
-      <div class="integration-container">
-        <div class="integration-text">
-          <h2>Integration made simple</h2>
-          <p>Add Ponia in one minute. Let your users deposit from any chain.</p>
-          <a href="/docs" class="btn btn-secondary"><i data-lucide="file-text"></i> View full documentation</a>
-        </div>
-        
-        <div class="code-block"><script src="https://ponia.io/widget.js"></script>
+      <h2 class="section-title">Integration made simple</h2>
+      <p class="section-subtitle">Add Ponia in one minute. Let your users deposit from any chain.</p>
+      
+      <div class="code-block" style="max-width: 700px; margin: 0 auto 60px;"><script src="https://ponia.io/widget.js"></script>
 <button onclick="openPonia()">
   Swap with Ponia
 </button></div>
+      
+      <h2 class="section-title" style="margin-top: 60px;">Transparency is built in.</h2>
+      
+      <div class="transparency-stats">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <div class="stat-value">43s</div>
+          <div class="stat-label">Average ETA</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
+          <div class="stat-value">99.2%</div>
+          <div class="stat-label">Success rate</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+          </div>
+          <div class="stat-value">1.5%</div>
+          <div class="stat-label">Average fee</div>
+        </div>
       </div>
       
-      <h2 class="section-title" style="margin-top: 100px;">Transparency is built in.</h2>
+      <div style="text-align: center; margin-top: 40px;">
+        <a href="#" class="btn btn-secondary">
+          <i data-lucide="activity"></i> View live status
+        </a>
+      </div>
     </div>
   </section>
   
@@ -874,6 +970,49 @@
         <p class="pricing-subtext">
           You only pay for what you use. The 1.5% fee covers cross-chain routing, gas optimization, and infrastructure costs. No surprises, ever.
         </p>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Supported Chains -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Supported blockchains</h2>
+      <p class="section-subtitle">8 major chains supported, covering 85%+ of Web3 users</p>
+      
+      <div class="chains-grid">
+        <div class="chain-badge">
+          <img src="/assets/chains/ethereum.png" alt="Ethereum">
+          <span>Ethereum</span>
+        </div>
+        <div class="chain-badge">
+          <img src="/assets/chains/polygon.png" alt="Polygon">
+          <span>Polygon</span>
+        </div>
+        <div class="chain-badge">
+          <img src="/assets/chains/arbitrum.png" alt="Arbitrum">
+          <span>Arbitrum</span>
+        </div>
+        <div class="chain-badge">
+          <img src="/assets/chains/base.png" alt="Base">
+          <span>Base</span>
+        </div>
+        <div class="chain-badge">
+          <img src="/assets/chains/optimism.png" alt="Optimism">
+          <span>Optimism</span>
+        </div>
+        <div class="chain-badge">
+          <img src="/assets/chains/bnb.png" alt="BNB Chain">
+          <span>BNB Chain</span>
+        </div>
+        <div class="chain-badge">
+          <img src="/assets/chains/zksync.png" alt="zkSync">
+          <span>zkSync</span>
+        </div>
+        <div class="chain-badge">
+          <img src="/assets/chains/worldchain.png" alt="World Chain">
+          <span>World Chain</span>
+        </div>
       </div>
     </div>
   </section>
@@ -930,22 +1069,22 @@
         <form>
           <div class="form-group">
             <label class="form-label">Name</label>
-            <input type="text" class="form-input" required>
+            <input type="text" class="form-input" placeholder="John Doe" required>
           </div>
           
           <div class="form-group">
             <label class="form-label">Email / Discord</label>
-            <input type="text" class="form-input" required>
+            <input type="text" class="form-input" placeholder="john@example.com or john#1234" required>
           </div>
           
           <div class="form-group">
             <label class="form-label">Project URL</label>
-            <input type="url" class="form-input" placeholder="https://" required>
+            <input type="url" class="form-input" placeholder="https://yourproject.com" required>
           </div>
           
           <div class="form-group">
             <label class="form-label">Message</label>
-            <textarea class="form-textarea"></textarea>
+            <textarea class="form-textarea" placeholder="Tell us about your project and how you plan to use Ponia..."></textarea>
           </div>
           
           <button type="submit" class="form-submit">Submit <i data-lucide="arrow-up-right"></i></button>
