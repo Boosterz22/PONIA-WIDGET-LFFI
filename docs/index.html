@@ -537,7 +537,7 @@
         <div class="info-box">
           <div class="info-box-title">⚡ Key Features</div>
           <p style="margin-bottom: 8px;">
-            • <strong>8 Blockchains:</strong> Ethereum, Polygon, Arbitrum, Base, Optimism, BNB Chain, zkSync, World Chain<br>
+            • <strong>8 Blockchains:</strong> Ethereum, Polygon, Arbitrum, Base, Optimism, BNB Chain, Solana, TRON<br>
             • <strong>Lightning Fast:</strong> 1-3 minute transfers powered by Across Protocol<br>
             • <strong>Stablecoin Support:</strong> USDC on 7 chains, USDT on 6 chains<br>
             • <strong>Simple Integration:</strong> Embed in 30 seconds with an iframe
@@ -746,10 +746,14 @@ export default {
       <section id="supported-chains">
         <h2>Supported Blockchains</h2>
         <p>
-          PONIA supports 8 major EVM-compatible blockchains:
+          PONIA supports 8 major deBridge-compatible blockchains (6 EVM + Solana + TRON):
         </p>
         
         <div class="chains-grid">
+          <div class="chain-badge">
+            <img src="/assets/chains/solana.png" alt="Solana">
+            <span>Solana</span>
+          </div>
           <div class="chain-badge">
             <img src="/assets/chains/ethereum.png" alt="Ethereum">
             <span>Ethereum</span>
@@ -775,20 +779,16 @@ export default {
             <span>BNB Chain</span>
           </div>
           <div class="chain-badge">
-            <img src="/assets/chains/zksync.png" alt="zkSync">
-            <span>zkSync</span>
-          </div>
-          <div class="chain-badge">
-            <img src="/assets/chains/worldchain.png" alt="World Chain">
-            <span>World Chain</span>
+            <img src="/assets/chains/tron.png" alt="TRON">
+            <span>TRON</span>
           </div>
         </div>
         
         <h3>Token Support by Chain</h3>
         <p>
-          <strong>USDC available on 7 chains:</strong> Ethereum, Optimism, BNB Chain, Polygon, zkSync, Base, Arbitrum<br>
-          <strong>USDT available on 6 chains:</strong> Ethereum, Optimism, BNB Chain, Polygon, zkSync, Arbitrum<br>
-          <strong>Native tokens:</strong> Available on all 8 chains (ETH, POL, BNB, etc.)
+          <strong>USDC available on 7 chains:</strong> Ethereum, Optimism, BNB Chain, Polygon, Base, Arbitrum, Solana, TRON<br>
+          <strong>USDT available on 5 chains:</strong> Ethereum, Optimism, BNB Chain, Polygon, Arbitrum, Solana, TRON<br>
+          <strong>Native tokens:</strong> Available on all 8 chains (SOL, ETH, POL, BNB, TRX, etc.)
         </p>
       </section>
       

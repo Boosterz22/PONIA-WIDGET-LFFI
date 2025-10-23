@@ -1,6 +1,6 @@
 import { createAppKit } from '@reown/appkit'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
-import { mainnet, polygon, bsc, arbitrum, base, optimism, zkSync, worldchain } from '@reown/appkit/networks'
+import { mainnet, polygon, bsc, arbitrum, base, optimism } from '@reown/appkit/networks'
 
 // Token configuration (EVM + Solana + TRON)
 const TOKENS = {
@@ -12,10 +12,8 @@ const TOKENS = {
       10: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',      // ETH
       56: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',      // BNB
       137: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',     // POL
-      324: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',     // ETH
       8453: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',    // ETH
       42161: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',   // ETH
-      480: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',     // ETH
       // Solana wrapped SOL
       7565164: 'So11111111111111111111111111111111111111112',
       // TRON native TRX
@@ -31,10 +29,8 @@ const TOKENS = {
       10: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',     // Optimism
       56: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',     // BSC
       137: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',    // Polygon
-      324: '0x1d17CBcF0D6D143135aE902365D2E5e2A16538D4',     // zkSync (USDC.e)
       8453: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',   // Base
       42161: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',  // Arbitrum
-      480: '0x79A02482A880bCE3F13e09Da970dC34db4CD24d1',     // World Chain
       // Solana USDC
       7565164: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
       // TRON USDC
@@ -50,7 +46,6 @@ const TOKENS = {
       10: '0x94b008aA00579c1307B0EF2c499aD98a8ce58e58',     // Optimism
       56: '0x55d398326f99059fF775485246999027B3197955',     // BSC
       137: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',    // Polygon
-      324: '0x493257fD37EDB34451f62EDf8D2a0C418852bA4C',     // zkSync
       42161: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',   // Arbitrum
       // Solana USDT
       7565164: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
@@ -62,7 +57,7 @@ const TOKENS = {
   }
 };
 
-// Chain configuration with logos (10 chains: 8 EVM + Solana + TRON)
+// Chain configuration with logos (8 deBridge-supported chains)
 const CHAIN_CONFIG = {
   solana: {
     id: 7565164,
@@ -113,20 +108,6 @@ const CHAIN_CONFIG = {
     symbol: 'BNB',
     type: 'evm'
   },
-  zksync: {
-    id: 324,
-    name: 'zkSync',
-    logo: '/assets/chains/zksync.png',
-    symbol: 'ETH',
-    type: 'evm'
-  },
-  worldchain: {
-    id: 480,
-    name: 'World Chain',
-    logo: '/assets/chains/worldchain.png',
-    symbol: 'ETH',
-    type: 'evm'
-  },
   tron: {
     id: 728126428,
     name: 'TRON',
@@ -156,7 +137,7 @@ const metadata = {
 ethersAdapter = new EthersAdapter();
 modal = createAppKit({
   adapters: [ethersAdapter],
-  networks: [mainnet, polygon, arbitrum, base, optimism, bsc, zkSync, worldchain],
+  networks: [mainnet, polygon, arbitrum, base, optimism, bsc],
   projectId,
   metadata,
   features: {

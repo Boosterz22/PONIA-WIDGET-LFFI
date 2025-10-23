@@ -1,6 +1,6 @@
 # Overview
 
-PONIA is a cross-chain cryptocurrency payment widget designed for Web3 applications (gaming dApps, NFT marketplaces, crypto casinos, DeFi platforms). It enables instant deposits/withdrawals across multiple blockchains, allowing users to top-up accounts with any crypto from any supported chain without external conversions. The business model involves a 1.5% fee on every cross-chain transaction. It integrates Reown AppKit for professional wallet connection (300+ wallets) and deBridge for instant cross-chain bridging (~2 second transfers). The project aims to provide a professional, self-service solution for Web3 apps needing cross-chain payment functionality, supporting 10 major chains including EVM networks, Solana, and TRON.
+PONIA is a cross-chain cryptocurrency payment widget designed for Web3 applications (gaming dApps, NFT marketplaces, crypto casinos, DeFi platforms). It enables instant deposits/withdrawals across multiple blockchains, allowing users to top-up accounts with any crypto from any supported chain without external conversions. The business model involves a 1.5% fee on every cross-chain transaction. It integrates Reown AppKit for professional wallet connection (300+ wallets) and deBridge for instant cross-chain bridging (~43 second transfers). The project aims to provide a professional, self-service solution for Web3 apps needing cross-chain payment functionality, supporting 8 major deBridge-compatible chains including EVM networks, Solana, and TRON.
 
 # Recent Changes
 
@@ -11,6 +11,8 @@ PONIA is a cross-chain cryptocurrency payment widget designed for Web3 applicati
 - Included API Reference with `mode` parameter for transaction type selection
 - Added real-world examples for Web3 Gaming, NFT Marketplaces, and Crypto Casinos
 - Implemented FAQ section with withdrawal-specific guidance
+- **Fixed deBridge integration:** Removed zkSync and World Chain (not supported by deBridge), now using 8 compatible chains
+- **Fixed token addresses:** Added proper Solana base58 addresses and TRON token formats for cross-chain compatibility
 
 # User Preferences
 
@@ -27,7 +29,7 @@ PONIA utilizes a multi-page structure with a landing page (`/`), a widget demo (
 The widget features a modern, professional design with a 3-stage user flow (selection, processing, success). Key UI elements include:
 - Animated gradient background on the landing page.
 - Stats bar and feature highlights.
-- Visual chain selection with logos for 10 supported blockchains (8 EVM + Solana + TRON).
+- Visual chain selection with logos for 8 supported blockchains (6 EVM + Solana + TRON).
 - Token selector for Native, USDC, and USDT with smart availability.
 - Transparent fee breakdown showing PONIA's 1.5% fee, total debited, and expected output.
 - Professional branding with a black/yellow color scheme.
@@ -37,8 +39,8 @@ The widget features a modern, professional design with a 3-stage user flow (sele
 - **Frontend:** Single-Page Application (SPA) architecture using Vanilla JavaScript (ES6+) with ES modules, built with Vite for fast development and optimized builds.
 - **Wallet Integration:** Reown AppKit 1.8.x is used for universal wallet connectivity (300+ wallets) and integrates with `ethers.js` via `Reown AppKit Ethers Adapter`.
 - **Cross-Chain Bridging:** deBridge is the sole bridging solution, offering instant (~2 second) transfer speeds with Zero-TVL architecture for maximum security. PONIA integrates its 1.5% transaction fee directly into the quote.
-- **Supported Chains:** Currently supports 10 major blockchains: 8 EVM chains (Ethereum, Polygon, Arbitrum, Base, Optimism, BNB Chain, zkSync, World Chain) plus Solana and TRON for broader market coverage.
-- **Token Support:** Comprehensive support for native tokens, USDC (on 7 chains), and USDT (on 6 chains), with automatic mapping of correct token addresses and decimal handling.
+- **Supported Chains:** Currently supports 8 deBridge-compatible blockchains: 6 EVM chains (Ethereum, Polygon, Arbitrum, Base, Optimism, BNB Chain) plus Solana and TRON for broader market coverage.
+- **Token Support:** Comprehensive support for native tokens, USDC (on 7 chains), and USDT (on 5 chains), with automatic mapping of correct token addresses (including Solana base58 and TRON formats).
 - **Platform Chain Detection:** The widget can auto-detect the target blockchain or be configured via URL parameters.
 
 # External Dependencies
