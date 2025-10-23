@@ -172,6 +172,17 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 1.2s ease-out forwards;
+      animation-delay: 0.3s;
+    }
+    
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
     
     .hero-logo img {
@@ -1283,16 +1294,10 @@
   </footer>
   
   <script>
-    // Force scroll to top on page load
-    window.addEventListener('load', function() {
-      window.scrollTo(0, 0);
-    });
-    
-    // Also scroll to top immediately
-    if (history.scrollRestoration) {
+    // Prevent scroll restoration on page reload
+    if ('scrollRestoration' in history) {
       history.scrollRestoration = 'manual';
     }
-    window.scrollTo(0, 0);
     
     // Initialize Lucide icons
     lucide.createIcons();
