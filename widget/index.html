@@ -275,6 +275,12 @@
     color: var(--text);
     font-size: 14px;
   }
+  .input-hint {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 6px;
+    line-height: 1.4;
+  }
   
   /* Buttons */
   .btn-primary {
@@ -636,6 +642,13 @@
         <div class="input-group">
           <label class="input-label">Amount to send</label>
           <input type="text" class="input-field" id="amountInput" value="0.01" placeholder="0.01" />
+        </div>
+
+        <!-- Destination Address (shown only for cross-chain type transfers) -->
+        <div class="input-group hidden" id="destAddressGroup">
+          <label class="input-label">Destination Address</label>
+          <input type="text" class="input-field" id="destAddressInput" placeholder="Enter your Ethereum address (0x...)" />
+          <div class="input-hint">Your wallet is Solana, but destination is EVM. Please provide your EVM address.</div>
         </div>
 
         <!-- Fee Preview -->

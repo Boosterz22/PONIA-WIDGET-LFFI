@@ -208,6 +208,7 @@ function initializeUI() {
   updateTokenAvailability();
   updateRouteVisual();
   updateFeePreview();
+  updateDestinationAddressField();
 }
 
 function selectSourceChain(chainKey) {
@@ -216,6 +217,7 @@ function selectSourceChain(chainKey) {
   updateTokenAvailability();
   updateRouteVisual();
   updateFeePreview();
+  updateDestinationAddressField();
 }
 
 function updateSourceChainSelection() {
@@ -456,6 +458,35 @@ function formatAmount(smallestUnit, tokenType = 'native') {
   return amount.toFixed(tokenType === 'native' ? 6 : 2);
 }
 
+// Update destination address field visibility
+function updateDestinationAddressField() {
+  const sourceConfig = CHAIN_CONFIG[selectedSourceChain];
+  const destConfig = CHAIN_CONFIG[destinationChain];
+  const destAddressGroup = document.getElementById('destAddressGroup');
+  const destAddressInput = document.getElementById('destAddressInput');
+  
+  // Show address field if source and destination are different chain types
+  if (sourceConfig.type !== destConfig.type) {
+    destAddressGroup.classList.remove('hidden');
+    
+    // Update placeholder and hint based on destination type
+    const destAddressHint = destAddressGroup.querySelector('.input-hint');
+    if (destConfig.type === 'evm') {
+      destAddressInput.placeholder = 'Enter your EVM address (0x...)';
+      destAddressHint.textContent = `Your wallet is ${sourceConfig.type.toUpperCase()}, but destination is EVM. Please provide your EVM address.`;
+    } else if (destConfig.type === 'solana') {
+      destAddressInput.placeholder = 'Enter your Solana address (base58)';
+      destAddressHint.textContent = `Your wallet is ${sourceConfig.type.toUpperCase()}, but destination is Solana. Please provide your Solana address.`;
+    } else if (destConfig.type === 'tron') {
+      destAddressInput.placeholder = 'Enter your TRON address (T...)';
+      destAddressHint.textContent = `Your wallet is ${sourceConfig.type.toUpperCase()}, but destination is TRON. Please provide your TRON address.`;
+    }
+  } else {
+    destAddressGroup.classList.add('hidden');
+    destAddressInput.value = '';
+  }
+}
+
 // Handle swap confirmation
 async function handleConfirmSwap() {
   try {
@@ -470,7 +501,30 @@ async function handleConfirmSwap() {
     const destConfig = CHAIN_CONFIG[destinationChain];
     
     // Get wallet address for the source chain (works for EVM, Solana, TRON)
-    const userAddress = await getConnectedAddress(sourceConfig.id);
+    const sourceAddress = await getConnectedAddress(sourceConfig.id);
+    
+    // Get destination address - use manual input if different chain types, otherwise use source address
+    let destinationAddress;
+    if (sourceConfig.type !== destConfig.type) {
+      destinationAddress = document.getElementById('destAddressInput').value.trim();
+      if (!destinationAddress) {
+        alert(`Please provide your ${destConfig.name} address for the destination`);
+        return;
+      }
+      
+      // Basic validation
+      if (destConfig.type === 'evm' && !destinationAddress.startsWith('0x')) {
+        alert('Please provide a valid EVM address starting with 0x');
+        return;
+      }
+      if (destConfig.type === 'tron' && !destinationAddress.startsWith('T')) {
+        alert('Please provide a valid TRON address starting with T');
+        return;
+      }
+    } else {
+      // Same chain type, use source address
+      destinationAddress = sourceAddress;
+    }
     
     // Calculate fees
     const userAmount = toSmallestUnit(amount, selectedToken);
@@ -528,9 +582,9 @@ async function handleConfirmSwap() {
       dstChainId: destConfig.id,
       dstChainTokenOut: outputTokenAddress,
       dstChainTokenOutAmount: 'auto',  // Let deBridge calculate optimal output
-      dstChainTokenOutRecipient: userAddress,  // User's EVM address
-      srcChainOrderAuthorityAddress: userAddress,  // User's EVM address
-      dstChainOrderAuthorityAddress: userAddress,  // User's EVM address
+      dstChainTokenOutRecipient: destinationAddress,  // Destination address (cross-chain compatible)
+      srcChainOrderAuthorityAddress: sourceAddress,  // Source wallet address
+      dstChainOrderAuthorityAddress: destinationAddress,  // Destination address (cross-chain compatible)
       affiliateFeePercent: '0.15',  // 0.15% = our additional fee on top of user's amount
       affiliateFeeRecipient: getAffiliateFeeRecipient(sourceConfig.id),  // Chain-specific format
       prependOperatingExpenses: 'true'  // Add fees to input, don't deduct from output
