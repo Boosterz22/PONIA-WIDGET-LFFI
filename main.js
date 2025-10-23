@@ -35,7 +35,7 @@ const TOKENS = {
       42161: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9'   // Arbitrum
     },
     decimals: 6,
-    logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%2350AF95"/%3E%3Ctext x="16" y="22" font-size="14" font-weight="bold" text-anchor="middle" fill="%23FFF"%3ET%3C/text%3E%3C/svg%3E'
+    logo: '/assets/tokens/usdt.png'
   }
 };
 
@@ -44,43 +44,43 @@ const CHAIN_CONFIG = {
   ethereum: {
     id: 1,
     name: 'Ethereum',
-    logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%23627EEA"/%3E%3Cpath fill="%23FFF" d="M16 4l-8 13.5 8 4.75 8-4.75L16 4zm0 16.25l-8-4.75L16 28l8-12.5-8 4.75z"/%3E%3C/svg%3E',
+    logo: '/assets/chains/ethereum.png',
     symbol: 'ETH'
   },
   polygon: {
     id: 137,
     name: 'Polygon',
-    logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%238247E5"/%3E%3Cpath fill="%23FFF" d="M21 11l-5 3-3 2-5 3v6l5-3 3-2 5-3v-6zm-3-2l3 2v4l-3-2v-4zm-6 12l-3 2v-4l3-2v4z"/%3E%3C/svg%3E',
+    logo: '/assets/chains/polygon.png',
     symbol: 'POL'
   },
   arbitrum: {
     id: 42161,
     name: 'Arbitrum',
-    logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%2328A0F0"/%3E%3Cpath fill="%23FFF" d="M10 12l6 10 6-10-6-4-6 4zm6 8l-4-6.5L16 10l4 3.5-4 6.5z"/%3E%3C/svg%3E',
+    logo: '/assets/chains/arbitrum.png',
     symbol: 'ETH'
   },
   base: {
     id: 8453,
     name: 'Base',
-    logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%230052FF"/%3E%3Cpath fill="%23FFF" d="M16 8c-4.4 0-8 3.6-8 8s3.6 8 8 8c3.7 0 6.8-2.5 7.7-6h-7.7v-4h7.7c-0.9-3.5-4-6-7.7-6z"/%3E%3C/svg%3E',
+    logo: '/assets/chains/base.png',
     symbol: 'ETH'
   },
   optimism: {
     id: 10,
     name: 'Optimism',
-    logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%23FF0420"/%3E%3Cpath fill="%23FFF" d="M10 14c0-1.1 0.9-2 2-2s2 0.9 2 2-0.9 2-2 2-2-0.9-2-2zm8 0c0-1.1 0.9-2 2-2s2 0.9 2 2-0.9 2-2 2-2-0.9-2-2zm-8 4h12c0 2.2-1.8 4-4 4h-4c-2.2 0-4-1.8-4-4z"/%3E%3C/svg%3E',
+    logo: '/assets/chains/optimism.png',
     symbol: 'ETH'
   },
   bsc: {
     id: 56,
     name: 'BNB Chain',
-    logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%23F3BA2F"/%3E%3Cpath fill="%23000" d="M16 8l3 3-3 3-3-3 3-3zm-5 5l3 3-3 3-3-3 3-3zm10 0l3 3-3 3-3-3 3-3zm-5 5l3 3-3 3-3-3 3-3z"/%3E%3C/svg%3E',
+    logo: '/assets/chains/bnb.png',
     symbol: 'BNB'
   },
   zksync: {
     id: 324,
     name: 'zkSync',
-    logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%238C8DFC"/%3E%3Cpath fill="%23FFF" d="M10 12l6-4 6 4v8l-6 4-6-4v-8zm6 10l4-2.7v-5.3l-4 2.7v5.3zm-4-8l4-2.7 4 2.7-4 2.7-4-2.7z"/%3E%3C/svg%3E',
+    logo: '/assets/chains/zksync.png',
     symbol: 'ETH'
   },
   blast: {

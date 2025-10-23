@@ -54,13 +54,18 @@
     width: 36px;
     height: 36px;
     border-radius: 8px;
-    background: var(--accent);
+    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 800;
     font-size: 20px;
     color: #0a0a0b;
+  }
+  .widget-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
   .widget-title {
     font-weight: 700;
@@ -374,7 +379,7 @@
     <!-- Header -->
     <div class="widget-header">
       <div class="widget-logo-section">
-        <div class="widget-logo">P</div>
+        <div class="widget-logo"><img src="/assets/ponia-logo.png" alt="PONIA"></div>
         <div>
           <div class="widget-title">PONIA</div>
           <div class="widget-subtitle">Cross-chain swap</div>
