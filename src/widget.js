@@ -578,30 +578,45 @@ async function handleConfirmSwap() {
       throw new Error('No transaction data received from deBridge');
     }
     
-    // Get provider and execute transaction
-    const provider = ethersAdapter.getProvider();
-    if (!provider) {
-      throw new Error('Wallet not connected');
+    // Execute transaction based on chain type
+    let txHash;
+    
+    if (sourceConfig.type === 'solana') {
+      // Solana transaction - use Solana wallet
+      throw new Error('Solana transactions not yet implemented');
+    } else if (sourceConfig.type === 'evm') {
+      // EVM transaction - get provider from AppKit
+      const walletProvider = await modal.getWalletProvider();
+      if (!walletProvider) {
+        throw new Error('Wallet not connected');
+      }
+      
+      const provider = new ethers.BrowserProvider(walletProvider);
+      const signer = await provider.getSigner();
+      
+      const tx = {
+        to: orderData.tx.to,
+        data: orderData.tx.data,
+        value: orderData.tx.value || '0x0',
+        gasLimit: orderData.tx.gas || '500000'
+      };
+      
+      console.log('Sending EVM transaction:', tx);
+      const txResponse = await signer.sendTransaction(tx);
+      console.log('Transaction submitted:', txResponse.hash);
+      txHash = txResponse.hash;
+      
+      // Wait for confirmation
+      await txResponse.wait();
+    } else if (sourceConfig.type === 'tron') {
+      // TRON transaction
+      throw new Error('TRON transactions not yet implemented');
+    } else {
+      throw new Error(`Unsupported chain type: ${sourceConfig.type}`);
     }
     
-    const signer = await provider.getSigner();
-    
-    const tx = {
-      to: orderData.tx.to,
-      data: orderData.tx.data,
-      value: orderData.tx.value || '0x0',
-      gasLimit: orderData.tx.gas || '500000'
-    };
-    
-    console.log('Sending transaction:', tx);
-    const txResponse = await signer.sendTransaction(tx);
-    console.log('Transaction submitted:', txResponse.hash);
-    
-    // Wait for confirmation
-    await txResponse.wait();
-    
     // Show success
-    showSuccess(txResponse.hash, sourceConfig, destConfig);
+    showSuccess(txHash, sourceConfig, destConfig);
     
   } catch (error) {
     console.error('Swap error:', error);
