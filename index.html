@@ -1,116 +1,496 @@
 <!doctype html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Ponia Demo — LI.FI test</title>
+<title>PONIA — Cross-Chain Payment Widget</title>
 <style>
   :root {
-    --bg: #0f0f10;
+    --bg: #0a0a0b;
     --card: #111213;
+    --card-light: #1a1a1c;
+    --border: rgba(255,255,255,0.06);
     --muted: #9aa0a6;
     --accent: #FFD73F;
+    --success: #22c55e;
     --text: #ffffff;
-    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    font-family: 'Space Grotesk', Inter, system-ui, -apple-system, sans-serif;
   }
-  body { background: var(--bg); color:var(--text); margin:0; padding:20px; }
-  .container { max-width:980px; margin:20px auto; }
-  h1 { text-align:center; margin-bottom:8px; }
-  .card { background:var(--card); padding:20px; border-radius:10px; box-shadow:0 6px 20px rgba(0,0,0,.6); }
-  label { display:block; color:var(--muted); margin-top:12px; font-size:13px; }
-  select,input { width:100%; padding:10px 12px; margin-top:6px; border-radius:8px; border:1px solid rgba(255,255,255,.04); background:#0b0b0c; color:var(--text); }
-  .row { display:flex; gap:16px; }
-  .col { flex:1; }
-  button { background:var(--accent); border:none; padding:10px 16px; border-radius:10px; cursor:pointer; color:#111; font-weight:700; }
-  .muted { color:var(--muted); font-size:13px; }
-  pre { background:#080808; padding:12px; border-radius:8px; overflow:auto; color:#ffd; }
-  .controls { margin-top:14px; display:flex; gap:10px; flex-wrap:wrap; align-items: center; }
-  .status { margin-top:12px; color:var(--muted); font-size:13px; }
-  footer { text-align:center; margin-top:18px; color:var(--muted); font-size:13px; }
-  .recap { background:#1a1a1c; border:1px solid rgba(255,215,63,.15); border-radius:10px; padding:16px; margin-top:16px; }
-  .recap h3 { margin:0 0 12px 0; color:var(--accent); font-size:15px; }
-  .recap-row { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,.05); }
-  .recap-row:last-child { border-bottom:none; }
-  .recap-label { color:var(--muted); font-size:13px; }
-  .recap-value { color:var(--text); font-weight:600; font-size:14px; }
-  .hidden { display:none !important; }
+  * { box-sizing: border-box; }
+  body { 
+    background: var(--bg); 
+    color: var(--text); 
+    margin: 0; 
+    padding: 20px; 
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .widget-container {
+    width: 100%;
+    max-width: 450px;
+    background: linear-gradient(to bottom, var(--card) 0%, var(--card-light) 100%);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  
+  /* Header */
+  .widget-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .widget-logo-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .widget-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 20px;
+    color: #0a0a0b;
+  }
+  .widget-title {
+    font-weight: 700;
+    font-size: 16px;
+    margin: 0;
+  }
+  .widget-subtitle {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 0;
+  }
+  .btn-close {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 24px;
+    padding: 4px;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+  .btn-close:hover { color: var(--text); }
+  
+  /* Body */
+  .widget-body {
+    padding: 24px;
+  }
+  
+  /* Chain Display */
+  .chain-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 24px 0;
+  }
+  .chain-logo-big {
+    width: 112px;
+    height: 112px;
+    border-radius: 20px;
+    background: var(--card-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    border: 1px solid var(--border);
+  }
+  .chain-logo-big img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .chain-info-text {
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+  }
+  .chain-info-text strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+  
+  /* Chain Selector */
+  .chain-selector-title {
+    text-align: center;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+  .chain-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .chain-btn {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .chain-btn:hover {
+    background: var(--card-light);
+    transform: translateY(-2px);
+  }
+  .chain-btn.active {
+    background: rgba(255, 215, 63, 0.1);
+    color: var(--text);
+    border-color: rgba(255, 215, 63, 0.2);
+  }
+  
+  /* Input */
+  .input-group {
+    margin: 16px 0;
+  }
+  .input-label {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    display: block;
+  }
+  .input-field {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card-light);
+    color: var(--text);
+    font-size: 14px;
+  }
+  
+  /* Buttons */
+  .btn-primary {
+    width: 100%;
+    padding: 14px 20px;
+    border-radius: 12px;
+    border: none;
+    background: var(--accent);
+    color: #0a0a0b;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 16px;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 215, 63, 0.4);
+  }
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  /* Processing */
+  .swap-animation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 32px 0;
+  }
+  .swap-chain-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 14px;
+    background: var(--card-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    border: 1px solid var(--border);
+  }
+  .swap-chain-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .swap-arrow {
+    font-size: 32px;
+    color: var(--accent);
+    animation: pulse-slide 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse-slide {
+    0%, 100% { opacity: 0.6; transform: translateX(0); }
+    50% { opacity: 1; transform: translateX(4px); }
+  }
+  .swap-info {
+    text-align: center;
+    margin-top: 16px;
+  }
+  .swap-info-title {
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+  .swap-info-subtitle {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  
+  /* Progress Bar */
+  .progress-container {
+    margin: 24px 0;
+  }
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .progress-bar-bg {
+    height: 8px;
+    background: var(--card-light);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--accent), rgba(255, 215, 63, 0.8));
+    transition: width 0.3s ease;
+    border-radius: 10px;
+  }
+  
+  /* Success */
+  .success-icon {
+    width: 72px;
+    height: 72px;
+    background: rgba(34, 197, 94, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+  }
+  .success-icon svg {
+    width: 42px;
+    height: 42px;
+    color: var(--success);
+  }
+  .success-title {
+    font-weight: 700;
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .success-subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .tx-hash-box {
+    background: var(--card-light);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 20px 0;
+  }
+  .tx-hash-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .tx-hash {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: var(--text);
+    word-break: break-all;
+  }
+  
+  /* Fee Breakdown */
+  .fee-breakdown {
+    background: var(--card-light);
+    border: 1px solid rgba(255, 215, 63, 0.15);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 20px 0;
+  }
+  .fee-breakdown-title {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .fee-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .fee-row:last-child {
+    border-bottom: none;
+  }
+  .fee-row.total {
+    border-top: 1px solid rgba(255, 215, 63, 0.3);
+    padding-top: 12px;
+    margin-top: 8px;
+    font-weight: 700;
+  }
+  .fee-label {
+    color: var(--muted);
+  }
+  .fee-value {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .fee-row.total .fee-label,
+  .fee-row.total .fee-value {
+    color: var(--accent);
+  }
+  
+  .hidden {
+    display: none !important;
+  }
+  
+  .wallet-btn-container {
+    margin: 16px 0;
+  }
 </style>
 </head>
 <body>
-  <div class="container">
-    <h1>💰 PONIA — Cross-Chain Payment Widget</h1>
-    <p style="text-align:center; color:var(--muted); margin-top:-4px; font-size:14px;">Powered by Across Protocol • 1.5% integrator fee</p>
-
-    <div class="card">
-      <div class="muted">Platform chain (détectée automatiquement si possible)</div>
-      <input id="platformChain" placeholder="Ex: polygon" />
-
-      <label>From chain</label>
-      <select id="fromChain">
-        <option value="ethereum">Ethereum</option>
-        <option value="polygon">Polygon</option>
-        <option value="bsc">BNB Chain</option>
-        <option value="arbitrum">Arbitrum</option>
-      </select>
-
-      <div class="row" style="margin-top:10px">
-        <div class="col">
-          <label>From amount (en unité lisible, ex. 0.1)</label>
-          <input id="amount" value="0.01" />
+  <div class="widget-container">
+    <!-- Header -->
+    <div class="widget-header">
+      <div class="widget-logo-section">
+        <div class="widget-logo">P</div>
+        <div>
+          <div class="widget-title">PONIA</div>
+          <div class="widget-subtitle">Cross-chain swap</div>
         </div>
-        <div class="col">
-          <label>To chain (platform)</label>
-          <select id="toChain">
-            <option value="polygon">Polygon</option>
-            <option value="ethereum">Ethereum</option>
-            <option value="bsc">BNB Chain</option>
-            <option value="arbitrum">Arbitrum</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="controls">
-        <appkit-button></appkit-button>
-        <button id="btnSendTransfer">Send Transfer</button>
-      </div>
-
-      <div class="status" id="status">Initializing Reown AppKit...</div>
-
-      <div id="feeBreakdown" class="recap hidden">
-        <h3>💰 Fee Breakdown</h3>
-        <div class="recap-row">
-          <span class="recap-label">Amount to transfer</span>
-          <span class="recap-value" id="feeUserAmount">-</span>
-        </div>
-        <div class="recap-row">
-          <span class="recap-label">PONIA fee (1.5%)</span>
-          <span class="recap-value" id="feePoniaFee">-</span>
-        </div>
-        <div class="recap-row" style="border-top:1px solid rgba(255,215,63,.3); padding-top:10px; margin-top:6px;">
-          <span class="recap-label" style="font-weight:700; color:var(--accent);">Total debited from wallet</span>
-          <span class="recap-value" style="color:var(--accent); font-weight:700;" id="feeTotalAmount">-</span>
-        </div>
-        <div class="recap-row" style="margin-top:10px;">
-          <span class="recap-label">You'll receive (estimated)</span>
-          <span class="recap-value" id="feeOutputAmount">-</span>
-        </div>
-        <div class="recap-row">
-          <span class="recap-label">Destination chain</span>
-          <span class="recap-value" id="feeToChain">-</span>
-        </div>
-        <div class="recap-row">
-          <span class="recap-label">Estimated time</span>
-          <span class="recap-value" id="feeEstimatedTime">~1-3 minutes</span>
-        </div>
-      </div>
-
-      <div style="margin-top:14px">
-        <div class="muted">Quote / Route JSON</div>
-        <pre id="output">Logs will appear here</pre>
       </div>
     </div>
 
-    <footer>⚡ Ultra-fast cross-chain transfers (1-3 min) • 1.5% PONIA fee • Powered by Across Protocol & Reown AppKit (300+ wallets)</footer>
+    <!-- Body -->
+    <div class="widget-body">
+      <!-- Stage 1: Select -->
+      <div id="stageSelect">
+        <div class="chain-display">
+          <div class="chain-logo-big">
+            <img id="destinationLogo" src="" alt="Destination chain" />
+          </div>
+          <p class="chain-info-text">
+            This platform uses: <strong id="destinationName">Polygon</strong>
+          </p>
+        </div>
+
+        <div class="chain-selector-title">Send from which chain?</div>
+        <div class="chain-buttons" id="chainButtons"></div>
+
+        <div class="input-group">
+          <label class="input-label">Amount to send</label>
+          <input type="text" class="input-field" id="amountInput" value="0.01" placeholder="0.01" />
+        </div>
+
+        <div class="wallet-btn-container">
+          <appkit-button></appkit-button>
+        </div>
+
+        <p style="font-size: 12px; text-align: center; color: var(--muted); margin: 12px 0;">
+          Platform blockchain detected automatically. Choose which wallet you want to send from.
+        </p>
+
+        <button class="btn-primary" id="btnConfirmSwap">Confirm swap</button>
+      </div>
+
+      <!-- Stage 2: Processing -->
+      <div id="stageProcessing" class="hidden">
+        <div class="swap-animation">
+          <div class="swap-chain-icon">
+            <img id="sourceLogoAnim" src="" alt="Source chain" />
+          </div>
+          <div class="swap-arrow">→</div>
+          <div class="swap-chain-icon">
+            <img id="destLogoAnim" src="" alt="Destination chain" />
+          </div>
+        </div>
+        <div class="swap-info">
+          <div class="swap-info-title" id="swapRoute">Ethereum → Polygon</div>
+          <div class="swap-info-subtitle">Converting your funds to platform currency</div>
+        </div>
+
+        <div id="feeBreakdown" class="fee-breakdown">
+          <div class="fee-breakdown-title">💰 Transaction Details</div>
+          <div class="fee-row">
+            <span class="fee-label">Amount to transfer</span>
+            <span class="fee-value" id="feeUserAmount">-</span>
+          </div>
+          <div class="fee-row">
+            <span class="fee-label">PONIA fee (1.5%)</span>
+            <span class="fee-value" id="feePoniaFee">-</span>
+          </div>
+          <div class="fee-row total">
+            <span class="fee-label">Total debited</span>
+            <span class="fee-value" id="feeTotalAmount">-</span>
+          </div>
+          <div class="fee-row" style="margin-top: 8px; border-top: 1px solid var(--border); padding-top: 12px;">
+            <span class="fee-label">You'll receive</span>
+            <span class="fee-value" id="feeOutputAmount">-</span>
+          </div>
+          <div class="fee-row">
+            <span class="fee-label">Estimated time</span>
+            <span class="fee-value" id="feeEstimatedTime">~1-3 min</span>
+          </div>
+        </div>
+
+        <div class="progress-container">
+          <div class="progress-header">
+            <span>Processing swap...</span>
+            <span id="progressPercent">0%</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stage 3: Success -->
+      <div id="stageSuccess" class="hidden">
+        <div class="success-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <div class="success-title">Swap Successful!</div>
+        <div class="success-subtitle">Funds arrived on <span id="successDestChain">Polygon</span></div>
+
+        <div class="swap-info" style="margin: 20px 0;">
+          <div style="font-size: 13px; color: var(--muted); display: flex; align-items: center; justify-content: center; gap: 12px;">
+            <span id="successSourceChain">Ethereum</span>
+            <span>→</span>
+            <span id="successDestChainName">Polygon</span>
+          </div>
+        </div>
+
+        <div class="tx-hash-box">
+          <div class="tx-hash-label">Transaction ID</div>
+          <div class="tx-hash" id="txHashDisplay">0x...</div>
+        </div>
+
+        <button class="btn-primary" onclick="location.reload()">Close</button>
+      </div>
+    </div>
   </div>
 
   <script type="module" src="/main.js"></script>

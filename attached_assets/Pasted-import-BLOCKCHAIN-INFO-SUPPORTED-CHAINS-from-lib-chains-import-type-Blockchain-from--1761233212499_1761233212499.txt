@@ -1,0 +1,287 @@
+import { BLOCKCHAIN_INFO, SUPPORTED_CHAINS } from "@/lib/chains";
+import type { Blockchain } from "@shared/schema";
+import { cn } from "@/lib/utils";
+
+interface ChainSelectorProps {
+  selectedChain: Blockchain;
+  onSelect: (chain: Blockchain) => void;
+  excludeChain?: Blockchain;
+}
+
+export function ChainSelector({
+  selectedChain,
+  onSelect,
+  excludeChain,
+}: ChainSelectorProps) {
+  const availableChains = SUPPORTED_CHAINS.filter(
+    (chain) => chain !== excludeChain
+  );
+
+  return (
+    <div className="flex flex-wrap gap-2 justify-center" data-testid="chain-selector">
+      {availableChains.map((chain) => {
+        const info = BLOCKCHAIN_INFO[chain];
+        const isSelected = selectedChain === chain;
+
+        return (
+          <button
+            key={chain}
+            onClick={() => onSelect(chain)}
+            className={cn(
+              "px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 border",
+              "hover-elevate active-elevate-2",
+              isSelected
+                ? "bg-primary/10 text-foreground border-primary/20"
+                : "bg-card text-muted-foreground border-border"
+            )}
+            data-testid={`button-chain-${chain}`}
+            aria-pressed={isSelected}
+          >
+            {info.displayName}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+
+
+
+import { useEffect, useState } from "react";
+
+interface SwapProgressProps {
+  duration: number;
+  onComplete: () => void;
+}
+
+export function SwapProgress({ duration, onComplete }: SwapProgressProps) {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const startTime = Date.now();
+    const interval = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      const newProgress = Math.min((elapsed / duration) * 100, 100);
+      setProgress(newProgress);
+
+      if (newProgress >= 100) {
+        clearInterval(interval);
+        setTimeout(onComplete, 200);
+      }
+    }, 50);
+
+    return () => clearInterval(interval);
+  }, [duration, onComplete]);
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between text-xs text-muted-foreground">
+        <span>Processing swap...</span>
+        <span>{Math.round(progress)}%</span>
+      </div>
+      <div className="h-2 bg-muted rounded-full overflow-hidden">
+        <div
+          className="h-full bg-gradient-to-r from-primary via-primary/80 to-primary transition-all duration-200 ease-linear"
+          style={{ width: `${progress}%` }}
+          data-testid="progress-bar"
+        />
+      </div>
+    </div>
+  );
+}
+
+
+
+
+import { type BlockchainInfo, type Blockchain } from "@shared/schema";
+
+export const BLOCKCHAIN_INFO: Record<Blockchain, BlockchainInfo> = {
+  bitcoin: {
+    id: "bitcoin",
+    name: "bitcoin",
+    displayName: "Bitcoin",
+    logo: "/assets/logos/bitcoin.png",
+    color: "#F7931A",
+  },
+  ethereum: {
+    id: "ethereum",
+    name: "ethereum",
+    displayName: "Ethereum",
+    logo: "/assets/logos/ethereum.png",
+    color: "#627EEA",
+  },
+  solana: {
+    id: "solana",
+    name: "solana",
+    displayName: "Solana",
+    logo: "/assets/logos/solana.png",
+    color: "#14F195",
+  },
+  polygon: {
+    id: "polygon",
+    name: "polygon",
+    displayName: "Polygon",
+    logo: "/assets/logos/polygon.png",
+    color: "#8247E5",
+  },
+  bnb: {
+    id: "bnb",
+    name: "bnb",
+    displayName: "BNB Chain",
+    logo: "/assets/logos/bnb.png",
+    color: "#F3BA2F",
+  },
+  xrp: {
+    id: "xrp",
+    name: "xrp",
+    displayName: "XRP",
+    logo: "/assets/logos/xrp.png",
+    color: "#23292F",
+  },
+  usdt: {
+    id: "usdt",
+    name: "usdt",
+    displayName: "Tether",
+    logo: "/assets/logos/usdt.png",
+    color: "#50AF95",
+  },
+  base: {
+    id: "base",
+    name: "base",
+    displayName: "Base",
+    logo: "/assets/logos/base.png",
+    color: "#0052FF",
+  },
+  arbitrum: {
+    id: "arbitrum",
+    name: "arbitrum",
+    displayName: "Arbitrum",
+    logo: "/assets/logos/arbitrum.png",
+    color: "#28A0F0",
+  },
+};
+
+export const SUPPORTED_CHAINS: Blockchain[] = [
+  "solana",
+  "polygon",
+  "ethereum",
+  "base",
+  "arbitrum",
+  "bitcoin",
+  "bnb",
+];
+
+export function getChainInfo(chain: string): BlockchainInfo | null {
+  const normalized = chain.toLowerCase();
+  return BLOCKCHAIN_INFO[normalized as Blockchain] || null;
+}
+
+export function detectChainFromUrl(): Blockchain {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const chain = params.get("chain");
+    if (chain && BLOCKCHAIN_INFO[chain.toLowerCase() as Blockchain]) {
+      return chain.toLowerCase() as Blockchain;
+    }
+  } catch (e) {
+    console.error("Error detecting chain from URL:", e);
+  }
+  return "solana";
+}
+
+export function generateTxHash(): string {
+  const hex = "0123456789abcdef";
+  let hash = "0x";
+  for (let i = 0; i < 64; i++) {
+    hash += hex[Math.floor(Math.random() * hex.length)];
+  }
+  return hash.toUpperCase();
+}
+
+
+
+
+import { z } from "zod";
+
+export const blockchainSchema = z.enum([
+  "bitcoin",
+  "ethereum",
+  "solana",
+  "polygon",
+  "bnb",
+  "xrp",
+  "usdt",
+  "base",
+  "arbitrum"
+]);
+
+export type Blockchain = z.infer<typeof blockchainSchema>;
+
+export interface BlockchainInfo {
+  id: Blockchain;
+  name: string;
+  displayName: string;
+  logo: string;
+  color: string;
+}
+
+
+
+
+@layer utilities {
+  /* Animated arrow for swap progression */
+  .animate-pulse-slide {
+    animation: pulse-slide 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse-slide {
+    0%, 100% {
+      opacity: 0.6;
+      transform: translateX(0);
+    }
+    50% {
+      opacity: 1;
+      transform: translateX(4px);
+    }
+  }
+}
+
+
+@layer utilities {
+  /* Animated arrow for swap progression */
+  .animate-pulse-slide {
+    animation: pulse-slide 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse-slide {
+    0%, 100% {
+      opacity: 0.6;
+      transform: translateX(0);
+    }
+    50% {
+      opacity: 1;
+      transform: translateX(4px);
+    }
+  }
+}
+
+
+:root {
+  --font-heading: Space Grotesk, system-ui, -apple-system, sans-serif;
+}
+
+.dark {
+  --primary: 48 100% 62%;  /* Jaune #FFD73F en dark mode */
+  --primary-foreground: 48 100% 5%;
+}
+
+
+
+:root {
+  --primary: 48 100% 50%;  /* Jaune en light mode */
+}
+
+.dark {
+  --primary: 48 100% 62%;  /* Jaune en dark mode */
+}

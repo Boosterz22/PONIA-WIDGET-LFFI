@@ -10,8 +10,9 @@ The application provides a professional wallet connection interface powered by *
 
 # Recent Changes (October 23, 2025)
 
-## Major Migration: LI.FI → Across Protocol
+## Major UI/UX Redesign + Across Protocol Integration
 
+- ✅ **Complete UI Redesign** - Modern, professional widget design with 3-stage flow
 - ✅ **Replaced LI.FI with Across Protocol** - More reliable, faster (1-3 min), lower bridge fees (0.06-0.12%)
 - ✅ **Integrated 1.5% PONIA Fee** - Automatic revenue on every transaction
 - ✅ **Enhanced Fee Transparency UI** - Clear breakdown showing:
@@ -20,8 +21,31 @@ The application provides a professional wallet connection interface powered by *
   - Total debited from wallet
   - Expected output amount on destination chain
   - Estimated completion time
-- ✅ **Professional Branding** - Updated UI with PONIA branding and clear value proposition
-- ✅ **Production-Ready MVP** - Ready for first client demos
+- ✅ **Professional Branding** - PONIA logo, yellow accent colors, modern card design
+- ✅ **3-Stage User Flow** - select → processing → success with animations
+- ✅ **Visual Chain Selection** - Logo-based chain selector with hover effects
+- ✅ **Production-Ready MVP** - Ready for casino demos and embedding
+
+## UI/UX Features
+
+**Stage 1: Selection**
+- Auto-detected destination chain with logo display
+- Visual chain selector buttons (Ethereum, BNB, Arbitrum)
+- Amount input field
+- Reown AppKit wallet connection
+- Large "Confirm swap" button
+
+**Stage 2: Processing**
+- Animated source → destination chain transition
+- Detailed fee breakdown card
+- Real-time progress bar
+- Transaction status updates
+
+**Stage 3: Success**
+- Success checkmark icon
+- Transaction hash display
+- Chain route summary
+- Close button to restart
 
 ## Why Across Protocol?
 
