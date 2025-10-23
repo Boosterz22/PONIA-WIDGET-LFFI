@@ -123,8 +123,8 @@ let ethersAdapter = null;
 let solanaAdapter = null;
 let modal = null;
 let currentStage = 'select';
-let selectedSourceChain = 'ethereum';
-let destinationChain = 'polygon';
+let selectedSourceChain = 'solana';
+let destinationChain = 'ethereum';
 let selectedToken = 'native';
 
 // Initialize Reown AppKit (Multi-chain: EVM + Solana)
@@ -158,7 +158,7 @@ function detectDestinationChain() {
   if (chain && CHAIN_CONFIG[chain.toLowerCase()]) {
     return chain.toLowerCase();
   }
-  return 'polygon';
+  return 'ethereum';
 }
 
 // Initialize UI
@@ -378,13 +378,20 @@ async function getConnectedAddress(chainId) {
   try {
     const sourceConfig = CHAIN_CONFIG[Object.keys(CHAIN_CONFIG).find(k => CHAIN_CONFIG[k].id === chainId)];
     
-    // For Solana chains
+    // Get the raw address from AppKit
+    const address = modal.getAddress();
+    
+    if (!address) {
+      throw new Error('Please connect your wallet first');
+    }
+    
+    // For Solana chains - verify we have a Solana address (base58 format)
     if (sourceConfig?.type === 'solana') {
-      const account = modal.getAccount();
-      if (!account || !account.isConnected || !account.address) {
-        throw new Error('Please connect your Solana wallet (Phantom, Solflare, etc.)');
+      // Solana addresses are 32-44 characters, base58 encoded
+      if (address.startsWith('0x')) {
+        throw new Error('Please connect a Solana wallet (Phantom, Solflare, etc.) for Solana transactions');
       }
-      return account.address;
+      return address;
     }
     
     // For TRON chains - use direct TronLink injection
@@ -401,12 +408,12 @@ async function getConnectedAddress(chainId) {
       throw new Error('Please connect your TRON wallet (TronLink)');
     }
     
-    // For EVM chains (Ethereum, Polygon, Arbitrum, Base, Optimism, BNB)
-    const account = modal.getAccount();
-    if (!account || !account.isConnected || !account.address) {
-      throw new Error('Please connect your wallet first');
+    // For EVM chains - verify we have an EVM address (0x format)
+    if (!address.startsWith('0x')) {
+      throw new Error('Please connect an EVM wallet (MetaMask, etc.) for EVM transactions');
     }
-    return account.address;
+    
+    return address;
   } catch (error) {
     throw new Error(error.message || 'Please connect your wallet first');
   }
@@ -414,20 +421,20 @@ async function getConnectedAddress(chainId) {
 
 // Get affiliate fee recipient address for the specific chain
 function getAffiliateFeeRecipient(chainId) {
-  // Use environment variables for production addresses, fallback to placeholder for testing
+  // Use environment variables for production addresses, fallback to valid placeholder for testing
   
-  // Solana chain
+  // Solana chain - use a valid Solana address format
   if (chainId === 7565164) {
-    return import.meta.env.PONIA_SOLANA_FEE_ADDRESS || 'PoNiA1111111111111111111111111111111111111';
+    return import.meta.env.PONIA_SOLANA_FEE_ADDRESS || '11111111111111111111111111111111';
   }
   
-  // TRON chain
+  // TRON chain - use a valid TRON address format
   if (chainId === 728126428) {
-    return import.meta.env.PONIA_TRON_FEE_ADDRESS || 'TPoNiA1111111111111111111111111111111';
+    return import.meta.env.PONIA_TRON_FEE_ADDRESS || 'T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb';
   }
   
   // EVM chains (default)
-  return import.meta.env.PONIA_EVM_FEE_ADDRESS || '0x504F4E49410000000000000000000000000000';
+  return import.meta.env.PONIA_EVM_FEE_ADDRESS || '0x0000000000000000000000000000000000000000';
 }
 
 // Convert amount to smallest unit (wei for native, mwei for USDC/USDT)
