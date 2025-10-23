@@ -1,6 +1,7 @@
 import { createAppKit } from '@reown/appkit'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
-import { mainnet, polygon, bsc, arbitrum, base, optimism } from '@reown/appkit/networks'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana'
+import { mainnet, polygon, bsc, arbitrum, base, optimism, solana, solanaTestnet, solanaDevnet } from '@reown/appkit/networks'
 
 // Token configuration (EVM + Solana + TRON)
 const TOKENS = {
@@ -119,13 +120,14 @@ const CHAIN_CONFIG = {
 
 // State
 let ethersAdapter = null;
+let solanaAdapter = null;
 let modal = null;
 let currentStage = 'select';
 let selectedSourceChain = 'ethereum';
 let destinationChain = 'polygon';
 let selectedToken = 'native';
 
-// Initialize Reown AppKit
+// Initialize Reown AppKit (Multi-chain: EVM + Solana)
 const projectId = 'f83cf00007509459345871b429d32db0';
 const metadata = {
   name: 'PONIA Widget',
@@ -134,10 +136,14 @@ const metadata = {
   icons: ['https://avatars.githubusercontent.com/u/37784886']
 };
 
+// Create adapters for EVM and Solana
 ethersAdapter = new EthersAdapter();
+solanaAdapter = new SolanaAdapter();
+
+// Create multi-chain AppKit modal
 modal = createAppKit({
-  adapters: [ethersAdapter],
-  networks: [mainnet, polygon, arbitrum, base, optimism, bsc],
+  adapters: [ethersAdapter, solanaAdapter],
+  networks: [mainnet, polygon, arbitrum, base, optimism, bsc, solana],
   projectId,
   metadata,
   features: {
