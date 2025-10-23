@@ -465,9 +465,74 @@
   .wallet-btn-container {
     margin: 16px 0;
   }
+  
+  /* Top Navigation */
+  .top-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(10, 10, 11, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .top-nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  
+  .top-nav-logo img {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .top-nav-links {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .top-nav-link {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  
+  .top-nav-link:hover {
+    color: var(--text);
+  }
+  
+  body.with-nav {
+    padding-top: 60px;
+  }
 </style>
 </head>
-<body>
+<body class="with-nav">
+  <!-- Top Navigation -->
+  <div class="top-nav">
+    <a href="/" class="top-nav-logo">
+      <img src="/assets/ponia-logo.png" alt="PONIA">
+      PONIA
+    </a>
+    <div class="top-nav-links">
+      <a href="/" class="top-nav-link">Home</a>
+      <a href="/docs" class="top-nav-link">Docs</a>
+    </div>
+  </div>
+
   <div class="widget-container">
     <!-- Header -->
     <div class="widget-header">
