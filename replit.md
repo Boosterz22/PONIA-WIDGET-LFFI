@@ -10,17 +10,17 @@ The application provides a professional wallet connection interface powered by *
 
 # Recent Changes (October 23, 2025)
 
-## 🚀 MAJOR EXPANSION: 9 Supported Chains (Oct 23, 2025 - Latest)
+## 🚀 MAJOR EXPANSION: 8 Supported Chains (Oct 23, 2025 - Latest)
 
-- ✅ **Expanded from 4 to 9 blockchain networks** - 2.25x increase in market coverage
-- ✅ **Added 5 new chains:**
+- ✅ **Expanded from 4 to 8 blockchain networks** - 2x increase in market coverage
+- ✅ **Added 4 new major chains:**
   - **Base** (Coinbase L2) - Fastest growing L2 in 2025
   - **Optimism** - Established L2 with massive DeFi ecosystem
   - **zkSync** - Leading zkRollup with superior security
-  - **Blast** - L2 with native yield generation
   - **World Chain** - Worldcoin's dedicated blockchain
-- ✅ **USDC/USDT support expanded** - Stablecoins now available on 7+ chains
+- ✅ **USDC/USDT support** - Stablecoins available on 7+ chains for high-volume transactions
 - ✅ **Fixed Integrator ID** - Changed from invalid `0xP0N1` to valid `0x504F` (hex for "PO")
+- ✅ **Professional logos** - High-quality PNG logos for all chains
 - ✅ **Complete chain coverage** - Now supports all major EVM L2s in production
 
 **Business Impact:**
@@ -73,7 +73,7 @@ The application provides a professional wallet connection interface powered by *
 - **Chain support:** 13 chains including all major L2s
 - **No quote failures:** Stable API with consistent availability
 
-## Supported Blockchains (9 Total)
+## Supported Blockchains (8 Total)
 
 **Layer 1:**
 - Ethereum (chain ID: 1)
@@ -85,7 +85,6 @@ The application provides a professional wallet connection interface powered by *
 - Optimism (10) - Established Optimistic Rollup
 - BNB Chain (56) - Binance ecosystem
 - zkSync (324) - Leading zkRollup
-- Blast (81457) - Yield-bearing L2
 - World Chain (480) - Worldcoin blockchain
 
 # User Preferences
@@ -137,7 +136,7 @@ Preferred communication style: Simple, everyday language.
 5. Application retrieves address and chain info
 6. Address used for LI.FI quote and transaction operations
 
-**Supported Networks (9 chains)**
+**Supported Networks (8 chains)**
 - Ethereum mainnet (chain ID: 1)
 - Polygon (chain ID: 137)
 - Arbitrum (chain ID: 42161)
@@ -145,7 +144,6 @@ Preferred communication style: Simple, everyday language.
 - Optimism (chain ID: 10)
 - BNB Chain (chain ID: 56)
 - zkSync (chain ID: 324)
-- Blast (chain ID: 81457)
 - World Chain (chain ID: 480)
 
 ## Cross-Chain Bridging System
@@ -261,7 +259,7 @@ Preferred communication style: Simple, everyday language.
 - Purpose: Cross-chain bridge quotes and transaction generation
 - Response: Ready-to-execute transactions with fee breakdown
 - Performance: 1-3 minute average bridge time
-- Supported chains: 9 networks including all major EVM L2s (full list in Supported Blockchains section)
+- Supported chains: 8 networks including all major EVM L2s (full list in Supported Blockchains section)
 
 **Future Considerations**
 - Register official Integrator ID with Across Protocol team

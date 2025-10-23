@@ -1,6 +1,6 @@
 import { createAppKit } from '@reown/appkit'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
-import { mainnet, polygon, bsc, arbitrum, base, optimism, zkSync, blast, worldchain } from '@reown/appkit/networks'
+import { mainnet, polygon, bsc, arbitrum, base, optimism, zkSync, worldchain } from '@reown/appkit/networks'
 
 // Token configuration
 const TOKENS = {
@@ -83,16 +83,10 @@ const CHAIN_CONFIG = {
     logo: '/assets/chains/zksync.png',
     symbol: 'ETH'
   },
-  blast: {
-    id: 81457,
-    name: 'Blast',
-    logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%23FCFC03"/%3E%3Cpath fill="%23000" d="M16 6l2 6h6l-5 4 2 6-5-4-5 4 2-6-5-4h6l2-6z"/%3E%3C/svg%3E',
-    symbol: 'ETH'
-  },
   worldchain: {
     id: 480,
     name: 'World Chain',
-    logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%23000"/%3E%3Ccircle cx="16" cy="16" r="8" fill="none" stroke="%23FFF" stroke-width="2"/%3E%3Ccircle cx="16" cy="16" r="2" fill="%23FFF"/%3E%3C/svg%3E',
+    logo: '/assets/chains/worldchain.png',
     symbol: 'ETH'
   }
 };
@@ -116,7 +110,7 @@ const metadata = {
 ethersAdapter = new EthersAdapter();
 modal = createAppKit({
   adapters: [ethersAdapter],
-  networks: [mainnet, polygon, arbitrum, base, optimism, bsc, zkSync, blast, worldchain],
+  networks: [mainnet, polygon, arbitrum, base, optimism, bsc, zkSync, worldchain],
   projectId,
   metadata,
   features: {
