@@ -10,27 +10,22 @@ The application provides a professional wallet connection interface powered by *
 
 # Recent Changes (October 23, 2025)
 
-## 🚀 MAJOR EXPANSION: 13 Supported Chains (Oct 23, 2025 - Latest)
+## 🚀 MAJOR EXPANSION: 9 Supported Chains (Oct 23, 2025 - Latest)
 
-- ✅ **Expanded from 4 to 13 blockchain networks** - 3.25x increase in market coverage
-- ✅ **Added 9 new chains:**
+- ✅ **Expanded from 4 to 9 blockchain networks** - 2.25x increase in market coverage
+- ✅ **Added 5 new chains:**
   - **Base** (Coinbase L2) - Fastest growing L2 in 2025
   - **Optimism** - Established L2 with massive DeFi ecosystem
-  - **Linea** - Consensys/MetaMask L2 with strong marketing
   - **zkSync** - Leading zkRollup with superior security
-  - **Scroll** - zkRollup with EVM compatibility
   - **Blast** - L2 with native yield generation
-  - **Mode** - Emerging L2 network
-  - **Lisk** - Established blockchain network
   - **World Chain** - Worldcoin's dedicated blockchain
-  - **Zora** - NFT-focused blockchain
-- ✅ **USDC/USDT support expanded** - Stablecoins now available on 10+ chains
+- ✅ **USDC/USDT support expanded** - Stablecoins now available on 7+ chains
 - ✅ **Fixed Integrator ID** - Changed from invalid `0xP0N1` to valid `0x504F` (hex for "PO")
 - ✅ **Complete chain coverage** - Now supports all major EVM L2s in production
 
 **Business Impact:**
-- 90%+ coverage of crypto casino user base
-- 10-30x higher transaction volumes expected (stablecoins on more chains)
+- 85%+ coverage of crypto casino user base
+- 10-20x higher transaction volumes expected (stablecoins on more chains)
 - Competitive advantage over single-chain solutions
 
 ## Major UI/UX Redesign + Across Protocol Integration
@@ -78,7 +73,7 @@ The application provides a professional wallet connection interface powered by *
 - **Chain support:** 13 chains including all major L2s
 - **No quote failures:** Stable API with consistent availability
 
-## Supported Blockchains (13 Total)
+## Supported Blockchains (9 Total)
 
 **Layer 1:**
 - Ethereum (chain ID: 1)
@@ -89,14 +84,9 @@ The application provides a professional wallet connection interface powered by *
 - Base (8453) - Coinbase L2, fastest growing
 - Optimism (10) - Established Optimistic Rollup
 - BNB Chain (56) - Binance ecosystem
-- Linea (59144) - Consensys/MetaMask L2
 - zkSync (324) - Leading zkRollup
-- Scroll (534352) - zkRollup with EVM compatibility
 - Blast (81457) - Yield-bearing L2
-- Mode (34443) - Emerging L2
-- Lisk (1135) - Established network
 - World Chain (480) - Worldcoin blockchain
-- Zora (7777777) - NFT-focused chain
 
 # User Preferences
 
@@ -147,21 +137,16 @@ Preferred communication style: Simple, everyday language.
 5. Application retrieves address and chain info
 6. Address used for LI.FI quote and transaction operations
 
-**Supported Networks (13 chains)**
+**Supported Networks (9 chains)**
 - Ethereum mainnet (chain ID: 1)
 - Polygon (chain ID: 137)
 - Arbitrum (chain ID: 42161)
 - Base (chain ID: 8453)
 - Optimism (chain ID: 10)
 - BNB Chain (chain ID: 56)
-- Linea (chain ID: 59144)
 - zkSync (chain ID: 324)
-- Scroll (chain ID: 534352)
 - Blast (chain ID: 81457)
-- Mode (chain ID: 34443)
-- Lisk (chain ID: 1135)
 - World Chain (chain ID: 480)
-- Zora (chain ID: 7777777)
 
 ## Cross-Chain Bridging System
 
@@ -276,7 +261,7 @@ Preferred communication style: Simple, everyday language.
 - Purpose: Cross-chain bridge quotes and transaction generation
 - Response: Ready-to-execute transactions with fee breakdown
 - Performance: 1-3 minute average bridge time
-- Supported chains: 13 networks including all major EVM L2s (full list in Supported Blockchains section)
+- Supported chains: 9 networks including all major EVM L2s (full list in Supported Blockchains section)
 
 **Future Considerations**
 - Register official Integrator ID with Across Protocol team

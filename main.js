@@ -1,6 +1,6 @@
 import { createAppKit } from '@reown/appkit'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
-import { mainnet, polygon, bsc, arbitrum, base, optimism, linea, zkSync, scroll, blast, mode, lisk, worldchain, zora } from '@reown/appkit/networks'
+import { mainnet, polygon, bsc, arbitrum, base, optimism, zkSync, blast, worldchain } from '@reown/appkit/networks'
 
 // Token configuration
 const TOKENS = {
@@ -19,10 +19,7 @@ const TOKENS = {
       137: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',    // Polygon
       324: '0x1d17CBcF0D6D143135aE902365D2E5e2A16538D4',     // zkSync (USDC.e)
       8453: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',   // Base
-      34443: '0xd988097fb8612cc24eeC14542bC03424c656005f',  // Mode
-      42161: '0xaf88d065e77c8cC2239268e5831',  // Arbitrum
-      59144: '0x176211869cA2b568f2A7D4EE941E073a821EE1ff',  // Linea (USDC.e)
-      534352: '0x06eFdBFf2a14a7c8E15944D1F4A48F9F95F663A4' // Scroll (USDC.e)
+      42161: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831'   // Arbitrum
     },
     decimals: 6,
     logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%232775CA"/%3E%3Ctext x="16" y="22" font-size="14" font-weight="bold" text-anchor="middle" fill="%23FFF"%3E$%3C/text%3E%3C/svg%3E'
@@ -35,11 +32,7 @@ const TOKENS = {
       56: '0x55d398326f99059fF775485246999027B3197955',     // BSC
       137: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',    // Polygon
       324: '0x493257fD37EDB34451f62EDf8D2a0C418852bA4C',     // zkSync
-      1135: '0x05D032ac25d322df992303dCa074EE7392C117b9',   // Lisk
-      34443: '0xf0F161fDA2712DB8b566946122a5af183995e2eD',  // Mode
-      42161: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',  // Arbitrum
-      59144: '0xA219439258ca9da29E9Cc4cE5596924745e12B93',  // Linea
-      534352: '0xf55BEC9cafDbE8730f096Aa55dad6D22d44099Df'  // Scroll
+      42161: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9'   // Arbitrum
     },
     decimals: 6,
     logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%2350AF95"/%3E%3Ctext x="16" y="22" font-size="14" font-weight="bold" text-anchor="middle" fill="%23FFF"%3ET%3C/text%3E%3C/svg%3E'
@@ -84,22 +77,10 @@ const CHAIN_CONFIG = {
     logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%23F3BA2F"/%3E%3Cpath fill="%23000" d="M16 8l3 3-3 3-3-3 3-3zm-5 5l3 3-3 3-3-3 3-3zm10 0l3 3-3 3-3-3 3-3zm-5 5l3 3-3 3-3-3 3-3z"/%3E%3C/svg%3E',
     symbol: 'BNB'
   },
-  linea: {
-    id: 59144,
-    name: 'Linea',
-    logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%23121212"/%3E%3Cpath fill="%2361DFFF" d="M8 12h6v2H8v-2zm0 4h10v2H8v-2zm0 4h8v2H8v-2z"/%3E%3C/svg%3E',
-    symbol: 'ETH'
-  },
   zksync: {
     id: 324,
     name: 'zkSync',
     logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%238C8DFC"/%3E%3Cpath fill="%23FFF" d="M10 12l6-4 6 4v8l-6 4-6-4v-8zm6 10l4-2.7v-5.3l-4 2.7v5.3zm-4-8l4-2.7 4 2.7-4 2.7-4-2.7z"/%3E%3C/svg%3E',
-    symbol: 'ETH'
-  },
-  scroll: {
-    id: 534352,
-    name: 'Scroll',
-    logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%23FFEEDA"/%3E%3Cpath fill="%23000" d="M12 10c-2 0-3 1-3 3v6c0 2 1 3 3 3h8c2 0 3-1 3-3v-6c0-2-1-3-3-3h-8zm0 2h8c0.6 0 1 0.4 1 1v6c0 0.6-0.4 1-1 1h-8c-0.6 0-1-0.4-1-1v-6c0-0.6 0.4-1 1-1z"/%3E%3C/svg%3E',
     symbol: 'ETH'
   },
   blast: {
@@ -108,28 +89,10 @@ const CHAIN_CONFIG = {
     logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%23FCFC03"/%3E%3Cpath fill="%23000" d="M16 6l2 6h6l-5 4 2 6-5-4-5 4 2-6-5-4h6l2-6z"/%3E%3C/svg%3E',
     symbol: 'ETH'
   },
-  mode: {
-    id: 34443,
-    name: 'Mode',
-    logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%23DFFE00"/%3E%3Cpath fill="%23000" d="M12 10h8v12h-8v-12zm2 2v8h4v-8h-4z"/%3E%3C/svg%3E',
-    symbol: 'ETH'
-  },
-  lisk: {
-    id: 1135,
-    name: 'Lisk',
-    logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%230981D1"/%3E%3Cpath fill="%23FFF" d="M8 16l4-8 4 8-4 8-4-8zm8 0l4-8 4 8-4 8-4-8z"/%3E%3C/svg%3E',
-    symbol: 'ETH'
-  },
   worldchain: {
     id: 480,
     name: 'World Chain',
     logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%23000"/%3E%3Ccircle cx="16" cy="16" r="8" fill="none" stroke="%23FFF" stroke-width="2"/%3E%3Ccircle cx="16" cy="16" r="2" fill="%23FFF"/%3E%3C/svg%3E',
-    symbol: 'ETH'
-  },
-  zora: {
-    id: 7777777,
-    name: 'Zora',
-    logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Crect width="32" height="32" rx="16" fill="%23000"/%3E%3Ctext x="16" y="22" font-size="18" font-weight="bold" text-anchor="middle" fill="%23FFF"%3EZ%3C/text%3E%3C/svg%3E',
     symbol: 'ETH'
   }
 };
@@ -153,7 +116,7 @@ const metadata = {
 ethersAdapter = new EthersAdapter();
 modal = createAppKit({
   adapters: [ethersAdapter],
-  networks: [mainnet, polygon, arbitrum, base, optimism, bsc, linea, zkSync, scroll, blast, mode, lisk, worldchain, zora],
+  networks: [mainnet, polygon, arbitrum, base, optimism, bsc, zkSync, blast, worldchain],
   projectId,
   metadata,
   features: {
