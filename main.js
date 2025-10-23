@@ -6,6 +6,13 @@ const statusEl = document.getElementById('status');
 const out = document.getElementById('output');
 const btnSendTransfer = document.getElementById('btnSendTransfer');
 const platformInput = document.getElementById('platformChain');
+const feeBreakdown = document.getElementById('feeBreakdown');
+const feeUserAmount = document.getElementById('feeUserAmount');
+const feePoniaFee = document.getElementById('feePoniaFee');
+const feeTotalAmount = document.getElementById('feeTotalAmount');
+const feeOutputAmount = document.getElementById('feeOutputAmount');
+const feeToChain = document.getElementById('feeToChain');
+const feeEstimatedTime = document.getElementById('feeEstimatedTime');
 
 let lastQuote = null;
 let ethersAdapter = null;
@@ -114,7 +121,17 @@ btnSendTransfer.addEventListener('click', async () => {
     const poniaFee = (userAmount * BigInt(150)) / BigInt(10000);
     const totalAmount = userAmount + poniaFee;
 
-    statusEl.textContent = `💰 PONIA fee: ${poniaFeePercent}% (${formatAmount(poniaFee)} extra)`;
+    const fromTokenSymbol = fromChain.toUpperCase() === 'ETHEREUM' ? 'ETH' : 
+                            fromChain.toUpperCase() === 'POLYGON' ? 'POL' :
+                            fromChain.toUpperCase() === 'BSC' ? 'BNB' : 
+                            fromChain.toUpperCase() === 'ARBITRUM' ? 'ETH' : 'tokens';
+
+    feeUserAmount.textContent = `${formatAmount(userAmount)} ${fromTokenSymbol}`;
+    feePoniaFee.textContent = `${formatAmount(poniaFee)} ${fromTokenSymbol} (${poniaFeePercent}%)`;
+    feeTotalAmount.textContent = `${formatAmount(totalAmount)} ${fromTokenSymbol}`;
+    feeBreakdown.classList.remove('hidden');
+
+    statusEl.textContent = `💰 PONIA fee: ${poniaFeePercent}% — Getting best route...`;
 
     const base = 'https://app.across.to/api/swap/approval';
     const params = new URLSearchParams({
@@ -151,6 +168,11 @@ btnSendTransfer.addEventListener('click', async () => {
     const toChainName = getChainName(toChainId);
     const toTokenSymbol = quote.outputToken?.symbol || 'tokens';
     const expectedOutput = quote.expectedOutputAmount || '0';
+    const expectedFillTime = quote.expectedFillTime || 3;
+
+    feeOutputAmount.textContent = `${formatAmount(expectedOutput)} ${toTokenSymbol}`;
+    feeToChain.textContent = toChainName;
+    feeEstimatedTime.textContent = `~${expectedFillTime} min`;
 
     statusEl.textContent = `📊 You'll receive ~${formatAmount(expectedOutput)} ${toTokenSymbol} on ${toChainName}`;
 
