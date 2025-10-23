@@ -1,6 +1,6 @@
 # Overview
 
-PONIA is a cross-chain cryptocurrency payment widget designed for Web3 applications (gaming dApps, NFT marketplaces, crypto casinos, DeFi platforms). It enables instant deposits/withdrawals across multiple blockchains, allowing users to top-up accounts with any crypto from any supported chain without external conversions. The business model involves a 1.5% fee on every cross-chain transaction. It integrates Reown AppKit for professional wallet connection (300+ wallets) and Across Protocol for ultra-fast cross-chain bridging (1-3 minute transfers). The project aims to provide a professional, self-service solution for Web3 apps needing cross-chain payment functionality, covering over 85% of the crypto casino user base and supporting major EVM L2s.
+PONIA is a cross-chain cryptocurrency payment widget designed for Web3 applications (gaming dApps, NFT marketplaces, crypto casinos, DeFi platforms). It enables instant deposits/withdrawals across multiple blockchains, allowing users to top-up accounts with any crypto from any supported chain without external conversions. The business model involves a 1.5% fee on every cross-chain transaction. It integrates Reown AppKit for professional wallet connection (300+ wallets) and deBridge for instant cross-chain bridging (~2 second transfers). The project aims to provide a professional, self-service solution for Web3 apps needing cross-chain payment functionality, supporting 10 major chains including EVM networks, Solana, and TRON.
 
 # User Preferences
 
@@ -17,7 +17,7 @@ PONIA utilizes a multi-page structure with a landing page (`/`), a widget demo (
 The widget features a modern, professional design with a 3-stage user flow (selection, processing, success). Key UI elements include:
 - Animated gradient background on the landing page.
 - Stats bar and feature highlights.
-- Visual chain selection with logos for 8 supported blockchains.
+- Visual chain selection with logos for 10 supported blockchains (8 EVM + Solana + TRON).
 - Token selector for Native, USDC, and USDT with smart availability.
 - Transparent fee breakdown showing PONIA's 1.5% fee, total debited, and expected output.
 - Professional branding with a black/yellow color scheme.
@@ -26,8 +26,8 @@ The widget features a modern, professional design with a 3-stage user flow (sele
 
 - **Frontend:** Single-Page Application (SPA) architecture using Vanilla JavaScript (ES6+) with ES modules, built with Vite for fast development and optimized builds.
 - **Wallet Integration:** Reown AppKit 1.8.x is used for universal wallet connectivity (300+ wallets) and integrates with `ethers.js` via `Reown AppKit Ethers Adapter`.
-- **Cross-Chain Bridging:** Across Protocol is the sole bridging solution, offering 1-3 minute transfer speeds and low bridge fees. PONIA integrates its 1.5% transaction fee directly into the quote. (Note: LI.FI and Socket were mentioned in early design docs but were not implemented.)
-- **Supported Chains:** Currently supports 8 major EVM-compatible chains: Ethereum, Polygon, Arbitrum, Base, Optimism, BNB Chain, zkSync, and World Chain.
+- **Cross-Chain Bridging:** deBridge is the sole bridging solution, offering instant (~2 second) transfer speeds with Zero-TVL architecture for maximum security. PONIA integrates its 1.5% transaction fee directly into the quote.
+- **Supported Chains:** Currently supports 10 major blockchains: 8 EVM chains (Ethereum, Polygon, Arbitrum, Base, Optimism, BNB Chain, zkSync, World Chain) plus Solana and TRON for broader market coverage.
 - **Token Support:** Comprehensive support for native tokens, USDC (on 7 chains), and USDT (on 6 chains), with automatic mapping of correct token addresses and decimal handling.
 - **Platform Chain Detection:** The widget can auto-detect the target blockchain or be configured via URL parameters.
 
@@ -43,7 +43,7 @@ The widget features a modern, professional design with a 3-stage user flow (sele
 
 ## External APIs
 
-- **Across Protocol API (`https://app.across.to/api/swap/approval`):** Used for cross-chain bridge quotes and transaction generation. It uses `0x504F` as an `integratorId` for PONIA tracking.
+- **deBridge API (`https://dln.debridge.finance/v1.0/`):** Used for cross-chain bridge quotes and transaction generation with instant execution via Zero-TVL model.
 
 ## Browser APIs
 
