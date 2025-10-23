@@ -7,17 +7,17 @@ const TOKENS = {
   native: {
     name: 'Native',
     addresses: {
-      // EVM chains use 0xEeee... for native tokens
-      1: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',       // ETH
-      10: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',      // ETH
-      56: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',      // BNB
-      137: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',     // POL
-      8453: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',    // ETH
-      42161: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',   // ETH
+      // EVM chains use 0x0000... (address zero) for native tokens
+      1: '0x0000000000000000000000000000000000000000',       // ETH
+      10: '0x0000000000000000000000000000000000000000',      // ETH
+      56: '0x0000000000000000000000000000000000000000',      // BNB
+      137: '0x0000000000000000000000000000000000000000',     // POL
+      8453: '0x0000000000000000000000000000000000000000',    // ETH
+      42161: '0x0000000000000000000000000000000000000000',   // ETH
       // Solana wrapped SOL
       7565164: 'So11111111111111111111111111111111111111112',
-      // TRON native TRX
-      728126428: 'T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb'
+      // TRON native TRX (zero address)
+      728126428: '0x0000000000000000000000000000000000000000'
     },
     decimals: 18,
     logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%23627EEA"/%3E%3C/svg%3E'
@@ -463,79 +463,49 @@ async function handleConfirmSwap() {
     // Show processing stage
     showStage('processing');
     
-    // Fetch deBridge quote (instant transfers via Zero-TVL)
-    const quoteParams = {
-      srcChainId: sourceConfig.id,
-      srcChainTokenIn: inputTokenAddress,
-      srcChainTokenInAmount: totalAmount.toString(),
-      dstChainId: destConfig.id,
-      dstChainTokenOut: outputTokenAddress,
-      dstChainTokenOutRecipient: fromAddress,
-      srcChainOrderAuthorityAddress: fromAddress,
-      dstChainOrderAuthorityAddress: fromAddress,
-      affiliateFeePercent: 1.5,
-      affiliateFeeRecipient: '0x504F4E49410000000000000000000000000000',
-      prependOperatingExpenses: false
-    };
-    
-    const quoteUrl = `https://dln.debridge.finance/v1.0/dln/order/quote?${new URLSearchParams(quoteParams).toString()}`;
-    console.log('Fetching deBridge quote:', quoteUrl);
-    
-    const quoteResponse = await fetch(quoteUrl);
-    
-    if (!quoteResponse.ok) {
-      const error = await quoteResponse.text();
-      throw new Error(`deBridge API error: ${error}`);
-    }
-    
-    const quote = await quoteResponse.json();
-    console.log('deBridge quote received:', quote);
-    
-    if (!quote.estimation) {
-      throw new Error('No quote received from deBridge');
-    }
-    
-    // Update fee breakdown with quote data
-    const expectedOutput = quote.estimation.dstChainTokenOut?.amount || '0';
-    const expectedTime = quote.estimation.approximateFulfillmentDelay || 60;
-    
-    document.getElementById('feeOutputAmount').textContent = `${formatAmount(expectedOutput, selectedToken)} ${tokenSymbol}`;
-    document.getElementById('feeEstimatedTime').textContent = `~${Math.ceil(expectedTime / 60)} min`;
-    
-    // Start progress animation
-    startProgress();
-    
-    // Create order on deBridge
+    // Fetch complete order from deBridge (quote + transaction in one call)
     const orderParams = {
       srcChainId: sourceConfig.id,
       srcChainTokenIn: inputTokenAddress,
       srcChainTokenInAmount: totalAmount.toString(),
       dstChainId: destConfig.id,
       dstChainTokenOut: outputTokenAddress,
-      dstChainTokenOutAmount: expectedOutput,
+      dstChainTokenOutAmount: 'auto',  // Let deBridge calculate optimal output
       dstChainTokenOutRecipient: fromAddress,
       srcChainOrderAuthorityAddress: fromAddress,
       dstChainOrderAuthorityAddress: fromAddress,
-      affiliateFeePercent: 1.5,
-      affiliateFeeRecipient: '0x504F4E49410000000000000000000000000000'
+      affiliateFeePercent: '0.15',  // 0.15% = our additional fee on top of user's amount
+      affiliateFeeRecipient: '0x504F4E49410000000000000000000000000000',
+      prependOperatingExpenses: 'true'  // Add fees to input, don't deduct from output
     };
     
-    const orderUrl = `https://dln.debridge.finance/v1.0/dln/order/create-tx`;
-    const orderResponse = await fetch(orderUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(orderParams)
-    });
+    const orderUrl = `https://dln.debridge.finance/v1.0/dln/order/create-tx?${new URLSearchParams(orderParams).toString()}`;
+    console.log('Fetching deBridge order:', orderUrl);
+    
+    const orderResponse = await fetch(orderUrl);  // GET request with query params
     
     if (!orderResponse.ok) {
-      const error = await orderResponse.text();
-      throw new Error(`deBridge order creation error: ${error}`);
+      const errorText = await orderResponse.text();
+      console.error('deBridge API error:', errorText);
+      throw new Error(`deBridge API error: ${errorText}`);
     }
     
     const orderData = await orderResponse.json();
-    console.log('deBridge order created:', orderData);
+    console.log('deBridge order received:', orderData);
+    
+    if (!orderData.estimation) {
+      throw new Error('No estimation received from deBridge');
+    }
+    
+    // Update fee breakdown with actual data
+    const expectedOutput = orderData.estimation.dstChainTokenOut?.amount || '0';
+    const expectedTime = orderData.estimation.approximateFulfillmentDelay || 60;
+    
+    document.getElementById('feeOutputAmount').textContent = `${formatAmount(expectedOutput, selectedToken)} ${tokenSymbol}`;
+    document.getElementById('feeEstimatedTime').textContent = `~${Math.ceil(expectedTime / 60)} min`;
+    
+    // Start progress animation
+    startProgress();
     
     if (!orderData.tx) {
       throw new Error('No transaction data received from deBridge');
