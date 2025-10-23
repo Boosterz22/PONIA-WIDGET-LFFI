@@ -2,11 +2,25 @@ import { createAppKit } from '@reown/appkit'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { mainnet, polygon, bsc, arbitrum, base, optimism, zkSync, worldchain } from '@reown/appkit/networks'
 
-// Token configuration
+// Token configuration (EVM + Solana + TRON)
 const TOKENS = {
   native: {
     name: 'Native',
-    address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+    addresses: {
+      // EVM chains use 0xEeee... for native tokens
+      1: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',       // ETH
+      10: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',      // ETH
+      56: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',      // BNB
+      137: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',     // POL
+      324: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',     // ETH
+      8453: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',    // ETH
+      42161: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',   // ETH
+      480: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',     // ETH
+      // Solana wrapped SOL
+      7565164: 'So11111111111111111111111111111111111111112',
+      // TRON native TRX
+      728126428: 'T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb'
+    },
     decimals: 18,
     logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%23627EEA"/%3E%3C/svg%3E'
   },
@@ -19,7 +33,12 @@ const TOKENS = {
       137: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',    // Polygon
       324: '0x1d17CBcF0D6D143135aE902365D2E5e2A16538D4',     // zkSync (USDC.e)
       8453: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',   // Base
-      42161: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831'   // Arbitrum
+      42161: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',  // Arbitrum
+      480: '0x79A02482A880bCE3F13e09Da970dC34db4CD24d1',     // World Chain
+      // Solana USDC
+      7565164: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+      // TRON USDC
+      728126428: 'TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8'
     },
     decimals: 6,
     logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%232775CA"/%3E%3Ctext x="16" y="22" font-size="14" font-weight="bold" text-anchor="middle" fill="%23FFF"%3E$%3C/text%3E%3C/svg%3E'
@@ -32,7 +51,11 @@ const TOKENS = {
       56: '0x55d398326f99059fF775485246999027B3197955',     // BSC
       137: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',    // Polygon
       324: '0x493257fD37EDB34451f62EDf8D2a0C418852bA4C',     // zkSync
-      42161: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9'   // Arbitrum
+      42161: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',   // Arbitrum
+      // Solana USDT
+      7565164: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
+      // TRON USDT (most popular)
+      728126428: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t'
     },
     decimals: 6,
     logo: '/assets/tokens/usdt.png'
@@ -296,6 +319,22 @@ function updateTokenSelection() {
 function updateTokenAvailability() {
   const chainId = CHAIN_CONFIG[selectedSourceChain].id;
   
+  // Check Native availability (should always be available)
+  const nativeBtn = document.getElementById('btnNative');
+  if (TOKENS.native.addresses[chainId]) {
+    nativeBtn.classList.remove('disabled');
+  } else {
+    nativeBtn.classList.add('disabled');
+    if (selectedToken === 'native') {
+      // Try to select USDC or USDT if native not available
+      if (TOKENS.usdc.addresses[chainId]) {
+        selectToken('usdc');
+      } else if (TOKENS.usdt.addresses[chainId]) {
+        selectToken('usdt');
+      }
+    }
+  }
+  
   // Check USDC availability
   const usdcBtn = document.getElementById('btnUsdc');
   if (TOKENS.usdc.addresses[chainId]) {
@@ -400,14 +439,18 @@ async function handleConfirmSwap() {
     const sourceConfig = CHAIN_CONFIG[selectedSourceChain];
     const destConfig = CHAIN_CONFIG[destinationChain];
     
-    // Get token addresses
+    // Get token addresses based on chain type
     let inputTokenAddress, outputTokenAddress;
     let tokenSymbol;
     
     if (selectedToken === 'native') {
-      inputTokenAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
-      outputTokenAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
+      inputTokenAddress = TOKENS.native.addresses[sourceConfig.id];
+      outputTokenAddress = TOKENS.native.addresses[destConfig.id];
       tokenSymbol = sourceConfig.symbol;
+      
+      if (!inputTokenAddress || !outputTokenAddress) {
+        throw new Error(`Native token not supported on selected chains`);
+      }
     } else if (selectedToken === 'usdc') {
       inputTokenAddress = TOKENS.usdc.addresses[sourceConfig.id];
       outputTokenAddress = TOKENS.usdc.addresses[destConfig.id];
