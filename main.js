@@ -2,6 +2,38 @@ import { createAppKit } from '@reown/appkit'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { mainnet, polygon, bsc, arbitrum } from '@reown/appkit/networks'
 
+// Token configuration
+const TOKENS = {
+  native: {
+    name: 'Native',
+    address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+    decimals: 18,
+    logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%23627EEA"/%3E%3C/svg%3E'
+  },
+  usdc: {
+    name: 'USDC',
+    addresses: {
+      1: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',      // Ethereum
+      137: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',    // Polygon
+      42161: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',  // Arbitrum
+      56: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d'      // BSC
+    },
+    decimals: 6,
+    logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%232775CA"/%3E%3Ctext x="16" y="22" font-size="14" font-weight="bold" text-anchor="middle" fill="%23FFF"%3E$%3C/text%3E%3C/svg%3E'
+  },
+  usdt: {
+    name: 'USDT',
+    addresses: {
+      1: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+      137: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
+      42161: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
+      56: '0x55d398326f99059fF775485246999027B3197955'
+    },
+    decimals: 6,
+    logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%2350AF95"/%3E%3Ctext x="16" y="22" font-size="14" font-weight="bold" text-anchor="middle" fill="%23FFF"%3ET%3C/text%3E%3C/svg%3E'
+  }
+};
+
 // Chain configuration with logos
 const CHAIN_CONFIG = {
   ethereum: {
