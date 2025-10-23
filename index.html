@@ -74,24 +74,19 @@
     nav {
       padding: 24px 0;
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
     }
     
     .logo {
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--accent);
       text-decoration: none;
     }
     
     .logo img {
-      width: 40px;
-      height: 40px;
+      width: 120px;
+      height: 120px;
     }
     
     .nav-links {
@@ -372,13 +367,13 @@
     <nav>
       <a href="/" class="logo">
         <img src="/assets/ponia-logo.png" alt="PONIA">
-        PONIA
       </a>
-      <div class="nav-links">
-        <a href="/widget">Widget</a>
-        <a href="/docs">Docs</a>
-      </div>
     </nav>
+    
+    <div style="position: fixed; top: 24px; right: 24px; z-index: 1000; display: flex; gap: 24px;">
+      <a href="/widget" style="color: var(--muted); text-decoration: none; font-weight: 500; transition: color 0.2s;">Widget</a>
+      <a href="/docs" style="color: var(--muted); text-decoration: none; font-weight: 500; transition: color 0.2s;">Docs</a>
+    </div>
     
     <!-- Hero Section -->
     <section class="hero">
