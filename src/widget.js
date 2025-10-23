@@ -401,11 +401,6 @@ async function getConnectedAddress(chainId) {
       throw new Error('Please connect your wallet first');
     }
     
-    // For EVM chains, checksum the address
-    if (sourceConfig?.type === 'evm') {
-      return ethers.getAddress(address);
-    }
-    
     return address;
   } catch (error) {
     throw new Error(error.message || 'Please connect your wallet first');
@@ -426,9 +421,8 @@ function getAffiliateFeeRecipient(chainId) {
     return import.meta.env.PONIA_TRON_FEE_ADDRESS || 'T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb';
   }
   
-  // EVM chains (default) - use checksummed address
-  const evmAddress = import.meta.env.PONIA_EVM_FEE_ADDRESS || '0xE16C0f75AC560df3B37428a8670574679Fbcfa3e';
-  return ethers.getAddress(evmAddress); // Convert to checksummed format
+  // EVM chains (default) - return as-is, will be checksummed when needed
+  return import.meta.env.PONIA_EVM_FEE_ADDRESS || '0xE16C0f75AC560df3B37428a8670574679Fbcfa3e';
 }
 
 // Convert amount to smallest unit (wei for native, mwei for USDC/USDT)
@@ -457,9 +451,8 @@ function getPlatformAddress(chainId) {
   
   // For testing: use placeholder addresses for each chain type
   if (chainConfig.type === 'evm') {
-    // EVM chains - use env variable or test address (checksummed)
-    const evmAddress = import.meta.env.PONIA_PLATFORM_EVM_ADDRESS || '0xE16C0f75AC560df3B37428a8670574679Fbcfa3e';
-    return ethers.getAddress(evmAddress); // Convert to checksummed format
+    // EVM chains - return as-is, will be checksummed when needed
+    return import.meta.env.PONIA_PLATFORM_EVM_ADDRESS || '0xE16C0f75AC560df3B37428a8670574679Fbcfa3e';
   } else if (chainConfig.type === 'solana') {
     // Solana - use env variable or test address
     return import.meta.env.PONIA_PLATFORM_SOLANA_ADDRESS || '9aHhLYXj1YbFLxNqBJzQZXd4rJYz9YQBv6g3dP7KHM8d';
@@ -541,8 +534,24 @@ async function handleConfirmSwap() {
     showStage('processing');
     
     // Get affiliate fee recipient
-    const affiliateFeeRecipient = getAffiliateFeeRecipient(sourceConfig.id);
-    console.log('Affiliate fee recipient:', affiliateFeeRecipient);
+    let affiliateFeeRecipient = getAffiliateFeeRecipient(sourceConfig.id);
+    
+    // Checksum EVM addresses for deBridge
+    let checksummedSource = sourceAddress;
+    let checksummedDestination = destinationAddress;
+    let checksummedAffiliate = affiliateFeeRecipient;
+    
+    if (sourceConfig.type === 'evm') {
+      checksummedSource = ethers.getAddress(sourceAddress);
+    }
+    if (destConfig.type === 'evm') {
+      checksummedDestination = ethers.getAddress(destinationAddress);
+      checksummedAffiliate = ethers.getAddress(affiliateFeeRecipient);
+    }
+    
+    console.log('Source address:', checksummedSource);
+    console.log('Destination address:', checksummedDestination);
+    console.log('Affiliate fee recipient:', checksummedAffiliate);
     console.log('Input token address:', inputTokenAddress);
     console.log('Output token address:', outputTokenAddress);
     
@@ -554,11 +563,11 @@ async function handleConfirmSwap() {
       dstChainId: destConfig.id,
       dstChainTokenOut: outputTokenAddress,
       dstChainTokenOutAmount: 'auto',  // Let deBridge calculate optimal output
-      dstChainTokenOutRecipient: destinationAddress,  // Destination address (cross-chain compatible)
-      srcChainOrderAuthorityAddress: sourceAddress,  // Source wallet address
-      dstChainOrderAuthorityAddress: destinationAddress,  // Destination address (cross-chain compatible)
+      dstChainTokenOutRecipient: checksummedDestination,  // Destination address (checksummed for EVM)
+      srcChainOrderAuthorityAddress: checksummedSource,  // Source wallet address (checksummed for EVM)
+      dstChainOrderAuthorityAddress: checksummedDestination,  // Destination address (checksummed for EVM)
       affiliateFeePercent: '0.15',  // 0.15% = our additional fee on top of user's amount
-      affiliateFeeRecipient: affiliateFeeRecipient,  // Chain-specific format
+      affiliateFeeRecipient: checksummedAffiliate,  // Chain-specific format (checksummed for EVM)
       prependOperatingExpenses: 'true'  // Add fees to input, don't deduct from output
     };
     
