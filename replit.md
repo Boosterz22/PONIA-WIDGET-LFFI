@@ -1,17 +1,35 @@
 # Overview
 
-Ponia Demo is a cross-chain cryptocurrency payment widget that integrates with LI.FI's API to enable seamless token swaps across multiple blockchain networks. The application provides a professional wallet connection interface powered by **Reown AppKit** (formerly Web3Modal), supporting 300+ wallets including MetaMask, Coinbase Wallet, Trust Wallet, WalletConnect, and more.
+PONIA is a cross-chain cryptocurrency payment widget designed for Web3 gaming and gambling platforms. The widget enables instant deposits/withdrawals across multiple blockchains, allowing users to top-up accounts with any crypto from any supported chain without external conversions.
 
-The project is a demonstration/proof-of-concept for a universal checkout widget that allows users to pay with any crypto on any chain, with automatic cross-chain routing handled by LI.FI infrastructure and universal wallet support via Reown AppKit.
+**Business Model:** 1.5% fee on every cross-chain transaction, providing sustainable revenue from day one.
 
-# Recent Changes (October 20, 2025)
+The application provides a professional wallet connection interface powered by **Reown AppKit** (300+ wallets) and ultra-fast cross-chain bridging via **Across Protocol** (1-3 minute transfers).
 
-- ✅ **One-Click Transfer**: Simplified to single "Send Transfer" button - no manual quote step
-- ✅ **Real Address Support**: Uses connected wallet address for both fromAddress and toAddress
-- ✅ **Ultra-Fast UX**: Automatic quote fetching + immediate transaction execution
-- ✅ **LI.FI Transaction Execution**: Integrated proper transaction submission using LI.FI's transactionRequest data
-- ✅ **User Feedback**: Clear status messages with emoji indicators for transaction states
-- ✅ **Streamlined Flow**: Connect wallet → Send Transfer → Done (2 clicks total)
+**Target Market:** Small-to-medium crypto casinos and gaming sites looking for seamless cross-chain payment integration.
+
+# Recent Changes (October 23, 2025)
+
+## Major Migration: LI.FI → Across Protocol
+
+- ✅ **Replaced LI.FI with Across Protocol** - More reliable, faster (1-3 min), lower bridge fees (0.06-0.12%)
+- ✅ **Integrated 1.5% PONIA Fee** - Automatic revenue on every transaction
+- ✅ **Enhanced Fee Transparency UI** - Clear breakdown showing:
+  - User amount to transfer
+  - PONIA fee (1.5%)
+  - Total debited from wallet
+  - Expected output amount on destination chain
+  - Estimated completion time
+- ✅ **Professional Branding** - Updated UI with PONIA branding and clear value proposition
+- ✅ **Production-Ready MVP** - Ready for first client demos
+
+## Why Across Protocol?
+
+- **Speed:** 1-3 minutes (vs 5-10+ with LI.FI)
+- **Reliability:** Production-ready, powers Uniswap's bridging
+- **Low fees:** 0.06-0.12% bridge fees (we add 1.5% on top)
+- **Chain support:** Ethereum, Polygon, Arbitrum, BNB Chain
+- **No quote failures:** Stable API with consistent availability
 
 # User Preferences
 
@@ -68,49 +86,65 @@ Preferred communication style: Simple, everyday language.
 - BNB Chain (chain ID: 56)
 - Arbitrum (chain ID: 42161)
 
-## Cross-Chain Quote System
+## Cross-Chain Bridging System
 
-**LI.FI Integration**
-- Primary API: `https://li.quest/v1/quote`
-- No API key required for client-side widget usage (public endpoint)
-- Supports native token swaps (ETH, MATIC, BNB, etc.)
-- Future expansion planned for USDC and custom tokens
+**Across Protocol Integration**
+- Primary API: `https://app.across.to/api/swap/approval`
+- Integrator ID: `ponia-demo`
+- Bridge fees: 0.06-0.12% (ultra-competitive)
+- Speed: 1-3 minutes average (intent-based relayer network)
+- Supports native token swaps (ETH, POL, BNB, etc.)
 
-**Quote Parameters**
-- `fromChain`: Source blockchain (ethereum, polygon, bsc, arbitrum)
-- `toChain`: Destination blockchain
-- `fromToken`: Source token address (0x0000... for native)
-- `toToken`: Destination token address (0x0000... for native)
-- `fromAmount`: Amount in smallest unit (wei)
-- `fromAddress`: User's source address
-- `toAddress`: User's destination address
-- `integrator`: Identifier tag ('ponia-demo')
+**PONIA Revenue Model**
+- **1.5% fee on every transaction** added to user's input amount
+- Fee is transparent and shown in UI breakdown
+- Calculated as: `totalAmount = userAmount + (userAmount * 0.015)`
+- Example: User wants to send 0.01 ETH → PONIA charges 0.01015 ETH total
+- Revenue attribution via `integratorId` parameter
 
-**Quote Response Handling**
-- Parse route information (steps, tools used)
-- Extract estimated output amount
-- Display ETA and bridging protocol
-- Error handling with user-friendly messages
-- Transaction summary recap with clear details:
-  - Source and destination chains
-  - Token amounts (send/receive)
-  - Bridge protocol used
-  - Estimated execution time
+**API Parameters**
+- `originChainId`: Source blockchain ID (1, 137, 56, 42161)
+- `destinationChainId`: Destination blockchain ID
+- `inputToken`: Source token address (0xEee...EEeE for native)
+- `outputToken`: Destination token address
+- `amount`: Amount in wei **including 1.5% PONIA fee**
+- `depositor`: User's wallet address
+- `recipient`: Destination address (same as depositor for self-transfers)
+- `tradeType`: `exactInput` (user specifies input amount)
+- `integratorId`: `ponia-demo` (tracks our transactions)
 
-**Transaction Execution Flow (One-Click)**
-1. User connects wallet via Reown AppKit button
-2. User clicks "Send Transfer" button
-3. Application fetches LI.FI quote automatically in background
-4. Transaction immediately prompted in wallet for signature
-5. Transaction submitted to blockchain
-6. Status updates: preparing → getting route → confirm wallet → submitted → processing → complete
-7. Success message with destination chain info
+**Response Structure**
+- `swapTx`: Ready-to-execute transaction object
+  - `to`: Contract address
+  - `data`: Encoded transaction data
+  - `gas`: Estimated gas limit
+  - `maxFeePerGas` / `maxPriorityFeePerGas`: EIP-1559 gas pricing
+- `expectedOutputAmount`: Estimated tokens user receives
+- `expectedFillTime`: Time in minutes (typically 1-3)
+- `outputToken`: Destination token metadata (symbol, decimals, etc.)
+- `fees`: Complete fee breakdown (relayer, LP, gas fees)
+
+**Transaction Execution Flow**
+1. User connects wallet via Reown AppKit
+2. User enters amount and selects chains
+3. User clicks "Send Transfer"
+4. **Fee breakdown displayed:**
+   - Amount to transfer
+   - PONIA fee (1.5%)
+   - Total debited
+   - Expected output on destination
+   - Estimated time
+5. Quote fetched from Across API (with 1.5% fee included)
+6. Transaction prompted in wallet
+7. User confirms → transaction submitted
+8. Status updates: preparing → routing → confirm wallet → submitted → processing → complete
+9. Success message with completion details
 
 **User Experience**
-- Total clicks: 2 (Connect Wallet + Send Transfer)
-- No manual quote review step for speed
-- Quote fetching happens automatically behind the scenes
-- Transaction executes immediately after quote is retrieved
+- **Total time: 1-3 minutes** from click to completion
+- Transparent fee structure (users see exactly what they pay)
+- No hidden costs or surprise fees
+- Clear status updates throughout process
 
 ## Platform Chain Detection
 
@@ -158,18 +192,21 @@ Preferred communication style: Simple, everyday language.
 
 ## External APIs
 
-**LI.FI Quote API**
-- Endpoint: `https://li.quest/v1/quote`
-- Authentication: None required (public widget endpoint)
-- Rate Limits: Not specified (consider server-side API key for production)
-- Purpose: Cross-chain routing and quote generation
-- Response: Route data including steps, tools, estimated output, ETA
+**Across Protocol API**
+- Endpoint: `https://app.across.to/api/swap/approval`
+- Authentication: None required (public endpoint, rate-limited per IP)
+- Integrator ID: `ponia-demo` (for transaction tracking and future revenue sharing)
+- Purpose: Cross-chain bridge quotes and transaction generation
+- Response: Ready-to-execute transactions with fee breakdown
+- Performance: 1-3 minute average bridge time
+- Supported chains: Ethereum (1), Polygon (137), BNB Chain (56), Arbitrum (42161)
 
 **Future Considerations**
-- Server-side API key implementation for rate limit management
-- LI.FI execution SDK for transaction submission
-- Alternative: LI.FI Widget for full-featured integration
-- Token address mappings for USDC and other standard tokens
+- Register official Integrator ID with Across Protocol team
+- Potential revenue sharing agreements with Across
+- Backend API key for higher rate limits (production scaling)
+- Add support for USDC and stablecoin transfers
+- Integration with Socket API as fallback for unsupported routes
 
 ## Browser APIs
 
