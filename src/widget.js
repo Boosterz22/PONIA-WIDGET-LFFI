@@ -208,7 +208,6 @@ function initializeUI() {
   updateTokenAvailability();
   updateRouteVisual();
   updateFeePreview();
-  updateDestinationAddressField();
 }
 
 function selectSourceChain(chainKey) {
@@ -217,7 +216,6 @@ function selectSourceChain(chainKey) {
   updateTokenAvailability();
   updateRouteVisual();
   updateFeePreview();
-  updateDestinationAddressField();
 }
 
 function updateSourceChainSelection() {
@@ -458,33 +456,24 @@ function formatAmount(smallestUnit, tokenType = 'native') {
   return amount.toFixed(tokenType === 'native' ? 6 : 2);
 }
 
-// Update destination address field visibility
-function updateDestinationAddressField() {
-  const sourceConfig = CHAIN_CONFIG[selectedSourceChain];
-  const destConfig = CHAIN_CONFIG[destinationChain];
-  const destAddressGroup = document.getElementById('destAddressGroup');
-  const destAddressInput = document.getElementById('destAddressInput');
+// Get platform destination address (where funds will be deposited)
+// In production, this would come from URL params or integration config
+function getPlatformAddress(chainId) {
+  const chainConfig = CHAIN_CONFIG[Object.keys(CHAIN_CONFIG).find(k => CHAIN_CONFIG[k].id === chainId)];
   
-  // Show address field if source and destination are different chain types
-  if (sourceConfig.type !== destConfig.type) {
-    destAddressGroup.classList.remove('hidden');
-    
-    // Update placeholder and hint based on destination type
-    const destAddressHint = destAddressGroup.querySelector('.input-hint');
-    if (destConfig.type === 'evm') {
-      destAddressInput.placeholder = 'Enter your EVM address (0x...)';
-      destAddressHint.textContent = `Your wallet is ${sourceConfig.type.toUpperCase()}, but destination is EVM. Please provide your EVM address.`;
-    } else if (destConfig.type === 'solana') {
-      destAddressInput.placeholder = 'Enter your Solana address (base58)';
-      destAddressHint.textContent = `Your wallet is ${sourceConfig.type.toUpperCase()}, but destination is Solana. Please provide your Solana address.`;
-    } else if (destConfig.type === 'tron') {
-      destAddressInput.placeholder = 'Enter your TRON address (T...)';
-      destAddressHint.textContent = `Your wallet is ${sourceConfig.type.toUpperCase()}, but destination is TRON. Please provide your TRON address.`;
-    }
-  } else {
-    destAddressGroup.classList.add('hidden');
-    destAddressInput.value = '';
+  // For testing: use placeholder addresses for each chain type
+  if (chainConfig.type === 'evm') {
+    // EVM chains - use env variable or test address
+    return import.meta.env.PONIA_PLATFORM_EVM_ADDRESS || '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb';
+  } else if (chainConfig.type === 'solana') {
+    // Solana - use env variable or test address
+    return import.meta.env.PONIA_PLATFORM_SOLANA_ADDRESS || '9aHhLYXj1YbFLxNqBJzQZXd4rJYz9YQBv6g3dP7KHM8d';
+  } else if (chainConfig.type === 'tron') {
+    // TRON - use env variable or test address
+    return import.meta.env.PONIA_PLATFORM_TRON_ADDRESS || 'TY2ykZKLNNfvCJdL4QHW5pX2n3wQv7eVHb';
   }
+  
+  throw new Error(`Unsupported chain type: ${chainConfig.type}`);
 }
 
 // Handle swap confirmation
@@ -500,31 +489,11 @@ async function handleConfirmSwap() {
     const sourceConfig = CHAIN_CONFIG[selectedSourceChain];
     const destConfig = CHAIN_CONFIG[destinationChain];
     
-    // Get wallet address for the source chain (works for EVM, Solana, TRON)
+    // Get user's wallet address for the source chain (works for EVM, Solana, TRON)
     const sourceAddress = await getConnectedAddress(sourceConfig.id);
     
-    // Get destination address - use manual input if different chain types, otherwise use source address
-    let destinationAddress;
-    if (sourceConfig.type !== destConfig.type) {
-      destinationAddress = document.getElementById('destAddressInput').value.trim();
-      if (!destinationAddress) {
-        alert(`Please provide your ${destConfig.name} address for the destination`);
-        return;
-      }
-      
-      // Basic validation
-      if (destConfig.type === 'evm' && !destinationAddress.startsWith('0x')) {
-        alert('Please provide a valid EVM address starting with 0x');
-        return;
-      }
-      if (destConfig.type === 'tron' && !destinationAddress.startsWith('T')) {
-        alert('Please provide a valid TRON address starting with T');
-        return;
-      }
-    } else {
-      // Same chain type, use source address
-      destinationAddress = sourceAddress;
-    }
+    // Get platform destination address (where funds will be deposited)
+    const destinationAddress = getPlatformAddress(destConfig.id);
     
     // Calculate fees
     const userAmount = toSmallestUnit(amount, selectedToken);
