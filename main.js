@@ -238,7 +238,7 @@ async function handleConfirmSwap() {
       depositor: fromAddress,
       recipient: fromAddress,
       tradeType: 'exactInput',
-      integratorId: '0xP0N1'
+      integratorId: '0x504F'
     });
     
     const url = `https://app.across.to/api/swap/approval?${params.toString()}`;
