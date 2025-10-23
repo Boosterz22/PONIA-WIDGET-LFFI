@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     :root {
       --bg: #0a0a0b;
@@ -222,8 +223,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 10px;
       color: #0a0a0b;
+    }
+    
+    .badge-icon i {
+      width: 10px;
+      height: 10px;
     }
     
     .hero-cta {
@@ -343,8 +348,13 @@
     }
     
     .step-icon {
-      font-size: 36px;
       margin-bottom: 16px;
+    }
+    
+    .step-icon i {
+      width: 36px;
+      height: 36px;
+      color: var(--accent);
     }
     
     .step-title {
@@ -382,8 +392,13 @@
     }
     
     .feature-icon {
-      font-size: 48px;
       margin-bottom: 20px;
+    }
+    
+    .feature-icon i {
+      width: 48px;
+      height: 48px;
+      color: var(--accent);
     }
     
     .feature-title {
@@ -491,7 +506,11 @@
       align-items: center;
       justify-content: center;
       color: var(--accent);
-      font-size: 24px;
+    }
+    
+    .pricing-feature-icon i {
+      width: 24px;
+      height: 24px;
     }
     
     .pricing-feature-text {
@@ -527,8 +546,13 @@
     }
     
     .solution-icon {
-      font-size: 40px;
       margin-bottom: 20px;
+    }
+    
+    .solution-icon i {
+      width: 40px;
+      height: 40px;
+      color: var(--accent);
     }
     
     .solution-title {
@@ -711,25 +735,25 @@
       
       <div class="hero-badges">
         <div class="badge">
-          <div class="badge-icon">✓</div>
+          <div class="badge-icon"><i data-lucide="check"></i></div>
           Non-custodial
         </div>
         <div class="badge">
-          <div class="badge-icon">✓</div>
+          <div class="badge-icon"><i data-lucide="check"></i></div>
           1.5% fee
         </div>
         <div class="badge">
-          <div class="badge-icon">✓</div>
+          <div class="badge-icon"><i data-lucide="check"></i></div>
           Built on LI.FI/Socket
         </div>
       </div>
       
       <div class="hero-cta">
         <a href="/widget" class="btn btn-primary">
-          ⚡ Try Demo
+          <i data-lucide="zap"></i> Try Demo
         </a>
         <a href="/docs" class="btn btn-secondary">
-          &lt;/&gt; Integrate in 1 min
+          <i data-lucide="code"></i> Integrate in 1 min
         </a>
       </div>
     </div>
@@ -749,21 +773,21 @@
       <div class="steps">
         <div class="step">
           <div class="step-number">1</div>
-          <div class="step-icon">💰</div>
+          <div class="step-icon"><i data-lucide="wallet"></i></div>
           <h3 class="step-title">Connect wallet</h3>
           <p class="step-description">User connects via Ponia widget with their preferred wallet</p>
         </div>
         
         <div class="step">
           <div class="step-number">2</div>
-          <div class="step-icon">⇄</div>
+          <div class="step-icon"><i data-lucide="repeat"></i></div>
           <h3 class="step-title">Choose token & chain</h3>
           <p class="step-description">Instant quote + ETA for any token on any supported chain</p>
         </div>
         
         <div class="step">
           <div class="step-number">3</div>
-          <div class="step-icon">✓</div>
+          <div class="step-icon"><i data-lucide="check-circle"></i></div>
           <h3 class="step-title">Confirm</h3>
           <p class="step-description">Swap completes automatically, funds arrive ready to use</p>
         </div>
@@ -778,25 +802,25 @@
       
       <div class="features-grid">
         <div class="feature-card">
-          <div class="feature-icon">⚡</div>
+          <div class="feature-icon"><i data-lucide="zap"></i></div>
           <h3 class="feature-title">Instant UX</h3>
           <p class="feature-description">Less than 60 seconds, real-time ETA updates for complete transparency</p>
         </div>
         
         <div class="feature-card">
-          <div class="feature-icon">⇄</div>
+          <div class="feature-icon"><i data-lucide="arrow-left-right"></i></div>
           <h3 class="feature-title">Deposit & Withdraw</h3>
           <p class="feature-description">One widget for both directions — seamless user experience</p>
         </div>
         
         <div class="feature-card">
-          <div class="feature-icon">👁️</div>
+          <div class="feature-icon"><i data-lucide="eye"></i></div>
           <h3 class="feature-title">Transparent Fees</h3>
           <p class="feature-description">Always 1.5%, no hidden costs or surprise charges</p>
         </div>
         
         <div class="feature-card">
-          <div class="feature-icon">🔌</div>
+          <div class="feature-icon"><i data-lucide="plug"></i></div>
           <h3 class="feature-title">Plug & Play</h3>
           <p class="feature-description">1 line of code, no partnership needed — integrate in minutes</p>
         </div>
@@ -811,7 +835,7 @@
         <div class="integration-text">
           <h2>Integration made simple</h2>
           <p>Add Ponia in one minute. Let your users deposit from any chain.</p>
-          <a href="/docs" class="btn btn-secondary">📄 View full documentation</a>
+          <a href="/docs" class="btn btn-secondary"><i data-lucide="file-text"></i> View full documentation</a>
         </div>
         
         <div class="code-block"><script src="https://ponia.io/widget.js"></script>
@@ -835,17 +859,17 @@
         
         <div class="pricing-features">
           <div class="pricing-feature">
-            <div class="pricing-feature-icon">✓</div>
+            <div class="pricing-feature-icon"><i data-lucide="check-circle"></i></div>
             <div class="pricing-feature-text">No hidden costs</div>
           </div>
           
           <div class="pricing-feature">
-            <div class="pricing-feature-icon">✓</div>
+            <div class="pricing-feature-icon"><i data-lucide="check-circle"></i></div>
             <div class="pricing-feature-text">No setup fees</div>
           </div>
           
           <div class="pricing-feature">
-            <div class="pricing-feature-icon">✓</div>
+            <div class="pricing-feature-icon"><i data-lucide="check-circle"></i></div>
             <div class="pricing-feature-text">No monthly charges</div>
           </div>
         </div>
@@ -869,19 +893,19 @@
       
       <div class="solutions-grid">
         <div class="solution-card">
-          <div class="solution-icon">🎮</div>
+          <div class="solution-icon"><i data-lucide="gamepad-2"></i></div>
           <h3 class="solution-title">For Web3 games</h3>
           <p class="solution-description">Ponia enables frictionless top-ups from any chain, keeping players focused on the experience instead of the transaction.</p>
         </div>
         
         <div class="solution-card">
-          <div class="solution-icon">📈</div>
+          <div class="solution-icon"><i data-lucide="trending-up"></i></div>
           <h3 class="solution-title">For prediction markets & DeFi</h3>
           <p class="solution-description">It allows users to move liquidity instantly, improving retention and overall volume.</p>
         </div>
         
         <div class="solution-card">
-          <div class="solution-icon">🖼️</div>
+          <div class="solution-icon"><i data-lucide="image"></i></div>
           <h3 class="solution-title">For NFT platforms</h3>
           <p class="solution-description">Ponia makes cross-chain transactions simple and seamless so that creators and collectors can interact freely without technical barriers.</p>
         </div>
@@ -927,7 +951,7 @@
             <textarea class="form-textarea"></textarea>
           </div>
           
-          <button type="submit" class="form-submit">Submit ↗</button>
+          <button type="submit" class="form-submit">Submit <i data-lucide="arrow-up-right"></i></button>
         </form>
       </div>
     </div>
@@ -944,14 +968,19 @@
       <p class="footer-tagline">Instant. Transparent. Universal.</p>
       
       <div class="footer-links">
-        <a href="#" class="footer-link">𝕏 X</a>
-        <a href="#" class="footer-link">💬 Discord</a>
-        <a href="/docs" class="footer-link">📄 Docs</a>
-        <a href="#" class="footer-link">📊 Status</a>
+        <a href="#" class="footer-link"><i data-lucide="twitter"></i> X</a>
+        <a href="#" class="footer-link"><i data-lucide="message-circle"></i> Discord</a>
+        <a href="/docs" class="footer-link"><i data-lucide="file-text"></i> Docs</a>
+        <a href="#" class="footer-link"><i data-lucide="activity"></i> Status</a>
       </div>
       
       <p class="footer-copyright">© 2025 Ponia — Non-custodial cross-chain checkout for Web3 apps.</p>
     </div>
   </footer>
+  
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+  </script>
 </body>
 </html>
