@@ -466,66 +466,116 @@
     margin: 16px 0;
   }
   
-  /* Top Navigation */
-  .top-nav {
+  /* Top Navigation Header */
+  .header {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    background: rgba(10, 10, 11, 0.95);
+    background: rgba(10, 10, 11, 0.98);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border);
-    padding: 12px 24px;
+    padding: 16px 32px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     z-index: 1000;
   }
   
-  .top-nav-logo {
+  .logo {
     display: flex;
     align-items: center;
+    gap: 10px;
     text-decoration: none;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
   }
   
-  .top-nav-logo img {
-    width: 40px;
-    height: 40px;
+  .logo img {
+    width: 36px;
+    height: 36px;
   }
   
-  .top-nav-links {
+  .nav-center {
     display: flex;
-    gap: 20px;
+    gap: 32px;
+    align-items: center;
   }
   
-  .top-nav-link {
+  .nav-center a {
     color: var(--muted);
     text-decoration: none;
-    font-size: 14px;
     font-weight: 500;
+    font-size: 15px;
     transition: color 0.2s;
   }
   
-  .top-nav-link:hover {
+  .nav-center a:hover {
     color: var(--text);
   }
   
+  .nav-right {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+  
+  .btn-signin {
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 15px;
+    transition: color 0.2s;
+  }
+  
+  .btn-signin:hover {
+    color: var(--accent);
+  }
+  
+  .btn-login {
+    background: var(--accent);
+    color: #0a0a0b;
+    padding: 10px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.2s;
+  }
+  
+  .btn-login:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 215, 63, 0.4);
+  }
+  
   body.with-nav {
-    padding-top: 60px;
+    padding-top: 70px;
   }
 </style>
 </head>
 <body class="with-nav">
-  <!-- Top Navigation -->
-  <div class="top-nav">
-    <a href="/" class="top-nav-logo">
+  <!-- Header Navigation -->
+  <header class="header">
+    <a href="/" class="logo">
       <img src="/assets/ponia-logo.png" alt="PONIA">
+      PONIA
     </a>
-    <div class="top-nav-links">
-      <a href="/" class="top-nav-link">Home</a>
-      <a href="/docs" class="top-nav-link">Docs</a>
+    
+    <nav class="nav-center">
+      <a href="/#how-it-works">How it works</a>
+      <a href="/#solutions">Solutions</a>
+      <a href="/widget">Integration</a>
+      <a href="/#fees">Fees</a>
+      <a href="/docs">Docs</a>
+    </nav>
+    
+    <div class="nav-right">
+      <a href="#" class="btn-signin">Sign in</a>
+      <a href="#" class="btn-login">Log in</a>
     </div>
-  </div>
+  </header>
 
   <div class="widget-container">
     <!-- Header -->
