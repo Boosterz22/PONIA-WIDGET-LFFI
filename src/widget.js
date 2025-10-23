@@ -373,38 +373,61 @@ function showStage(stage) {
   currentStage = stage;
 }
 
-// Get connected EVM wallet address
-async function getConnectedAddress() {
+// Get connected wallet address (supports EVM, Solana, TRON)
+async function getConnectedAddress(chainId) {
   try {
+    const sourceConfig = CHAIN_CONFIG[Object.keys(CHAIN_CONFIG).find(k => CHAIN_CONFIG[k].id === chainId)];
+    
+    // For Solana chains
+    if (sourceConfig?.type === 'solana') {
+      const account = modal.getAccount();
+      if (!account || !account.isConnected || !account.address) {
+        throw new Error('Please connect your Solana wallet (Phantom, Solflare, etc.)');
+      }
+      return account.address;
+    }
+    
+    // For TRON chains - use direct TronLink injection
+    if (sourceConfig?.type === 'tron') {
+      if (window.tronWeb && window.tronWeb.defaultAddress?.base58) {
+        return window.tronWeb.defaultAddress.base58;
+      }
+      if (window.tronLink?.ready) {
+        const response = await window.tronLink.request({ method: 'tron_requestAccounts' });
+        if (response.code === 200 && window.tronLink.tronWeb?.defaultAddress?.base58) {
+          return window.tronLink.tronWeb.defaultAddress.base58;
+        }
+      }
+      throw new Error('Please connect your TRON wallet (TronLink)');
+    }
+    
+    // For EVM chains (Ethereum, Polygon, Arbitrum, Base, Optimism, BNB)
     const account = modal.getAccount();
     if (!account || !account.isConnected || !account.address) {
       throw new Error('Please connect your wallet first');
     }
     return account.address;
   } catch (error) {
-    throw new Error('Please connect your wallet first');
+    throw new Error(error.message || 'Please connect your wallet first');
   }
-}
-
-// Check if chain is EVM-compatible
-function isEVMChain(chainId) {
-  return ![7565164, 728126428].includes(chainId); // Solana and TRON are non-EVM
 }
 
 // Get affiliate fee recipient address for the specific chain
 function getAffiliateFeeRecipient(chainId) {
+  // Use environment variables for production addresses, fallback to placeholder for testing
+  
   // Solana chain
   if (chainId === 7565164) {
-    return 'PoNiA1111111111111111111111111111111111111'; // Valid Solana base58 address
+    return import.meta.env.PONIA_SOLANA_FEE_ADDRESS || 'PoNiA1111111111111111111111111111111111111';
   }
   
   // TRON chain
   if (chainId === 728126428) {
-    return 'TPoNiA1111111111111111111111111111111'; // Valid TRON address
+    return import.meta.env.PONIA_TRON_FEE_ADDRESS || 'TPoNiA1111111111111111111111111111111';
   }
   
   // EVM chains (default)
-  return '0x504F4E49410000000000000000000000000000';
+  return import.meta.env.PONIA_EVM_FEE_ADDRESS || '0x504F4E49410000000000000000000000000000';
 }
 
 // Convert amount to smallest unit (wei for native, mwei for USDC/USDT)
@@ -439,14 +462,8 @@ async function handleConfirmSwap() {
     const sourceConfig = CHAIN_CONFIG[selectedSourceChain];
     const destConfig = CHAIN_CONFIG[destinationChain];
     
-    // Validate that source chain is EVM (Solana/TRON sources not yet supported)
-    if (!isEVMChain(sourceConfig.id)) {
-      alert('⚠️ Sending from Solana/TRON is coming soon! For now, please send from EVM chains (Ethereum, Polygon, Arbitrum, Base, Optimism, BNB Chain).');
-      return;
-    }
-    
-    // Get EVM wallet address
-    const userAddress = await getConnectedAddress();
+    // Get wallet address for the source chain (works for EVM, Solana, TRON)
+    const userAddress = await getConnectedAddress(sourceConfig.id);
     
     // Calculate fees
     const userAmount = toSmallestUnit(amount, selectedToken);
