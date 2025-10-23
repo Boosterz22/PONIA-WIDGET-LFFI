@@ -378,22 +378,6 @@ async function getConnectedAddress(chainId) {
   try {
     const sourceConfig = CHAIN_CONFIG[Object.keys(CHAIN_CONFIG).find(k => CHAIN_CONFIG[k].id === chainId)];
     
-    // Get the raw address from AppKit
-    const address = modal.getAddress();
-    
-    if (!address) {
-      throw new Error('Please connect your wallet first');
-    }
-    
-    // For Solana chains - verify we have a Solana address (base58 format)
-    if (sourceConfig?.type === 'solana') {
-      // Solana addresses are 32-44 characters, base58 encoded
-      if (address.startsWith('0x')) {
-        throw new Error('Please connect a Solana wallet (Phantom, Solflare, etc.) for Solana transactions');
-      }
-      return address;
-    }
-    
     // For TRON chains - use direct TronLink injection
     if (sourceConfig?.type === 'tron') {
       if (window.tronWeb && window.tronWeb.defaultAddress?.base58) {
@@ -408,9 +392,12 @@ async function getConnectedAddress(chainId) {
       throw new Error('Please connect your TRON wallet (TronLink)');
     }
     
-    // For EVM chains - verify we have an EVM address (0x format)
-    if (!address.startsWith('0x')) {
-      throw new Error('Please connect an EVM wallet (MetaMask, etc.) for EVM transactions');
+    // For EVM and Solana chains - use AppKit's getAddress()
+    // This works for multi-chain wallets like Phantom that support both
+    const address = modal.getAddress();
+    
+    if (!address) {
+      throw new Error('Please connect your wallet first');
     }
     
     return address;
