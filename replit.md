@@ -9,15 +9,20 @@ PONIA is a cross-chain cryptocurrency payment widget designed for Web3 applicati
   - EVM chains (Ethereum, Polygon, Arbitrum, Base, Optimism, BNB Chain): `0x280714ff27a52920bfcb75e2ec61027a93e8e9ac`
   - Solana: `9ZXoZdeR4aNVKmmegyVwfXjkKBG3BCcRXo961aSnD5fT`
   - TRON: `TQG4iEuaS2PEtFvnGGvG5utBbBuFuHSSFR`
-- **Demo widget for marketing videos:** Created `ponia-demo-widget.html` - fully simulated version for smooth video recording
-  - 0.85 scale to fit perfectly in 1080p frames
-  - Fake wallet connection with green "Connected ✅" button state
-  - 2-second yellow loading animation for transactions
-  - Smooth fade-in success screen with "Transaction complete ⚡"
+- **Professional demo widget for marketing videos:** Created `ponia-demo-widget.html` - cinema-quality simulated version
+  - **Lucide Icons integration:** Professional icon library (Send, Git-Branch, Check-Circle) replacing emojis
+  - **Golden flash transition:** Smooth radial gradient effect when transitioning from selection to progress screen
+  - **Wallet address display:** MetaMask 🦊 + truncated address (0xC7E3...42b9) appears after connection
+  - **Multi-stage progress screen:** Dedicated screen showing real-time bridging progress with animated progress bar
+  - **Micro-animations:** Each step (Sending → Bridging → Received) lights up with green glow effect on completion
+  - **Pulsating success check:** Large checkmark with breathing animation and "🎉 Funds successfully bridged" floating text
+  - **Cinematic finale:** Entire widget fades to centered PONIA logo with golden glow effect (2s after completion)
+  - **Enhanced visuals:** Gradient background (dark → purple tint), golden shadow on widget container
+  - **Timeline:** Connect Wallet (1s) → Confirm Swap → Golden Flash → Progress 25%/60%/100% (4s) → Success → Logo Fadeout
+  - 0.85 scale for perfect 1080p Runway video recording
   - All interactions self-contained (no real blockchain, no popups)
-  - Identical UI to production widget for authentic marketing material
 - **UI improvements:** Replaced USDC and USDT emoji icons with professional brand logos (blue USDC, turquoise USDT)
-- **Widget layout optimization:** Logo enlarged from 70px to 90px for better visibility
+- **Widget layout optimization:** Logo enlarged from 70px to 90px for better visibility, reduced header/body padding for compact layout
 - **Documentation design:** Enlarged PONIA logo on docs page (280px width) for better brand presence
 
 **October 23, 2025:**
