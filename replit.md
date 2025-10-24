@@ -4,6 +4,15 @@ PONIA is a cross-chain cryptocurrency payment widget designed for Web3 applicati
 
 # Recent Changes
 
+**October 24, 2025:**
+- **Production wallet addresses configured:** Set up secure Replit Secrets for fee collection wallets
+  - EVM chains (Ethereum, Polygon, Arbitrum, Base, Optimism, BNB Chain): `0x280714ff27a52920bfcb75e2ec61027a93e8e9ac`
+  - Solana: `9ZXoZdeR4aNVKmmegyVwfXjkKBG3BCcRXo961aSnD5fT`
+  - TRON: `TQG4iEuaS2PEtFvnGGvG5utBbBuFuHSSFR`
+- **UI improvements:** Replaced USDC and USDT emoji icons with professional brand logos (blue USDC, turquoise USDT)
+- **Widget layout optimization:** Reduced header padding and spacing to maximize content visibility, logo reduced from 100px to 70px
+- **Documentation design:** Enlarged PONIA logo on docs page (280px width) for better brand presence
+
 **October 23, 2025:**
 - Created comprehensive developer documentation page (`/docs.html`) with full integration guides
 - Documented bidirectional flows: deposits AND withdrawals
