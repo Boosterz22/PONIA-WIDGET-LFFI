@@ -17,8 +17,9 @@ PONIA is a cross-chain cryptocurrency payment widget designed for Web3 applicati
   - **Micro-animations:** Each step (Sending → Bridging → Received) lights up with green glow effect on completion
   - **Pulsating success check:** Large checkmark with breathing animation and "🎉 Funds successfully bridged" floating text
   - **Cinematic finale:** Entire widget fades to centered PONIA logo with golden glow effect (2s after completion)
+  - **Final fade out:** Logo progressively fades out (1.5s) while neon tagline appears: "One widget. Any chain. Anywhere." in Space Grotesk with golden glow effect
   - **Enhanced visuals:** Gradient background (dark → purple tint), golden shadow on widget container
-  - **Timeline:** Connect Wallet (1s) → Confirm Swap → Golden Flash → Progress 25%/60%/100% (4s) → Success → Logo Fadeout
+  - **Timeline:** Connect Wallet (1s) → Confirm Swap → Golden Flash → Progress 25%/60%/100% (4s) → Success → Logo (1.5s) → Tagline Fade-in
   - 0.85 scale for perfect 1080p Runway video recording
   - All interactions self-contained (no real blockchain, no popups)
 - **UI improvements:** Replaced USDC and USDT emoji icons with professional brand logos (blue USDC, turquoise USDT)
