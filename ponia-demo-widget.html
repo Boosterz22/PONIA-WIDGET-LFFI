@@ -45,7 +45,7 @@
   .widget-header {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-between;
     padding: 8px 14px 4px;
   }
   .widget-logo {
@@ -61,6 +61,27 @@
     width: 100%;
     height: 100%;
     object-fit: contain;
+  }
+  
+  /* Wallet Address Display */
+  .wallet-address {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(255, 215, 63, 0.1);
+    border: 1px solid rgba(255, 215, 63, 0.2);
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text);
+    animation: fadeIn 0.5s ease-in;
+  }
+  .wallet-address.visible {
+    display: flex;
+  }
+  .wallet-icon {
+    font-size: 16px;
   }
   
   /* Body */
@@ -353,26 +374,145 @@
     to { transform: translate(-50%, -50%) rotate(360deg); }
   }
   
-  /* Success Notification */
-  .success-notification {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-100px);
-    background: linear-gradient(135deg, var(--accent) 0%, #FFE175 100%);
-    color: #0a0a0b;
-    padding: 14px 24px;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 14px;
-    box-shadow: 0 10px 40px rgba(255, 215, 63, 0.4);
-    z-index: 1000;
-    opacity: 0;
-    transition: all 0.5s ease;
+  /* Progress Screen */
+  .progress-screen {
+    display: none;
+    padding: 30px 0;
+    text-align: center;
   }
-  .success-notification.show {
-    transform: translateX(-50%) translateY(0);
+  .progress-screen.visible {
+    display: block;
+    animation: fadeIn 0.5s ease-in;
+  }
+  
+  .progress-header {
+    margin-bottom: 30px;
+  }
+  .progress-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .progress-subtitle {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  
+  /* Progress Bar */
+  .progress-bar-container {
+    width: 100%;
+    height: 8px;
+    background: var(--card-light);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 20px 0;
+    border: 1px solid var(--border);
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent) 0%, #FFE175 100%);
+    border-radius: 10px;
+    width: 0%;
+    transition: width 0.5s ease;
+    box-shadow: 0 0 15px rgba(255, 215, 63, 0.6);
+  }
+  
+  /* Progress Steps */
+  .progress-steps {
+    margin: 30px 0;
+  }
+  .progress-step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 10px;
+    background: var(--card-light);
+    border: 1px solid var(--border);
+    opacity: 0.4;
+    transition: all 0.4s ease;
+  }
+  .progress-step.active {
     opacity: 1;
+    background: rgba(255, 215, 63, 0.1);
+    border-color: rgba(255, 215, 63, 0.3);
+  }
+  .progress-step.completed {
+    opacity: 1;
+    background: rgba(34, 197, 94, 0.1);
+    border-color: rgba(34, 197, 94, 0.3);
+  }
+  .progress-step-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .progress-step.active .progress-step-icon {
+    background: rgba(255, 215, 63, 0.2);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  .progress-step.completed .progress-step-icon {
+    background: rgba(34, 197, 94, 0.2);
+  }
+  .progress-step-text {
+    text-align: left;
+    flex: 1;
+  }
+  .progress-step-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .progress-step-time {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  
+  /* Success Check */
+  .success-check {
+    width: 80px;
+    height: 80px;
+    margin: 20px auto;
+    background: rgba(34, 197, 94, 0.1);
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    animation: scaleIn 0.5s ease-out;
+  }
+  .success-check.visible {
+    display: flex;
+  }
+  @keyframes scaleIn {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+  
+  .success-message {
+    display: none;
+    margin-top: 20px;
+  }
+  .success-message.visible {
+    display: block;
+    animation: fadeIn 0.5s ease-in;
+  }
+  .success-message-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .success-message-subtitle {
+    font-size: 14px;
+    color: var(--muted);
   }
   
   /* Glow Effect */
@@ -402,11 +542,15 @@
       <div class="widget-logo">
         <img src="/assets/ponia-logo.png" alt="PONIA" />
       </div>
+      <div id="wallet-address" class="wallet-address">
+        <span class="wallet-icon">🦊</span>
+        <span>0xC7E3...42b9</span>
+      </div>
     </div>
 
     <!-- Body -->
     <div class="widget-body">
-      <!-- Main Content -->
+      <!-- Step 1: Selection -->
       <div id="step-selection">
         <div class="chain-display">
           <div class="chain-logo-big">
@@ -515,13 +659,51 @@
           <span class="spinner"></span>
         </button>
       </div>
+
+      <!-- Step 2: Progress -->
+      <div id="step-progress" class="progress-screen">
+        <div class="progress-header">
+          <div class="progress-title">Processing Cross-Chain Transfer</div>
+          <div class="progress-subtitle">Estimated time: ~43 seconds</div>
+        </div>
+
+        <div class="progress-bar-container">
+          <div id="progress-bar-fill" class="progress-bar-fill"></div>
+        </div>
+
+        <div class="progress-steps">
+          <div id="step-1" class="progress-step active">
+            <div class="progress-step-icon">📤</div>
+            <div class="progress-step-text">
+              <div class="progress-step-label">Sending from Ethereum</div>
+              <div class="progress-step-time">Initiating transaction...</div>
+            </div>
+          </div>
+          <div id="step-2" class="progress-step">
+            <div class="progress-step-icon">🌉</div>
+            <div class="progress-step-text">
+              <div class="progress-step-label">Bridging via deBridge</div>
+              <div class="progress-step-time">Cross-chain transfer in progress...</div>
+            </div>
+          </div>
+          <div id="step-3" class="progress-step">
+            <div class="progress-step-icon">✅</div>
+            <div class="progress-step-text">
+              <div class="progress-step-label">Funds received on Polygon</div>
+              <div class="progress-step-time">Finalizing...</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="success-check" class="success-check">✓</div>
+        
+        <div id="success-message" class="success-message">
+          <div class="success-message-title">⚡ Transaction Complete!</div>
+          <div class="success-message-subtitle">Your funds arrived in just 43 seconds across chains</div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
-
-<!-- Success Notification -->
-<div id="success-notification" class="success-notification">
-  ✅ Transaction Successful — Funds received on Polygon
 </div>
 
 <script>
@@ -529,15 +711,24 @@
 const connectBtn = document.getElementById('connect-btn');
 const confirmBtn = document.getElementById('confirm-btn');
 const btnText = connectBtn.querySelector('.btn-text');
-const btnTextConfirm = confirmBtn.querySelector('.btn-text-confirm');
-const successNotification = document.getElementById('success-notification');
+const walletAddress = document.getElementById('wallet-address');
+
+const stepSelection = document.getElementById('step-selection');
+const stepProgress = document.getElementById('step-progress');
+
+const progressBarFill = document.getElementById('progress-bar-fill');
+const progressStep1 = document.getElementById('step-1');
+const progressStep2 = document.getElementById('step-2');
+const progressStep3 = document.getElementById('step-3');
+const successCheck = document.getElementById('success-check');
+const successMessage = document.getElementById('success-message');
 
 const nativeTokenLogo = document.getElementById('native-token-logo');
 const nativeTokenName = document.getElementById('native-token-name');
 const routeFromImg = document.getElementById('route-from-img');
 const routeFromName = document.getElementById('route-from-name');
 
-let demoState = 'initial'; // initial -> connected -> ready -> processing -> complete
+let demoState = 'initial';
 let selectedChain = 'ethereum';
 
 const chainData = {
@@ -561,9 +752,9 @@ connectBtn.addEventListener('click', async () => {
       connectBtn.classList.remove('loading');
       connectBtn.classList.add('connected');
       btnText.textContent = '✅ Connected (MetaMask)';
+      walletAddress.classList.add('visible');
       demoState = 'connected';
       
-      // Show Confirm Swap button after 1 second
       setTimeout(() => {
         connectBtn.classList.add('hidden');
         confirmBtn.classList.remove('hidden');
@@ -573,37 +764,51 @@ connectBtn.addEventListener('click', async () => {
   }
 });
 
-// 2️⃣ Confirm Swap Button with Glow Effect
+// 2️⃣ Confirm Swap Button - Switches to Progress Screen
 confirmBtn.addEventListener('click', async () => {
   if (demoState === 'ready') {
-    confirmBtn.classList.add('processing');
-    btnTextConfirm.textContent = 'Processing transaction...';
+    stepSelection.classList.add('hidden');
+    stepProgress.classList.add('visible');
     demoState = 'processing';
     
-    // Create glow effect
-    const glowDiv = document.createElement('div');
-    glowDiv.className = 'glow-effect';
-    confirmBtn.appendChild(glowDiv);
+    // Progress Animation Sequence
+    setTimeout(() => {
+      // Step 1: 25% - Sending from Ethereum
+      progressBarFill.style.width = '25%';
+      progressStep1.classList.add('completed');
+      progressStep1.classList.remove('active');
+      progressStep2.classList.add('active');
+    }, 1000);
     
     setTimeout(() => {
-      confirmBtn.classList.remove('processing');
-      confirmBtn.classList.add('connected');
-      btnTextConfirm.textContent = '⚡ Transaction complete in 43 seconds';
+      // Step 2: 60% - Bridging via deBridge
+      progressBarFill.style.width = '60%';
+      progressStep2.classList.add('completed');
+      progressStep2.classList.remove('active');
+      progressStep3.classList.add('active');
+    }, 2200);
+    
+    setTimeout(() => {
+      // Step 3: 100% - Funds received
+      progressBarFill.style.width = '100%';
+      progressStep3.classList.add('completed');
+      progressStep3.classList.remove('active');
       
-      // Show success notification
-      successNotification.classList.add('show');
-      
-      // Hide notification after 2 seconds
+      // Show success check
       setTimeout(() => {
-        successNotification.classList.remove('show');
-      }, 2500);
-      
-      demoState = 'complete';
-    }, 1500);
+        successCheck.classList.add('visible');
+        
+        // Show success message
+        setTimeout(() => {
+          successMessage.classList.add('visible');
+          demoState = 'complete';
+        }, 500);
+      }, 300);
+    }, 3500);
   }
 });
 
-// 3️⃣ Token selector with smooth transitions
+// 3️⃣ Token selector
 document.querySelectorAll('.token-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.token-btn').forEach(b => b.classList.remove('active'));
@@ -611,7 +816,7 @@ document.querySelectorAll('.token-btn').forEach(btn => {
   });
 });
 
-// 4️⃣ Chain selector with hover glow + route update
+// 4️⃣ Chain selector with smooth transitions
 document.querySelectorAll('.chain-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.chain-btn').forEach(b => b.classList.remove('active'));
@@ -620,11 +825,9 @@ document.querySelectorAll('.chain-btn').forEach(btn => {
     selectedChain = btn.dataset.chain;
     const chainInfo = chainData[selectedChain];
     
-    // Update native token
     nativeTokenLogo.src = chainInfo.logo;
     nativeTokenName.textContent = chainInfo.symbol;
     
-    // Update route with smooth transition
     routeFromImg.style.opacity = '0';
     routeFromName.style.opacity = '0';
     
