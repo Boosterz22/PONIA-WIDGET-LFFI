@@ -544,7 +544,7 @@
     <!-- Right: Widget -->
     <div class="widget-wrapper">
       <div class="widget-container">
-        <iframe id="widgetFrame" src="/widget?mode=deposit&platform=polygon"></iframe>
+        <iframe id="widgetFrame" src="/widget/?mode=deposit&platform=polygon"></iframe>
       </div>
     </div>
   </div>
@@ -552,30 +552,30 @@
   <script>
     const scenarios = {
       gaming: {
-        url: '/widget?mode=deposit&platform=polygon',
+        url: '/widget/?mode=deposit&platform=polygon',
         code: `<!-- Gaming Platform Integration -->
 <iframe 
-  src="https://ponia.com/widget?mode=deposit&platform=polygon&recipient=0xYourGameAddress"
+  src="https://ponia.com/widget/?mode=deposit&platform=polygon&recipient=0xYourGameAddress"
   width="420" 
   height="700"
   style="border: none; border-radius: 16px;"
 ></iframe>`
       },
       nft: {
-        url: '/widget?mode=deposit&platform=ethereum',
+        url: '/widget/?mode=deposit&platform=ethereum',
         code: `<!-- NFT Marketplace Integration -->
 <iframe 
-  src="https://ponia.com/widget?mode=deposit&platform=ethereum&recipient=0xYourNFTAddress"
+  src="https://ponia.com/widget/?mode=deposit&platform=ethereum&recipient=0xYourNFTAddress"
   width="420" 
   height="700"
   style="border: none; border-radius: 16px;"
 ></iframe>`
       },
       casino: {
-        url: '/widget?mode=withdrawal&platform=56',
+        url: '/widget/?mode=withdrawal&platform=56',
         code: `<!-- Casino Withdrawal Integration -->
 <iframe 
-  src="https://ponia.com/widget?mode=withdrawal&platform=56&recipient=0xPlayerAddress"
+  src="https://ponia.com/widget/?mode=withdrawal&platform=56&recipient=0xPlayerAddress"
   width="420" 
   height="700"
   style="border: none; border-radius: 16px;"
