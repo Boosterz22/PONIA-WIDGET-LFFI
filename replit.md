@@ -11,15 +11,19 @@ PONIA is a cross-chain cryptocurrency payment widget designed for Web3 applicati
   - TRON: `TQG4iEuaS2PEtFvnGGvG5utBbBuFuHSSFR`
 - **Professional demo widget for marketing videos:** Created `ponia-demo-widget.html` - cinema-quality simulated version
   - **Lucide Icons integration:** Professional icon library (Send, Git-Branch, Check-Circle) replacing emojis
-  - **Golden flash transition:** Smooth radial gradient effect when transitioning from selection to progress screen
+  - **Ultra-smooth screen transition:** Multi-layered transition effect combining:
+    - Golden radial flash with scale animation (0.8s pulse effect)
+    - Selection screen fade-out with scale-down (0.6s)
+    - Progress screen fade-in with slide-up + scale (0.8s delay)
+    - Seamless cross-fade for professional cinematic quality
   - **Wallet address display:** MetaMask 🦊 + truncated address (0xC7E3...42b9) appears after connection
   - **Multi-stage progress screen:** Dedicated screen showing real-time bridging progress with animated progress bar
   - **Micro-animations:** Each step (Sending → Bridging → Received) lights up with green glow effect on completion
   - **Pulsating success check:** Large checkmark with breathing animation and "🎉 Funds successfully bridged" floating text
   - **Cinematic finale:** Entire widget fades to centered PONIA logo with golden glow effect (2s after completion)
-  - **Final fade out:** Logo progressively fades out (1.5s) while neon tagline appears: "One widget. Any chain. Anywhere." in Space Grotesk with golden glow effect
+  - **Final fade out:** Logo progressively fades out (1.5s) while neon tagline appears: "One widget. Any chain. Anywhere." in Space Grotesk with triple-layer golden neon glow
   - **Enhanced visuals:** Gradient background (dark → purple tint), golden shadow on widget container
-  - **Timeline:** Connect Wallet (1s) → Confirm Swap → Golden Flash → Progress 25%/60%/100% (4s) → Success → Logo (1.5s) → Tagline Fade-in
+  - **Timeline:** Connect Wallet (1s) → Confirm Swap → Smooth Transition (1s) → Progress 25%/60%/100% (4.2s) → Success → Logo (1.5s) → Tagline Fade-in
   - 0.85 scale for perfect 1080p Runway video recording
   - All interactions self-contained (no real blockchain, no popups)
 - **UI improvements:** Replaced USDC and USDT emoji icons with professional brand logos (blue USDC, turquoise USDT)
