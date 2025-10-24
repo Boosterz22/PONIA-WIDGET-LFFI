@@ -132,9 +132,9 @@ let selectedToken = 'native';
 const projectId = 'f83cf00007509459345871b429d32db0';
 const metadata = {
   name: 'PONIA',
-  description: 'Cross-chain crypto payments',
-  url: 'https://ponia.io',
-  icons: ['https://ponia.io/assets/ponia-logo.png']
+  description: 'Cross-chain payment widget',
+  url: typeof window !== 'undefined' ? window.location.origin : 'https://ponia.io',
+  icons: ['https://avatars.githubusercontent.com/u/179229932']
 };
 
 // Create adapters for EVM and Solana
@@ -146,10 +146,7 @@ modal = createAppKit({
   adapters: [ethersAdapter, solanaAdapter],
   networks: [mainnet, polygon, arbitrum, base, optimism, bsc, solana],
   projectId,
-  metadata,
-  features: {
-    analytics: true
-  }
+  metadata
 });
 
 // Detect destination chain from URL
