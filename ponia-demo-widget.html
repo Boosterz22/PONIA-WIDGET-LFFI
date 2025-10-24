@@ -107,16 +107,19 @@
   
   /* Body */
   .widget-body {
-    padding: 4px 16px 16px;
+    padding: 4px 0 16px;
     position: relative;
     overflow: hidden;
+    min-height: 500px;
   }
   
   /* Screen Container for Slide Transitions */
   .screen-container {
     display: flex;
     width: 200%;
-    transition: transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+    transition: transform 0.6s ease-out;
+    position: relative;
+    left: 0;
   }
   .screen-container.slide-to-progress {
     transform: translateX(-50%);
@@ -125,6 +128,7 @@
   .screen-panel {
     width: 50%;
     flex-shrink: 0;
+    padding: 0 16px;
   }
   
   /* Chain Display */
