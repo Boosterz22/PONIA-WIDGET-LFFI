@@ -68,37 +68,71 @@
     padding: 16px 20px 20px;
   }
   
+  /* Chain Display */
+  .chain-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 0 0 16px;
+  }
+  .chain-logo-big {
+    width: 80px;
+    height: 80px;
+    border-radius: 16px;
+    background: var(--card-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    border: 1px solid var(--border);
+  }
+  .chain-logo-big img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .chain-info-text {
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+  }
+  .chain-info-text strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+  
   /* Chain Selector */
   .chain-selector-title {
     text-align: center;
     font-weight: 700;
     font-size: 14px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
   .chain-buttons {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
     justify-content: center;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
   .chain-btn {
-    padding: 10px 16px;
+    padding: 8px 12px;
     border-radius: 10px;
     border: 1px solid var(--border);
     background: var(--card);
     color: var(--muted);
     font-weight: 600;
-    font-size: 13px;
+    font-size: 12px;
     cursor: pointer;
     transition: all 0.2s;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
   }
   .chain-btn-logo {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     border-radius: 4px;
     object-fit: contain;
   }
@@ -117,17 +151,17 @@
     text-align: center;
     font-weight: 700;
     font-size: 14px;
-    margin: 20px 0 12px;
+    margin: 16px 0 12px;
   }
   .token-buttons {
     display: flex;
     gap: 8px;
     justify-content: center;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
   .token-btn {
     flex: 1;
-    padding: 12px 16px;
+    padding: 10px 12px;
     border-radius: 10px;
     border: 1px solid var(--border);
     background: var(--card);
@@ -161,17 +195,17 @@
   
   /* Input */
   .input-group {
-    margin: 16px 0;
+    margin: 12px 0;
   }
   .input-label {
     font-size: 13px;
     color: var(--muted);
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     display: block;
   }
   .input-field {
     width: 100%;
-    padding: 12px 16px;
+    padding: 10px 14px;
     border-radius: 10px;
     border: 1px solid var(--border);
     background: var(--card-light);
@@ -185,8 +219,8 @@
     align-items: center;
     justify-content: center;
     gap: 12px;
-    margin: 16px 0;
-    padding: 16px;
+    margin: 12px 0;
+    padding: 12px;
     background: rgba(255, 215, 63, 0.05);
     border-radius: 12px;
     border: 1px solid rgba(255, 215, 63, 0.15);
@@ -198,8 +232,8 @@
     gap: 6px;
   }
   .route-chain-logo {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     border-radius: 8px;
     padding: 6px;
     background: var(--card-light);
@@ -216,9 +250,9 @@
     font-weight: 600;
   }
   .route-arrow {
-    font-size: 24px;
+    font-size: 20px;
     color: var(--accent);
-    margin: 0 8px;
+    margin: 0 6px;
   }
   
   /* Fee Preview */
@@ -226,14 +260,14 @@
     background: var(--card-light);
     border: 1px solid rgba(255, 215, 63, 0.15);
     border-radius: 10px;
-    padding: 12px;
-    margin: 16px 0;
+    padding: 10px;
+    margin: 12px 0;
     font-size: 12px;
   }
   .fee-preview-row {
     display: flex;
     justify-content: space-between;
-    margin: 4px 0;
+    margin: 3px 0;
   }
   .fee-preview-label {
     color: var(--muted);
@@ -249,7 +283,7 @@
   /* Buttons */
   .btn-primary {
     width: 100%;
-    padding: 14px 20px;
+    padding: 12px 18px;
     border-radius: 12px;
     border: none;
     background: var(--accent);
@@ -258,7 +292,7 @@
     font-size: 15px;
     cursor: pointer;
     transition: all 0.2s;
-    margin-top: 16px;
+    margin-top: 12px;
     position: relative;
     overflow: hidden;
   }
@@ -298,7 +332,7 @@
   /* Success Screen */
   .success-screen {
     text-align: center;
-    padding: 40px 0;
+    padding: 30px 0;
     display: none;
     animation: fadeIn 0.5s ease-in;
   }
@@ -348,31 +382,56 @@
     <div class="widget-body">
       <!-- Step 1: Chain Selection -->
       <div id="step-selection" class="step-content">
-        <div class="chain-selector-title">Send From</div>
+        <div class="chain-display">
+          <div class="chain-logo-big">
+            <img src="/assets/chains/polygon.png" alt="Polygon" />
+          </div>
+          <p class="chain-info-text">
+            This platform uses: <strong>Polygon</strong>
+          </p>
+        </div>
+
+        <div class="chain-selector-title">Send from which chain?</div>
         <div class="chain-buttons">
-          <button class="chain-btn active" data-chain="ethereum">
-            <img src="/assets/chains/ethereum.svg" class="chain-btn-logo" alt="" />
+          <button class="chain-btn active" data-chain="ethereum" data-logo="/assets/chains/ethereum.png" data-name="Ethereum">
+            <img src="/assets/chains/ethereum.png" class="chain-btn-logo" alt="" />
             Ethereum
           </button>
-          <button class="chain-btn" data-chain="polygon">
-            <img src="/assets/chains/polygon.svg" class="chain-btn-logo" alt="" />
+          <button class="chain-btn" data-chain="polygon" data-logo="/assets/chains/polygon.png" data-name="Polygon">
+            <img src="/assets/chains/polygon.png" class="chain-btn-logo" alt="" />
             Polygon
           </button>
-          <button class="chain-btn" data-chain="arbitrum">
-            <img src="/assets/chains/arbitrum.svg" class="chain-btn-logo" alt="" />
+          <button class="chain-btn" data-chain="arbitrum" data-logo="/assets/chains/arbitrum.png" data-name="Arbitrum">
+            <img src="/assets/chains/arbitrum.png" class="chain-btn-logo" alt="" />
             Arbitrum
           </button>
-          <button class="chain-btn" data-chain="base">
-            <img src="/assets/chains/base.svg" class="chain-btn-logo" alt="" />
+          <button class="chain-btn" data-chain="base" data-logo="/assets/chains/base.png" data-name="Base">
+            <img src="/assets/chains/base.png" class="chain-btn-logo" alt="" />
             Base
+          </button>
+          <button class="chain-btn" data-chain="optimism" data-logo="/assets/chains/optimism.png" data-name="Optimism">
+            <img src="/assets/chains/optimism.png" class="chain-btn-logo" alt="" />
+            Optimism
+          </button>
+          <button class="chain-btn" data-chain="bnb" data-logo="/assets/chains/bnb.png" data-name="BNB Chain">
+            <img src="/assets/chains/bnb.png" class="chain-btn-logo" alt="" />
+            BNB Chain
+          </button>
+          <button class="chain-btn" data-chain="solana" data-logo="/assets/chains/solana.png" data-name="Solana">
+            <img src="/assets/chains/solana.png" class="chain-btn-logo" alt="" />
+            Solana
+          </button>
+          <button class="chain-btn" data-chain="tron" data-logo="/assets/chains/tron.png" data-name="TRON">
+            <img src="/assets/chains/tron.png" class="chain-btn-logo" alt="" />
+            TRON
           </button>
         </div>
 
-        <div class="token-selector-title">Token to Send</div>
+        <div class="token-selector-title">Select token</div>
         <div class="token-buttons">
           <button class="token-btn active" data-token="native">
-            <span class="token-btn-icon">⟠</span>
-            ETH
+            <img id="native-token-logo" src="/assets/chains/ethereum.png" class="token-btn-logo" alt="" />
+            <span id="native-token-name">ETH</span>
           </button>
           <button class="token-btn" data-token="usdc">
             <img src="/assets/usdc-logo.png" class="token-btn-logo" alt="" />
@@ -385,21 +444,21 @@
         </div>
 
         <div class="input-group">
-          <label class="input-label">Amount</label>
+          <label class="input-label">Amount to send</label>
           <input type="number" class="input-field" placeholder="0.00" value="0.5" />
         </div>
 
         <div class="route-visual">
           <div class="route-chain">
             <div class="route-chain-logo">
-              <img src="/assets/chains/ethereum.svg" alt="" id="route-from-img" />
+              <img id="route-from-img" src="/assets/chains/ethereum.png" alt="" />
             </div>
             <div class="route-chain-name" id="route-from-name">Ethereum</div>
           </div>
           <div class="route-arrow">→</div>
           <div class="route-chain">
             <div class="route-chain-logo">
-              <img src="/assets/chains/polygon.svg" alt="" />
+              <img src="/assets/chains/polygon.png" alt="" />
             </div>
             <div class="route-chain-name">Polygon</div>
           </div>
@@ -407,29 +466,26 @@
 
         <div class="fee-preview">
           <div class="fee-preview-row">
-            <span class="fee-preview-label">PONIA Fee (1.5%)</span>
+            <span class="fee-preview-label">PONIA fee (1.5%)</span>
             <span class="fee-preview-value" id="ponia-fee">0.0075 ETH</span>
           </div>
           <div class="fee-preview-row">
-            <span class="fee-preview-label">Bridge Fee</span>
-            <span class="fee-preview-value">0.0025 ETH</span>
+            <span class="fee-preview-label">Bridge fee</span>
+            <span class="fee-preview-value">~0.1%</span>
           </div>
           <div class="fee-preview-row">
-            <span class="fee-preview-label">Total Debited</span>
-            <span class="fee-preview-value" id="total-debited">0.51 ETH</span>
-          </div>
-          <div class="fee-preview-row">
-            <span class="fee-preview-label">You Receive</span>
-            <span class="fee-preview-value highlight" id="you-receive">~0.49 ETH</span>
-          </div>
-          <div class="fee-preview-row">
-            <span class="fee-preview-label">ETA</span>
-            <span class="fee-preview-value">~43 seconds</span>
+            <span class="fee-preview-label">Estimated time</span>
+            <span class="fee-preview-value highlight">~43 seconds</span>
           </div>
         </div>
 
         <button id="connect-btn" class="btn-primary">
           <span class="btn-text">Connect Wallet</span>
+          <span class="spinner"></span>
+        </button>
+
+        <button id="confirm-btn" class="btn-primary hidden">
+          <span class="btn-text-confirm">Confirm Swap</span>
           <span class="spinner"></span>
         </button>
       </div>
@@ -447,12 +503,31 @@
 <script>
 // Demo Logic - Fully Simulated for Marketing Video
 const connectBtn = document.getElementById('connect-btn');
+const confirmBtn = document.getElementById('confirm-btn');
 const btnText = connectBtn.querySelector('.btn-text');
 const stepSelection = document.getElementById('step-selection');
 const stepSuccess = document.getElementById('step-success');
 
-let demoState = 'initial'; // initial -> connected -> processing -> complete
+const nativeTokenLogo = document.getElementById('native-token-logo');
+const nativeTokenName = document.getElementById('native-token-name');
+const routeFromImg = document.getElementById('route-from-img');
+const routeFromName = document.getElementById('route-from-name');
 
+let demoState = 'initial'; // initial -> connected -> ready -> processing -> complete
+let selectedChain = 'ethereum';
+
+const chainData = {
+  ethereum: { name: 'Ethereum', symbol: 'ETH', logo: '/assets/chains/ethereum.png' },
+  polygon: { name: 'Polygon', symbol: 'POL', logo: '/assets/chains/polygon.png' },
+  arbitrum: { name: 'Arbitrum', symbol: 'ETH', logo: '/assets/chains/arbitrum.png' },
+  base: { name: 'Base', symbol: 'ETH', logo: '/assets/chains/base.png' },
+  optimism: { name: 'Optimism', symbol: 'ETH', logo: '/assets/chains/optimism.png' },
+  bnb: { name: 'BNB Chain', symbol: 'BNB', logo: '/assets/chains/bnb.png' },
+  solana: { name: 'Solana', symbol: 'SOL', logo: '/assets/chains/solana.png' },
+  tron: { name: 'TRON', symbol: 'TRX', logo: '/assets/chains/tron.png' }
+};
+
+// Connect Wallet button logic
 connectBtn.addEventListener('click', async () => {
   if (demoState === 'initial') {
     // Simulate wallet connection (1.5s)
@@ -464,18 +539,21 @@ connectBtn.addEventListener('click', async () => {
       btnText.textContent = 'Connected ✅';
       demoState = 'connected';
       
-      // Auto-change button text to "Confirm Swap" after 1 second
+      // Show Confirm Swap button after 1 second
       setTimeout(() => {
-        btnText.textContent = 'Confirm Swap';
-        connectBtn.classList.remove('connected');
+        connectBtn.classList.add('hidden');
+        confirmBtn.classList.remove('hidden');
         demoState = 'ready';
       }, 1000);
     }, 1500);
-    
-  } else if (demoState === 'ready') {
+  }
+});
+
+// Confirm Swap button logic
+confirmBtn.addEventListener('click', async () => {
+  if (demoState === 'ready') {
     // Simulate transaction processing (2s loading)
-    connectBtn.classList.add('loading');
-    btnText.textContent = '';
+    confirmBtn.classList.add('loading');
     demoState = 'processing';
     
     setTimeout(() => {
@@ -492,11 +570,6 @@ document.querySelectorAll('.token-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.token-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    
-    // Update button text based on selected token
-    const token = btn.dataset.token;
-    const tokenText = btn.textContent.trim();
-    btnText.textContent = demoState === 'initial' ? 'Connect Wallet' : 'Confirm Swap';
   });
 });
 
@@ -506,13 +579,17 @@ document.querySelectorAll('.chain-btn').forEach(btn => {
     document.querySelectorAll('.chain-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     
-    // Update route visualization
-    const chain = btn.dataset.chain;
-    const chainImg = btn.querySelector('.chain-btn-logo').src;
-    const chainName = btn.textContent.trim();
+    // Update selected chain
+    selectedChain = btn.dataset.chain;
+    const chainInfo = chainData[selectedChain];
     
-    document.getElementById('route-from-img').src = chainImg;
-    document.getElementById('route-from-name').textContent = chainName;
+    // Update native token logo and name
+    nativeTokenLogo.src = chainInfo.logo;
+    nativeTokenName.textContent = chainInfo.symbol;
+    
+    // Update route visualization
+    routeFromImg.src = chainInfo.logo;
+    routeFromName.textContent = chainInfo.name;
   });
 });
 </script>
