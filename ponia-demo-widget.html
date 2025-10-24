@@ -955,24 +955,16 @@ connectBtn.addEventListener('click', async () => {
   }
 });
 
-// 2️⃣ Confirm Swap Button - Golden Flash + Slide Transition
+// 2️⃣ Confirm Swap Button - Slide Transition
 confirmBtn.addEventListener('click', async () => {
   if (demoState === 'ready') {
-    // Create golden flash effect
-    const flash = document.createElement('div');
-    flash.className = 'golden-flash';
-    widgetContainer.appendChild(flash);
+    // Slide to progress screen
+    screenContainer.classList.add('slide-to-progress');
+    demoState = 'processing';
     
+    // Re-initialize icons in progress screen
     setTimeout(() => {
-      // Slide to progress screen
-      screenContainer.classList.add('slide-to-progress');
-      demoState = 'processing';
-      
-      // Re-initialize icons in progress screen
       lucide.createIcons();
-      
-      // Remove flash after animation
-      setTimeout(() => flash.remove(), 600);
     }, 300);
     
     // Progress Animation Sequence

@@ -11,7 +11,7 @@ PONIA is a cross-chain cryptocurrency payment widget designed for Web3 applicati
   - TRON: `TQG4iEuaS2PEtFvnGGvG5utBbBuFuHSSFR`
 - **Professional demo widget for marketing videos:** Created `ponia-demo-widget.html` - cinema-quality simulated version
   - **Lucide Icons integration:** Professional icon library (Send, Git-Branch, Check-Circle) replacing emojis
-  - **Golden flash transition:** Smooth radial gradient effect combined with horizontal slide transition when moving from selection to progress screen (0.8s cubic-bezier easing)
+  - **Smooth slide transition:** Clean horizontal slide (0.6s ease-out) when moving from selection to progress screen
   - **Wallet address display:** MetaMask 🦊 + truncated address (0xC7E3...42b9) appears after connection
   - **Multi-stage progress screen:** Dedicated screen showing real-time bridging progress with animated progress bar
   - **Micro-animations:** Each step (Sending → Bridging → Received) lights up with green glow effect on completion
