@@ -101,6 +101,8 @@
       height: calc(100vh - 70px);
       overflow-y: auto;
       padding: 32px 0;
+      display: flex;
+      flex-direction: column;
     }
     
     .sidebar-section {
@@ -137,6 +139,50 @@
       color: var(--accent);
       background: rgba(255, 215, 63, 0.1);
       border-left-color: var(--accent);
+    }
+    
+    .sidebar-version {
+      padding: 12px 24px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .sidebar-version-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    
+    .sidebar-version-date {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    
+    .sidebar-footer {
+      padding: 16px 24px;
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+    }
+    
+    .sidebar-footer-text {
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .sidebar-footer-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+      transition: opacity 0.2s;
+    }
+    
+    .sidebar-footer-link:hover {
+      opacity: 0.8;
     }
     
     /* Content */
@@ -285,7 +331,7 @@
   <!-- Header -->
   <header class="header">
     <a href="/" class="logo">
-      <img src="/assets/ponia-logo-glow.png" alt="PONIA">
+      <img src="/assets/ponia-logo-mono.svg" alt="PONIA" style="filter: invert(1);">
     </a>
     
     <div class="nav-right">
@@ -298,6 +344,11 @@
   <div class="docs-container">
     <!-- Sidebar -->
     <nav class="sidebar">
+      <div class="sidebar-version">
+        <div class="sidebar-version-title">Docs v1.0</div>
+        <div class="sidebar-version-date">Updated Oct 2025</div>
+      </div>
+      
       <div class="sidebar-section">
         <div class="sidebar-title">Getting Started</div>
         <a href="#introduction" class="sidebar-link active">Introduction</a>
@@ -323,6 +374,12 @@
         <div class="sidebar-title">Resources</div>
         <a href="#faq" class="sidebar-link">FAQ</a>
         <a href="#support" class="sidebar-link">Support</a>
+      </div>
+      
+      <div class="sidebar-footer">
+        <div class="sidebar-footer-text">
+          Powered by <a href="https://debridge.finance" target="_blank" rel="noopener noreferrer" class="sidebar-footer-link">deBridge Protocol</a>
+        </div>
       </div>
     </nav>
     

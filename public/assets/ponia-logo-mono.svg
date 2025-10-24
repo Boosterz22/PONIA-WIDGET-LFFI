@@ -1,0 +1,7 @@
+<svg width="280" height="80" viewBox="0 0 280 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Lightning bolt icon -->
+  <path d="M45 10L25 42H38L33 70L53 38H40L45 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  
+  <!-- PONIA text -->
+  <text x="70" y="55" font-family="'Space Grotesk', sans-serif" font-size="42" font-weight="600" fill="currentColor">PONIA</text>
+</svg>
