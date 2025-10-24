@@ -473,6 +473,14 @@ async function handleConfirmSwap() {
       return;
     }
     
+    // Animate button to loading state
+    const btn = document.getElementById('btnConfirmSwap');
+    btn.classList.add('loading');
+    btn.disabled = true;
+    
+    // Wait for animation to complete (1 second)
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
     // Get chain configs
     const sourceConfig = CHAIN_CONFIG[selectedSourceChain];
     const destConfig = CHAIN_CONFIG[destinationChain];
@@ -530,8 +538,12 @@ async function handleConfirmSwap() {
     document.getElementById('feePoniaFee').textContent = `${formatAmount(poniaFee, selectedToken)} ${tokenSymbol} (1.5%)`;
     document.getElementById('feeTotalAmount').textContent = `${formatAmount(totalAmount, selectedToken)} ${tokenSymbol}`;
     
-    // Show processing stage
+    // Show processing stage (smooth transition)
     showStage('processing');
+    
+    // Reset button state for next use
+    btn.classList.remove('loading');
+    btn.disabled = false;
     
     // Get affiliate fee recipient
     let affiliateFeeRecipient = getAffiliateFeeRecipient(sourceConfig.id);

@@ -477,6 +477,107 @@
     margin: 16px 0;
   }
   
+  /* Info Tooltip */
+  .info-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: rgba(255, 215, 63, 0.15);
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 700;
+    margin-left: 4px;
+    cursor: help;
+    position: relative;
+  }
+  
+  .info-tooltip {
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%) scale(0.9);
+    background: var(--card-light);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text);
+    width: 200px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s;
+    z-index: 10;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+  
+  .info-icon:hover .info-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+  
+  .info-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--border);
+  }
+  
+  /* Button Loading Animation */
+  .btn-primary.loading {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    padding: 0;
+    font-size: 0;
+    position: relative;
+    margin: 16px auto;
+    animation: roll 1s ease-in-out;
+  }
+  
+  @keyframes roll {
+    0% {
+      transform: translateX(0) rotate(0deg);
+      border-radius: 12px;
+      width: 100%;
+    }
+    50% {
+      transform: translateX(20px) rotate(180deg);
+      border-radius: 50%;
+      width: 56px;
+    }
+    100% {
+      transform: translateX(0) rotate(360deg);
+      border-radius: 50%;
+      width: 56px;
+    }
+  }
+  
+  .btn-primary.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    margin: -12px 0 0 -12px;
+    border: 3px solid rgba(10, 10, 11, 0.3);
+    border-top-color: #0a0a0b;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
 </style>
 </head>
 <body>
@@ -549,7 +650,13 @@
             <span class="fee-preview-value" id="previewPoniaFee">-</span>
           </div>
           <div class="fee-preview-row">
-            <span class="fee-preview-label">Bridge fee</span>
+            <span class="fee-preview-label">
+              Bridge fee
+              <span class="info-icon">
+                i
+                <span class="info-tooltip">deBridge protocol fees for instant cross-chain transfers (~43 sec). Includes gas optimization and Zero-TVL security.</span>
+              </span>
+            </span>
             <span class="fee-preview-value" id="previewBridgeFee">~0.1%</span>
           </div>
           <div class="fee-preview-row">
