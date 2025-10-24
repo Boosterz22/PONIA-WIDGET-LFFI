@@ -39,7 +39,7 @@ const TOKENS = {
       728126428: 'TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8'
     },
     decimals: 6,
-    logo: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%232775CA"/%3E%3Ctext x="16" y="22" font-size="14" font-weight="bold" text-anchor="middle" fill="%23FFF"%3E$%3C/text%3E%3C/svg%3E'
+    logo: '/assets/usdc-logo.png'
   },
   usdt: {
     name: 'USDT',
@@ -55,7 +55,7 @@ const TOKENS = {
       728126428: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t'
     },
     decimals: 6,
-    logo: '/assets/tokens/usdt.png'
+    logo: '/assets/usdt-logo.png'
   }
 };
 
