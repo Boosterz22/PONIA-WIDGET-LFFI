@@ -241,6 +241,11 @@
   .token-btn-icon {
     font-size: 20px;
   }
+  .token-btn-logo {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+  }
   .token-btn:hover {
     background: var(--card-light);
     transform: translateY(-2px);
@@ -613,11 +618,11 @@
             <span>Native</span>
           </button>
           <button class="token-btn" id="btnUsdc" onclick="selectToken('usdc')">
-            <span class="token-btn-icon">💵</span>
+            <img src="/assets/usdc-logo.png" class="token-btn-logo" alt="USDC">
             <span>USDC</span>
           </button>
           <button class="token-btn" id="btnUsdt" onclick="selectToken('usdt')">
-            <span class="token-btn-icon">💲</span>
+            <img src="/assets/usdt-logo.png" class="token-btn-logo" alt="USDT">
             <span>USDT</span>
           </button>
         </div>
