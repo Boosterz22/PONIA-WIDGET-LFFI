@@ -131,10 +131,10 @@ let selectedToken = 'native';
 // Initialize Reown AppKit (Multi-chain: EVM + Solana)
 const projectId = 'f83cf00007509459345871b429d32db0';
 const metadata = {
-  name: 'PONIA Widget',
-  description: 'Cross-chain payment widget',
-  url: window.location.origin,
-  icons: ['https://avatars.githubusercontent.com/u/37784886']
+  name: 'PONIA',
+  description: 'Cross-chain crypto payments',
+  url: 'https://ponia.io',
+  icons: ['https://ponia.io/assets/ponia-logo.png']
 };
 
 // Create adapters for EVM and Solana
