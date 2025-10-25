@@ -5,6 +5,13 @@ PONIA is a cross-chain cryptocurrency payment widget designed for Web3 applicati
 # Recent Changes
 
 **October 25, 2025 (Latest):**
+- **Demo page completely redesigned:** Created professional dual-demo page showcasing both deposit and withdrawal flows
+  - Integrated ponia-demo-widget.html (cinematic marketing version) as deposit demo via iframe
+  - Created static withdrawal demo widget showing address input workflow
+  - Side-by-side layout (responsive) with clear section headers and descriptions
+  - Professional header with PONIA logo, badges showing key features (~43s, 8 chains, 1.5% fee)
+  - Added "Back to Home" navigation button
+  - Updated homepage "Try Demo" button to link to /widget/
 - **Stats counter animation fixed:** Added automatic triggering for stats animations when section becomes visible
   - Reduced IntersectionObserver threshold from 0.3 to 0.1 for earlier trigger
   - Added initial visibility check 500ms after page load

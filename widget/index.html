@@ -3,7 +3,11 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>PONIA — Cross-Chain Payment Widget</title>
+<title>PONIA Demo — Cross-Chain Payments</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
 <style>
   :root {
     --bg: #0a0a0b;
@@ -16,52 +20,166 @@
     --text: #ffffff;
     font-family: 'Space Grotesk', Inter, system-ui, -apple-system, sans-serif;
   }
-  * { box-sizing: border-box; }
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
   body { 
-    background: var(--bg); 
+    background: linear-gradient(135deg, #0a0a0b 0%, #1a1520 100%);
     color: var(--text); 
-    margin: 0; 
-    padding: 20px; 
     min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    padding: 40px 20px;
   }
-  .widget-container {
-    width: 100%;
-    max-width: 450px;
-    background: linear-gradient(to bottom, var(--card) 0%, var(--card-light) 100%);
-    border-radius: 16px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-    border: 1px solid var(--border);
-    overflow: hidden;
+  
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
   }
   
   /* Header */
-  .widget-header {
+  .demo-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+  
+  .demo-logo {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 24px;
+  }
+  
+  .demo-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  
+  .demo-title {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .demo-subtitle {
+    font-size: 20px;
+    color: var(--muted);
+    max-width: 700px;
+    margin: 0 auto 32px;
+    line-height: 1.6;
+  }
+  
+  .demo-badges {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .badge {
+    padding: 8px 16px;
+    background: rgba(255, 215, 63, 0.1);
+    border: 1px solid rgba(255, 215, 63, 0.2);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    padding: 12px 16px;
+    gap: 8px;
   }
-  .widget-logo {
-    width: 90px;
-    height: 90px;
-    border-radius: 12px;
-    background: transparent;
+  
+  /* Demos Grid */
+  .demos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 60px;
+    margin-bottom: 60px;
+  }
+  
+  .demo-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .demo-section-header {
+    text-align: center;
+    margin-bottom: 24px;
+    width: 100%;
+  }
+  
+  .demo-section-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 12px;
   }
+  
+  .demo-section-description {
+    font-size: 16px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  
+  .demo-wrapper {
+    width: 100%;
+    max-width: 500px;
+  }
+  
+  /* Widget Container */
+  .widget-container {
+    width: 100%;
+    background: linear-gradient(to bottom, var(--card) 0%, var(--card-light) 100%);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 40px rgba(255, 215, 63, 0.05);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .widget-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+  }
+  
+  .widget-logo {
+    width: 80px;
+    height: 80px;
+  }
+  
   .widget-logo img {
     width: 100%;
     height: 100%;
     object-fit: contain;
   }
   
-  /* Body */
+  .wallet-address {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(255, 215, 63, 0.1);
+    border: 1px solid rgba(255, 215, 63, 0.2);
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  
+  .wallet-address.visible {
+    display: flex;
+  }
+  
   .widget-body {
-    padding: 16px 20px 20px;
+    padding: 16px 20px 24px;
+    min-height: 520px;
   }
   
   /* Chain Display */
@@ -70,168 +188,102 @@
     flex-direction: column;
     align-items: center;
     gap: 12px;
-    padding: 0 0 16px;
+    padding: 0 0 20px;
   }
+  
   .chain-logo-big {
     width: 80px;
     height: 80px;
-    border-radius: 16px;
-    background: var(--card-light);
+    border-radius: 50%;
+    background: rgba(255, 215, 63, 0.05);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 16px;
-    border: 1px solid var(--border);
+    border: 2px solid rgba(255, 215, 63, 0.1);
   }
+  
   .chain-logo-big img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+    width: 56px;
+    height: 56px;
   }
+  
   .chain-info-text {
-    font-size: 13px;
+    font-size: 14px;
     color: var(--muted);
-    text-align: center;
-  }
-  .chain-info-text strong {
-    color: var(--text);
-    font-weight: 600;
   }
   
   /* Chain Selector */
   .chain-selector-title {
-    text-align: center;
     font-weight: 700;
     font-size: 14px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
+    text-align: center;
   }
+  
   .chain-buttons {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     justify-content: center;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
   }
+  
   .chain-btn {
-    padding: 10px 16px;
+    padding: 8px 14px;
     border-radius: 10px;
     border: 1px solid var(--border);
     background: var(--card);
     color: var(--muted);
     font-weight: 600;
-    font-size: 13px;
+    font-size: 12px;
     cursor: pointer;
     transition: all 0.2s;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
   }
+  
   .chain-btn-logo {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     border-radius: 4px;
     object-fit: contain;
   }
   
   .chain-btn-logo[alt="TRON"] {
-    width: 26px;
-    height: 26px;
+    width: 24px;
+    height: 24px;
   }
+  
   .chain-btn:hover {
     background: var(--card-light);
     transform: translateY(-2px);
   }
+  
   .chain-btn.active {
     background: rgba(255, 215, 63, 0.1);
     color: var(--text);
-    border-color: rgba(255, 215, 63, 0.2);
-  }
-  
-  /* Route Visualization */
-  .route-visual {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    margin: 20px 0;
-    padding: 16px;
-    background: rgba(255, 215, 63, 0.05);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 215, 63, 0.15);
-  }
-  .route-chain {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-  }
-  .route-chain-logo {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    padding: 6px;
-    background: var(--card-light);
-    border: 1px solid var(--border);
-  }
-  .route-chain-logo img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-  .route-chain-name {
-    font-size: 11px;
-    color: var(--muted);
-    font-weight: 600;
-  }
-  .route-arrow {
-    font-size: 24px;
-    color: var(--accent);
-    margin: 0 8px;
-  }
-  
-  /* Fee Preview */
-  .fee-preview {
-    background: var(--card-light);
-    border: 1px solid rgba(255, 215, 63, 0.15);
-    border-radius: 10px;
-    padding: 12px;
-    margin: 16px 0;
-    font-size: 12px;
-    overflow: visible;
-    position: relative;
-  }
-  .fee-preview-row {
-    display: flex;
-    justify-content: space-between;
-    margin: 4px 0;
-  }
-  .fee-preview-label {
-    color: var(--muted);
-  }
-  .fee-preview-value {
-    color: var(--text);
-    font-weight: 600;
-  }
-  .fee-preview-value.highlight {
-    color: var(--accent);
+    border-color: rgba(255, 215, 63, 0.3);
   }
   
   /* Token Selector */
   .token-selector-title {
-    text-align: center;
     font-weight: 700;
     font-size: 14px;
-    margin: 20px 0 12px;
+    margin: 16px 0 12px;
+    text-align: center;
   }
+  
   .token-buttons {
     display: flex;
     gap: 8px;
     justify-content: center;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
   }
+  
   .token-btn {
     flex: 1;
-    padding: 12px 16px;
+    padding: 12px;
     border-radius: 10px;
     border: 1px solid var(--border);
     background: var(--card);
@@ -241,512 +293,418 @@
     cursor: pointer;
     transition: all 0.2s;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 4px;
+    justify-content: center;
+    gap: 8px;
   }
-  .token-btn-icon {
-    font-size: 20px;
-  }
+  
   .token-btn-logo {
-    width: 24px;
-    height: 24px;
-    object-fit: contain;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
   }
+  
   .token-btn:hover {
     background: var(--card-light);
     transform: translateY(-2px);
   }
+  
   .token-btn.active {
     background: rgba(255, 215, 63, 0.1);
     color: var(--text);
-    border-color: rgba(255, 215, 63, 0.2);
-  }
-  .token-btn.disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-    pointer-events: none;
+    border-color: rgba(255, 215, 63, 0.3);
   }
   
-  /* Input */
+  /* Input Group */
   .input-group {
-    margin: 16px 0;
+    margin-bottom: 20px;
   }
+  
   .input-label {
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 8px;
     display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--muted);
   }
+  
   .input-field {
     width: 100%;
-    padding: 12px 16px;
-    border-radius: 10px;
+    padding: 14px 16px;
+    background: var(--card);
     border: 1px solid var(--border);
-    background: var(--card-light);
+    border-radius: 10px;
     color: var(--text);
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: inherit;
   }
-  .input-hint {
-    font-size: 11px;
+  
+  .input-field:focus {
+    outline: none;
+    border-color: rgba(255, 215, 63, 0.3);
+  }
+  
+  /* Route Visual */
+  .route-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin: 24px 0;
+    padding: 16px;
+    background: rgba(255, 215, 63, 0.03);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 215, 63, 0.1);
+  }
+  
+  .route-chain {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .route-chain-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--border);
+  }
+  
+  .route-chain-logo img {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .route-chain-name {
+    font-size: 12px;
+    font-weight: 600;
     color: var(--muted);
-    margin-top: 6px;
-    line-height: 1.4;
+  }
+  
+  .route-arrow {
+    font-size: 24px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  
+  /* Fee Preview */
+  .fee-preview {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .fee-preview-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+  }
+  
+  .fee-preview-label {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  
+  .fee-preview-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  
+  .fee-preview-value.highlight {
+    color: var(--accent);
   }
   
   /* Buttons */
   .btn-primary {
     width: 100%;
-    padding: 14px 20px;
-    border-radius: 12px;
-    border: none;
+    padding: 16px;
     background: var(--accent);
-    color: #0a0a0b;
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
     font-weight: 700;
-    font-size: 15px;
     cursor: pointer;
-    transition: all 0.2s;
-    margin-top: 16px;
+    transition: all 0.3s;
+    font-family: inherit;
   }
+  
   .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 215, 63, 0.4);
-  }
-  .btn-primary:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+    box-shadow: 0 8px 24px rgba(255, 215, 63, 0.3);
   }
   
-  /* Processing */
-  .swap-animation {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    padding: 32px 0;
-  }
-  .swap-chain-icon {
-    width: 72px;
-    height: 72px;
-    border-radius: 14px;
-    background: var(--card-light);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-    border: 1px solid var(--border);
-  }
-  .swap-chain-icon img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-  .swap-arrow {
-    font-size: 32px;
-    color: var(--accent);
-    animation: pulse-slide 1.5s ease-in-out infinite;
-  }
-  @keyframes pulse-slide {
-    0%, 100% { opacity: 0.6; transform: translateX(0); }
-    50% { opacity: 1; transform: translateX(4px); }
-  }
-  .swap-info {
-    text-align: center;
-    margin-top: 16px;
-  }
-  .swap-info-title {
-    font-weight: 600;
-    font-size: 15px;
-    margin-bottom: 6px;
-  }
-  .swap-info-subtitle {
-    font-size: 12px;
-    color: var(--muted);
+  .btn-primary:active {
+    transform: translateY(0);
   }
   
-  /* Progress Bar */
-  .progress-container {
-    margin: 24px 0;
-  }
-  .progress-header {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    color: var(--muted);
-    margin-bottom: 8px;
-  }
-  .progress-bar-bg {
-    height: 8px;
-    background: var(--card-light);
-    border-radius: 10px;
-    overflow: hidden;
-  }
-  .progress-bar-fill {
-    height: 100%;
-    background: linear-gradient(to right, var(--accent), rgba(255, 215, 63, 0.8));
-    transition: width 0.3s ease;
-    border-radius: 10px;
+  .pulse {
+    animation: pulse 2s infinite;
   }
   
-  /* Success */
-  .success-icon {
-    width: 72px;
-    height: 72px;
-    background: rgba(34, 197, 94, 0.1);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 20px;
-  }
-  .success-icon svg {
-    width: 42px;
-    height: 42px;
-    color: var(--success);
-  }
-  .success-title {
-    font-weight: 700;
-    font-size: 20px;
-    text-align: center;
-    margin-bottom: 8px;
-  }
-  .success-subtitle {
-    font-size: 13px;
-    color: var(--muted);
-    text-align: center;
-    margin-bottom: 24px;
-  }
-  .tx-hash-box {
-    background: var(--card-light);
-    border-radius: 12px;
-    padding: 16px;
-    margin: 20px 0;
-  }
-  .tx-hash-label {
-    font-size: 11px;
-    color: var(--muted);
-    margin-bottom: 8px;
-  }
-  .tx-hash {
-    font-family: 'Courier New', monospace;
-    font-size: 11px;
-    color: var(--text);
-    word-break: break-all;
-  }
-  
-  /* Fee Breakdown */
-  .fee-breakdown {
-    background: var(--card-light);
-    border: 1px solid rgba(255, 215, 63, 0.15);
-    border-radius: 12px;
-    padding: 16px;
-    margin: 20px 0;
-  }
-  .fee-breakdown-title {
-    font-weight: 700;
-    font-size: 14px;
-    color: var(--accent);
-    margin-bottom: 12px;
-  }
-  .fee-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 13px;
-  }
-  .fee-row:last-child {
-    border-bottom: none;
-  }
-  .fee-row.total {
-    border-top: 1px solid rgba(255, 215, 63, 0.3);
-    padding-top: 12px;
-    margin-top: 8px;
-    font-weight: 700;
-  }
-  .fee-label {
-    color: var(--muted);
-  }
-  .fee-value {
-    color: var(--text);
-    font-weight: 600;
-  }
-  .fee-row.total .fee-label,
-  .fee-row.total .fee-value {
-    color: var(--accent);
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 215, 63, 0.4); }
+    50% { box-shadow: 0 0 0 12px rgba(255, 215, 63, 0); }
   }
   
   .hidden {
     display: none !important;
   }
   
-  .wallet-btn-container {
-    margin: 16px 0;
+  /* Back to Home */
+  .back-home {
+    text-align: center;
+    margin-top: 60px;
   }
   
-  /* Info Tooltip */
-  .info-icon {
+  .btn-back {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: rgba(255, 215, 63, 0.15);
-    color: var(--accent);
-    font-size: 10px;
-    font-weight: 700;
-    margin-left: 4px;
-    cursor: help;
-    position: relative;
-  }
-  
-  .info-tooltip {
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%) scale(0.95);
+    gap: 8px;
+    padding: 12px 24px;
     background: var(--card);
-    border: 1px solid rgba(255, 215, 63, 0.3);
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-size: 11px;
-    font-weight: 400;
+    border: 1px solid var(--border);
+    border-radius: 10px;
     color: var(--text);
-    width: 220px;
-    opacity: 0;
-    pointer-events: none;
-    transition: all 0.25s ease;
-    z-index: 1000;
-    box-shadow: 0 12px 32px rgba(0,0,0,0.6);
-    white-space: normal;
-    line-height: 1.5;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
   }
   
-  .info-icon:hover .info-tooltip {
-    opacity: 1;
-    transform: translateX(-50%) scale(1);
-    pointer-events: auto;
+  .btn-back:hover {
+    background: var(--card-light);
+    border-color: rgba(255, 215, 63, 0.2);
+    transform: translateY(-2px);
   }
   
-  .info-tooltip::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 6px solid transparent;
-    border-top-color: rgba(255, 215, 63, 0.3);
+  /* Responsive */
+  @media (max-width: 1100px) {
+    .demos-grid {
+      grid-template-columns: 1fr;
+    }
   }
   
-  /* Button Loading Animation */
-  .btn-primary.loading {
-    color: transparent;
-    pointer-events: none;
-    position: relative;
+  @media (max-width: 600px) {
+    .demo-title {
+      font-size: 36px;
+    }
+    
+    .demo-subtitle {
+      font-size: 16px;
+    }
+    
+    .demos-grid {
+      gap: 40px;
+    }
   }
-  
-  .btn-primary.loading::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 20px;
-    height: 20px;
-    margin: -10px 0 0 -10px;
-    border: 3px solid rgba(10, 10, 11, 0.2);
-    border-top-color: #0a0a0b;
-    border-radius: 50%;
-    animation: spin 0.6s linear infinite;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  
 </style>
 </head>
 <body>
-  <div class="widget-container">
-    <!-- Header -->
-    <div class="widget-header">
-      <div class="widget-logo">
-        <img src="/assets/ponia-logo.png" alt="PONIA">
-      </div>
+
+<div class="container">
+  <!-- Header -->
+  <div class="demo-header">
+    <div class="demo-logo">
+      <img src="/assets/ponia-logo.png" alt="PONIA" />
     </div>
-
-    <!-- Body -->
-    <div class="widget-body">
-      <!-- Stage 1: Select -->
-      <div id="stageSelect">
-        <div class="chain-display">
-          <div class="chain-logo-big">
-            <img id="destinationLogo" src="" alt="Destination chain" />
-          </div>
-          <p class="chain-info-text">
-            This platform uses: <strong id="destinationName">Polygon</strong>
-          </p>
-        </div>
-
-        <div class="chain-selector-title" id="chainSelectorTitle">Send from which chain?</div>
-        <div class="chain-buttons" id="chainButtons"></div>
-
-        <div class="token-selector-title" id="tokenSelectorTitle">Select token</div>
-        <div class="token-buttons">
-          <button class="token-btn active" id="btnNative" onclick="selectToken('native')">
-            <span class="token-btn-icon">⚡</span>
-            <span>Native</span>
-          </button>
-          <button class="token-btn" id="btnUsdc" onclick="selectToken('usdc')">
-            <img src="/assets/usdc-logo.png" class="token-btn-logo" alt="USDC">
-            <span>USDC</span>
-          </button>
-          <button class="token-btn" id="btnUsdt" onclick="selectToken('usdt')">
-            <img src="/assets/usdt-logo.png" class="token-btn-logo" alt="USDT">
-            <span>USDT</span>
-          </button>
-        </div>
-
-        <!-- Route Visualization -->
-        <div class="route-visual hidden" id="routeVisual">
-          <div class="route-chain">
-            <div class="route-chain-logo">
-              <img id="routeSourceLogo" src="" alt="Source">
-            </div>
-            <div class="route-chain-name" id="routeSourceName">Ethereum</div>
-          </div>
-          <div class="route-arrow">→</div>
-          <div class="route-chain">
-            <div class="route-chain-logo">
-              <img id="routeDestLogo" src="" alt="Destination">
-            </div>
-            <div class="route-chain-name" id="routeDestName">Polygon</div>
-          </div>
-        </div>
-
-        <div class="input-group">
-          <label class="input-label" id="amountLabel">Amount to send</label>
-          <input type="text" class="input-field" id="amountInput" value="0.01" placeholder="0.01" />
-        </div>
-
-        <!-- Fee Preview -->
-        <div class="fee-preview hidden" id="feePreview">
-          <div class="fee-preview-row">
-            <span class="fee-preview-label">PONIA fee (1.5%)</span>
-            <span class="fee-preview-value" id="previewPoniaFee">-</span>
-          </div>
-          <div class="fee-preview-row">
-            <span class="fee-preview-label">Bridge fee</span>
-            <span class="fee-preview-value" id="previewBridgeFee">~0.1%</span>
-          </div>
-          <div class="fee-preview-row">
-            <span class="fee-preview-label">Estimated time</span>
-            <span class="fee-preview-value highlight" id="previewTime">1-3 min</span>
-          </div>
-        </div>
-
-        <!-- Deposit Mode: Wallet Connection -->
-        <div class="wallet-btn-container" id="depositModeWallet">
-          <appkit-button></appkit-button>
-          <p style="font-size: 12px; text-align: center; color: var(--muted); margin: 12px 0;">
-            Platform blockchain detected automatically. Choose which wallet you want to send from.
-          </p>
-        </div>
-
-        <!-- Withdrawal Mode: Address Input -->
-        <div class="hidden" id="withdrawalModeAddress">
-          <div class="form-group">
-            <label class="form-label">Your receiving address</label>
-            <input type="text" class="input-field" id="withdrawalAddressInput" placeholder="0x... or base58 address" />
-            <p style="font-size: 11px; color: var(--muted); margin: 6px 0 0;">
-              Enter your wallet address where you want to receive funds
-            </p>
-          </div>
-        </div>
-
-        <button class="btn-primary" id="btnConfirmSwap">Confirm swap</button>
+    <h1 class="demo-title">Live Demo</h1>
+    <p class="demo-subtitle">
+      Experience PONIA's cross-chain payment solution in action. See how deposits and withdrawals work across 8 major blockchains in under 60 seconds.
+    </p>
+    <div class="demo-badges">
+      <div class="badge">
+        <i data-lucide="zap" style="width: 16px; height: 16px;"></i>
+        ~43s transfers
       </div>
-
-      <!-- Stage 2: Processing -->
-      <div id="stageProcessing" class="hidden">
-        <div class="swap-animation">
-          <div class="swap-chain-icon">
-            <img id="sourceLogoAnim" src="" alt="Source chain" />
-          </div>
-          <div class="swap-arrow">→</div>
-          <div class="swap-chain-icon">
-            <img id="destLogoAnim" src="" alt="Destination chain" />
-          </div>
-        </div>
-        <div class="swap-info">
-          <div class="swap-info-title" id="swapRoute">Ethereum → Polygon</div>
-          <div class="swap-info-subtitle">Converting your funds to platform currency</div>
-        </div>
-
-        <div id="feeBreakdown" class="fee-breakdown">
-          <div class="fee-breakdown-title">💰 Transaction Details</div>
-          <div class="fee-row">
-            <span class="fee-label">Amount to transfer</span>
-            <span class="fee-value" id="feeUserAmount">-</span>
-          </div>
-          <div class="fee-row">
-            <span class="fee-label">PONIA fee (1.5%)</span>
-            <span class="fee-value" id="feePoniaFee">-</span>
-          </div>
-          <div class="fee-row total">
-            <span class="fee-label">Total debited</span>
-            <span class="fee-value" id="feeTotalAmount">-</span>
-          </div>
-          <div class="fee-row" style="margin-top: 8px; border-top: 1px solid var(--border); padding-top: 12px;">
-            <span class="fee-label">You'll receive</span>
-            <span class="fee-value" id="feeOutputAmount">-</span>
-          </div>
-          <div class="fee-row">
-            <span class="fee-label">Estimated time</span>
-            <span class="fee-value" id="feeEstimatedTime">~1-3 min</span>
-          </div>
-        </div>
-
-        <div class="progress-container">
-          <div class="progress-header">
-            <span>Processing swap...</span>
-            <span id="progressPercent">0%</span>
-          </div>
-          <div class="progress-bar-bg">
-            <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
-          </div>
-        </div>
+      <div class="badge">
+        <i data-lucide="link" style="width: 16px; height: 16px;"></i>
+        8 blockchains
       </div>
-
-      <!-- Stage 3: Success -->
-      <div id="stageSuccess" class="hidden">
-        <div class="success-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        </div>
-        <div class="success-title">Swap Successful!</div>
-        <div class="success-subtitle">Funds arrived on <span id="successDestChain">Polygon</span></div>
-
-        <div class="swap-info" style="margin: 20px 0;">
-          <div style="font-size: 13px; color: var(--muted); display: flex; align-items: center; justify-content: center; gap: 12px;">
-            <span id="successSourceChain">Ethereum</span>
-            <span>→</span>
-            <span id="successDestChainName">Polygon</span>
-          </div>
-        </div>
-
-        <div class="tx-hash-box">
-          <div class="tx-hash-label">Transaction ID</div>
-          <div class="tx-hash" id="txHashDisplay">0x...</div>
-        </div>
-
-        <button class="btn-primary" onclick="location.reload()">Close</button>
+      <div class="badge">
+        <i data-lucide="dollar-sign" style="width: 16px; height: 16px;"></i>
+        1.5% fee
       </div>
     </div>
   </div>
+  
+  <!-- Demos Grid -->
+  <div class="demos-grid">
+    <!-- Deposit Demo -->
+    <div class="demo-section">
+      <div class="demo-section-header">
+        <h2 class="demo-section-title">
+          <i data-lucide="arrow-down-to-line" style="width: 32px; height: 32px; color: var(--accent);"></i>
+          Deposit Demo
+        </h2>
+        <p class="demo-section-description">
+          See how users can deposit funds from any supported blockchain directly to your platform's native chain.
+        </p>
+      </div>
+      
+      <div class="demo-wrapper">
+        <iframe 
+          src="/ponia-demo-widget.html" 
+          style="width: 100%; height: 700px; border: none; border-radius: 16px;"
+          title="Deposit Demo"
+        ></iframe>
+      </div>
+    </div>
+    
+    <!-- Withdrawal Demo -->
+    <div class="demo-section">
+      <div class="demo-section-header">
+        <h2 class="demo-section-title">
+          <i data-lucide="arrow-up-from-line" style="width: 32px; height: 32px; color: var(--accent);"></i>
+          Withdrawal Demo
+        </h2>
+        <p class="demo-section-description">
+          Watch how users can withdraw funds to any blockchain by simply entering their wallet address.
+        </p>
+      </div>
+      
+      <div class="demo-wrapper">
+        <!-- Withdrawal Widget -->
+        <div class="widget-container">
+          <div class="widget-header">
+            <div class="widget-logo">
+              <img src="/assets/ponia-logo.png" alt="PONIA" />
+            </div>
+          </div>
+          
+          <div class="widget-body">
+            <div class="chain-display">
+              <div class="chain-logo-big">
+                <img src="/assets/chains/polygon.png" alt="Polygon" />
+              </div>
+              <p class="chain-info-text">
+                Platform balance: <strong>Polygon</strong>
+              </p>
+            </div>
+            
+            <div class="chain-selector-title">Withdraw to which chain?</div>
+            <div class="chain-buttons">
+              <button class="chain-btn active">
+                <img src="/assets/chains/ethereum.png" class="chain-btn-logo" alt="" />
+                Ethereum
+              </button>
+              <button class="chain-btn">
+                <img src="/assets/chains/polygon.png" class="chain-btn-logo" alt="" />
+                Polygon
+              </button>
+              <button class="chain-btn">
+                <img src="/assets/chains/arbitrum.png" class="chain-btn-logo" alt="" />
+                Arbitrum
+              </button>
+              <button class="chain-btn">
+                <img src="/assets/chains/base.png" class="chain-btn-logo" alt="" />
+                Base
+              </button>
+              <button class="chain-btn">
+                <img src="/assets/chains/optimism.png" class="chain-btn-logo" alt="" />
+                Optimism
+              </button>
+              <button class="chain-btn">
+                <img src="/assets/chains/bnb.png" class="chain-btn-logo" alt="" />
+                BNB Chain
+              </button>
+              <button class="chain-btn">
+                <img src="/assets/chains/solana.png" class="chain-btn-logo" alt="" />
+                Solana
+              </button>
+              <button class="chain-btn">
+                <img src="/assets/chains/tron.png" class="chain-btn-logo" alt="" />
+                TRON
+              </button>
+            </div>
+            
+            <div class="input-group">
+              <label class="input-label">Your withdrawal address</label>
+              <input type="text" class="input-field" placeholder="0x... or base58 address" value="0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb" />
+            </div>
+            
+            <div class="token-selector-title">Select token</div>
+            <div class="token-buttons">
+              <button class="token-btn active">
+                <img src="/assets/chains/ethereum.png" class="token-btn-logo" alt="" />
+                <span>ETH</span>
+              </button>
+              <button class="token-btn">
+                <img src="/assets/usdc-logo.png" class="token-btn-logo" alt="" />
+                USDC
+              </button>
+              <button class="token-btn">
+                <img src="/assets/usdt-logo.png" class="token-btn-logo" alt="" />
+                USDT
+              </button>
+            </div>
+            
+            <div class="input-group">
+              <label class="input-label">Amount to withdraw</label>
+              <input type="number" class="input-field" placeholder="0.00" value="0.5" />
+            </div>
+            
+            <div class="route-visual">
+              <div class="route-chain">
+                <div class="route-chain-logo">
+                  <img src="/assets/chains/polygon.png" alt="" />
+                </div>
+                <div class="route-chain-name">Polygon</div>
+              </div>
+              <div class="route-arrow">→</div>
+              <div class="route-chain">
+                <div class="route-chain-logo">
+                  <img src="/assets/chains/ethereum.png" alt="" />
+                </div>
+                <div class="route-chain-name">Ethereum</div>
+              </div>
+            </div>
+            
+            <div class="fee-preview">
+              <div class="fee-preview-row">
+                <span class="fee-preview-label">PONIA fee (1.5%)</span>
+                <span class="fee-preview-value">0.0075 ETH</span>
+              </div>
+              <div class="fee-preview-row">
+                <span class="fee-preview-label">Bridge fee</span>
+                <span class="fee-preview-value">~0.1%</span>
+              </div>
+              <div class="fee-preview-row">
+                <span class="fee-preview-label">Estimated time</span>
+                <span class="fee-preview-value highlight">~43 seconds</span>
+              </div>
+            </div>
+            
+            <button class="btn-primary pulse">
+              <span>Confirm Withdrawal</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Back to Home -->
+  <div class="back-home">
+    <a href="/" class="btn-back">
+      <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+      Back to Home
+    </a>
+  </div>
+</div>
 
-  <script type="module" src="/src/widget.js"></script>
+<script>
+  // Initialize Lucide icons
+  lucide.createIcons();
+</script>
+
 </body>
 </html>
