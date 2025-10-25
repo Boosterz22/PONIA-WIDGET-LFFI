@@ -5,6 +5,16 @@ PONIA is a cross-chain cryptocurrency payment widget designed for Web3 applicati
 # Recent Changes
 
 **October 25, 2025:**
+- **Brand refinement complete:** Replaced emojis with professional Lucide icons across all documentation pages
+  - Replaced emoji icons with Lucide icons in `docs.html` key features section (zap, link, dollar-sign, lock, refresh-cw, plug)
+  - Added Lucide settings icon to integration.html configuration section
+  - Initialized Lucide icon library on all pages for consistent rendering
+  - All pages now display professional vector icons instead of emoji for better cross-platform consistency
+- **Unified brand slogan implemented:** Added "One widget. Any Chain. Anywhere." to all page footers
+  - Homepage footer updated with new tagline in Space Grotesk font with accent color
+  - Integration page footer includes slogan with proper styling
+  - Documentation page footer displays slogan consistently
+  - Slogan presented in brand accent color (#FFD700) for visual consistency
 - **Dedicated integration page created:** Professional `/integration.html` page showcasing how simple it is to integrate PONIA
   - Hero section emphasizing "Add cross-chain payments in 60 seconds"
   - Quick start section with one-line iframe embed code
