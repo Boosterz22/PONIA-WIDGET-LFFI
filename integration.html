@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     :root {
       --bg: #0a0a0b;
@@ -457,9 +458,11 @@
       <img src="/assets/ponia-logo.png" alt="PONIA">
     </a>
     <div class="nav-center">
-      <a href="/">Home</a>
-      <a href="/docs.html">Docs</a>
+      <a href="/#how-it-works">How it works</a>
+      <a href="/#solutions">Solutions</a>
       <a href="/integration.html">Integration</a>
+      <a href="/#fees">Fees</a>
+      <a href="/docs.html">Docs</a>
     </div>
     <a href="/widget/" class="btn-demo">Try Demo</a>
   </div>
@@ -468,7 +471,7 @@
   <section class="hero">
     <div class="container">
       <div class="hero-badge">
-        ✨ No SDK required • No API keys • No setup
+        <i data-lucide="sparkles" style="width: 16px; height: 16px;"></i> No SDK required • No API keys • No setup
       </div>
       <h1>Add <span class="highlight">cross-chain payments</span><br>in 60 seconds</h1>
       <p class="hero-subtitle">One line of code. 8 blockchains. Deposits & withdrawals. It's really that simple.</p>
@@ -478,7 +481,7 @@
   <!-- Quick Start -->
   <div class="container">
     <div class="quick-start">
-      <h2>⚡ Quickest integration ever</h2>
+      <h2><i data-lucide="zap" style="width: 24px; height: 24px; display: inline-block; vertical-align: middle; color: var(--accent);"></i> Quickest integration ever</h2>
       <p class="quick-start-subtitle">Copy, paste, done. Your users can now deposit from any chain.</p>
       
       <div class="code-block">
@@ -493,7 +496,7 @@
       </div>
       
       <p style="text-align: center; color: var(--muted); font-size: 14px;">
-        👆 Users can now send ETH, SOL, MATIC, USDC, USDT from 8 different chains directly to your Polygon wallet.
+        <i data-lucide="arrow-up" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle; color: var(--accent);"></i> Users can now send ETH, SOL, MATIC, USDC, USDT from 8 different chains directly to your Polygon wallet.
       </p>
     </div>
   </div>
@@ -536,7 +539,7 @@
         <!-- Deposit Example -->
         <div class="example-card">
           <div class="example-header">
-            <div class="example-icon">💰</div>
+            <div class="example-icon"><i data-lucide="arrow-down-to-line" style="width: 20px; height: 20px;"></i></div>
             <h3>Deposit (User → Platform)</h3>
           </div>
           <div class="example-body">
@@ -595,7 +598,7 @@
         <!-- Withdrawal Example -->
         <div class="example-card">
           <div class="example-header">
-            <div class="example-icon">💸</div>
+            <div class="example-icon"><i data-lucide="arrow-up-from-line" style="width: 20px; height: 20px;"></i></div>
             <h3>Withdrawal (Platform → User)</h3>
           </div>
           <div class="example-body">
@@ -658,7 +661,7 @@
         <!-- Use Cases -->
         <div class="example-card">
           <div class="example-header">
-            <div class="example-icon">🎮</div>
+            <div class="example-icon"><i data-lucide="code-2" style="width: 20px; height: 20px;"></i></div>
             <h3>Real-world examples</h3>
           </div>
           <div class="example-body">
@@ -727,7 +730,7 @@
       
       <div class="example-card">
         <div class="example-header">
-          <div class="example-icon">⚙️</div>
+          <div class="example-icon"><i data-lucide="settings" style="width: 20px; height: 20px;"></i></div>
           <h3>Available options</h3>
         </div>
         <div class="example-body">
@@ -790,11 +793,17 @@
   <!-- Footer -->
   <div class="footer">
     <div class="container">
-      <p>PONIA © 2025 • Powered by deBridge • 8 blockchains • 1.5% fee</p>
+      <p style="margin-bottom: 12px;">PONIA © 2025 • Powered by deBridge • 8 blockchains • 1.5% fee</p>
+      <p style="font-size: 16px; font-weight: 600; color: var(--accent); font-family: 'Space Grotesk', sans-serif;">
+        One widget. Any Chain. Anywhere.
+      </p>
     </div>
   </div>
 
   <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+    
     function switchTab(event, tabId) {
       // Get all tabs in the same group
       const clickedTab = event.target;
