@@ -1298,86 +1298,67 @@
     // Initialize Lucide icons
     lucide.createIcons();
     
-    // Animated counter for stats
+    // STATS ANIMATION - Animate numbers from 0 to target
+    let statsAnimated = false;
+    
     function animateCounter(element) {
       const target = parseFloat(element.getAttribute('data-target'));
       const suffix = element.getAttribute('data-suffix');
-      const duration = 2000; // 2 seconds
-      const increment = target / (duration / 16); // 60fps
-      let current = 0;
+      const duration = 2000;
+      const startTime = Date.now();
       
-      const timer = setInterval(() => {
-        current += increment;
-        if (current >= target) {
-          current = target;
-          clearInterval(timer);
-        }
+      function update() {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const current = target * progress;
         
-        // Format number based on target
         if (target % 1 !== 0) {
-          // Has decimal (like 99.2 or 1.5)
           element.textContent = current.toFixed(1) + suffix;
         } else {
-          // Whole number (like 43)
           element.textContent = Math.floor(current) + suffix;
         }
-      }, 16);
-    }
-    
-    // Intersection Observer for stats animation
-    const statsObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
-          entry.target.classList.add('animated');
-          const statValues = entry.target.querySelectorAll('.stat-value[data-target]');
-          statValues.forEach((stat, index) => {
-            setTimeout(() => {
-              animateCounter(stat);
-            }, index * 100); // Stagger animation by 100ms
-          });
-        }
-      });
-    }, { threshold: 0.1 });
-    
-    // Observe transparency stats section
-    const transparencyStats = document.querySelector('.transparency-stats');
-    if (transparencyStats) {
-      statsObserver.observe(transparencyStats);
-      
-      // Check if already visible on page load
-      setTimeout(() => {
-        if (!transparencyStats.classList.contains('animated')) {
-          const rect = transparencyStats.getBoundingClientRect();
-          const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
-          if (isVisible) {
-            transparencyStats.classList.add('animated');
-            const statValues = transparencyStats.querySelectorAll('.stat-value[data-target]');
-            statValues.forEach((stat, index) => {
-              setTimeout(() => {
-                animateCounter(stat);
-              }, index * 100);
-            });
-          }
-        }
-      }, 500);
-    }
-    
-    // Fallback: trigger animation on scroll if IntersectionObserver doesn't work
-    window.addEventListener('scroll', () => {
-      if (transparencyStats && !transparencyStats.classList.contains('animated')) {
-        const rect = transparencyStats.getBoundingClientRect();
-        const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
-        if (isVisible) {
-          transparencyStats.classList.add('animated');
-          const statValues = transparencyStats.querySelectorAll('.stat-value[data-target]');
-          statValues.forEach((stat, index) => {
-            setTimeout(() => {
-              animateCounter(stat);
-            }, index * 100);
-          });
+        
+        if (progress < 1) {
+          requestAnimationFrame(update);
         }
       }
-    }, { passive: true });
+      
+      requestAnimationFrame(update);
+    }
+    
+    function checkAndAnimateStats() {
+      if (statsAnimated) return;
+      
+      const transparencyStats = document.querySelector('.transparency-stats');
+      if (!transparencyStats) return;
+      
+      const rect = transparencyStats.getBoundingClientRect();
+      const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+      
+      // Check if section is visible - trigger when scrolling brings it into view
+      const isVisible = rect.top < windowHeight * 0.9 && rect.bottom > 100;
+      
+      if (isVisible) {
+        statsAnimated = true;
+        const statValues = transparencyStats.querySelectorAll('.stat-value[data-target]');
+        statValues.forEach((stat, index) => {
+          setTimeout(() => {
+            animateCounter(stat);
+          }, index * 100);
+        });
+      }
+    }
+    
+    // Check on scroll
+    window.addEventListener('scroll', checkAndAnimateStats, { passive: true });
+    
+    // Check on page load
+    window.addEventListener('load', () => {
+      setTimeout(checkAndAnimateStats, 100);
+    });
+    
+    // Check immediately
+    setTimeout(checkAndAnimateStats, 100);
     
     // Tab switching functionality with smooth slide animation
     function showTab(tab) {
