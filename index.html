@@ -1337,13 +1337,47 @@
           });
         }
       });
-    }, { threshold: 0.3 });
+    }, { threshold: 0.1 });
     
     // Observe transparency stats section
     const transparencyStats = document.querySelector('.transparency-stats');
     if (transparencyStats) {
       statsObserver.observe(transparencyStats);
+      
+      // Check if already visible on page load
+      setTimeout(() => {
+        if (!transparencyStats.classList.contains('animated')) {
+          const rect = transparencyStats.getBoundingClientRect();
+          const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+          if (isVisible) {
+            transparencyStats.classList.add('animated');
+            const statValues = transparencyStats.querySelectorAll('.stat-value[data-target]');
+            statValues.forEach((stat, index) => {
+              setTimeout(() => {
+                animateCounter(stat);
+              }, index * 100);
+            });
+          }
+        }
+      }, 500);
     }
+    
+    // Fallback: trigger animation on scroll if IntersectionObserver doesn't work
+    window.addEventListener('scroll', () => {
+      if (transparencyStats && !transparencyStats.classList.contains('animated')) {
+        const rect = transparencyStats.getBoundingClientRect();
+        const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+        if (isVisible) {
+          transparencyStats.classList.add('animated');
+          const statValues = transparencyStats.querySelectorAll('.stat-value[data-target]');
+          statValues.forEach((stat, index) => {
+            setTimeout(() => {
+              animateCounter(stat);
+            }, index * 100);
+          });
+        }
+      }
+    }, { passive: true });
     
     // Tab switching functionality with smooth slide animation
     function showTab(tab) {

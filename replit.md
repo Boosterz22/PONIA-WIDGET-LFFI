@@ -4,6 +4,21 @@ PONIA is a cross-chain cryptocurrency payment widget designed for Web3 applicati
 
 # Recent Changes
 
+**October 25, 2025 (Latest):**
+- **Stats counter animation fixed:** Added automatic triggering for stats animations when section becomes visible
+  - Reduced IntersectionObserver threshold from 0.3 to 0.1 for earlier trigger
+  - Added initial visibility check 500ms after page load
+  - Added scroll event listener as fallback mechanism
+  - Stats (43s ETA, 99.2% success rate, 1.5% fee) now animate properly on scroll
+- **TRON logo size increased across all pages:** Larger logo for better visibility
+  - Homepage: 56px → 68px (+20%)
+  - Widget: 20px → 26px (+30%)
+  - Docs page: 24px → 32px (+33%)
+  - Demo widget: 16px → 22px (+37%)
+- **Social links updated:** Added working Twitter and Discord links to footer
+  - Twitter: https://x.com/ponia_hq?s=21
+  - Discord: https://discord.gg/rKWxddAp
+
 **October 25, 2025:**
 - **Brand refinement complete:** Replaced emojis with professional Lucide icons across all documentation pages
   - Replaced emoji icons with Lucide icons in `docs.html` key features section (zap, link, dollar-sign, lock, refresh-cw, plug)
