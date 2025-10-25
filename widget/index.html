@@ -91,28 +91,85 @@
     gap: 8px;
   }
   
-  /* Demos Grid */
-  .demos-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-    gap: 60px;
-    margin-bottom: 60px;
-  }
-  
-  .demo-section {
+  /* Tab Selector */
+  .tab-selector {
     display: flex;
-    flex-direction: column;
+    gap: 16px;
+    justify-content: center;
+    margin-bottom: 40px;
+  }
+  
+  .tab-btn {
+    padding: 16px 40px;
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    color: var(--muted);
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
     align-items: center;
+    gap: 12px;
+    font-family: inherit;
   }
   
-  .demo-section-header {
+  .tab-btn:hover {
+    border-color: rgba(255, 215, 63, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 215, 63, 0.1);
+  }
+  
+  .tab-btn.active {
+    background: rgba(255, 215, 63, 0.1);
+    border-color: rgba(255, 215, 63, 0.5);
+    color: var(--accent);
+    box-shadow: 0 8px 30px rgba(255, 215, 63, 0.2);
+  }
+  
+  .tab-btn i {
+    width: 24px;
+    height: 24px;
+  }
+  
+  /* Demo Container */
+  .demo-container {
+    max-width: 550px;
+    margin: 0 auto;
+    position: relative;
+  }
+  
+  .demo-content {
+    display: none;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.4s ease;
+  }
+  
+  .demo-content.active {
+    display: block;
+    animation: fadeInUp 0.5s ease forwards;
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .demo-header-text {
     text-align: center;
-    margin-bottom: 24px;
-    width: 100%;
+    margin-bottom: 32px;
   }
   
-  .demo-section-title {
-    font-size: 28px;
+  .demo-title-inline {
+    font-size: 32px;
     font-weight: 700;
     margin-bottom: 12px;
     display: flex;
@@ -121,15 +178,14 @@
     gap: 12px;
   }
   
-  .demo-section-description {
+  .demo-description {
     font-size: 16px;
     color: var(--muted);
-    line-height: 1.5;
+    line-height: 1.6;
   }
   
   .demo-wrapper {
     width: 100%;
-    max-width: 500px;
   }
   
   /* Widget Container */
@@ -486,12 +542,6 @@
   }
   
   /* Responsive */
-  @media (max-width: 1100px) {
-    .demos-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-  
   @media (max-width: 600px) {
     .demo-title {
       font-size: 36px;
@@ -501,8 +551,18 @@
       font-size: 16px;
     }
     
-    .demos-grid {
-      gap: 40px;
+    .tab-selector {
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .tab-btn {
+      width: 100%;
+      justify-content: center;
+    }
+    
+    .demo-title-inline {
+      font-size: 24px;
     }
   }
 </style>
@@ -535,16 +595,28 @@
     </div>
   </div>
   
-  <!-- Demos Grid -->
-  <div class="demos-grid">
+  <!-- Tab Selector -->
+  <div class="tab-selector">
+    <button class="tab-btn active" data-tab="deposit">
+      <i data-lucide="arrow-down-to-line"></i>
+      Deposit
+    </button>
+    <button class="tab-btn" data-tab="withdrawal">
+      <i data-lucide="arrow-up-from-line"></i>
+      Withdrawal
+    </button>
+  </div>
+  
+  <!-- Demo Container -->
+  <div class="demo-container">
     <!-- Deposit Demo -->
-    <div class="demo-section">
-      <div class="demo-section-header">
-        <h2 class="demo-section-title">
+    <div class="demo-content active" id="deposit-demo">
+      <div class="demo-header-text">
+        <h2 class="demo-title-inline">
           <i data-lucide="arrow-down-to-line" style="width: 32px; height: 32px; color: var(--accent);"></i>
           Deposit Demo
         </h2>
-        <p class="demo-section-description">
+        <p class="demo-description">
           See how users can deposit funds from any supported blockchain directly to your platform's native chain.
         </p>
       </div>
@@ -560,13 +632,13 @@
     </div>
     
     <!-- Withdrawal Demo -->
-    <div class="demo-section">
-      <div class="demo-section-header">
-        <h2 class="demo-section-title">
+    <div class="demo-content" id="withdrawal-demo">
+      <div class="demo-header-text">
+        <h2 class="demo-title-inline">
           <i data-lucide="arrow-up-from-line" style="width: 32px; height: 32px; color: var(--accent);"></i>
           Withdrawal Demo
         </h2>
-        <p class="demo-section-description">
+        <p class="demo-description">
           Watch how users can withdraw funds to any blockchain by simply entering their wallet address.
         </p>
       </div>
@@ -594,6 +666,34 @@
 <script>
   // Initialize Lucide icons
   lucide.createIcons();
+  
+  // Tab switching functionality
+  const tabButtons = document.querySelectorAll('.tab-btn');
+  const demoContents = document.querySelectorAll('.demo-content');
+  
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const targetTab = button.getAttribute('data-tab');
+      
+      // Remove active class from all buttons and contents
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      demoContents.forEach(content => content.classList.remove('active'));
+      
+      // Add active class to clicked button
+      button.classList.add('active');
+      
+      // Show corresponding content with animation
+      const targetContent = document.getElementById(`${targetTab}-demo`);
+      if (targetContent) {
+        targetContent.classList.add('active');
+      }
+      
+      // Re-initialize icons after content change
+      setTimeout(() => {
+        lucide.createIcons();
+      }, 100);
+    });
+  });
 </script>
 
 </body>
