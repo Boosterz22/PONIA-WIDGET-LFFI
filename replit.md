@@ -5,6 +5,16 @@ PONIA is a cross-chain cryptocurrency payment widget designed for Web3 applicati
 # Recent Changes
 
 **October 25, 2025:**
+- **Dedicated integration page created:** Professional `/integration.html` page showcasing how simple it is to integrate PONIA
+  - Hero section emphasizing "Add cross-chain payments in 60 seconds"
+  - Quick start section with one-line iframe embed code
+  - Complete code examples for HTML, React, Vue, and Next.js frameworks
+  - Separate examples for deposit and withdrawal modes
+  - Real-world use cases: Gaming dApps, Crypto Casinos, NFT Marketplaces
+  - Configuration parameters table explaining all URL options
+  - Interactive tabs for switching between different frameworks
+  - Professional design with code syntax highlighting (JetBrains Mono font)
+  - Updated navigation menu to link to /integration.html
 - **Withdrawal mode implemented:** Added full support for bidirectional transactions (deposit AND withdrawal)
   - URL parameter `?mode=withdrawal` activates withdrawal mode
   - Withdrawal UI: Manual address input field replaces Connect Wallet button (no wallet popup needed)

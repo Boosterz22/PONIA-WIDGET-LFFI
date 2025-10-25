@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Integration Guide - PONIA Cross-Chain Widget</title>
+  <meta name="description" content="Integrate PONIA in 60 seconds. One line of code for deposits & withdrawals across 8 blockchains.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0b;
+      --card: #111213;
+      --card-light: #1a1a1c;
+      --border: rgba(255,255,255,0.06);
+      --muted: #9aa0a6;
+      --accent: #FFD73F;
+      --text: #ffffff;
+      --success: #22c55e;
+      --code-bg: #1e1e1e;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+      padding-top: 70px;
+    }
+    
+    /* Header */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(10, 10, 11, 0.98);
+      backdrop-filter: blur(10px);
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .logo img {
+      width: 120px;
+      height: 105px;
+      object-fit: contain;
+    }
+    
+    .nav-center {
+      display: flex;
+      gap: 32px;
+    }
+    
+    .nav-center a {
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    
+    .nav-center a:hover {
+      color: var(--text);
+    }
+    
+    .btn-demo {
+      background: var(--accent);
+      color: #0a0a0b;
+      padding: 10px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    
+    .btn-demo:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(255, 215, 63, 0.4);
+    }
+    
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+    
+    /* Hero */
+    .hero {
+      padding: 100px 0 80px;
+      text-align: center;
+    }
+    
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--success);
+      margin-bottom: 24px;
+    }
+    
+    .hero h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 56px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+    
+    .hero h1 .highlight {
+      color: var(--accent);
+      text-shadow: 0 0 30px rgba(255, 215, 63, 0.3);
+    }
+    
+    .hero-subtitle {
+      font-size: 20px;
+      color: var(--muted);
+      margin-bottom: 48px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    /* Quick Start */
+    .quick-start {
+      background: linear-gradient(135deg, rgba(255, 215, 63, 0.05) 0%, rgba(255, 165, 0, 0.02) 100%);
+      border: 1px solid rgba(255, 215, 63, 0.15);
+      border-radius: 16px;
+      padding: 40px;
+      margin-bottom: 80px;
+    }
+    
+    .quick-start h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 28px;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    
+    .quick-start-subtitle {
+      text-align: center;
+      color: var(--muted);
+      margin-bottom: 32px;
+      font-size: 16px;
+    }
+    
+    .code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      overflow-x: auto;
+      position: relative;
+      margin-bottom: 16px;
+    }
+    
+    .code-label {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(255, 215, 63, 0.1);
+      color: var(--accent);
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    .code-line {
+      display: block;
+    }
+    
+    .keyword { color: #569cd6; }
+    .string { color: #ce9178; }
+    .attr { color: #9cdcfe; }
+    .comment { color: #6a9955; }
+    .function { color: #dcdcaa; }
+    
+    /* Steps */
+    .section {
+      padding: 80px 0;
+    }
+    
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 40px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    
+    .section-subtitle {
+      text-align: center;
+      color: var(--muted);
+      font-size: 18px;
+      margin-bottom: 60px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 32px;
+      margin-bottom: 60px;
+    }
+    
+    .step-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      position: relative;
+    }
+    
+    .step-number {
+      position: absolute;
+      top: -16px;
+      left: 24px;
+      width: 40px;
+      height: 40px;
+      background: var(--accent);
+      color: #0a0a0b;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+    }
+    
+    .step-card h3 {
+      font-size: 20px;
+      margin-bottom: 12px;
+      margin-top: 8px;
+    }
+    
+    .step-card p {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    
+    /* Examples */
+    .examples-grid {
+      display: grid;
+      gap: 40px;
+      margin-bottom: 60px;
+    }
+    
+    .example-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    
+    .example-header {
+      background: var(--card-light);
+      padding: 20px 28px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .example-icon {
+      width: 32px;
+      height: 32px;
+      background: rgba(255, 215, 63, 0.1);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    
+    .example-header h3 {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    
+    .example-body {
+      padding: 28px;
+    }
+    
+    .example-description {
+      color: var(--muted);
+      margin-bottom: 20px;
+      font-size: 15px;
+    }
+    
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0;
+    }
+    
+    .tab {
+      padding: 10px 20px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    
+    .tab:hover {
+      color: var(--text);
+    }
+    
+    .tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    /* Parameters Table */
+    .params-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 24px;
+    }
+    
+    .params-table th {
+      background: var(--card-light);
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 14px;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .params-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    
+    .params-table code {
+      background: rgba(255, 215, 63, 0.1);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--accent);
+    }
+    
+    /* CTA */
+    .cta-section {
+      background: linear-gradient(135deg, rgba(255, 215, 63, 0.08) 0%, rgba(255, 165, 0, 0.03) 100%);
+      border: 1px solid rgba(255, 215, 63, 0.15);
+      border-radius: 16px;
+      padding: 60px 40px;
+      text-align: center;
+      margin: 80px 0;
+    }
+    
+    .cta-section h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 36px;
+      margin-bottom: 16px;
+    }
+    
+    .cta-section p {
+      color: var(--muted);
+      font-size: 18px;
+      margin-bottom: 32px;
+    }
+    
+    .cta-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 14px 32px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .btn-primary {
+      background: var(--accent);
+      color: #0a0a0b;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(255, 215, 63, 0.3);
+    }
+    
+    .btn-secondary {
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--card-light);
+      border-color: rgba(255, 215, 63, 0.3);
+    }
+    
+    /* Footer */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <a href="/" class="logo">
+      <img src="/assets/ponia-logo.png" alt="PONIA">
+    </a>
+    <div class="nav-center">
+      <a href="/">Home</a>
+      <a href="/docs.html">Docs</a>
+      <a href="/integration.html">Integration</a>
+    </div>
+    <a href="/widget/" class="btn-demo">Try Demo</a>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge">
+        ✨ No SDK required • No API keys • No setup
+      </div>
+      <h1>Add <span class="highlight">cross-chain payments</span><br>in 60 seconds</h1>
+      <p class="hero-subtitle">One line of code. 8 blockchains. Deposits & withdrawals. It's really that simple.</p>
+    </div>
+  </section>
+
+  <!-- Quick Start -->
+  <div class="container">
+    <div class="quick-start">
+      <h2>⚡ Quickest integration ever</h2>
+      <p class="quick-start-subtitle">Copy, paste, done. Your users can now deposit from any chain.</p>
+      
+      <div class="code-block">
+        <div class="code-label">HTML</div>
+        <code class="code-line"><span class="comment">&lt;!-- That's it. Seriously. --&gt;</span></code>
+        <code class="code-line"><span class="keyword">&lt;iframe</span></code>
+        <code class="code-line">  <span class="attr">src</span>=<span class="string">"https://ponia.io/widget/?chain=polygon&mode=deposit"</span></code>
+        <code class="code-line">  <span class="attr">width</span>=<span class="string">"450"</span></code>
+        <code class="code-line">  <span class="attr">height</span>=<span class="string">"700"</span></code>
+        <code class="code-line">  <span class="attr">style</span>=<span class="string">"border: none; border-radius: 16px;"</span></code>
+        <code class="code-line"><span class="keyword">&gt;&lt;/iframe&gt;</span></code>
+      </div>
+      
+      <p style="text-align: center; color: var(--muted); font-size: 14px;">
+        👆 Users can now send ETH, SOL, MATIC, USDC, USDT from 8 different chains directly to your Polygon wallet.
+      </p>
+    </div>
+  </div>
+
+  <!-- Steps -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">How it works</h2>
+      <p class="section-subtitle">Three simple steps to enable cross-chain payments</p>
+      
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h3>Choose your chain</h3>
+          <p>Pick which blockchain you want to receive funds on. Ethereum, Polygon, Base, Solana... any of the 8 supported chains.</p>
+        </div>
+        
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h3>Embed the widget</h3>
+          <p>Add one iframe to your site. No installation, no API keys, no backend changes. Just copy-paste and you're live.</p>
+        </div>
+        
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h3>Start accepting payments</h3>
+          <p>Users connect their wallet, select a chain, and send. Funds arrive in ~43 seconds. You collect 1.5% fee automatically.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Examples -->
+  <section class="section" style="background: rgba(255, 255, 255, 0.01); padding: 100px 0;">
+    <div class="container">
+      <h2 class="section-title">Complete examples</h2>
+      <p class="section-subtitle">Choose your framework. We've got you covered.</p>
+      
+      <div class="examples-grid">
+        <!-- Deposit Example -->
+        <div class="example-card">
+          <div class="example-header">
+            <div class="example-icon">💰</div>
+            <h3>Deposit (User → Platform)</h3>
+          </div>
+          <div class="example-body">
+            <p class="example-description">
+              Let users send crypto FROM any chain TO your platform's wallet. Perfect for game top-ups, casino deposits, or buying NFTs.
+            </p>
+            
+            <div class="tabs">
+              <button class="tab active" onclick="switchTab(event, 'deposit-html')">HTML</button>
+              <button class="tab" onclick="switchTab(event, 'deposit-react')">React</button>
+              <button class="tab" onclick="switchTab(event, 'deposit-vue')">Vue</button>
+            </div>
+            
+            <div id="deposit-html" class="tab-content active">
+              <div class="code-block">
+                <code class="code-line"><span class="comment">&lt;!-- Receive on Polygon --&gt;</span></code>
+                <code class="code-line"><span class="keyword">&lt;iframe</span></code>
+                <code class="code-line">  <span class="attr">src</span>=<span class="string">"https://ponia.io/widget/?chain=polygon&mode=deposit"</span></code>
+                <code class="code-line">  <span class="attr">width</span>=<span class="string">"450"</span></code>
+                <code class="code-line">  <span class="attr">height</span>=<span class="string">"700"</span></code>
+                <code class="code-line">  <span class="attr">style</span>=<span class="string">"border: none;"</span></code>
+                <code class="code-line"><span class="keyword">&gt;&lt;/iframe&gt;</span></code>
+              </div>
+            </div>
+            
+            <div id="deposit-react" class="tab-content">
+              <div class="code-block">
+                <code class="code-line"><span class="keyword">export default function</span> <span class="function">DepositWidget</span>() {</code>
+                <code class="code-line">  <span class="keyword">return</span> (</code>
+                <code class="code-line">    <span class="keyword">&lt;iframe</span></code>
+                <code class="code-line">      <span class="attr">src</span>=<span class="string">"https://ponia.io/widget/?chain=base&mode=deposit"</span></code>
+                <code class="code-line">      <span class="attr">width</span>=<span class="string">"450"</span></code>
+                <code class="code-line">      <span class="attr">height</span>=<span class="string">"700"</span></code>
+                <code class="code-line">      <span class="attr">style</span>={{ <span class="attr">border</span>: <span class="string">'none'</span>, <span class="attr">borderRadius</span>: <span class="string">'16px'</span> }}</code>
+                <code class="code-line">    <span class="keyword">/&gt;</span></code>
+                <code class="code-line">  )</code>
+                <code class="code-line">}</code>
+              </div>
+            </div>
+            
+            <div id="deposit-vue" class="tab-content">
+              <div class="code-block">
+                <code class="code-line"><span class="keyword">&lt;template&gt;</span></code>
+                <code class="code-line">  <span class="keyword">&lt;iframe</span></code>
+                <code class="code-line">    <span class="attr">src</span>=<span class="string">"https://ponia.io/widget/?chain=ethereum&mode=deposit"</span></code>
+                <code class="code-line">    <span class="attr">width</span>=<span class="string">"450"</span></code>
+                <code class="code-line">    <span class="attr">height</span>=<span class="string">"700"</span></code>
+                <code class="code-line">    <span class="attr">style</span>=<span class="string">"border: none"</span></code>
+                <code class="code-line">  <span class="keyword">/&gt;</span></code>
+                <code class="code-line"><span class="keyword">&lt;/template&gt;</span></code>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Withdrawal Example -->
+        <div class="example-card">
+          <div class="example-header">
+            <div class="example-icon">💸</div>
+            <h3>Withdrawal (Platform → User)</h3>
+          </div>
+          <div class="example-body">
+            <p class="example-description">
+              Let users withdraw TO any chain FROM your platform. They enter their address, you approve the transaction on your backend.
+            </p>
+            
+            <div class="tabs">
+              <button class="tab active" onclick="switchTab(event, 'withdraw-html')">HTML</button>
+              <button class="tab" onclick="switchTab(event, 'withdraw-react')">React</button>
+              <button class="tab" onclick="switchTab(event, 'withdraw-next')">Next.js</button>
+            </div>
+            
+            <div id="withdraw-html" class="tab-content active">
+              <div class="code-block">
+                <code class="code-line"><span class="comment">&lt;!-- Withdraw from your Polygon wallet --&gt;</span></code>
+                <code class="code-line"><span class="keyword">&lt;iframe</span></code>
+                <code class="code-line">  <span class="attr">src</span>=<span class="string">"https://ponia.io/widget/?chain=polygon&mode=withdrawal"</span></code>
+                <code class="code-line">  <span class="attr">width</span>=<span class="string">"450"</span></code>
+                <code class="code-line">  <span class="attr">height</span>=<span class="string">"700"</span></code>
+                <code class="code-line">  <span class="attr">style</span>=<span class="string">"border: none;"</span></code>
+                <code class="code-line"><span class="keyword">&gt;&lt;/iframe&gt;</span></code>
+              </div>
+            </div>
+            
+            <div id="withdraw-react" class="tab-content">
+              <div class="code-block">
+                <code class="code-line"><span class="keyword">export default function</span> <span class="function">WithdrawWidget</span>() {</code>
+                <code class="code-line">  <span class="keyword">return</span> (</code>
+                <code class="code-line">    <span class="keyword">&lt;iframe</span></code>
+                <code class="code-line">      <span class="attr">src</span>=<span class="string">"https://ponia.io/widget/?chain=solana&mode=withdrawal"</span></code>
+                <code class="code-line">      <span class="attr">width</span>=<span class="string">"450"</span></code>
+                <code class="code-line">      <span class="attr">height</span>=<span class="string">"700"</span></code>
+                <code class="code-line">      <span class="attr">style</span>={{ <span class="attr">border</span>: <span class="string">'none'</span> }}</code>
+                <code class="code-line">    <span class="keyword">/&gt;</span></code>
+                <code class="code-line">  )</code>
+                <code class="code-line">}</code>
+              </div>
+            </div>
+            
+            <div id="withdraw-next" class="tab-content">
+              <div class="code-block">
+                <code class="code-line"><span class="comment">// app/withdraw/page.tsx</span></code>
+                <code class="code-line"><span class="keyword">export default function</span> <span class="function">WithdrawPage</span>() {</code>
+                <code class="code-line">  <span class="keyword">return</span> (</code>
+                <code class="code-line">    <span class="keyword">&lt;div</span> <span class="attr">className</span>=<span class="string">"container"</span><span class="keyword">&gt;</span></code>
+                <code class="code-line">      <span class="keyword">&lt;iframe</span></code>
+                <code class="code-line">        <span class="attr">src</span>=<span class="string">"https://ponia.io/widget/?chain=arbitrum&mode=withdrawal"</span></code>
+                <code class="code-line">        <span class="attr">width</span>=<span class="string">"450"</span></code>
+                <code class="code-line">        <span class="attr">height</span>=<span class="string">"700"</span></code>
+                <code class="code-line">      <span class="keyword">/&gt;</span></code>
+                <code class="code-line">    <span class="keyword">&lt;/div&gt;</span></code>
+                <code class="code-line">  )</code>
+                <code class="code-line">}</code>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Use Cases -->
+        <div class="example-card">
+          <div class="example-header">
+            <div class="example-icon">🎮</div>
+            <h3>Real-world examples</h3>
+          </div>
+          <div class="example-body">
+            <p class="example-description">
+              See how different platforms use PONIA for their specific needs.
+            </p>
+            
+            <div class="tabs">
+              <button class="tab active" onclick="switchTab(event, 'gaming')">Gaming dApp</button>
+              <button class="tab" onclick="switchTab(event, 'casino')">Crypto Casino</button>
+              <button class="tab" onclick="switchTab(event, 'nft')">NFT Marketplace</button>
+            </div>
+            
+            <div id="gaming" class="tab-content active">
+              <div class="code-block">
+                <code class="code-line"><span class="comment">&lt;!-- Game runs on Polygon, let players deposit from any chain --&gt;</span></code>
+                <code class="code-line"><span class="keyword">&lt;button</span> <span class="attr">onclick</span>=<span class="string">"showDepositModal()"</span><span class="keyword">&gt;</span>Add Credits<span class="keyword">&lt;/button&gt;</span></code>
+                <code class="code-line"></code>
+                <code class="code-line"><span class="keyword">&lt;div</span> <span class="attr">id</span>=<span class="string">"depositModal"</span><span class="keyword">&gt;</span></code>
+                <code class="code-line">  <span class="keyword">&lt;iframe</span></code>
+                <code class="code-line">    <span class="attr">src</span>=<span class="string">"https://ponia.io/widget/?chain=polygon&mode=deposit"</span></code>
+                <code class="code-line">    <span class="attr">width</span>=<span class="string">"450"</span> <span class="attr">height</span>=<span class="string">"700"</span></code>
+                <code class="code-line">  <span class="keyword">&gt;&lt;/iframe&gt;</span></code>
+                <code class="code-line"><span class="keyword">&lt;/div&gt;</span></code>
+              </div>
+            </div>
+            
+            <div id="casino" class="tab-content">
+              <div class="code-block">
+                <code class="code-line"><span class="comment">&lt;!-- Casino on Base - Deposit & Withdrawal --&gt;</span></code>
+                <code class="code-line"><span class="keyword">&lt;div</span> <span class="attr">className</span>=<span class="string">"wallet-section"</span><span class="keyword">&gt;</span></code>
+                <code class="code-line">  <span class="comment">&lt;!-- Deposit --&gt;</span></code>
+                <code class="code-line">  <span class="keyword">&lt;iframe</span> <span class="attr">src</span>=<span class="string">"https://ponia.io/widget/?chain=base&mode=deposit"</span> <span class="keyword">/&gt;</span></code>
+                <code class="code-line">  </code>
+                <code class="code-line">  <span class="comment">&lt;!-- Withdrawal --&gt;</span></code>
+                <code class="code-line">  <span class="keyword">&lt;iframe</span> <span class="attr">src</span>=<span class="string">"https://ponia.io/widget/?chain=base&mode=withdrawal"</span> <span class="keyword">/&gt;</span></code>
+                <code class="code-line"><span class="keyword">&lt;/div&gt;</span></code>
+              </div>
+            </div>
+            
+            <div id="nft" class="tab-content">
+              <div class="code-block">
+                <code class="code-line"><span class="comment">&lt;!-- NFT marketplace on Ethereum --&gt;</span></code>
+                <code class="code-line"><span class="keyword">&lt;div</span> <span class="attr">className</span>=<span class="string">"checkout"</span><span class="keyword">&gt;</span></code>
+                <code class="code-line">  <span class="keyword">&lt;h2&gt;</span>Buy NFT - 0.5 ETH<span class="keyword">&lt;/h2&gt;</span></code>
+                <code class="code-line">  <span class="keyword">&lt;p&gt;</span>Pay from any chain<span class="keyword">&lt;/p&gt;</span></code>
+                <code class="code-line">  </code>
+                <code class="code-line">  <span class="keyword">&lt;iframe</span></code>
+                <code class="code-line">    <span class="attr">src</span>=<span class="string">"https://ponia.io/widget/?chain=ethereum&mode=deposit"</span></code>
+                <code class="code-line">    <span class="attr">width</span>=<span class="string">"100%"</span> <span class="attr">height</span>=<span class="string">"700"</span></code>
+                <code class="code-line">  <span class="keyword">/&gt;</span></code>
+                <code class="code-line"><span class="keyword">&lt;/div&gt;</span></code>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Configuration -->
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Configuration parameters</h2>
+      <p class="section-subtitle">Customize the widget with URL parameters</p>
+      
+      <div class="example-card">
+        <div class="example-header">
+          <div class="example-icon">⚙️</div>
+          <h3>Available options</h3>
+        </div>
+        <div class="example-body">
+          <table class="params-table">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Values</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>chain</code></td>
+                <td><code>ethereum</code>, <code>polygon</code>, <code>arbitrum</code>, <code>base</code>, <code>optimism</code>, <code>bsc</code>, <code>solana</code>, <code>tron</code></td>
+                <td>Target blockchain where you want to receive/send funds</td>
+              </tr>
+              <tr>
+                <td><code>mode</code></td>
+                <td><code>deposit</code> (default), <code>withdrawal</code></td>
+                <td>Transaction direction: user→platform or platform→user</td>
+              </tr>
+            </tbody>
+          </table>
+          
+          <div style="margin-top: 32px;">
+            <h4 style="margin-bottom: 16px;">Example combinations:</h4>
+            <div class="code-block">
+              <code class="code-line"><span class="comment">// Deposit on Polygon</span></code>
+              <code class="code-line">https://ponia.io/widget/?chain=polygon&mode=deposit</code>
+              <code class="code-line"></code>
+              <code class="code-line"><span class="comment">// Withdrawal from Solana</span></code>
+              <code class="code-line">https://ponia.io/widget/?chain=solana&mode=withdrawal</code>
+              <code class="code-line"></code>
+              <code class="code-line"><span class="comment">// Deposit on Base (default mode)</span></code>
+              <code class="code-line">https://ponia.io/widget/?chain=base</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="container">
+    <div class="cta-section">
+      <h2>Ready to go cross-chain?</h2>
+      <p>Start accepting payments from 8 blockchains in the next 60 seconds.</p>
+      <div class="cta-buttons">
+        <a href="/widget/" class="btn btn-primary">
+          Try Live Demo →
+        </a>
+        <a href="/docs.html" class="btn btn-secondary">
+          View Full Docs
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="container">
+      <p>PONIA © 2025 • Powered by deBridge • 8 blockchains • 1.5% fee</p>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(event, tabId) {
+      // Get all tabs in the same group
+      const clickedTab = event.target;
+      const tabGroup = clickedTab.closest('.example-body');
+      const tabs = tabGroup.querySelectorAll('.tab');
+      const contents = tabGroup.querySelectorAll('.tab-content');
+      
+      // Remove active class from all tabs
+      tabs.forEach(tab => tab.classList.remove('active'));
+      contents.forEach(content => content.classList.remove('active'));
+      
+      // Add active class to clicked tab and corresponding content
+      clickedTab.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+  </script>
+</body>
+</html>
