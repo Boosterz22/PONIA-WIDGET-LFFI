@@ -383,12 +383,12 @@
     <main class="content">
       <h1>Documentation</h1>
       <p style="font-size: 18px; color: var(--muted); margin-bottom: 48px;">
-        Integrate Ponia cross-chain payment widget into your Web3 application in minutes. Accept <strong>deposits</strong> and process <strong>withdrawals</strong> across any supported blockchain with a single line of code.
+        Integrate Ponia cross-chain widget into your Web3 application in minutes. Accept <strong>deposits</strong> and process <strong>withdrawals</strong> across any supported blockchain with a single line of code.
       </p>
       
       <h2 id="introduction">Introduction</h2>
       <p>
-        Ponia is a universal cross-chain payment widget that enables your users to <strong>deposit</strong> and <strong>withdraw</strong> funds across any supported blockchain instantly. With support for 10 major chains including Ethereum, Solana, and TRON, Ponia provides a seamless bidirectional cross-chain experience with transfers completing in approximately 60 seconds.
+        Ponia is a universal cross-chain widget that enables your users to <strong>deposit</strong> and <strong>withdraw</strong> funds across any supported blockchain instantly. With support for 10 major chains including Ethereum, Solana, and TRON, Ponia provides a seamless bidirectional cross-chain experience with transfers completing in approximately 60 seconds.
       </p>
       
       <h3>Key Features</h3>
@@ -584,7 +584,7 @@ openPonia({
 <span style="color: #569cd6;">&lt;/script&gt;</span></pre></div>
       
       <h2 id="nft">Example: NFT Marketplace</h2>
-      <p>Accept payments from any chain for NFT purchases:</p>
+      <p>Accept deposits from any chain for NFT purchases:</p>
       
       <div class="code-block"><pre><span style="color: #569cd6;">function</span> buyNFT(nftId, price) {
   openPonia({
@@ -597,7 +597,7 @@ openPonia({
       transferNFT(nftId, tx.senderAddress);
     },
     onError: <span style="color: #569cd6;">(error) =&gt;</span> {
-      alert(<span style="color: #ce9178;">'Payment failed. Please try again.'</span>);
+      alert(<span style="color: #ce9178;">'Transaction failed. Please try again.'</span>);
     }
   });
 }</pre></div>
@@ -648,10 +648,10 @@ openPonia({
       <p>Yes. Ponia is non-custodial, meaning users maintain full control of their funds at all times. We're powered by deBridge, which has undergone 30+ security audits with zero exploits.</p>
       
       <h3>Do I need an API key?</h3>
-      <p>No. Ponia is completely plug-and-play. Just add the script tag and start accepting cross-chain payments.</p>
+      <p>No. Ponia is completely plug-and-play. Just add the script tag and start accepting cross-chain deposits.</p>
       
       <h3>Can users pay with any token?</h3>
-      <p>Users can pay from any supported chain with any supported token (Native, USDC, USDT). Ponia handles the cross-chain routing automatically.</p>
+      <p>Users can deposit from any supported chain with any supported token (Native, USDC, USDT). Ponia handles the cross-chain routing automatically.</p>
       
       <h3>How do withdrawals work?</h3>
       <p>Withdrawals work exactly like deposits, but in reverse. Set <code>mode: 'withdraw'</code> and users can send funds from your platform to any supported blockchain. Perfect for casinos, gaming platforms, and exchanges.</p>
