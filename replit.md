@@ -4,6 +4,15 @@ PONIA is a cross-chain cryptocurrency payment widget designed for Web3 applicati
 
 # Recent Changes
 
+**October 25, 2025:**
+- **Withdrawal mode implemented:** Added full support for bidirectional transactions (deposit AND withdrawal)
+  - URL parameter `?mode=withdrawal` activates withdrawal mode
+  - Withdrawal UI: Manual address input field replaces Connect Wallet button (no wallet popup needed)
+  - Smart source/destination inversion: Deposit = user→platform, Withdrawal = platform→user
+  - Labels adapt automatically: "Withdraw to which chain?" vs "Send from which chain?"
+  - Transaction logic inverses addresses: platform wallet sends to user's manually entered address
+  - Address validation: Basic checks for minimum length and format
+
 **October 24, 2025:**
 - **Production wallet addresses configured:** Set up secure Replit Secrets for fee collection wallets
   - EVM chains (Ethereum, Polygon, Arbitrum, Base, Optimism, BNB Chain): `0x280714ff27a52920bfcb75e2ec61027a93e8e9ac`
