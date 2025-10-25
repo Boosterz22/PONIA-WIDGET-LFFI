@@ -584,10 +584,10 @@
           </p>
         </div>
 
-        <div class="chain-selector-title">Send from which chain?</div>
+        <div class="chain-selector-title" id="chainSelectorTitle">Send from which chain?</div>
         <div class="chain-buttons" id="chainButtons"></div>
 
-        <div class="token-selector-title">Select token</div>
+        <div class="token-selector-title" id="tokenSelectorTitle">Select token</div>
         <div class="token-buttons">
           <button class="token-btn active" id="btnNative" onclick="selectToken('native')">
             <span class="token-btn-icon">⚡</span>
@@ -621,7 +621,7 @@
         </div>
 
         <div class="input-group">
-          <label class="input-label">Amount to send</label>
+          <label class="input-label" id="amountLabel">Amount to send</label>
           <input type="text" class="input-field" id="amountInput" value="0.01" placeholder="0.01" />
         </div>
 
@@ -641,13 +641,24 @@
           </div>
         </div>
 
-        <div class="wallet-btn-container">
+        <!-- Deposit Mode: Wallet Connection -->
+        <div class="wallet-btn-container" id="depositModeWallet">
           <appkit-button></appkit-button>
+          <p style="font-size: 12px; text-align: center; color: var(--muted); margin: 12px 0;">
+            Platform blockchain detected automatically. Choose which wallet you want to send from.
+          </p>
         </div>
 
-        <p style="font-size: 12px; text-align: center; color: var(--muted); margin: 12px 0;">
-          Platform blockchain detected automatically. Choose which wallet you want to send from.
-        </p>
+        <!-- Withdrawal Mode: Address Input -->
+        <div class="hidden" id="withdrawalModeAddress">
+          <div class="form-group">
+            <label class="form-label">Your receiving address</label>
+            <input type="text" class="input-field" id="withdrawalAddressInput" placeholder="0x... or base58 address" />
+            <p style="font-size: 11px; color: var(--muted); margin: 6px 0 0;">
+              Enter your wallet address where you want to receive funds
+            </p>
+          </div>
+        </div>
 
         <button class="btn-primary" id="btnConfirmSwap">Confirm swap</button>
       </div>

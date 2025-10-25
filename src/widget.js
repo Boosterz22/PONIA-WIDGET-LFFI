@@ -127,6 +127,8 @@ let currentStage = 'select';
 let selectedSourceChain = 'solana';
 let destinationChain = 'ethereum';
 let selectedToken = 'native';
+let widgetMode = 'deposit'; // 'deposit' or 'withdrawal'
+let manualWithdrawalAddress = ''; // For withdrawal mode
 
 // Initialize Reown AppKit (Multi-chain: EVM + Solana)
 const projectId = 'f83cf00007509459345871b429d32db0';
@@ -149,9 +151,19 @@ modal = createAppKit({
   metadata
 });
 
-// Detect destination chain from URL
-function detectDestinationChain() {
+// Detect widget mode and destination chain from URL
+function detectWidgetConfig() {
   const params = new URLSearchParams(window.location.search);
+  
+  // Detect mode (deposit or withdrawal)
+  const mode = params.get('mode');
+  if (mode === 'withdrawal' || mode === 'withdraw') {
+    widgetMode = 'withdrawal';
+  } else {
+    widgetMode = 'deposit';
+  }
+  
+  // Detect destination chain
   const chain = params.get('chain');
   if (chain && CHAIN_CONFIG[chain.toLowerCase()]) {
     return chain.toLowerCase();
@@ -161,8 +173,25 @@ function detectDestinationChain() {
 
 // Initialize UI
 function initializeUI() {
-  destinationChain = detectDestinationChain();
+  destinationChain = detectWidgetConfig();
   const destConfig = CHAIN_CONFIG[destinationChain];
+  
+  // Show/hide wallet connection vs address input based on mode
+  if (widgetMode === 'withdrawal') {
+    document.getElementById('depositModeWallet').classList.add('hidden');
+    document.getElementById('withdrawalModeAddress').classList.remove('hidden');
+    
+    // Update labels for withdrawal mode
+    document.getElementById('chainSelectorTitle').textContent = 'Withdraw to which chain?';
+    document.getElementById('amountLabel').textContent = 'Amount to withdraw';
+  } else {
+    document.getElementById('depositModeWallet').classList.remove('hidden');
+    document.getElementById('withdrawalModeAddress').classList.add('hidden');
+    
+    // Update labels for deposit mode
+    document.getElementById('chainSelectorTitle').textContent = 'Send from which chain?';
+    document.getElementById('amountLabel').textContent = 'Amount to send';
+  }
   
   // Set destination chain display
   document.getElementById('destinationLogo').src = destConfig.logo;
@@ -470,6 +499,20 @@ async function handleConfirmSwap() {
       return;
     }
     
+    // In withdrawal mode, validate user's receiving address
+    if (widgetMode === 'withdrawal') {
+      manualWithdrawalAddress = document.getElementById('withdrawalAddressInput').value.trim();
+      if (!manualWithdrawalAddress) {
+        alert('Please enter your receiving wallet address');
+        return;
+      }
+      // Basic validation
+      if (manualWithdrawalAddress.length < 26) {
+        alert('Please enter a valid wallet address');
+        return;
+      }
+    }
+    
     // Animate button to loading state
     const btn = document.getElementById('btnConfirmSwap');
     btn.classList.add('loading');
@@ -478,16 +521,26 @@ async function handleConfirmSwap() {
     // Wait for animation to complete (1 second)
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    // Get chain configs
-    const sourceConfig = CHAIN_CONFIG[selectedSourceChain];
-    const destConfig = CHAIN_CONFIG[destinationChain];
+    // Get chain configs and addresses based on mode
+    let sourceConfig, destConfig, sourceAddress, destinationAddress;
     
-    // Get user's wallet address for the source chain (works for EVM, Solana, TRON)
-    const sourceAddress = await getConnectedAddress(sourceConfig.id);
+    if (widgetMode === 'withdrawal') {
+      // WITHDRAWAL: Platform sends to user's address
+      // Source = Platform's chain (destinationChain), Destination = User's selected chain (selectedSourceChain)
+      sourceConfig = CHAIN_CONFIG[destinationChain];
+      destConfig = CHAIN_CONFIG[selectedSourceChain];
+      sourceAddress = getPlatformAddress(sourceConfig.id); // Platform wallet
+      destinationAddress = manualWithdrawalAddress; // User's input address
+    } else {
+      // DEPOSIT: User sends to platform's address
+      // Source = User's selected chain, Destination = Platform's chain
+      sourceConfig = CHAIN_CONFIG[selectedSourceChain];
+      destConfig = CHAIN_CONFIG[destinationChain];
+      sourceAddress = await getConnectedAddress(sourceConfig.id); // User's wallet
+      destinationAddress = getPlatformAddress(destConfig.id); // Platform wallet
+    }
+    
     console.log('Source address:', sourceAddress);
-    
-    // Get platform destination address (where funds will be deposited)
-    const destinationAddress = getPlatformAddress(destConfig.id);
     console.log('Destination address:', destinationAddress);
     
     // Calculate fees
