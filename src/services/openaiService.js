@@ -56,9 +56,15 @@ export class OpenAIService {
   _buildPrompt(products, businessType, insights) {
     // Produits critiques seulement (économise tokens)
     const criticalProducts = products
-      .filter(p => p.currentQuantity <= p.threshold * 1.5)
+      .filter(p => {
+        const threshold = p.alertThreshold || p.threshold || 10
+        return p.currentQuantity <= threshold * 1.5
+      })
       .slice(0, 5) // Max 5 produits pour rester concis
-      .map(p => `- ${p.name}: ${p.currentQuantity}${p.unit} (seuil: ${p.threshold}${p.unit})`)
+      .map(p => {
+        const threshold = p.alertThreshold || p.threshold || 10
+        return `- ${p.name}: ${p.currentQuantity}${p.unit} (seuil: ${threshold}${p.unit})`
+      })
       .join('\n')
     
     const hasProducts = criticalProducts.length > 0

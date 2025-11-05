@@ -6,7 +6,8 @@ export class InventoryRulesEngine {
   // 1️⃣ PRÉDICTION RUPTURE (jours restants)
   predictStockout(product) {
     // Consommation moyenne estimée = 40% du seuil par semaine (règle empirique)
-    const weeklyConsumption = product.threshold * 0.4
+    const threshold = product.alertThreshold || product.threshold || 10
+    const weeklyConsumption = threshold * 0.4
     const dailyConsumption = weeklyConsumption / 7
     
     // Protection division par zéro
@@ -31,7 +32,8 @@ export class InventoryRulesEngine {
   
   // 2️⃣ DÉTECTION SUR-STOCK
   detectOverstock(product) {
-    const weeklyConsumption = product.threshold * 0.4
+    const threshold = product.alertThreshold || product.threshold || 10
+    const weeklyConsumption = threshold * 0.4
     
     if (weeklyConsumption === 0) return null
     
@@ -56,7 +58,8 @@ export class InventoryRulesEngine {
   // 3️⃣ SUGGESTION QUANTITÉ COMMANDE OPTIMALE
   suggestOrderQuantity(product) {
     // Formule : Commande pour 2 semaines + buffer sécurité 20%
-    const weeklyConsumption = product.threshold * 0.4
+    const threshold = product.alertThreshold || product.threshold || 10
+    const weeklyConsumption = threshold * 0.4
     const optimalOrder = weeklyConsumption * 2 * 1.2
     
     return {
@@ -73,12 +76,13 @@ export class InventoryRulesEngine {
     const wasteAlerts = []
     
     products.forEach(product => {
+      const threshold = product.alertThreshold || product.threshold || 10
       // Si stock > 5x le seuil = risque péremption/gaspillage
-      if (product.currentQuantity > product.threshold * 5) {
-        const excessRatio = (product.currentQuantity / product.threshold).toFixed(1)
+      if (product.currentQuantity > threshold * 5) {
+        const excessRatio = (product.currentQuantity / threshold).toFixed(1)
         wasteAlerts.push({
           product: product.name,
-          severity: product.currentQuantity > product.threshold * 8 ? 'high' : 'medium',
+          severity: product.currentQuantity > threshold * 8 ? 'high' : 'medium',
           excessRatio: excessRatio,
           message: `🔴 Risque gaspillage ${product.name} : ${product.currentQuantity}${product.unit} (${excessRatio}x le seuil). Utilisez rapidement.`
         })
@@ -113,7 +117,8 @@ export class InventoryRulesEngine {
   }
   
   _getAction(days, product) {
-    const optimalQuantity = Math.ceil(product.threshold * 2 * 1.2) // 2 semaines + 20%
+    const threshold = product.alertThreshold || product.threshold || 10
+    const optimalQuantity = Math.ceil(threshold * 2 * 1.2) // 2 semaines + 20%
     
     if (days <= 2) return {
       type: 'order_now',
