@@ -5,9 +5,26 @@ import { TrendingUp, Clock, Shield, Zap, BarChart3, CheckCircle, Star, Users } f
 export default function LandingPage() {
   return (
     <div style={{ minHeight: '100vh' }}>
+      {/* NAVBAR SANS BARRE */}
+      <nav style={{
+        padding: '1.5rem 0',
+        background: 'transparent',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 100
+      }}>
+        <div className="container" style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+          <Link to="/login" className="btn btn-primary">
+            Essai Gratuit
+          </Link>
+        </div>
+      </nav>
+
       {/* HERO SECTION */}
       <section style={{ 
-        padding: '4rem 0 4rem', 
+        padding: '6rem 0 4rem', 
         textAlign: 'center',
         background: 'radial-gradient(ellipse at top, rgba(255, 215, 0, 0.1) 0%, transparent 60%)'
       }} className="fade-in">
