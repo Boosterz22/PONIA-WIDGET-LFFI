@@ -678,11 +678,73 @@ export default function LandingPage() {
 
           <div style={{ 
             display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
-            gap: '2.5rem',
-            maxWidth: '1000px',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
+            gap: '2rem',
+            maxWidth: '1200px',
             margin: '0 auto'
           }}>
+            {/* PLAN GRATUIT */}
+            <div className="card" style={{ 
+              padding: '2.5rem', 
+              textAlign: 'center',
+              border: '2px solid rgba(74, 222, 128, 0.4)',
+              background: 'rgba(74, 222, 128, 0.03)'
+            }}>
+              <div style={{ 
+                background: 'linear-gradient(135deg, #4ade80, #22c55e)',
+                color: 'white',
+                padding: '0.4rem 1.2rem',
+                borderRadius: '20px',
+                fontSize: '0.85rem',
+                fontWeight: 'bold',
+                marginBottom: '1rem',
+                display: 'inline-block'
+              }}>
+                🎁 GRATUIT À VIE
+              </div>
+              <div style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: 'bold', color: 'var(--success)', marginBottom: '0.5rem' }}>
+                €0<span style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>/mois</span>
+              </div>
+              <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '2rem' }}>
+                Parfait pour tester
+              </div>
+
+              <div style={{ textAlign: 'left', marginBottom: '2rem' }}>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
+                  <CheckCircle size={20} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span><strong>Jusqu'à 10 produits</strong></span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
+                  <CheckCircle size={20} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span>Alertes couleur (🟢🟠🔴)</span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
+                  <CheckCircle size={20} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span>Produits pré-configurés</span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
+                  <CheckCircle size={20} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span>Interface mobile rapide</span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
+                  <X size={20} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ color: 'var(--text-muted)' }}>Pas d'IA prédictive</span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
+                  <X size={20} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ color: 'var(--text-muted)' }}>Pas d'historique</span>
+                </div>
+              </div>
+
+              <Link to="/login" className="btn btn-secondary" style={{ width: '100%', padding: '1rem' }}>
+                Commencer Gratuitement
+              </Link>
+              
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '1rem' }}>
+                Passez au payant quand vous voulez
+              </p>
+            </div>
+
             {/* PLAN STANDARD */}
             <div className="card" style={{ 
               padding: '2.5rem', 
@@ -700,7 +762,7 @@ export default function LandingPage() {
               <div style={{ textAlign: 'left', marginBottom: '2rem' }}>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
                   <CheckCircle size={20} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span>Suivi stock en temps réel</span>
+                  <span><strong>Produits illimités</strong></span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
                   <CheckCircle size={20} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
@@ -708,15 +770,19 @@ export default function LandingPage() {
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
                   <CheckCircle size={20} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span>Templates produits par commerce</span>
+                  <span>Historique 7 jours</span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
                   <CheckCircle size={20} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span>Interface mobile rapide</span>
+                  <span>Export PDF commandes</span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
                   <CheckCircle size={20} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
                   <span>Support email</span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
+                  <X size={20} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ color: 'var(--text-muted)' }}>Pas d'IA prédictive</span>
                 </div>
               </div>
 
