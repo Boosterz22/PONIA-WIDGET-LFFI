@@ -246,6 +246,25 @@ Pro €99       → IA basique + GPT illimité + météo + multi-sites
 - **CAC :** Terrain direct + SEO local + bouche-à-oreille
 - **Churn target :** <5% (outil indispensable quotidien)
 
+## Corrections récentes (5 nov 2025)
+
+### ✅ Navigation corrigée
+- Logo cliquable sur landing page et dashboard
+- Retour à l'accueil fluide
+- Pas de bug de navigation
+
+### ✅ IA simplifiée mais fonctionnelle
+- Score de santé dynamique (0-100%)
+- Détection rupture imminente, stock faible, stock OK
+- Actions prioritaires contextuelles
+- Stats visuelles en temps réel
+- Pas de crash JavaScript
+
+### Architecture actuelle
+- **IA inline** dans AIInsights.jsx (pas de services externes)
+- Calculs basiques mais efficaces pour MVP
+- Prêt pour tests utilisateurs réels
+
 ---
 
 **Dernière mise à jour :** 5 novembre 2025

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { Plus, LogOut, AlertCircle, TrendingDown, TrendingUp, Brain, Gift, Crown } from 'lucide-react'
 import { supabase } from '../services/supabase'
 import ProductCard from '../components/ProductCard'
@@ -106,7 +106,9 @@ export default function DashboardPage({ session }) {
       }}>
         <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <img src="/ponia-icon.png" alt="PONIA AI" style={{ height: '36px' }} />
+            <Link to="/" style={{ display: 'flex', alignItems: 'center' }}>
+              <img src="/ponia-icon.png" alt="PONIA AI" style={{ height: '36px', cursor: 'pointer' }} />
+            </Link>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <span style={{ fontWeight: 'bold', fontSize: '1.125rem' }}>{businessName}</span>

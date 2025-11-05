@@ -25,10 +25,10 @@ export default function LandingPage() {
           gap: '1rem'
         }}>
           {/* LOGO */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', cursor: 'pointer' }}>
             <span style={{ fontSize: '1.5rem' }}>⚡</span>
             <span style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'var(--primary)' }}>PONIA</span>
-          </div>
+          </Link>
 
           {/* NAVIGATION SECTIONS */}
           <div style={{ 
