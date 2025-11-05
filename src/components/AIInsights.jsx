@@ -1,79 +1,160 @@
-import React from 'react'
-import { Brain, TrendingDown, TrendingUp, Package, AlertCircle } from 'lucide-react'
+import React, { useState, useEffect } from 'react'
+import { Brain, AlertTriangle, TrendingUp, Lightbulb, Loader, Sparkles } from 'lucide-react'
+import { aiService } from '../services/aiService'
+import { openaiService } from '../services/openaiService'
+import '../styles/aiInsights.css'
 
-export default function AIInsights({ products }) {
-  const totalValue = products.reduce((sum, p) => sum + (p.currentQuantity * (p.price || 0)), 0)
-  const criticalProducts = products.filter(p => p.currentQuantity <= p.alertThreshold * 0.5).length
-  const lowProducts = products.filter(p => p.currentQuantity <= p.alertThreshold && p.currentQuantity > p.alertThreshold * 0.5).length
-
-  const insights = []
-
-  if (criticalProducts > 0) {
-    insights.push({
-      type: 'warning',
-      icon: AlertCircle,
-      color: 'var(--danger)',
-      title: `${criticalProducts} produit${criticalProducts > 1 ? 's' : ''} en rupture imminente`,
-      message: `Commandez rapidement pour éviter une rupture de stock`
-    })
+export default function AIInsights({ products, businessType, plan }) {
+  const [insights, setInsights] = useState(null)
+  const [aiSuggestions, setAiSuggestions] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [gptLoading, setGptLoading] = useState(false)
+  
+  useEffect(() => {
+    analyzeInventory()
+  }, [products])
+  
+  async function analyzeInventory() {
+    setLoading(true)
+    
+    try {
+      const ruleInsights = aiService.analyzeInventory(products, businessType)
+      setInsights(ruleInsights)
+      setLoading(false)
+      
+      if ((plan === 'standard' || plan === 'pro') && products.length > 0) {
+        setGptLoading(true)
+        try {
+          const gptSuggestions = await openaiService.generateSmartSuggestions(
+            products,
+            businessType,
+            ruleInsights,
+            plan
+          )
+          setAiSuggestions(gptSuggestions || [])
+        } catch (error) {
+          console.error('GPT suggestions failed:', error)
+        } finally {
+          setGptLoading(false)
+        }
+      }
+    } catch (error) {
+      console.error('Analyse IA échouée:', error)
+      setLoading(false)
+    }
   }
-
-  if (lowProducts > 0) {
-    insights.push({
-      type: 'info',
-      icon: TrendingDown,
-      color: 'var(--warning)',
-      title: `${lowProducts} produit${lowProducts > 1 ? 's' : ''} en stock faible`,
-      message: `Prévoyez une commande dans les prochains jours`
-    })
-  }
-
-  const highStockProducts = products.filter(p => p.currentQuantity > p.alertThreshold * 3)
-  if (highStockProducts.length > 0) {
-    insights.push({
-      type: 'success',
-      icon: Package,
-      color: 'var(--success)',
-      title: `${highStockProducts.length} produit${highStockProducts.length > 1 ? 's' : ''} en sur-stock`,
-      message: `Réduisez vos prochaines commandes pour optimiser`
-    })
-  }
-
-  if (insights.length === 0) {
-    insights.push({
-      type: 'success',
-      icon: Brain,
-      color: 'var(--success)',
-      title: 'Stocks optimisés',
-      message: 'Tous vos produits sont à un niveau optimal'
-    })
-  }
-
-  return (
-    <div style={{ marginBottom: '2rem' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-        <Brain size={24} color="#FFD700" />
-        <h3 style={{ fontSize: '1.25rem', fontWeight: 600 }}>Insights IA</h3>
+  
+  if (loading) {
+    return (
+      <div className="ai-insights-panel">
+        <div className="ai-loading">
+          <Loader className="spin" size={32} />
+          <p>🤖 Analyse IA en cours...</p>
+        </div>
       </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem' }}>
-        {insights.map((insight, i) => {
-          const Icon = insight.icon
-          return (
-            <div key={i} className="card" style={{ 
-              borderColor: insight.color,
-              background: `linear-gradient(135deg, ${insight.color}10 0%, ${insight.color}05 100%)`
-            }}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
-                <Icon size={24} color={insight.color} style={{ flexShrink: 0, marginTop: '0.25rem' }} />
-                <div>
-                  <h4 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '0.25rem' }}>{insight.title}</h4>
-                  <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>{insight.message}</p>
-                </div>
+    )
+  }
+  
+  if (!insights) return null
+  
+  const topActions = aiService.getTopActions(insights)
+  const stats = aiService.getStats(insights)
+  
+  return (
+    <div className="ai-insights-panel">
+      <div className="ai-header">
+        <div className="ai-title">
+          <Brain size={24} color="#F59E0B" />
+          <h2>🤖 PONIA AI - Analyse Intelligente</h2>
+        </div>
+        <div className={`health-score ${insights.summary.status}`}>
+          <span className="score-value">{insights.summary.healthScore}%</span>
+          <span className="score-label">Santé Stock</span>
+        </div>
+      </div>
+      
+      <div className={`ai-summary ${insights.summary.status}`}>
+        {insights.summary.message}
+      </div>
+      
+      {topActions.length > 0 && (
+        <div className="top-actions">
+          <h3>
+            <AlertTriangle size={18} />
+            Actions Prioritaires
+          </h3>
+          {topActions.map((action, idx) => (
+            <div key={idx} className={`action-card priority-${action.priority}`}>
+              <span className="action-icon">{action.icon}</span>
+              <div className="action-content">
+                <h4>{action.title}</h4>
+                <p>{action.description}</p>
+                {action.action && action.action.quantity && (
+                  <div className="action-details">
+                    <span className="detail-badge">
+                      Quantité suggérée : {action.action.quantity}{action.action.unit}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
-          )
-        })}
+          ))}
+        </div>
+      )}
+      
+      {(plan === 'standard' || plan === 'pro') && (
+        <div className="gpt-suggestions">
+          <h3>
+            <Lightbulb size={18} />
+            Conseils IA Personnalisés
+            {plan === 'standard' && <span className="plan-badge">1/semaine</span>}
+            {plan === 'pro' && <span className="plan-badge pro">Illimité</span>}
+          </h3>
+          
+          {gptLoading ? (
+            <div className="gpt-loading">
+              <Loader className="spin" size={20} />
+              <span>L'IA génère vos conseils personnalisés...</span>
+            </div>
+          ) : aiSuggestions.length > 0 ? (
+            <div className="suggestions-list">
+              {aiSuggestions.map(suggestion => (
+                <div key={suggestion.id} className={`suggestion-card ${suggestion.type}`}>
+                  <span className="suggestion-icon">{suggestion.icon}</span>
+                  <p>{suggestion.text}</p>
+                </div>
+              ))}
+            </div>
+          ) : null}
+        </div>
+      )}
+      
+      {plan === 'gratuit' && (
+        <div className="upgrade-cta">
+          <Sparkles size={20} />
+          <div className="upgrade-content">
+            <strong>Débloquez les Conseils IA Personnalisés</strong>
+            <p>Plan Standard : 1 conseil IA/semaine · Plan Pro : Conseils illimités + prédictions météo</p>
+          </div>
+          <button className="upgrade-btn" onClick={() => window.location.href = '/#pricing'}>
+            Découvrir →
+          </button>
+        </div>
+      )}
+      
+      <div className="ai-stats">
+        <div className="stat-card">
+          <span className="stat-value">{stats.stockoutRisks}</span>
+          <span className="stat-label">Risques rupture</span>
+        </div>
+        <div className="stat-card">
+          <span className="stat-value">{stats.orderSuggestions}</span>
+          <span className="stat-label">Commandes suggérées</span>
+        </div>
+        <div className="stat-card">
+          <span className="stat-value">{stats.wasteAlerts}</span>
+          <span className="stat-label">Alertes gaspillage</span>
+        </div>
       </div>
     </div>
   )
