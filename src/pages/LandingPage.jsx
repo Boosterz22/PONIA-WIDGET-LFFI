@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Package, TrendingUp, Clock, Shield, Zap, BarChart3, CheckCircle, Star, Users } from 'lucide-react'
+import { TrendingUp, Clock, Shield, Zap, BarChart3, CheckCircle, Star, Users } from 'lucide-react'
 
 export default function LandingPage() {
   return (
@@ -16,10 +16,7 @@ export default function LandingPage() {
         zIndex: 100
       }}>
         <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1.5rem', fontWeight: 'bold' }}>
-            <Package size={36} color="#FFD700" />
-            <span className="gradient-text">PONIA AI</span>
-          </div>
+          <img src="/ponia-logo.png" alt="PONIA AI" style={{ height: '50px' }} />
           <Link to="/login" className="btn btn-primary">
             Essai Gratuit
           </Link>
@@ -498,10 +495,7 @@ export default function LandingPage() {
             marginBottom: '3rem'
           }}>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
-                <Package size={32} color="#FFD700" />
-                <span style={{ fontSize: '1.5rem', fontWeight: 'bold' }} className="gradient-text">PONIA AI</span>
-              </div>
+              <img src="/ponia-logo.png" alt="PONIA AI" style={{ height: '45px', marginBottom: '1rem' }} />
               <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: 1.7 }}>
                 Gestion de stock intelligente pour les commerçants français. Gagnez du temps, réduisez le gaspillage.
               </p>

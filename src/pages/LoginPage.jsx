@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { Package, ArrowRight } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -46,17 +46,10 @@ export default function LoginPage() {
       <div style={{ width: '100%', maxWidth: '480px' }} className="fade-in">
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <Link to="/" style={{ 
-            display: 'inline-flex', 
-            alignItems: 'center', 
-            gap: '0.75rem', 
-            fontSize: '2rem', 
-            fontWeight: 'bold', 
-            marginBottom: '1.5rem',
-            textDecoration: 'none',
-            color: 'var(--text)'
+            display: 'inline-block',
+            marginBottom: '1.5rem'
           }}>
-            <Package size={40} color="#FFD700" />
-            <span className="gradient-text">PONIA AI</span>
+            <img src="/ponia-logo.png" alt="PONIA AI" style={{ height: '70px' }} />
           </Link>
           <h1 style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>
             Bienvenue ! 👋

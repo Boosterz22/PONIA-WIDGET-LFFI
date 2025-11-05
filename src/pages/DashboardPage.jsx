@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Package, Plus, LogOut, AlertCircle, TrendingDown, TrendingUp, Brain } from 'lucide-react'
+import { Plus, LogOut, AlertCircle, TrendingDown, TrendingUp, Brain } from 'lucide-react'
 import { supabase } from '../services/supabase'
 import ProductCard from '../components/ProductCard'
 import AddProductModal from '../components/AddProductModal'
@@ -105,7 +105,7 @@ export default function DashboardPage({ session }) {
       }}>
         <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <Package size={28} color="#FFD700" />
+            <img src="/ponia-icon.png" alt="PONIA AI" style={{ height: '36px' }} />
             <div>
               <div style={{ fontWeight: 'bold', fontSize: '1.125rem' }}>{businessName}</div>
               <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>PONIA AI</div>
@@ -174,7 +174,7 @@ export default function DashboardPage({ session }) {
 
         {products.length === 0 && (
           <div style={{ textAlign: 'center', padding: '4rem 1rem', color: 'var(--text-muted)' }}>
-            <Package size={64} style={{ opacity: 0.3, marginBottom: '1rem' }} />
+            <img src="/ponia-icon.png" alt="PONIA" style={{ height: '64px', opacity: 0.3, marginBottom: '1rem' }} />
             <p style={{ fontSize: '1.125rem' }}>Aucun produit en stock</p>
             <p style={{ marginTop: '0.5rem' }}>Commencez par ajouter vos premiers produits</p>
             <button onClick={() => setShowAddModal(true)} className="btn btn-primary" style={{ marginTop: '1.5rem' }}>
