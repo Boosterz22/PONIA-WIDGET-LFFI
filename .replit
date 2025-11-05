@@ -39,12 +39,12 @@ name = "PONIA AI"
 author = "agent"
 
 [workflows.workflow.metadata]
-outputType = "console"
+outputType = "webview"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npm run dev"
-waitForPort = 3000
+waitForPort = 5000
 
 [[ports]]
 localPort = 80
@@ -57,10 +57,6 @@ externalPort = 3000
 [[ports]]
 localPort = 5000
 externalPort = 80
-
-[[ports]]
-localPort = 33643
-externalPort = 5000
 
 [[ports]]
 localPort = 34097
