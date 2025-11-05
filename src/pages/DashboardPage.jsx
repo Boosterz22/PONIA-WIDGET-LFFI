@@ -273,7 +273,8 @@ export default function DashboardPage({ session }) {
           </div>
         )}
 
-        <AIInsights products={products} businessType={businessType} plan={userPlan} />
+        {/* TEMPORAIRE: AIInsights désactivé pour debug */}
+        {/* <AIInsights products={products} businessType={businessType} plan={userPlan} /> */}
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
           <div>

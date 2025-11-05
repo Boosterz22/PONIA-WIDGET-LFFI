@@ -1,65 +1,75 @@
 import React, { useState, useEffect } from 'react'
 import { Brain, AlertTriangle, TrendingUp, Lightbulb, Loader, Sparkles } from 'lucide-react'
-import { aiService } from '../services/aiService'
-import { openaiService } from '../services/openaiService'
 import '../styles/aiInsights.css'
 
 export default function AIInsights({ products, businessType, plan }) {
-  const [insights, setInsights] = useState(null)
-  const [aiSuggestions, setAiSuggestions] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [gptLoading, setGptLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
   
-  useEffect(() => {
-    analyzeInventory()
-  }, [products])
-  
-  async function analyzeInventory() {
-    setLoading(true)
-    
-    try {
-      const ruleInsights = aiService.analyzeInventory(products, businessType)
-      setInsights(ruleInsights)
-      setLoading(false)
-      
-      if ((plan === 'standard' || plan === 'pro') && products.length > 0) {
-        setGptLoading(true)
-        try {
-          const gptSuggestions = await openaiService.generateSmartSuggestions(
-            products,
-            businessType,
-            ruleInsights,
-            plan
-          )
-          setAiSuggestions(gptSuggestions || [])
-        } catch (error) {
-          console.error('GPT suggestions failed:', error)
-        } finally {
-          setGptLoading(false)
-        }
-      }
-    } catch (error) {
-      console.error('Analyse IA échouée:', error)
-      setLoading(false)
-    }
-  }
-  
-  if (loading) {
+  if (!products || products.length === 0) {
     return (
       <div className="ai-insights-panel">
-        <div className="ai-loading">
-          <Loader className="spin" size={32} />
-          <p>🤖 Analyse IA en cours...</p>
+        <div className="ai-header">
+          <div className="ai-title">
+            <Brain size={24} color="#F59E0B" />
+            <h2>🤖 PONIA AI - Analyse Intelligente</h2>
+          </div>
+        </div>
+        <div className="ai-summary empty">
+          📦 Ajoutez des produits pour voir l'analyse IA PONIA
         </div>
       </div>
     )
   }
+
+  const criticalProducts = products.filter(p => p.currentQuantity <= (p.alertThreshold || 10) * 0.5)
+  const lowStockProducts = products.filter(p => 
+    p.currentQuantity > (p.alertThreshold || 10) * 0.5 && 
+    p.currentQuantity <= (p.alertThreshold || 10)
+  )
+  const healthyProducts = products.filter(p => p.currentQuantity > (p.alertThreshold || 10))
   
-  if (!insights) return null
+  const healthScore = Math.round((healthyProducts.length / products.length) * 100)
   
-  const topActions = aiService.getTopActions(insights)
-  const stats = aiService.getStats(insights)
+  let status = 'good'
+  let message = '🎉 Parfait ! Votre stock est bien géré.'
   
+  if (criticalProducts.length > 0) {
+    status = 'critical'
+    message = `🔴 URGENT : ${criticalProducts.length} produit${criticalProducts.length > 1 ? 's' : ''} en rupture imminente !`
+  } else if (lowStockProducts.length > 0) {
+    status = 'warning'
+    message = `🟠 Attention : ${lowStockProducts.length} produit${lowStockProducts.length > 1 ? 's' : ''} en stock faible.`
+  }
+  
+  const topActions = []
+  
+  if (criticalProducts.length > 0) {
+    topActions.push({
+      priority: 1,
+      icon: '🔴',
+      title: 'Commande urgente',
+      description: `${criticalProducts.map(p => p.name).join(', ')} - Commandez AUJOURD'HUI`
+    })
+  }
+  
+  if (lowStockProducts.length > 0 && topActions.length < 3) {
+    topActions.push({
+      priority: 2,
+      icon: '🟠',
+      title: 'Planifier commande',
+      description: `${lowStockProducts.slice(0, 2).map(p => p.name).join(', ')} - Commandez cette semaine`
+    })
+  }
+  
+  if (healthyProducts.length === products.length) {
+    topActions.push({
+      priority: 4,
+      icon: '🎉',
+      title: 'Parfait !',
+      description: 'Votre gestion de stock est optimale. Continuez comme ça !'
+    })
+  }
+
   return (
     <div className="ai-insights-panel">
       <div className="ai-header">
@@ -67,14 +77,14 @@ export default function AIInsights({ products, businessType, plan }) {
           <Brain size={24} color="#F59E0B" />
           <h2>🤖 PONIA AI - Analyse Intelligente</h2>
         </div>
-        <div className={`health-score ${insights.summary.status}`}>
-          <span className="score-value">{insights.summary.healthScore}%</span>
+        <div className={`health-score ${status}`}>
+          <span className="score-value">{healthScore}%</span>
           <span className="score-label">Santé Stock</span>
         </div>
       </div>
       
-      <div className={`ai-summary ${insights.summary.status}`}>
-        {insights.summary.message}
+      <div className={`ai-summary ${status}`}>
+        {message}
       </div>
       
       {topActions.length > 0 && (
@@ -83,79 +93,42 @@ export default function AIInsights({ products, businessType, plan }) {
             <AlertTriangle size={18} />
             Actions Prioritaires
           </h3>
-          {topActions.map((action, idx) => (
-            <div key={idx} className={`action-card priority-${action.priority}`}>
-              <span className="action-icon">{action.icon}</span>
+          {topActions.slice(0, 3).map((action, index) => (
+            <div key={index} className={`action-card priority-${action.priority}`}>
+              <div className="action-icon">{action.icon}</div>
               <div className="action-content">
                 <h4>{action.title}</h4>
                 <p>{action.description}</p>
-                {action.action && action.action.quantity && (
-                  <div className="action-details">
-                    <span className="detail-badge">
-                      Quantité suggérée : {action.action.quantity}{action.action.unit}
-                    </span>
-                  </div>
-                )}
               </div>
             </div>
           ))}
         </div>
       )}
       
-      {(plan === 'standard' || plan === 'pro') && (
-        <div className="gpt-suggestions">
-          <h3>
-            <Lightbulb size={18} />
-            Conseils IA Personnalisés
-            {plan === 'standard' && <span className="plan-badge">1/semaine</span>}
-            {plan === 'pro' && <span className="plan-badge pro">Illimité</span>}
-          </h3>
-          
-          {gptLoading ? (
-            <div className="gpt-loading">
-              <Loader className="spin" size={20} />
-              <span>L'IA génère vos conseils personnalisés...</span>
-            </div>
-          ) : aiSuggestions.length > 0 ? (
-            <div className="suggestions-list">
-              {aiSuggestions.map(suggestion => (
-                <div key={suggestion.id} className={`suggestion-card ${suggestion.type}`}>
-                  <span className="suggestion-icon">{suggestion.icon}</span>
-                  <p>{suggestion.text}</p>
-                </div>
-              ))}
-            </div>
-          ) : null}
+      <div className="ai-stats">
+        <div className="stat-card">
+          <div className="stat-value" style={{ color: '#EF4444' }}>{criticalProducts.length}</div>
+          <div className="stat-label">Rupture imminente</div>
         </div>
-      )}
+        <div className="stat-card">
+          <div className="stat-value" style={{ color: '#F59E0B' }}>{lowStockProducts.length}</div>
+          <div className="stat-label">Stock faible</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-value" style={{ color: '#10B981' }}>{healthyProducts.length}</div>
+          <div className="stat-label">Stock OK</div>
+        </div>
+      </div>
       
       {plan === 'gratuit' && (
         <div className="upgrade-cta">
-          <Sparkles size={20} />
           <div className="upgrade-content">
-            <strong>Débloquez les Conseils IA Personnalisés</strong>
-            <p>Plan Standard : 1 conseil IA/semaine · Plan Pro : Conseils illimités + prédictions météo</p>
+            <strong>🚀 Débloquez l'IA Prédictive Avancée</strong>
+            <p>Prédictions rupture 3 jours à l'avance + Suggestions commandes optimisées par GPT-4</p>
           </div>
-          <button className="upgrade-btn" onClick={() => window.location.href = '/#pricing'}>
-            Découvrir →
-          </button>
+          <button className="upgrade-btn">Passer à Standard €49</button>
         </div>
       )}
-      
-      <div className="ai-stats">
-        <div className="stat-card">
-          <span className="stat-value">{stats.stockoutRisks}</span>
-          <span className="stat-label">Risques rupture</span>
-        </div>
-        <div className="stat-card">
-          <span className="stat-value">{stats.orderSuggestions}</span>
-          <span className="stat-label">Commandes suggérées</span>
-        </div>
-        <div className="stat-card">
-          <span className="stat-value">{stats.wasteAlerts}</span>
-          <span className="stat-label">Alertes gaspillage</span>
-        </div>
-      </div>
     </div>
   )
 }
