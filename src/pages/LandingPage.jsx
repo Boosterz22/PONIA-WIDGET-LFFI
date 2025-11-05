@@ -5,31 +5,18 @@ import { TrendingUp, Clock, Shield, Zap, BarChart3, CheckCircle, Star, Users } f
 export default function LandingPage() {
   return (
     <div style={{ minHeight: '100vh' }}>
-      {/* NAVBAR */}
-      <nav style={{
-        borderBottom: '1px solid var(--border)',
-        padding: '1rem 0',
-        background: 'rgba(10, 10, 10, 0.95)',
-        backdropFilter: 'blur(20px)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 100
-      }}>
-        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <img src="/ponia-logo.png" alt="PONIA AI" style={{ height: '150px' }} />
-          <Link to="/login" className="btn btn-primary">
-            Essai Gratuit
-          </Link>
-        </div>
-      </nav>
-
       {/* HERO SECTION */}
       <section style={{ 
-        padding: '5rem 0 4rem', 
+        padding: '4rem 0 4rem', 
         textAlign: 'center',
         background: 'radial-gradient(ellipse at top, rgba(255, 215, 0, 0.1) 0%, transparent 60%)'
       }} className="fade-in">
         <div className="container">
+          {/* LOGO EN HÉROS */}
+          <div style={{ marginBottom: '3rem' }}>
+            <img src="/ponia-logo.png" alt="PONIA AI" style={{ height: '120px', maxWidth: '90%' }} />
+          </div>
+
           {/* 1️⃣ ACCROCHE ULTRA-COURTE */}
           <h1 style={{ 
             fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', 
