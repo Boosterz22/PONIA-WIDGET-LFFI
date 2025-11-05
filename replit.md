@@ -18,6 +18,17 @@ Application mobile-first qui permet aux commerçants de :
 
 ## Fonctionnalités actuelles (MVP)
 
+### ✅ Landing Page Marketing Optimisée
+**Refonte complète avec approche marketing professionnelle :**
+- **Header avec navigation** : Sections cliquables (Accueil, Fonctionnalités, Témoignages, Tarifs, FAQ) + CTA sticky
+- **Hero repensé** : Approche "problème → solution" (encadré rouge problème, puis bénéfices)
+- **Stats ROI annuelles** : €7,200 économisés/an, 420h gagnées/an, -84% gaspillage
+- **Section Avant/Après** : Comparaison visuelle détaillée (6 points avant ❌ vs 6 points après ✅)
+- **Témoignages format Avant/Après** : 3 témoignages avec chiffres précis (Marie boulangère, Thomas pizzeria, Sophie caviste)
+- **FAQ complète** : 5 questions répondant aux objections ("pas le temps", "pas tech-savvy", "ça marche pour moi ?")
+- **CTAs contextuels variés** : CTA différent selon la section (urgence, ROI, social proof)
+- **Urgence authentique** : Offre lancement 100 premiers clients → 3 mois à -50% (73/100 inscrits)
+
 ### ✅ Authentification simplifiée
 - Inscription rapide : email + nom du commerce + type
 - 9 types de commerces supportés (boulangerie, restaurant, bar, cave, tabac, boucherie, fromagerie, épicerie, autre)
