@@ -33,6 +33,27 @@ Application mobile-first qui permet aux commerçants de :
 - Inscription rapide : email + nom du commerce + type
 - 9 types de commerces supportés (boulangerie, restaurant, bar, cave, tabac, boucherie, fromagerie, épicerie, autre)
 - Pas de mot de passe compliqué - focus sur simplicité
+- **Système de plans** : Gratuit / Standard / Pro
+- **Code de parrainage unique** généré automatiquement (ex: MARIE-BOUL13)
+
+### ✅ Plan Freemium (GRATUIT À VIE)
+- **Limite : 10 produits maximum**
+- Alertes intelligentes 🟢🟠🔴
+- Produits pré-configurés selon type de commerce
+- Interface mobile rapide
+- **Badge visible** dans le dashboard
+- **Modal d'upgrade** quand limite atteinte
+- **Conversion naturelle** : utilisateurs atteignent la limite après 2-3 semaines
+
+### ✅ Programme de parrainage
+- **Code unique** généré à l'inscription (format: NOM-TYPE##)
+- **Récompenses** :
+  - Parrain : 1 mois gratuit
+  - Filleul : -50% le 1er mois
+- **Section dédiée** dans le dashboard gratuit
+- **Modal de partage** avec boutons WhatsApp/Email
+- **Tracking automatique** dans LocalStorage
+- **Lien personnalisé** : `/login?ref=CODE`
 
 ### ✅ Templates automatiques
 - Produits pré-configurés selon le type de commerce
@@ -87,11 +108,13 @@ Application mobile-first qui permet aux commerçants de :
 │   ├── components/
 │   │   ├── ProductCard.jsx        # Carte produit avec alertes visuelles
 │   │   ├── AddProductModal.jsx    # Modal ajout produit
-│   │   └── AIInsights.jsx         # Suggestions IA
+│   │   ├── AIInsights.jsx         # Suggestions IA
+│   │   ├── UpgradeModal.jsx       # Modal upgrade plan (limite atteinte)
+│   │   └── ReferralModal.jsx      # Modal parrainage (partage code)
 │   ├── pages/
-│   │   ├── LandingPage.jsx        # Page d'accueil marketing
-│   │   ├── LoginPage.jsx          # Connexion/inscription
-│   │   └── DashboardPage.jsx      # Dashboard principal
+│   │   ├── LandingPage.jsx        # Page d'accueil marketing + 3 plans
+│   │   ├── LoginPage.jsx          # Connexion/inscription + freemium
+│   │   └── DashboardPage.jsx      # Dashboard + badge plan + parrainage
 │   ├── services/
 │   │   └── supabase.js            # Auth + DB (à configurer)
 │   ├── styles/
@@ -102,14 +125,26 @@ Application mobile-first qui permet aux commerçants de :
 │   └── ponia-icon.png             # Logo
 ├── index.html
 ├── package.json
-└── vite.config.js                 # Config Vite (port 3000)
+└── vite.config.js                 # Config Vite (port 5000)
 ```
 
 ### Configuration
 
-- **Port :** 3000 (Console mode)
+- **Port :** 5000 (Webview mode)
 - **Workflow :** `npm run dev`
 - **Build :** `npm run build`
+
+### Stockage LocalStorage
+
+**Données utilisateur :**
+- `ponia_user_email` : Email utilisateur
+- `ponia_business_name` : Nom du commerce
+- `ponia_business_type` : Type de commerce
+- `ponia_user_plan` : Plan actif (gratuit/standard/pro)
+- `ponia_referral_code` : Code unique de parrainage
+- `ponia_referrals` : Liste des filleuls (JSON)
+- `ponia_free_months` : Mois gratuits gagnés
+- `ponia_products` : Liste produits (JSON)
 
 ## Validation marché
 
@@ -123,9 +158,10 @@ Application mobile-first qui permet aux commerçants de :
 - PONIA AI = simple, rapide, mobile-first, prix accessible
 
 ### Pricing validé
-- **Standard :** €49/mois (suivi basique + alertes)
-- **Pro :** €79/mois (IA prédictive + intégrations POS)
-- **Essai :** 30 jours gratuits, sans engagement
+- **Gratuit :** €0/mois à vie (jusqu'à 10 produits)
+- **Standard :** €49/mois (produits illimités + historique 7j + export PDF)
+- **Pro :** €79/mois (IA prédictive + historique 30j + intégrations POS)
+- **Offre lancement :** -50% pendant 3 mois pour les 100 premiers
 
 ## Prochaines étapes
 
