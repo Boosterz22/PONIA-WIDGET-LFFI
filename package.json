@@ -1,26 +1,23 @@
 {
-  "name": "workspace",
+  "name": "ponia-ai",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "PONIA AI - Gestion de stock intelligente avec IA pour petits commerces",
+  "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 3000 --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite preview"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "dependencies": {
-    "@reown/appkit": "^1.8.10",
-    "@reown/appkit-adapter-ethers": "^1.8.10",
-    "@reown/appkit-adapter-solana": "^1.8.11",
-    "@solana/web3.js": "^1.98.4",
-    "ethers": "^6.15.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.22.0",
+    "@supabase/supabase-js": "^2.39.0",
+    "recharts": "^2.12.0",
+    "lucide-react": "^0.344.0"
   },
   "devDependencies": {
-    "vite": "^7.1.10"
+    "@vitejs/plugin-react": "^4.2.1",
+    "vite": "^5.1.0"
   }
 }

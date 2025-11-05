@@ -1,150 +1,143 @@
-# Overview
+# PONIA AI - Gestion de Stock Intelligente avec IA
 
-PONIA is a cross-chain cryptocurrency payment widget designed for Web3 applications (gaming dApps, NFT marketplaces, crypto casinos, DeFi platforms). It enables instant deposits/withdrawals across multiple blockchains, allowing users to top-up accounts with any crypto from any supported chain without external conversions. The business model involves a 1.5% fee on every cross-chain transaction. It integrates Reown AppKit for professional wallet connection (300+ wallets) and deBridge for instant cross-chain bridging (~43 second transfers). The project aims to provide a professional, self-service solution for Web3 apps needing cross-chain payment functionality, supporting 8 major deBridge-compatible chains including EVM networks, Solana, and TRON.
+## Vue d'ensemble
 
-# Recent Changes
+PONIA AI est un système de gestion d'inventaire alimenté par l'IA pour les petits commerces en France (boulangeries, restaurants, bars, caves à vin, etc.). 
 
-**October 25, 2025 (Latest):**
-- **Demo page with fluid tab system:** Created professional tabbed demo page showcasing both deposit and withdrawal flows
-  - **Tab selector:** Elegant buttons to switch between Deposit and Withdrawal modes with smooth transitions
-  - **Deposit demo:** Integrated ponia-demo-widget.html (cinematic marketing version) via iframe with full animation sequence
-  - **Withdrawal demo:** ponia-demo-widget-withdrawal.html - identical cinematic experience adapted for withdrawal flow
-    - Same golden animations, progress bars, and slide transitions as deposit widget
-    - "Verify Address" → "Confirm Withdrawal" button flow (instead of "Connect Wallet")
-    - Address input field for withdrawal destination
-    - Inverted route visualization: Platform (Polygon) → User's chosen chain
-    - Progress steps: "Sending from Polygon" → "Bridging via deBridge" → "Funds received on [chain]"
-    - Same finale: Logo glow → Tagline "One widget. Any chain. Anywhere."
-  - Fluid animations: FadeInUp transition (0.5s) when switching between tabs
-  - Centered single-widget layout with responsive design
-  - Professional header with PONIA logo, badges showing key features (~43s, 8 chains, 1.5% fee)
-  - Added "Back to Home" navigation button
-  - Updated homepage "Try Demo" button to link to /widget/
-- **Stats counter animation fixed:** Added automatic triggering for stats animations when section becomes visible
-  - Reduced IntersectionObserver threshold from 0.3 to 0.1 for earlier trigger
-  - Added initial visibility check 500ms after page load
-  - Added scroll event listener as fallback mechanism
-  - Stats (43s ETA, 99.2% success rate, 1.5% fee) now animate properly on scroll
-- **TRON logo size increased across all pages:** Larger logo for better visibility
-  - Homepage: 56px → 68px (+20%)
-  - Widget: 20px → 26px (+30%)
-  - Docs page: 24px → 32px (+33%)
-  - Demo widget: 16px → 22px (+37%)
-- **Social links updated:** Added working Twitter and Discord links to footer
-  - Twitter: https://x.com/ponia_hq?s=21
-  - Discord: https://discord.gg/rKWxddAp
+**Problème validé :** Visites terrain auprès de 9 commerces parisiens - 6/9 ont mentionné la gestion de stock comme leur plus gros problème quotidien.
 
-**October 25, 2025:**
-- **Brand refinement complete:** Replaced emojis with professional Lucide icons across all documentation pages
-  - Replaced emoji icons with Lucide icons in `docs.html` key features section (zap, link, dollar-sign, lock, refresh-cw, plug)
-  - Added Lucide settings icon to integration.html configuration section
-  - Initialized Lucide icon library on all pages for consistent rendering
-  - All pages now display professional vector icons instead of emoji for better cross-platform consistency
-- **Unified brand slogan implemented:** Added "One widget. Any Chain. Anywhere." to all page footers
-  - Homepage footer updated with new tagline in Space Grotesk font with accent color
-  - Integration page footer includes slogan with proper styling
-  - Documentation page footer displays slogan consistently
-  - Slogan presented in brand accent color (#FFD700) for visual consistency
-- **Dedicated integration page created:** Professional `/integration.html` page showcasing how simple it is to integrate PONIA
-  - Hero section emphasizing "Add cross-chain payments in 60 seconds"
-  - Quick start section with one-line iframe embed code
-  - Complete code examples for HTML, React, Vue, and Next.js frameworks
-  - Separate examples for deposit and withdrawal modes
-  - Real-world use cases: Gaming dApps, Crypto Casinos, NFT Marketplaces
-  - Configuration parameters table explaining all URL options
-  - Interactive tabs for switching between different frameworks
-  - Professional design with code syntax highlighting (JetBrains Mono font)
-  - Updated navigation menu to link to /integration.html
-- **Withdrawal mode implemented:** Added full support for bidirectional transactions (deposit AND withdrawal)
-  - URL parameter `?mode=withdrawal` activates withdrawal mode
-  - Withdrawal UI: Manual address input field replaces Connect Wallet button (no wallet popup needed)
-  - Smart source/destination inversion: Deposit = user→platform, Withdrawal = platform→user
-  - Labels adapt automatically: "Withdraw to which chain?" vs "Send from which chain?"
-  - Transaction logic inverses addresses: platform wallet sends to user's manually entered address
-  - Address validation: Basic checks for minimum length and format
+**Objectif :** €4,000-6,000 MRR (51-76 clients à €49-79/mois) dans les 2-3 mois après lancement.
 
-**October 24, 2025:**
-- **Production wallet addresses configured:** Set up secure Replit Secrets for fee collection wallets
-  - EVM chains (Ethereum, Polygon, Arbitrum, Base, Optimism, BNB Chain): `0x280714ff27a52920bfcb75e2ec61027a93e8e9ac`
-  - Solana: `9ZXoZdeR4aNVKmmegyVwfXjkKBG3BCcRXo961aSnD5fT`
-  - TRON: `TQG4iEuaS2PEtFvnGGvG5utBbBuFuHSSFR`
-- **Professional demo widget for marketing videos:** Created `ponia-demo-widget.html` - cinema-quality simulated version
-  - **Lucide Icons integration:** Professional icon library (Send, Git-Branch, Check-Circle) replacing emojis
-  - **Smooth slide transition:** Clean horizontal slide (0.6s ease-out) when moving from selection to progress screen
-  - **Wallet address display:** MetaMask 🦊 + truncated address (0xC7E3...42b9) appears after connection
-  - **Multi-stage progress screen:** Dedicated screen showing real-time bridging progress with animated progress bar
-  - **Micro-animations:** Each step (Sending → Bridging → Received) lights up with green glow effect on completion
-  - **Pulsating success check:** Large checkmark with breathing animation and "🎉 Funds successfully bridged" floating text
-  - **Cinematic finale:** Entire widget fades to centered PONIA logo with golden glow effect (2s after completion)
-  - **Final fade out:** Logo progressively fades out (1.5s) while neon tagline appears: "One widget. Any chain. Anywhere." in Space Grotesk with golden glow effect
-  - **Enhanced visuals:** Gradient background (dark → purple tint), golden shadow on widget container
-  - **Timeline:** Connect Wallet (1s) → Confirm Swap → Golden Flash → Progress 25%/60%/100% (4s) → Success → Logo (1.5s) → Tagline Fade-in
-  - 0.85 scale for perfect 1080p Runway video recording
-  - All interactions self-contained (no real blockchain, no popups)
-- **UI improvements:** Replaced USDC and USDT emoji icons with professional brand logos (blue USDC, turquoise USDT)
-- **Widget layout optimization:** Logo enlarged from 70px to 90px for better visibility, reduced header/body padding for compact layout
-- **Documentation design:** Enlarged PONIA logo on docs page (280px width) for better brand presence
+## Solution
 
-**October 23, 2025:**
-- Created comprehensive developer documentation page (`/docs.html`) with full integration guides
-- Documented bidirectional flows: deposits AND withdrawals
-- Added Quick Start examples for both deposit and withdrawal modes
-- Included API Reference with `mode` parameter for transaction type selection
-- Added real-world examples for Web3 Gaming, NFT Marketplaces, and Crypto Casinos
-- Implemented FAQ section with withdrawal-specific guidance
-- **Fixed deBridge integration:** Removed zkSync and World Chain (not supported by deBridge), now using 8 compatible chains
-- **Fixed token addresses:** Changed native token addresses from `0xEeee...` to `0x0000...` (address zero) as required by deBridge API
-- **Fixed API calls:** Changed from POST to GET with query parameters, added `prependOperatingExpenses=true`, set `dstChainTokenOutAmount='auto'` for optimal quotes
-- **Fixed fee structure:** Changed `affiliateFeePercent` from 1.5 to '0.15' (0.15% fee on top of bridge fees)
-- **Added multi-chain address handling:** Chain-specific affiliate recipient addresses (Solana base58, TRON, EVM formats)
-- **Integrated Solana wallet support:** Added `@reown/appkit-adapter-solana` - users can now send FROM Solana using Phantom, Solflare, etc.
-- **Full multi-chain support:** All 8 chains now work as SOURCE and DESTINATION (6 EVM + Solana + TRON)
-- **Environment-based fee addresses:** Using Vite env variables for production wallet addresses with fallback placeholders for testing
+Application mobile-first qui permet aux commerçants de :
+- Suivre leur stock en temps réel (2 minutes/jour)
+- Recevoir des alertes avant les ruptures
+- Obtenir des suggestions de commandes optimisées par l'IA
+- Réduire le gaspillage et éviter les ruptures
 
-# User Preferences
+## Fonctionnalités actuelles (MVP)
 
-Preferred communication style: Simple, everyday language.
+### ✅ Authentification simplifiée
+- Inscription rapide : email + nom du commerce + type
+- 9 types de commerces supportés (boulangerie, restaurant, bar, cave, tabac, boucherie, fromagerie, épicerie, autre)
+- Pas de mot de passe compliqué - focus sur simplicité
 
-# System Architecture
+### ✅ Templates automatiques
+- Produits pré-configurés selon le type de commerce
+- **Boulangerie :** Farine, beurre, œufs, levure, chocolat
+- **Restaurant :** Tomates, huile d'olive, viande, pâtes, parmesan
+- **Cave à vin :** Bordeaux, Champagne, Bourgogne, Rosé
 
-## Multi-Page Application
+### ✅ Gestion de stock visuelle
+- Codes couleur : 🟢 Vert (OK) / 🟠 Orange (faible) / 🔴 Rouge (critique)
+- Boutons rapides : +1, +10, -1, -10 pour ajuster les quantités
+- Alertes automatiques quand le stock passe sous le seuil
 
-PONIA utilizes a multi-page structure with a landing page (`/`), a widget demo (`/widget`), and comprehensive documentation (`/docs.html`). The landing page focuses on marketing with features and use cases, the widget page hosts the functional payment widget, and the documentation provides self-service integration guides for developers with complete code examples for both deposits and withdrawals.
+### ✅ Dashboard intelligent
+- Vue d'ensemble des stocks
+- Section "Alertes" dédiée pour les produits urgents
+- AI Insights basiques (détection sur-stock, stock critique)
 
-## User Interface (UI/UX)
+### ✅ Ajout de produits
+- Formulaire simple : nom, quantité, unité, seuil d'alerte, fournisseur
+- 6 unités supportées : kg, L, pièces, bouteilles, sachets, boîtes
 
-The widget features a modern, professional design with a 3-stage user flow (selection, processing, success). Key UI elements include:
-- Animated gradient background on the landing page.
-- Stats bar and feature highlights.
-- Visual chain selection with logos for 8 supported blockchains (6 EVM + Solana + TRON).
-- Token selector for Native, USDC, and USDT with smart availability.
-- Transparent fee breakdown showing PONIA's 1.5% fee, total debited, and expected output.
-- Professional branding with a black/yellow color scheme.
+## Fonctionnalités à venir
 
-## Technical Implementations
+### 🔄 En cours de développement
+- Vraie IA prédictive avec OpenAI (prédiction jours avant rupture)
+- Historique graphique des mouvements
+- Intégration Stripe pour abonnements (€49 Standard / €79 Pro)
+- Essai gratuit 30 jours
 
-- **Frontend:** Single-Page Application (SPA) architecture using Vanilla JavaScript (ES6+) with ES modules, built with Vite for fast development and optimized builds.
-- **Wallet Integration:** Reown AppKit 1.8.x is used for universal wallet connectivity (300+ wallets) and integrates with `ethers.js` via `Reown AppKit Ethers Adapter`.
-- **Cross-Chain Bridging:** deBridge is the sole bridging solution, offering instant (~2 second) transfer speeds with Zero-TVL architecture for maximum security. PONIA integrates its 1.5% transaction fee directly into the quote.
-- **Supported Chains:** Currently supports 8 deBridge-compatible blockchains: 6 EVM chains (Ethereum, Polygon, Arbitrum, Base, Optimism, BNB Chain) plus Solana and TRON for broader market coverage.
-- **Token Support:** Comprehensive support for native tokens, USDC (on 7 chains), and USDT (on 5 chains), with automatic mapping of correct token addresses (including Solana base58 and TRON formats).
-- **Platform Chain Detection:** The widget can auto-detect the target blockchain or be configured via URL parameters.
+### 📋 Roadmap Phase 2
+- Intégration caisses (Square API)
+- Export PDF des commandes
+- Multi-utilisateurs pour équipes
+- Notifications SMS/email
 
-# External Dependencies
+## Structure technique
 
-## Third-Party Libraries
+### Stack
+- **Frontend :** React 18 + Vite 5
+- **Routing :** React Router DOM
+- **Styling :** CSS custom (mobile-first)
+- **Icons :** Lucide React
+- **Stockage :** LocalStorage (temporaire) → PostgreSQL + Supabase (à venir)
+- **IA :** OpenAI API (à intégrer)
+- **Paiements :** Stripe (à intégrer)
 
-- **Reown AppKit (`@reown/appkit`):** Universal wallet connection.
-- **Reown AppKit Ethers Adapter (`@reown/appkit-adapter-ethers`):** Bridge between AppKit and `ethers.js`.
-- **ethers.js (`ethers`):** Ethereum library for blockchain interactions.
-- **React & React-DOM:** Peer dependencies for Reown AppKit's UI components.
-- **Vite (`vite`):** Development server and build tool.
+### Architecture fichiers
 
-## External APIs
+```
+/
+├── src/
+│   ├── components/
+│   │   ├── ProductCard.jsx        # Carte produit avec alertes visuelles
+│   │   ├── AddProductModal.jsx    # Modal ajout produit
+│   │   └── AIInsights.jsx         # Suggestions IA
+│   ├── pages/
+│   │   ├── LandingPage.jsx        # Page d'accueil marketing
+│   │   ├── LoginPage.jsx          # Connexion/inscription
+│   │   └── DashboardPage.jsx      # Dashboard principal
+│   ├── services/
+│   │   └── supabase.js            # Auth + DB (à configurer)
+│   ├── styles/
+│   │   └── global.css             # Styles globaux
+│   ├── App.jsx                     # Router principal
+│   └── main.jsx                    # Entry point
+├── public/
+│   └── ponia-icon.png             # Logo
+├── index.html
+├── package.json
+└── vite.config.js                 # Config Vite (port 3000)
+```
 
-- **deBridge API (`https://dln.debridge.finance/v1.0/`):** Used for cross-chain bridge quotes and transaction generation with instant execution via Zero-TVL model.
+### Configuration
 
-## Browser APIs
+- **Port :** 3000 (Console mode)
+- **Workflow :** `npm run dev`
+- **Build :** `npm run build`
 
-- **Window.ethereum:** For detecting and interacting with MetaMask and compatible EVM wallets.
-- **Window.solana:** For detecting and interacting with Solana wallets like Phantom.
+## Validation marché
+
+### Terrain (9 visites Paris 13e)
+- **Boulangeries (4) :** Stock mentionné comme problème principal
+- **Restaurants/Bars (3) :** Gaspillage + ruptures fréquentes
+- **Autres (2) :** Intérêt confirmé
+
+### Concurrence
+- Solutions existantes = trop complexes (ERP lourds) ou trop chères
+- PONIA AI = simple, rapide, mobile-first, prix accessible
+
+### Pricing validé
+- **Standard :** €49/mois (suivi basique + alertes)
+- **Pro :** €79/mois (IA prédictive + intégrations POS)
+- **Essai :** 30 jours gratuits, sans engagement
+
+## Prochaines étapes
+
+1. **Intégrer OpenAI :** Vraie prédiction de ruptures (jours restants)
+2. **Historique graphique :** Voir évolution 7/30 jours
+3. **Stripe :** Abonnements + essai gratuit
+4. **Tests utilisateurs :** Contact avec le commerce qui a donné son email
+5. **Landing page SEO :** Contenu pour "gestion stock boulangerie Paris"
+
+## Notes de développement
+
+- **Simplicité absolue :** Les commerçants ne sont PAS tech-savvy
+- **Mobile-first :** Ils utilisent leur téléphone pendant l'inventaire
+- **Rapidité :** 2 minutes/jour maximum pour updater les stocks
+- **Valeur immédiate :** Alertes dès le 1er jour d'utilisation
+
+## Business model
+
+- **Target :** 500,000+ petits commerces en France
+- **Pénétration :** 0.032% pour €10K MRR
+- **CAC :** Terrain direct + SEO local + bouche-à-oreille
+- **Churn target :** <5% (outil indispensable quotidien)
+
+---
+
+**Dernière mise à jour :** 5 novembre 2025
