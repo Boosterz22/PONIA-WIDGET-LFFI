@@ -9,6 +9,13 @@ export default function LoginPage() {
   const [businessType, setBusinessType] = useState('boulangerie')
   const [loading, setLoading] = useState(false)
 
+  const generateReferralCode = (businessName, businessType) => {
+    const name = businessName.split(' ')[0].toUpperCase().substring(0, 6)
+    const type = businessType.substring(0, 4).toUpperCase()
+    const random = Math.floor(Math.random() * 100).toString().padStart(2, '0')
+    return `${name}-${type}${random}`
+  }
+
   const handleLogin = async (e) => {
     e.preventDefault()
     setLoading(true)
@@ -16,6 +23,12 @@ export default function LoginPage() {
     localStorage.setItem('ponia_business_name', businessName)
     localStorage.setItem('ponia_business_type', businessType)
     localStorage.setItem('ponia_user_email', email)
+    localStorage.setItem('ponia_user_plan', 'gratuit')
+    
+    const referralCode = generateReferralCode(businessName, businessType)
+    localStorage.setItem('ponia_referral_code', referralCode)
+    localStorage.setItem('ponia_referrals', JSON.stringify([]))
+    localStorage.setItem('ponia_free_months', '0')
     
     setTimeout(() => {
       navigate('/dashboard')
@@ -157,15 +170,21 @@ export default function LoginPage() {
           <div style={{ 
             marginTop: '2rem', 
             padding: '1.5rem', 
-            background: 'rgba(255, 215, 0, 0.05)',
+            background: 'rgba(74, 222, 128, 0.1)',
             borderRadius: '12px',
-            border: '1px solid rgba(255, 215, 0, 0.2)'
+            border: '1px solid rgba(74, 222, 128, 0.3)'
           }}>
-            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', textAlign: 'center', marginBottom: '0.75rem' }}>
-              ✅ <strong style={{ color: 'var(--text)' }}>30 jours gratuits</strong> - Aucune carte bancaire
+            <p style={{ fontSize: '0.95rem', color: 'var(--text)', textAlign: 'center', marginBottom: '0.75rem', fontWeight: '600' }}>
+              🎁 <strong style={{ color: 'var(--success)' }}>GRATUIT À VIE</strong> jusqu'à 10 produits
+            </p>
+            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', textAlign: 'center', marginBottom: '0.5rem' }}>
+              ✅ Alertes intelligentes 🟢🟠🔴
+            </p>
+            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', textAlign: 'center', marginBottom: '0.5rem' }}>
+              ✅ Produits pré-configurés selon votre type
             </p>
             <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', textAlign: 'center' }}>
-              ✅ <strong style={{ color: 'var(--text)' }}>Annulez quand vous voulez</strong> - Sans engagement
+              ✅ Passage au plan payant quand vous voulez
             </p>
           </div>
         </form>

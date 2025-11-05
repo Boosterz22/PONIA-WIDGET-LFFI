@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Plus, LogOut, AlertCircle, TrendingDown, TrendingUp, Brain } from 'lucide-react'
+import { Plus, LogOut, AlertCircle, TrendingDown, TrendingUp, Brain, Gift, Crown } from 'lucide-react'
 import { supabase } from '../services/supabase'
 import ProductCard from '../components/ProductCard'
 import AddProductModal from '../components/AddProductModal'
 import AIInsights from '../components/AIInsights'
+import UpgradeModal from '../components/UpgradeModal'
+import ReferralModal from '../components/ReferralModal'
 
 const getTemplateProducts = (businessType) => {
   const templates = {
@@ -42,8 +44,12 @@ export default function DashboardPage({ session }) {
   const navigate = useNavigate()
   const [products, setProducts] = useState([])
   const [showAddModal, setShowAddModal] = useState(false)
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
+  const [showReferralModal, setShowReferralModal] = useState(false)
   const businessName = session.user.business_name || 'Mon Commerce'
   const businessType = localStorage.getItem('ponia_business_type') || 'default'
+  const userPlan = localStorage.getItem('ponia_user_plan') || 'gratuit'
+  const referralCode = localStorage.getItem('ponia_referral_code') || 'CODE-00'
 
   useEffect(() => {
     const savedProducts = localStorage.getItem('ponia_products')
@@ -65,6 +71,12 @@ export default function DashboardPage({ session }) {
   }
 
   const handleAddProduct = (newProduct) => {
+    if (userPlan === 'gratuit' && products.length >= 10) {
+      setShowAddModal(false)
+      setShowUpgradeModal(true)
+      return
+    }
+    
     const product = {
       id: products.length + 1,
       ...newProduct,
@@ -73,6 +85,14 @@ export default function DashboardPage({ session }) {
     }
     setProducts([...products, product])
     setShowAddModal(false)
+  }
+
+  const handleAddProductClick = () => {
+    if (userPlan === 'gratuit' && products.length >= 10) {
+      setShowUpgradeModal(true)
+    } else {
+      setShowAddModal(true)
+    }
   }
 
   const handleUpdateQuantity = (id, change) => {
@@ -107,7 +127,55 @@ export default function DashboardPage({ session }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <img src="/ponia-icon.png" alt="PONIA AI" style={{ height: '36px' }} />
             <div>
-              <div style={{ fontWeight: 'bold', fontSize: '1.125rem' }}>{businessName}</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ fontWeight: 'bold', fontSize: '1.125rem' }}>{businessName}</span>
+                {userPlan === 'gratuit' && (
+                  <span style={{
+                    background: 'linear-gradient(135deg, #4ade80, #22c55e)',
+                    color: 'white',
+                    padding: '0.25rem 0.65rem',
+                    borderRadius: '12px',
+                    fontSize: '0.7rem',
+                    fontWeight: 'bold',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>
+                    Gratuit
+                  </span>
+                )}
+                {userPlan === 'standard' && (
+                  <span style={{
+                    background: 'linear-gradient(135deg, #FFD700, #FFA500)',
+                    color: 'var(--bg)',
+                    padding: '0.25rem 0.65rem',
+                    borderRadius: '12px',
+                    fontSize: '0.7rem',
+                    fontWeight: 'bold',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>
+                    Standard
+                  </span>
+                )}
+                {userPlan === 'pro' && (
+                  <span style={{
+                    background: 'linear-gradient(135deg, #a855f7, #7c3aed)',
+                    color: 'white',
+                    padding: '0.25rem 0.65rem',
+                    borderRadius: '12px',
+                    fontSize: '0.7rem',
+                    fontWeight: 'bold',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.25rem'
+                  }}>
+                    <Crown size={12} />
+                    Pro
+                  </span>
+                )}
+              </div>
               <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>PONIA AI</div>
             </div>
           </div>
@@ -119,6 +187,82 @@ export default function DashboardPage({ session }) {
       </nav>
 
       <div className="container" style={{ padding: '2rem 1rem' }}>
+        {userPlan === 'gratuit' && (
+          <div className="card" style={{ 
+            marginBottom: '2rem', 
+            background: 'linear-gradient(135deg, rgba(74, 222, 128, 0.1) 0%, rgba(34, 197, 94, 0.05) 100%)', 
+            borderColor: 'var(--success)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1rem'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
+              <div>
+                <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  🎁 Plan Gratuit
+                </h3>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>
+                  Vous utilisez <strong style={{ color: 'var(--success)' }}>{products.length}/10 produits</strong> gratuits
+                </p>
+                {products.length >= 8 && (
+                  <p style={{ color: 'var(--warning)', fontSize: '0.875rem', marginTop: '0.5rem' }}>
+                    ⚠️ Plus que {10 - products.length} produit{10 - products.length > 1 ? 's' : ''} avant d'atteindre la limite
+                  </p>
+                )}
+              </div>
+              <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                <button 
+                  onClick={() => setShowReferralModal(true)}
+                  className="btn btn-secondary" 
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                >
+                  <Gift size={18} />
+                  <span>Inviter un ami</span>
+                </button>
+                <button 
+                  onClick={() => setShowUpgradeModal(true)}
+                  className="btn btn-primary" 
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                >
+                  <Crown size={18} />
+                  <span>Passer à Standard</span>
+                </button>
+              </div>
+            </div>
+            
+            <div style={{ 
+              display: 'flex', 
+              gap: '1.5rem', 
+              flexWrap: 'wrap',
+              padding: '1rem',
+              background: 'rgba(255, 255, 255, 0.5)',
+              borderRadius: '10px'
+            }}>
+              <div style={{ flex: '1', minWidth: '200px' }}>
+                <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>
+                  Votre code parrainage
+                </div>
+                <div style={{ 
+                  fontSize: '1.25rem', 
+                  fontWeight: 'bold', 
+                  color: 'var(--primary)',
+                  fontFamily: 'monospace'
+                }}>
+                  {referralCode}
+                </div>
+              </div>
+              <div style={{ flex: '1', minWidth: '200px' }}>
+                <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>
+                  Récompense parrainage
+                </div>
+                <div style={{ fontSize: '1.125rem', fontWeight: 'bold', color: 'var(--success)' }}>
+                  1 mois gratuit par filleul
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {alerts.length > 0 && (
           <div className="card" style={{ marginBottom: '2rem', background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(251, 146, 60, 0.1) 100%)', borderColor: 'var(--danger)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
@@ -153,9 +297,16 @@ export default function DashboardPage({ session }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
             <h2 style={{ fontSize: '1.75rem', marginBottom: '0.25rem' }}>Mes Produits</h2>
-            <p style={{ color: 'var(--text-muted)' }}>{products.length} produit{products.length > 1 ? 's' : ''} en stock</p>
+            <p style={{ color: 'var(--text-muted)' }}>
+              {products.length} produit{products.length > 1 ? 's' : ''} en stock
+              {userPlan === 'gratuit' && (
+                <span style={{ color: 'var(--primary)', marginLeft: '0.5rem' }}>
+                  (max 10 en gratuit)
+                </span>
+              )}
+            </p>
           </div>
-          <button onClick={() => setShowAddModal(true)} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <button onClick={handleAddProductClick} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Plus size={20} />
             <span>Ajouter un produit</span>
           </button>
@@ -177,7 +328,7 @@ export default function DashboardPage({ session }) {
             <img src="/ponia-icon.png" alt="PONIA" style={{ height: '64px', opacity: 0.3, marginBottom: '1rem' }} />
             <p style={{ fontSize: '1.125rem' }}>Aucun produit en stock</p>
             <p style={{ marginTop: '0.5rem' }}>Commencez par ajouter vos premiers produits</p>
-            <button onClick={() => setShowAddModal(true)} className="btn btn-primary" style={{ marginTop: '1.5rem' }}>
+            <button onClick={handleAddProductClick} className="btn btn-primary" style={{ marginTop: '1.5rem' }}>
               Ajouter un produit
             </button>
           </div>
@@ -188,6 +339,17 @@ export default function DashboardPage({ session }) {
         <AddProductModal
           onClose={() => setShowAddModal(false)}
           onAdd={handleAddProduct}
+        />
+      )}
+
+      {showUpgradeModal && (
+        <UpgradeModal onClose={() => setShowUpgradeModal(false)} />
+      )}
+
+      {showReferralModal && (
+        <ReferralModal 
+          referralCode={referralCode}
+          onClose={() => setShowReferralModal(false)} 
         />
       )}
     </div>
