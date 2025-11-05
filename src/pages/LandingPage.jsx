@@ -801,7 +801,7 @@ export default function LandingPage() {
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
                   <Sparkles size={20} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span><strong>Support prioritaire</strong> (réponse <2h)</span>
+                  <span><strong>Support prioritaire</strong> (réponse {'<'}2h)</span>
                 </div>
               </div>
 
