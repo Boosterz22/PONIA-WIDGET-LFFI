@@ -69,7 +69,7 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* SECTION HERO - PROBLÈME → SOLUTION */}
+      {/* SECTION HERO */}
       <section id="accueil" style={{ 
         padding: '5rem 0 4rem', 
         textAlign: 'center',
@@ -77,33 +77,11 @@ export default function LandingPage() {
       }} className="fade-in">
         <div className="container">
           {/* LOGO EN HÉROS */}
-          <div style={{ marginBottom: '2rem' }}>
+          <div style={{ marginBottom: '3rem' }}>
             <img src="/ponia-logo.png" alt="PONIA AI" style={{ height: '100px', maxWidth: '90%' }} />
           </div>
 
-          {/* PROBLÈME D'ABORD */}
-          <div style={{ 
-            maxWidth: '900px', 
-            margin: '0 auto 2rem',
-            padding: '1.5rem',
-            background: 'rgba(239, 68, 68, 0.1)',
-            borderRadius: '15px',
-            border: '1px solid rgba(239, 68, 68, 0.3)'
-          }}>
-            <p style={{ 
-              fontSize: 'clamp(1.1rem, 2.5vw, 1.4rem)', 
-              color: '#ef4444',
-              fontWeight: '500',
-              lineHeight: 1.6,
-              margin: 0
-            }}>
-              <AlertCircle size={24} style={{ verticalAlign: 'middle', marginRight: '0.5rem' }} />
-              <strong>Chaque semaine</strong>, vous perdez <strong>12 heures</strong> à gérer vos stocks manuellement.<br/>
-              Résultat : <strong>€800 de gaspillage</strong> + <strong>ruptures qui frustrent vos clients.</strong>
-            </p>
-          </div>
-
-          {/* SOLUTION */}
+          {/* TITRE PRINCIPAL */}
           <h1 style={{ 
             fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', 
             fontWeight: 'bold', 
