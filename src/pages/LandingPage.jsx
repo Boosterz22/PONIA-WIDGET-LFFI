@@ -16,7 +16,7 @@ export default function LandingPage() {
         zIndex: 100
       }}>
         <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <img src="/ponia-logo.png" alt="PONIA AI" style={{ height: '50px' }} />
+          <img src="/ponia-logo.png" alt="PONIA AI" style={{ height: '150px' }} />
           <Link to="/login" className="btn btn-primary">
             Essai Gratuit
           </Link>
