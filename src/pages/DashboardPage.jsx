@@ -7,37 +7,18 @@ import AddProductModal from '../components/AddProductModal'
 import AIInsights from '../components/AIInsights'
 import UpgradeModal from '../components/UpgradeModal'
 import ReferralModal from '../components/ReferralModal'
+import { getTemplatesForBusinessType } from '../data/productTemplates'
 
 const getTemplateProducts = (businessType) => {
-  const templates = {
-    boulangerie: [
-      { name: 'Farine T55', currentQuantity: 25, unit: 'kg', alertThreshold: 15, supplier: 'Moulins Bio' },
-      { name: 'Beurre', currentQuantity: 8, unit: 'kg', alertThreshold: 10, supplier: 'Laiterie Martin' },
-      { name: 'Œufs', currentQuantity: 120, unit: 'pièces', alertThreshold: 60, supplier: 'Ferme Dubois' },
-      { name: 'Levure', currentQuantity: 2, unit: 'kg', alertThreshold: 3, supplier: 'Moulins Bio' },
-      { name: 'Chocolat', currentQuantity: 5, unit: 'kg', alertThreshold: 8, supplier: 'Valrhona' },
-    ],
-    restaurant: [
-      { name: 'Tomates', currentQuantity: 15, unit: 'kg', alertThreshold: 10, supplier: 'Marché Gare' },
-      { name: 'Huile d\'olive', currentQuantity: 3, unit: 'L', alertThreshold: 5, supplier: 'Saveurs du Sud' },
-      { name: 'Viande de bœuf', currentQuantity: 8, unit: 'kg', alertThreshold: 10, supplier: 'Boucherie Dupont' },
-      { name: 'Pâtes', currentQuantity: 12, unit: 'kg', alertThreshold: 8, supplier: 'Metro' },
-      { name: 'Parmesan', currentQuantity: 2, unit: 'kg', alertThreshold: 3, supplier: 'Fromagerie Pascal' },
-    ],
-    cave: [
-      { name: 'Bordeaux Rouge 2020', currentQuantity: 24, unit: 'bouteilles', alertThreshold: 12, supplier: 'Château Margaux' },
-      { name: 'Champagne Brut', currentQuantity: 8, unit: 'bouteilles', alertThreshold: 15, supplier: 'Moët & Chandon' },
-      { name: 'Bourgogne Blanc', currentQuantity: 18, unit: 'bouteilles', alertThreshold: 10, supplier: 'Domaine Leflaive' },
-      { name: 'Rosé de Provence', currentQuantity: 30, unit: 'bouteilles', alertThreshold: 20, supplier: 'Minuty' },
-    ],
-    default: [
-      { name: 'Produit 1', currentQuantity: 50, unit: 'pièces', alertThreshold: 20, supplier: 'Fournisseur A' },
-      { name: 'Produit 2', currentQuantity: 15, unit: 'kg', alertThreshold: 10, supplier: 'Fournisseur B' },
-      { name: 'Produit 3', currentQuantity: 100, unit: 'pièces', alertThreshold: 40, supplier: 'Fournisseur C' },
-    ]
-  }
-
-  return templates[businessType] || templates.default
+  const templates = getTemplatesForBusinessType(businessType)
+  
+  return templates.map(template => ({
+    name: template.name,
+    currentQuantity: template.quantity,
+    unit: template.unit,
+    alertThreshold: template.threshold,
+    supplier: template.supplier
+  }))
 }
 
 export default function DashboardPage({ session }) {
