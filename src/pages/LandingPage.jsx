@@ -5,37 +5,40 @@ import { TrendingUp, Clock, Shield, Zap, BarChart3, CheckCircle, Star, Users, X,
 export default function LandingPage() {
   return (
     <div style={{ minHeight: '100vh' }}>
-      {/* HEADER - HOMOGÈNE AVEC LE SITE */}
+      {/* HEADER - DÉGRADÉ FLUIDE */}
       <nav style={{
-        padding: '3rem 0 2.5rem',
-        background: 'radial-gradient(ellipse at top, rgba(255, 215, 0, 0.08) 0%, transparent 70%)',
+        padding: 'clamp(1.5rem, 3vw, 2rem) 0',
+        background: 'transparent',
         backdropFilter: 'blur(10px)',
         position: 'sticky',
         top: 0,
         left: 0,
         right: 0,
-        zIndex: 1000,
-        borderBottom: '1px solid rgba(255, 215, 0, 0.15)'
+        zIndex: 1000
       }}>
         <div className="container" style={{ 
           display: 'flex', 
           justifyContent: 'space-between', 
           alignItems: 'center',
           flexWrap: 'wrap',
-          gap: '2rem'
+          gap: '1.5rem'
         }}>
-          {/* LOGO 3X PLUS GRAND */}
+          {/* LOGO RESPONSIVE */}
           <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', cursor: 'pointer' }}>
-            <img src="/ponia-logo.png" alt="PONIA" style={{ height: '240px', maxWidth: '50vw', transition: 'transform 0.3s ease' }} 
+            <img src="/ponia-logo.png" alt="PONIA" style={{ 
+              height: 'clamp(80px, 15vw, 120px)',
+              maxWidth: '60vw',
+              transition: 'transform 0.3s ease'
+            }} 
                  onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
                  onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
             />
           </Link>
 
-          {/* CTA HARMONISÉ */}
+          {/* CTA */}
           <Link to="/login" className="btn btn-primary" style={{ 
-            padding: '1rem 2.5rem', 
-            fontSize: '1.1rem', 
+            padding: '0.9rem 2rem', 
+            fontSize: 'clamp(0.95rem, 2vw, 1.1rem)', 
             fontWeight: '600'
           }}>
             Démarrer Gratuitement
@@ -43,18 +46,15 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* SECTION HERO */}
+      {/* SECTION HERO - DÉGRADÉ CONTINU */}
       <section id="accueil" style={{ 
-        padding: '5rem 0 4rem', 
+        padding: 'clamp(2rem, 5vw, 3rem) 0 4rem',
         textAlign: 'center',
         background: 'radial-gradient(ellipse at top, rgba(255, 215, 0, 0.2) 0%, transparent 60%), radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.15) 0%, transparent 40%), radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.1) 0%, transparent 50%)',
-        position: 'relative'
+        position: 'relative',
+        marginTop: '-2rem'
       }} className="fade-in">
         <div className="container">
-          {/* LOGO EN HÉROS */}
-          <div style={{ marginBottom: '3rem' }}>
-            <img src="/ponia-logo.png" alt="PONIA AI" style={{ height: '150px', maxWidth: '90%' }} />
-          </div>
 
           {/* TITRE PRINCIPAL - OUTCOME-FOCUSED */}
           <h1 style={{ 
