@@ -98,6 +98,53 @@ Application mobile-first qui permet aux commerçants de :
 - **Stats visuelles** : risques, suggestions, alertes
 - **Upgrade CTA** contextuel pour plan Gratuit
 
+### ✅ PHASE 1 : ALERTES PÉREMPTION + COMMANDES VOCALES (IMPLÉMENTÉ !)
+**Nouvelles fonctionnalités validées pour tests utilisateurs - 6 nov 2025**
+
+#### 📅 Alertes de Péremption (DLC/DLUO)
+- **Champ date péremption** dans formulaire ajout produit
+- **Calcul automatique** jours restants avant péremption
+- **Codes couleur urgence** :
+  - 🗑️ Périmé (noir) : produit expiré
+  - 🔴 Critique (<2j) : action immédiate requise
+  - 🟠 Warning (<5j) : promo recommandée
+  - 🔵 Info (<10j) : mise en avant suggérée
+- **Suggestions IA GPT-4o-mini** :
+  - Auto-chargement pour les 2 produits les plus critiques
+  - Conseils personnalisés (promos, mise en avant, lots)
+  - Bouton retry manuel si échec
+  - Protection concurrence via useRef (pas de doublons API)
+- **Stats gaspillage** :
+  - Produits périmés ce mois
+  - Produits sauvés grâce aux alertes
+  - Produits actuellement à risque
+
+#### 🎤 Commandes Vocales
+- **Web Speech API** (fr-FR natif, gratuit, sans config)
+- **Bouton micro** sur chaque carte produit
+- **Modal reconnaissance** :
+  - Transcription en temps réel
+  - Animation pulsante pendant écoute
+  - Parsing local + fallback GPT-4o-mini
+- **Commandes supportées** :
+  - "Plus 5", "Ajouter 10", "2.5 en plus"
+  - "Moins 3", "Retirer 7", "10 en moins"
+- **Confirmation visuelle** avant application au stock
+- **Gestion d'erreurs** : fallback IA si parsing local échoue
+
+#### Architecture technique Phase 1
+- **openaiService.js** : 2 nouvelles fonctions
+  - `getExpiryAISuggestions()` : suggestions péremption
+  - `parseVoiceCommandWithAI()` : parsing vocal IA
+- **expiryService.js** : calculs péremption
+  - `checkExpiryAlerts()` : détection produits urgents
+  - `getExpirySuggestions()` : suggestions locales
+  - `calculateWasteStats()` : stats gaspillage
+- **Composants** :
+  - `ExpiryAlerts.jsx` : section alertes expandable
+  - `VoiceInput.jsx` : modal reconnaissance vocale
+- **Performance** : max 2 auto-loads GPT/dashboard (€0.30/mois/utilisateur)
+
 ## Fonctionnalités à venir
 
 ### 🔄 En cours de développement
@@ -246,7 +293,15 @@ Pro €99       → IA basique + GPT illimité + météo + multi-sites
 - **CAC :** Terrain direct + SEO local + bouche-à-oreille
 - **Churn target :** <5% (outil indispensable quotidien)
 
-## Corrections récentes (5 nov 2025)
+## Historique des mises à jour
+
+### 6 novembre 2025 - Phase 1 validée ✅
+- ✅ **Alertes péremption** : DLC/DLUO tracking + suggestions IA + stats gaspillage
+- ✅ **Commandes vocales** : Web Speech API + parsing IA + confirmation
+- ✅ **Tests architecte** : concurrence, auto-loading, retry manuel validés
+- 🚀 **Statut** : Prêt pour déploiement et tests utilisateurs
+
+### 5 novembre 2025
 
 ### ✅ Navigation corrigée
 - Logo cliquable sur landing page et dashboard
