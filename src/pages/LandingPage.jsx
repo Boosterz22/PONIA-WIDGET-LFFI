@@ -5,32 +5,42 @@ import { TrendingUp, Clock, Shield, Zap, BarChart3, CheckCircle, Star, Users, X,
 export default function LandingPage() {
   return (
     <div style={{ minHeight: '100vh' }}>
-      {/* HEADER TRANSPARENT & FLUIDE */}
+      {/* HEADER - BELLE BANNIÈRE */}
       <nav style={{
-        padding: '1.25rem 0',
-        background: 'transparent',
-        backdropFilter: 'blur(20px)',
+        padding: '2rem 0',
+        background: 'linear-gradient(180deg, rgba(13, 17, 23, 0.6) 0%, rgba(13, 17, 23, 0.3) 100%)',
+        backdropFilter: 'blur(30px)',
         position: 'sticky',
         top: 0,
         left: 0,
         right: 0,
         zIndex: 1000,
-        borderBottom: '1px solid rgba(255, 215, 0, 0.05)'
+        borderBottom: '2px solid rgba(255, 215, 0, 0.2)',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
       }}>
         <div className="container" style={{ 
           display: 'flex', 
           justifyContent: 'space-between', 
           alignItems: 'center',
           flexWrap: 'wrap',
-          gap: '1rem'
+          gap: '2rem'
         }}>
-          {/* LOGO */}
+          {/* LOGO 4X PLUS GRAND */}
           <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', cursor: 'pointer' }}>
-            <img src="/ponia-logo.png" alt="PONIA" style={{ height: '45' }} />
+            <img src="/ponia-logo.png" alt="PONIA" style={{ height: '80px', transition: 'transform 0.3s ease' }} 
+                 onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                 onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+            />
           </Link>
 
-          {/* CTA UNIQUE */}
-          <Link to="/login" className="btn btn-primary" style={{ padding: '0.75rem 2rem', fontSize: '1rem', fontWeight: '600' }}>
+          {/* CTA PLUS VISIBLE */}
+          <Link to="/login" className="btn btn-primary" style={{ 
+            padding: '1rem 2.5rem', 
+            fontSize: '1.1rem', 
+            fontWeight: '600',
+            boxShadow: '0 4px 20px rgba(255, 215, 0, 0.3)',
+            transition: 'all 0.3s ease'
+          }}>
             Démarrer Gratuitement
           </Link>
         </div>
