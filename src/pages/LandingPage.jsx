@@ -40,7 +40,7 @@ export default function LandingPage() {
       <section id="accueil" style={{ 
         padding: '5rem 0 4rem', 
         textAlign: 'center',
-        background: 'radial-gradient(ellipse at top, rgba(255, 215, 0, 0.2) 0%, transparent 60%), radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.15) 0%, transparent 40%), radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.1) 0%, transparent 50%)',
+        background: 'radial-gradient(ellipse at top, rgba(255, 215, 0, 0.3) 0%, rgba(255, 215, 0, 0.15) 50%, transparent 70%), radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.25) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.2) 0%, transparent 60%)',
         position: 'relative'
       }} className="fade-in">
         <div className="container">
@@ -158,11 +158,22 @@ export default function LandingPage() {
           position: 'absolute',
           top: '10%',
           right: '-5%',
-          width: '300px',
-          height: '300px',
-          background: 'radial-gradient(circle, rgba(255, 215, 0, 0.15) 0%, transparent 70%)',
+          width: '450px',
+          height: '450px',
+          background: 'radial-gradient(circle, rgba(255, 215, 0, 0.28) 0%, transparent 70%)',
           borderRadius: '50%',
-          filter: 'blur(60px)',
+          filter: 'blur(90px)',
+          pointerEvents: 'none'
+        }}></div>
+        <div style={{
+          position: 'absolute',
+          bottom: '20%',
+          left: '10%',
+          width: '350px',
+          height: '350px',
+          background: 'radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%)',
+          borderRadius: '50%',
+          filter: 'blur(75px)',
           pointerEvents: 'none'
         }}></div>
         <div className="container">
@@ -323,11 +334,22 @@ export default function LandingPage() {
           position: 'absolute',
           top: '50%',
           left: '-10%',
-          width: '400px',
-          height: '400px',
-          background: 'radial-gradient(circle, rgba(255, 215, 0, 0.12) 0%, transparent 70%)',
+          width: '500px',
+          height: '500px',
+          background: 'radial-gradient(circle, rgba(255, 215, 0, 0.25) 0%, transparent 70%)',
           borderRadius: '50%',
-          filter: 'blur(80px)',
+          filter: 'blur(100px)',
+          pointerEvents: 'none'
+        }}></div>
+        <div style={{
+          position: 'absolute',
+          bottom: '10%',
+          right: '-8%',
+          width: '420px',
+          height: '420px',
+          background: 'radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%)',
+          borderRadius: '50%',
+          filter: 'blur(85px)',
           pointerEvents: 'none'
         }}></div>
         <div className="container">
@@ -404,11 +426,22 @@ export default function LandingPage() {
           position: 'absolute',
           bottom: '20%',
           right: '5%',
-          width: '350px',
-          height: '350px',
-          background: 'radial-gradient(circle, rgba(255, 215, 0, 0.18) 0%, transparent 70%)',
+          width: '480px',
+          height: '480px',
+          background: 'radial-gradient(circle, rgba(255, 215, 0, 0.3) 0%, transparent 70%)',
           borderRadius: '50%',
-          filter: 'blur(70px)',
+          filter: 'blur(95px)',
+          pointerEvents: 'none'
+        }}></div>
+        <div style={{
+          position: 'absolute',
+          top: '15%',
+          left: '5%',
+          width: '400px',
+          height: '400px',
+          background: 'radial-gradient(circle, rgba(255, 215, 0, 0.22) 0%, transparent 70%)',
+          borderRadius: '50%',
+          filter: 'blur(80px)',
           pointerEvents: 'none'
         }}></div>
         <div className="container">
@@ -593,7 +626,33 @@ export default function LandingPage() {
       </section>
 
       {/* FAQ */}
-      <section id="faq" style={{ padding: '5rem 0' }}>
+      <section id="faq" style={{ 
+        padding: '5rem 0',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <div style={{
+          position: 'absolute',
+          top: '30%',
+          right: '-8%',
+          width: '450px',
+          height: '450px',
+          background: 'radial-gradient(circle, rgba(255, 215, 0, 0.25) 0%, transparent 70%)',
+          borderRadius: '50%',
+          filter: 'blur(90px)',
+          pointerEvents: 'none'
+        }}></div>
+        <div style={{
+          position: 'absolute',
+          bottom: '10%',
+          left: '-5%',
+          width: '350px',
+          height: '350px',
+          background: 'radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%)',
+          borderRadius: '50%',
+          filter: 'blur(80px)',
+          pointerEvents: 'none'
+        }}></div>
         <div className="container">
           <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', textAlign: 'center', marginBottom: '1rem' }}>
             Questions fréquentes
@@ -670,7 +729,34 @@ export default function LandingPage() {
       </section>
 
       {/* PRICING */}
-      <section id="tarifs" style={{ padding: '5rem 0', background: 'var(--bg-light)' }}>
+      <section id="tarifs" style={{ 
+        padding: '5rem 0', 
+        background: 'var(--bg-light)',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <div style={{
+          position: 'absolute',
+          top: '20%',
+          left: '5%',
+          width: '400px',
+          height: '400px',
+          background: 'radial-gradient(circle, rgba(255, 215, 0, 0.22) 0%, transparent 70%)',
+          borderRadius: '50%',
+          filter: 'blur(85px)',
+          pointerEvents: 'none'
+        }}></div>
+        <div style={{
+          position: 'absolute',
+          bottom: '15%',
+          right: '10%',
+          width: '380px',
+          height: '380px',
+          background: 'radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%)',
+          borderRadius: '50%',
+          filter: 'blur(80px)',
+          pointerEvents: 'none'
+        }}></div>
         <div className="container">
           <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', textAlign: 'center', marginBottom: '1rem' }}>
             Tarifs <span className="gradient-text">transparents</span>
@@ -872,7 +958,35 @@ export default function LandingPage() {
       </section>
 
       {/* CTA FINAL */}
-      <section style={{ padding: '5rem 0', textAlign: 'center', background: 'radial-gradient(ellipse at center, rgba(255, 215, 0, 0.1) 0%, transparent 70%)' }}>
+      <section style={{ 
+        padding: '5rem 0', 
+        textAlign: 'center', 
+        background: 'radial-gradient(ellipse at center, rgba(255, 215, 0, 0.25) 0%, rgba(255, 215, 0, 0.1) 50%, transparent 80%)',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <div style={{
+          position: 'absolute',
+          top: '-10%',
+          left: '15%',
+          width: '500px',
+          height: '500px',
+          background: 'radial-gradient(circle, rgba(255, 215, 0, 0.15) 0%, transparent 70%)',
+          borderRadius: '50%',
+          filter: 'blur(100px)',
+          pointerEvents: 'none'
+        }}></div>
+        <div style={{
+          position: 'absolute',
+          bottom: '-10%',
+          right: '15%',
+          width: '500px',
+          height: '500px',
+          background: 'radial-gradient(circle, rgba(255, 215, 0, 0.15) 0%, transparent 70%)',
+          borderRadius: '50%',
+          filter: 'blur(100px)',
+          pointerEvents: 'none'
+        }}></div>
         <div className="container">
           <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', marginBottom: '1.5rem', lineHeight: 1.2 }}>
             Prêt à arrêter de perdre du temps et de l'argent ?
@@ -910,11 +1024,22 @@ export default function LandingPage() {
           bottom: '-10%',
           left: '50%',
           transform: 'translateX(-50%)',
-          width: '500px',
-          height: '200px',
-          background: 'radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%)',
+          width: '600px',
+          height: '300px',
+          background: 'radial-gradient(circle, rgba(255, 215, 0, 0.25) 0%, transparent 70%)',
           borderRadius: '50%',
-          filter: 'blur(70px)',
+          filter: 'blur(90px)',
+          pointerEvents: 'none'
+        }}></div>
+        <div style={{
+          position: 'absolute',
+          top: '10%',
+          left: '10%',
+          width: '350px',
+          height: '350px',
+          background: 'radial-gradient(circle, rgba(255, 215, 0, 0.18) 0%, transparent 70%)',
+          borderRadius: '50%',
+          filter: 'blur(75px)',
           pointerEvents: 'none'
         }}></div>
         
