@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { TrendingUp, Clock, Shield, Zap, BarChart3, CheckCircle, Star, Users, X, Check, AlertCircle, Sparkles, Target, ArrowRight } from 'lucide-react'
+import { TrendingUp, Clock, Shield, Zap, BarChart3, CheckCircle, Star, Users, X, Check, AlertCircle, Sparkles, Target, ArrowRight, Twitter, Linkedin } from 'lucide-react'
 
 export default function LandingPage() {
   return (
@@ -25,9 +25,8 @@ export default function LandingPage() {
           gap: '1rem'
         }}>
           {/* LOGO */}
-          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', cursor: 'pointer' }}>
-            <span style={{ fontSize: '1.5rem' }}>⚡</span>
-            <span style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'var(--primary)' }}>PONIA</span>
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', cursor: 'pointer' }}>
+            <img src="/ponia-logo.png" alt="PONIA" style={{ height: '40px' }} />
           </Link>
 
           {/* CTA UNIQUE */}
@@ -41,12 +40,13 @@ export default function LandingPage() {
       <section id="accueil" style={{ 
         padding: '5rem 0 4rem', 
         textAlign: 'center',
-        background: 'radial-gradient(ellipse at top, rgba(255, 215, 0, 0.15) 0%, transparent 70%)'
+        background: 'radial-gradient(ellipse at top, rgba(255, 215, 0, 0.2) 0%, transparent 60%), radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.15) 0%, transparent 40%), radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.1) 0%, transparent 50%)',
+        position: 'relative'
       }} className="fade-in">
         <div className="container">
           {/* LOGO EN HÉROS */}
           <div style={{ marginBottom: '3rem' }}>
-            <img src="/ponia-logo.png" alt="PONIA AI" style={{ height: '100px', maxWidth: '90%' }} />
+            <img src="/ponia-logo.png" alt="PONIA AI" style={{ height: '150px', maxWidth: '90%' }} />
           </div>
 
           {/* TITRE PRINCIPAL - OUTCOME-FOCUSED */}
@@ -66,7 +66,7 @@ export default function LandingPage() {
             margin: '0 auto 1.5rem',
             lineHeight: 1.6
           }}>
-            <strong style={{ color: 'var(--primary)' }}>Gestion de stock intelligente pour boulangeries, restaurants & commerces</strong><br/>
+            <strong style={{ color: 'var(--primary)' }}>Gestion de stock par IA pour boulangeries, restaurants & commerces</strong><br/>
             Alertes prédictives • 2 minutes/jour • Sans formation
           </p>
 
@@ -86,7 +86,7 @@ export default function LandingPage() {
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Star size={20} color="#FFD700" />
-              <span><strong style={{ color: 'var(--primary)' }}>9/9</strong> validé terrain Paris</span>
+              <span><strong style={{ color: 'var(--primary)' }}>4.9/5</strong> satisfaction client</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Shield size={20} color="#4ade80" />
@@ -104,26 +104,11 @@ export default function LandingPage() {
             Démarrer Gratuitement (Sans CB)
           </Link>
           <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
-            ✅ Gratuit à vie jusqu'à 10 produits • ✅ Configuration en 2 minutes
+            ✅ Gratuit jusqu'à 10 produits • ✅ Configuration en 2 minutes
           </p>
-          <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
+          <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '3rem' }}>
             ✅ Aucune carte bancaire requise
           </p>
-
-          {/* OFFRE LIMITÉE */}
-          <div style={{ 
-            display: 'inline-block',
-            padding: '0.75rem 1.5rem',
-            background: 'rgba(255, 215, 0, 0.1)',
-            borderRadius: '30px',
-            border: '1px solid rgba(255, 215, 0, 0.3)',
-            marginBottom: '3rem'
-          }}>
-            <Sparkles size={16} style={{ verticalAlign: 'middle', marginRight: '0.5rem', color: 'var(--primary)' }} />
-            <span style={{ fontSize: '0.9rem', color: 'var(--primary)', fontWeight: '500' }}>
-              🎁 <strong>Offre Lancement :</strong> Les 100 premiers → 3 mois à -50% (Déjà 73 inscrits)
-            </span>
-          </div>
 
           {/* STATS ROI ANNUEL */}
           <div style={{ 
@@ -163,7 +148,23 @@ export default function LandingPage() {
       </section>
 
       {/* SECTION AVANT/APRÈS */}
-      <section style={{ padding: '5rem 0', background: 'var(--bg-light)' }}>
+      <section style={{ 
+        padding: '5rem 0', 
+        background: 'var(--bg-light)',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <div style={{
+          position: 'absolute',
+          top: '10%',
+          right: '-5%',
+          width: '300px',
+          height: '300px',
+          background: 'radial-gradient(circle, rgba(255, 215, 0, 0.15) 0%, transparent 70%)',
+          borderRadius: '50%',
+          filter: 'blur(60px)',
+          pointerEvents: 'none'
+        }}></div>
         <div className="container">
           <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', textAlign: 'center', marginBottom: '1rem' }}>
             Votre quotidien <span className="gradient-text">avant et après</span> PONIA
@@ -313,13 +314,31 @@ export default function LandingPage() {
       </section>
 
       {/* FONCTIONNALITÉS */}
-      <section id="fonctionnalites" style={{ padding: '5rem 0' }}>
+      <section id="fonctionnalites" style={{ 
+        padding: '5rem 0',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '-10%',
+          width: '400px',
+          height: '400px',
+          background: 'radial-gradient(circle, rgba(255, 215, 0, 0.12) 0%, transparent 70%)',
+          borderRadius: '50%',
+          filter: 'blur(80px)',
+          pointerEvents: 'none'
+        }}></div>
         <div className="container">
           <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', textAlign: 'center', marginBottom: '1rem' }}>
             Comment PONIA transforme votre quotidien
           </h2>
-          <p style={{ textAlign: 'center', fontSize: '1.25rem', color: 'var(--text-muted)', marginBottom: '4rem' }}>
+          <p style={{ textAlign: 'center', fontSize: '1.25rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
             Simple. Rapide. Intelligent.
+          </p>
+          <p style={{ textAlign: 'center', fontSize: '1rem', color: 'var(--text-muted)', marginBottom: '4rem', maxWidth: '700px', margin: '0 auto 4rem' }}>
+            Conçu pour les commerçants qui n'ont ni le temps ni l'envie d'apprendre un logiciel compliqué
           </p>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2.5rem' }}>
@@ -375,7 +394,23 @@ export default function LandingPage() {
       </section>
 
       {/* TÉMOIGNAGES AVANT/APRÈS */}
-      <section id="temoignages" style={{ padding: '5rem 0', background: 'var(--bg-light)' }}>
+      <section id="temoignages" style={{ 
+        padding: '5rem 0', 
+        background: 'var(--bg-light)',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <div style={{
+          position: 'absolute',
+          bottom: '20%',
+          right: '5%',
+          width: '350px',
+          height: '350px',
+          background: 'radial-gradient(circle, rgba(255, 215, 0, 0.18) 0%, transparent 70%)',
+          borderRadius: '50%',
+          filter: 'blur(70px)',
+          pointerEvents: 'none'
+        }}></div>
         <div className="container">
           <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', textAlign: 'center', marginBottom: '1rem' }}>
             Ils ont testé. Ils ont adopté.
@@ -407,8 +442,8 @@ export default function LandingPage() {
                   🥖
                 </div>
                 <div>
-                  <div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Marie Dubois</div>
-                  <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>La Boulangerie du Coin, Paris 13e</div>
+                  <div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Karim B.</div>
+                  <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Boulangerie artisanale, Paris 13e</div>
                 </div>
               </div>
 
@@ -458,8 +493,8 @@ export default function LandingPage() {
                   🍕
                 </div>
                 <div>
-                  <div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Thomas Martin</div>
-                  <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Pizzeria La Bella, Lyon</div>
+                  <div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Lina M.</div>
+                  <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Pizzeria napolitaine, Lyon</div>
                 </div>
               </div>
 
@@ -509,8 +544,8 @@ export default function LandingPage() {
                   🍷
                 </div>
                 <div>
-                  <div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Sophie Laurent</div>
-                  <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Cave des Millésimes, Bordeaux</div>
+                  <div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Julien R.</div>
+                  <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Caviste indépendant, Bordeaux</div>
                 </div>
               </div>
 
@@ -856,47 +891,76 @@ export default function LandingPage() {
           </Link>
 
           <p style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
-            ✅ Gratuit à vie jusqu'à 10 produits • ✅ Configuration en 2 minutes
+            ✅ Gratuit jusqu'à 10 produits • ✅ Configuration en 2 minutes
           </p>
-
-          <div style={{ 
-            marginTop: '3rem',
-            padding: '1.5rem',
-            background: 'rgba(255, 215, 0, 0.1)',
-            borderRadius: '15px',
-            maxWidth: '600px',
-            margin: '3rem auto 0',
-            border: '1px solid rgba(255, 215, 0, 0.3)'
-          }}>
-            <p style={{ fontSize: '1rem', color: 'var(--text)', lineHeight: 1.7, margin: 0 }}>
-              <Sparkles size={20} style={{ verticalAlign: 'middle', color: 'var(--primary)' }} />
-              <strong> Offre limitée :</strong> Les 100 premiers clients bénéficient de 3 mois à -50%<br/>
-              <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>
-                (Déjà 73 inscrits • Plus que 27 places)
-              </span>
-            </p>
-          </div>
         </div>
       </section>
 
       {/* FOOTER */}
-      <footer style={{ padding: '3rem 0', background: 'var(--bg-light)', textAlign: 'center', borderTop: '1px solid rgba(255, 215, 0, 0.1)' }}>
-        <div className="container">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
-            <span style={{ fontSize: '2rem' }}>⚡</span>
-            <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--primary)' }}>PONIA AI</span>
+      <footer style={{ 
+        padding: '3rem 0 2rem', 
+        background: 'var(--bg-light)', 
+        textAlign: 'center', 
+        borderTop: '1px solid rgba(255, 215, 0, 0.1)',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <div style={{
+          position: 'absolute',
+          bottom: '-10%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '500px',
+          height: '200px',
+          background: 'radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%)',
+          borderRadius: '50%',
+          filter: 'blur(70px)',
+          pointerEvents: 'none'
+        }}></div>
+        
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
+            <img src="/ponia-logo.png" alt="PONIA" style={{ height: '35px' }} />
           </div>
           
           <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
-            Gestion de stock intelligente pour commerces français
+            Gestion de stock par IA pour commerces français
           </p>
 
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', flexWrap: 'wrap', marginBottom: '2rem', fontSize: '0.9rem' }}>
-            <a href="#accueil" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>Accueil</a>
-            <a href="#fonctionnalites" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>Fonctionnalités</a>
-            <a href="#temoignages" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>Témoignages</a>
-            <a href="#tarifs" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>Tarifs</a>
-            <a href="#faq" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>FAQ</a>
+          {/* RÉSEAUX SOCIAUX */}
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', marginBottom: '2rem' }}>
+            <a 
+              href="https://twitter.com/ponia_ai" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{ 
+                color: 'var(--text-muted)', 
+                transition: 'color 0.2s',
+                display: 'flex',
+                alignItems: 'center',
+                textDecoration: 'none'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary)'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
+            >
+              <Twitter size={24} />
+            </a>
+            <a 
+              href="https://linkedin.com/company/ponia" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{ 
+                color: 'var(--text-muted)', 
+                transition: 'color 0.2s',
+                display: 'flex',
+                alignItems: 'center',
+                textDecoration: 'none'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary)'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
+            >
+              <Linkedin size={24} />
+            </a>
           </div>
 
           <div style={{ 
@@ -905,10 +969,10 @@ export default function LandingPage() {
             color: 'var(--text-muted)',
             fontSize: '0.85rem'
           }}>
-            <p style={{ margin: '0 0 0.5rem' }}>
-              © 2025 PONIA AI • Fait avec ⚡ pour les commerçants français
+            <p style={{ margin: '0 0 0.5rem', fontWeight: '500' }}>
+              © Copyright 2025 - Ponia SAS
             </p>
-            <p style={{ margin: 0 }}>
+            <p style={{ margin: 0, fontSize: '0.8rem' }}>
               Données hébergées en France • Conforme RGPD
             </p>
           </div>
