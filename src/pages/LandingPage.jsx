@@ -697,29 +697,41 @@ export default function LandingPage() {
               </div>
 
               <div style={{ textAlign: 'left', marginBottom: '2rem' }}>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={20} color="#9ca3af" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ color: 'var(--text-muted)' }}>Max 10 produits</span>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <CheckCircle size={18} color="#9ca3af" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>10 produits max</span>
                 </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={20} color="#9ca3af" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ color: 'var(--text-muted)' }}>Suivi basique</span>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <CheckCircle size={18} color="#9ca3af" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Alertes visuelles 🟢🟠🔴</span>
                 </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
-                  <X size={20} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ color: 'var(--text-muted)' }}>Pas d'IA prédictive</span>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <CheckCircle size={18} color="#9ca3af" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Templates produits</span>
                 </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
-                  <X size={20} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ color: 'var(--text-muted)' }}>Pas d'historique</span>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <X size={18} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Max 20 actions/jour</span>
                 </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
-                  <X size={20} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ color: 'var(--text-muted)' }}>Pas d'alertes avancées</span>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <X size={18} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>5 commandes vocales/jour</span>
                 </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
-                  <X size={20} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ color: 'var(--text-muted)' }}>Pas d'export PDF</span>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <X size={18} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Pas d'historique</span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <X size={18} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Pas de prédictions</span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <X size={18} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Pas d'export PDF</span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <X size={18} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Watermark "Gratuit"</span>
                 </div>
               </div>
 
@@ -728,7 +740,7 @@ export default function LandingPage() {
               </Link>
               
               <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '1rem' }}>
-                Limité mais gratuit
+                Pour découvrir la valeur
               </p>
             </div>
 
@@ -747,35 +759,55 @@ export default function LandingPage() {
               </div>
 
               <div style={{ textAlign: 'left', marginBottom: '2rem' }}>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={20} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span><strong>Produits illimités</strong></span>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem' }}><strong>Produits illimités</strong></span>
                 </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={20} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span>Alertes automatiques (🟢🟠🔴)</span>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem' }}><strong>Actions illimitées</strong></span>
                 </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={20} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span>Historique 7 jours</span>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem' }}><strong>Commandes vocales illimitées</strong></span>
                 </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={20} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span>Export PDF commandes</span>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem' }}>Historique 30 jours</span>
                 </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={20} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span>Support email</span>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem' }}>Prédictions 7 jours</span>
                 </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
-                  <X size={20} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ color: 'var(--text-muted)' }}>Pas d'IA prédictive</span>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem' }}>Export PDF/CSV sans watermark</span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem' }}>Notifications SMS/Email</span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem' }}>Commandes auto-suggérées</span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem' }}>Gestion fournisseurs & coûts</span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem' }}>3 utilisateurs inclus</span>
                 </div>
               </div>
 
               <Link to="/login" className="btn btn-primary" style={{ width: '100%', padding: '1rem' }}>
-                Démarrer Gratuitement
+                Essai 7 jours gratuit
               </Link>
+              
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '1rem' }}>
+                Parfait pour 1 commerce
+              </p>
             </div>
 
             {/* PLAN PRO */}
@@ -803,42 +835,62 @@ export default function LandingPage() {
 
               <div style={{ fontSize: '1.1rem', color: 'var(--text-muted)', marginBottom: '0.5rem', marginTop: '0.5rem' }}>Pro</div>
               <div style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: 'bold', color: 'var(--primary)', marginBottom: '0.5rem' }}>
-                €79<span style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>/mois</span>
+                €99<span style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>/mois</span>
               </div>
               <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '2rem' }}>
-                <s>€158/mois</s> → -50% pendant 3 mois
+                <s>€198/mois</s> → -50% pendant 3 mois
               </div>
 
               <div style={{ textAlign: 'left', marginBottom: '2rem' }}>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={20} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span><strong>Tout du plan Standard +</strong></span>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <CheckCircle size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem' }}><strong>Tout du plan Standard +</strong></span>
                 </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
-                  <Sparkles size={20} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span><strong>IA prédictive</strong> (alerte 3 jours avant rupture)</span>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem' }}><strong>Multi-sites illimité</strong></span>
                 </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
-                  <Sparkles size={20} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span><strong>Suggestions de commandes</strong> optimisées par l'IA</span>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem' }}><strong>Utilisateurs illimités</strong></span>
                 </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
-                  <Sparkles size={20} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span><strong>Historique graphique</strong> 30 jours</span>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem' }}>Prédictions 30 jours</span>
                 </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
-                  <Sparkles size={20} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span><strong>Intégration caisse</strong> (Square, à venir)</span>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem' }}>Historique 90 jours</span>
                 </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
-                  <Sparkles size={20} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span><strong>Support prioritaire</strong> (réponse {'<'}2h)</span>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem' }}>Intégration météo & événements</span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem' }}>Intégrations POS (Square, etc.)</span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem' }}>Commandes auto-envoyées</span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem' }}>Analytics avancées (marges, COGS)</span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem' }}>Support prioritaire ({'<'}2h)</span>
                 </div>
               </div>
 
               <Link to="/login" className="btn btn-primary" style={{ width: '100%', padding: '1rem', animation: 'pulse 2s infinite' }}>
-                🎯 Économiser €9,200/an Maintenant
+                🚀 Pour les chaînes
               </Link>
+              
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '1rem' }}>
+                Idéal pour 2-10 commerces
+              </p>
             </div>
           </div>
 
