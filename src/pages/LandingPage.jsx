@@ -6,7 +6,7 @@ export default function LandingPage() {
   return (
     <div style={{ 
       minHeight: '100vh',
-      background: 'radial-gradient(ellipse at top, rgba(255, 215, 0, 0.2) 0%, rgba(255, 215, 0, 0.12) 30%, transparent 70%), radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.15) 0%, transparent 40%), radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.1) 0%, transparent 50%)'
+      background: 'white'
     }}>
       {/* HEADER TRANSPARENT */}
       <nav style={{
@@ -53,7 +53,7 @@ export default function LandingPage() {
       <section id="accueil" style={{ 
         padding: 'clamp(2rem, 5vw, 3rem) 0 4rem',
         textAlign: 'center',
-        background: 'transparent',
+        background: 'radial-gradient(ellipse at top, rgba(255, 215, 0, 0.2) 0%, rgba(255, 215, 0, 0.12) 30%, transparent 70%), radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.15) 0%, transparent 40%), radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.1) 0%, transparent 50%)',
         position: 'relative',
         marginTop: '-2rem'
       }} className="fade-in">
@@ -160,7 +160,7 @@ export default function LandingPage() {
       {/* SECTION AVANT/APRÈS */}
       <section style={{ 
         padding: '5rem 0',
-        background: 'transparent'
+        background: 'linear-gradient(to bottom, rgba(255, 215, 0, 0.08) 0%, rgba(255, 255, 255, 0.95) 15%, white 30%)'
       }}>
         <div className="container">
           <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', textAlign: 'center', marginBottom: '1rem' }}>
@@ -180,7 +180,7 @@ export default function LandingPage() {
             {/* AVANT */}
             <div style={{
               padding: '2.5rem',
-              background: 'linear-gradient(to bottom, rgba(255, 215, 0, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%)',
+              background: 'rgba(239, 68, 68, 0.05)',
               borderRadius: '20px',
               border: '2px solid rgba(239, 68, 68, 0.3)'
             }}>
@@ -240,7 +240,7 @@ export default function LandingPage() {
             {/* APRÈS */}
             <div style={{
               padding: '2.5rem',
-              background: 'linear-gradient(to bottom, rgba(255, 215, 0, 0.1) 0%, rgba(74, 222, 128, 0.05) 100%)',
+              background: 'rgba(74, 222, 128, 0.05)',
               borderRadius: '20px',
               border: '2px solid rgba(74, 222, 128, 0.3)'
             }}>
@@ -313,7 +313,7 @@ export default function LandingPage() {
       {/* FONCTIONNALITÉS */}
       <section id="fonctionnalites" style={{ 
         padding: '5rem 0',
-        background: 'transparent'
+        background: 'white'
       }}>
         <div className="container">
           <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', textAlign: 'center', marginBottom: '1rem' }}>
@@ -381,7 +381,7 @@ export default function LandingPage() {
       {/* TÉMOIGNAGES AVANT/APRÈS */}
       <section id="temoignages" style={{ 
         padding: '5rem 0',
-        background: 'linear-gradient(to bottom, rgba(255, 215, 0, 0.12) 0%, rgba(255, 255, 255, 0.85) 50%)',
+        background: 'rgba(255, 255, 255, 0.85)',
         backdropFilter: 'blur(20px)'
       }}>
         <div className="container">
@@ -568,7 +568,7 @@ export default function LandingPage() {
       {/* FAQ */}
       <section id="faq" style={{ 
         padding: '5rem 0',
-        background: 'linear-gradient(to bottom, rgba(255, 215, 0, 0.1) 0%, rgba(255, 255, 255, 0.85) 40%)',
+        background: 'rgba(255, 255, 255, 0.85)',
         backdropFilter: 'blur(20px)'
       }}>
         <div className="container">
@@ -649,7 +649,7 @@ export default function LandingPage() {
       {/* PRICING */}
       <section id="tarifs" style={{ 
         padding: '5rem 0', 
-        background: 'linear-gradient(to bottom, rgba(255, 215, 0, 0.08) 0%, rgba(255, 255, 255, 0.9) 30%)',
+        background: 'rgba(255, 255, 255, 0.9)',
         backdropFilter: 'blur(20px)'
       }}>
         <div className="container">
