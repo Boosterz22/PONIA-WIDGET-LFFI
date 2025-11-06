@@ -1,8 +1,26 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { TrendingUp, Clock, Shield, Zap, BarChart3, CheckCircle, Star, Users, X, Check, AlertCircle, Sparkles, Target, ArrowRight, Twitter, Linkedin } from 'lucide-react'
 
 export default function LandingPage() {
+  const [showHeaderCTA, setShowHeaderCTA] = useState(true)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const tarifsSection = document.getElementById('tarifs')
+      if (tarifsSection) {
+        const rect = tarifsSection.getBoundingClientRect()
+        const isInView = rect.top <= 100 && rect.bottom >= 0
+        setShowHeaderCTA(!isInView)
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    handleScroll()
+
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   return (
     <div style={{ 
       minHeight: '100vh',
@@ -39,13 +57,16 @@ export default function LandingPage() {
           </Link>
 
           {/* CTA */}
-          <Link to="/login" className="btn btn-primary" style={{ 
-            padding: '0.9rem 2rem', 
-            fontSize: 'clamp(0.95rem, 2vw, 1.1rem)', 
-            fontWeight: '600'
-          }}>
-            Démarrer Gratuitement
-          </Link>
+          {showHeaderCTA && (
+            <Link to="/login" className="btn btn-primary" target="_blank" rel="noopener noreferrer" style={{ 
+              padding: '0.75rem 1.5rem', 
+              fontSize: 'clamp(0.85rem, 1.8vw, 0.95rem)', 
+              fontWeight: '600',
+              transition: 'opacity 0.3s ease'
+            }}>
+              Commencer
+            </Link>
+          )}
         </div>
       </nav>
 
@@ -105,16 +126,16 @@ export default function LandingPage() {
           </div>
 
           {/* CTA HERO - FRICTION RÉDUITE */}
-          <Link to="/login" className="btn btn-primary" style={{ 
-            fontSize: '1.3rem', 
-            padding: '1.25rem 3rem',
+          <Link to="/login" className="btn btn-primary" target="_blank" rel="noopener noreferrer" style={{ 
+            fontSize: '1.1rem', 
+            padding: '1rem 2.5rem',
             marginBottom: '1rem',
             animation: 'pulse 2s infinite'
           }}>
-            Démarrer Gratuitement (Sans CB)
+            Commencer (Sans CB)
           </Link>
           <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
-            ✅ Gratuit jusqu'à 10 produits • ✅ Configuration en 2 minutes
+            ✅ Plan Basique jusqu'à 10 produits • ✅ Configuration en 2 minutes
           </p>
           <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '3rem' }}>
             ✅ Aucune carte bancaire requise
@@ -687,7 +708,7 @@ export default function LandingPage() {
                 marginBottom: '1rem',
                 display: 'inline-block'
               }}>
-                GRATUIT
+                BASIQUE
               </div>
               <div style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: 'bold', color: '#6b7280', marginBottom: '0.5rem' }}>
                 €0<span style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>/mois</span>
@@ -696,8 +717,8 @@ export default function LandingPage() {
                 Pour découvrir
               </div>
 
-              <Link to="/login" className="btn btn-secondary" style={{ width: '100%', padding: '1rem', marginBottom: '1.5rem', background: '#e5e7eb', color: '#6b7280' }}>
-                Essayer Gratuitement
+              <Link to="/login" className="btn btn-secondary" style={{ width: '100%', padding: '1rem', marginBottom: '1.5rem', background: '#e5e7eb', color: '#6b7280' }} target="_blank" rel="noopener noreferrer">
+                Commencer
               </Link>
 
               <div style={{ textAlign: 'left' }}>
@@ -758,7 +779,7 @@ export default function LandingPage() {
                 <s>€98/mois</s> → -50% pendant 3 mois
               </div>
 
-              <Link to="/login" className="btn btn-primary" style={{ width: '100%', padding: '1rem', marginBottom: '1.5rem' }}>
+              <Link to="/login?plan=standard" className="btn btn-primary" style={{ width: '100%', padding: '1rem', marginBottom: '1.5rem' }} target="_blank" rel="noopener noreferrer">
                 ⚡ Passer à Standard
               </Link>
 
@@ -835,13 +856,13 @@ export default function LandingPage() {
 
               <div style={{ fontSize: '1.1rem', color: 'var(--text-muted)', marginBottom: '0.5rem', marginTop: '0.5rem' }}>Pro</div>
               <div style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: 'bold', color: 'var(--primary)', marginBottom: '0.5rem' }}>
-                €99<span style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>/mois</span>
+                €69.99<span style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>/mois</span>
               </div>
               <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
-                <s>€198/mois</s> → -50% pendant 3 mois
+                <s>€139.98/mois</s> → -50% pendant 3 mois
               </div>
 
-              <Link to="/login" className="btn btn-primary" style={{ width: '100%', padding: '1rem', marginBottom: '1.5rem', animation: 'pulse 2s infinite' }}>
+              <Link to="/login?plan=pro" className="btn btn-primary" style={{ width: '100%', padding: '1rem', marginBottom: '1.5rem', animation: 'pulse 2s infinite' }} target="_blank" rel="noopener noreferrer">
                 🚀 Passer à Pro
               </Link>
 
@@ -910,17 +931,17 @@ export default function LandingPage() {
             Rejoignez les 50+ commerçants qui économisent €600+/mois et gagnent 35h/mois avec PONIA.
           </p>
 
-          <Link to="/login" className="btn btn-primary" style={{ 
+          <Link to="/login" className="btn btn-primary" target="_blank" rel="noopener noreferrer" style={{ 
             fontSize: '1.4rem', 
             padding: '1.5rem 3.5rem',
             marginBottom: '1.5rem',
             animation: 'pulse 2s infinite'
           }}>
-            🚀 Démarrer Gratuitement (Sans CB)
+            🚀 Commencer (Sans CB)
           </Link>
 
           <p style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
-            ✅ Gratuit jusqu'à 10 produits • ✅ Configuration en 2 minutes
+            ✅ Plan Basique jusqu'à 10 produits • ✅ Configuration en 2 minutes
           </p>
         </div>
       </section>
