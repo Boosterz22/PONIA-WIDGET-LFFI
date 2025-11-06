@@ -381,7 +381,8 @@ export default function LandingPage() {
       {/* TÉMOIGNAGES AVANT/APRÈS */}
       <section id="temoignages" style={{ 
         padding: '5rem 0',
-        background: 'transparent'
+        background: 'rgba(255, 255, 255, 0.85)',
+        backdropFilter: 'blur(20px)'
       }}>
         <div className="container">
           <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', textAlign: 'center', marginBottom: '1rem' }}>
@@ -565,7 +566,11 @@ export default function LandingPage() {
       </section>
 
       {/* FAQ */}
-      <section id="faq" style={{ padding: '5rem 0' }}>
+      <section id="faq" style={{ 
+        padding: '5rem 0',
+        background: 'rgba(255, 255, 255, 0.85)',
+        backdropFilter: 'blur(20px)'
+      }}>
         <div className="container">
           <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', textAlign: 'center', marginBottom: '1rem' }}>
             Questions fréquentes
@@ -642,7 +647,11 @@ export default function LandingPage() {
       </section>
 
       {/* PRICING */}
-      <section id="tarifs" style={{ padding: '5rem 0', background: 'transparent' }}>
+      <section id="tarifs" style={{ 
+        padding: '5rem 0', 
+        background: 'rgba(255, 255, 255, 0.9)',
+        backdropFilter: 'blur(20px)'
+      }}>
         <div className="container">
           <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', textAlign: 'center', marginBottom: '1rem' }}>
             Tarifs <span className="gradient-text">transparents</span>
