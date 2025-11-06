@@ -11,7 +11,7 @@ export default function LandingPage() {
       {/* HEADER TRANSPARENT */}
       <nav style={{
         padding: 'clamp(1.5rem, 3vw, 2rem) 0',
-        background: 'transparent',
+        background: 'radial-gradient(ellipse at top, rgba(255, 215, 0, 0.15) 0%, rgba(255, 215, 0, 0.08) 50%, transparent 100%)',
         backdropFilter: 'blur(10px)',
         position: 'sticky',
         top: 0,
@@ -26,22 +26,25 @@ export default function LandingPage() {
           flexWrap: 'wrap',
           gap: '1.5rem'
         }}>
-          {/* LOGO RESPONSIVE */}
-          <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', cursor: 'pointer' }}>
-            <img src="/ponia-logo.png" alt="PONIA" style={{ 
-              height: 'clamp(80px, 15vw, 120px)',
-              maxWidth: '60vw',
-              transition: 'transform 0.3s ease'
-            }} 
-                 onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
-                 onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-            />
+          {/* LOGO ÉCLAIR */}
+          <Link to="/" style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            textDecoration: 'none', 
+            cursor: 'pointer',
+            fontSize: 'clamp(3rem, 8vw, 5rem)',
+            transition: 'transform 0.3s ease'
+          }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          >
+            ⚡
           </Link>
 
           {/* CTA */}
           <Link to="/login" className="btn btn-primary" style={{ 
-            padding: '0.9rem 2rem', 
-            fontSize: 'clamp(0.95rem, 2vw, 1.1rem)', 
+            padding: '0.6rem 1.2rem', 
+            fontSize: '0.9rem', 
             fontWeight: '600'
           }}>
             Démarrer Gratuitement
