@@ -286,6 +286,10 @@ export default function DashboardPage({ session }) {
           </div>
         )}
 
+        {expiryAlerts && expiryAlerts.length > 0 && (
+          <ExpiryAlerts expiryAlerts={expiryAlerts} />
+        )}
+
         {alerts.length > 0 && (
           <div className="card" style={{ marginBottom: '2rem', background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(251, 146, 60, 0.1) 100%)', borderColor: 'var(--danger)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
