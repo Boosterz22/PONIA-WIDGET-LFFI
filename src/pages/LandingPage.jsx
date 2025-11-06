@@ -758,7 +758,7 @@ export default function LandingPage() {
               </div>
 
               <Link to="/login" className="btn btn-primary" style={{ width: '100%', padding: '1rem' }}>
-                Essayer 30 Jours Gratuit
+                Démarrer Gratuitement
               </Link>
             </div>
 
@@ -821,7 +821,7 @@ export default function LandingPage() {
               </div>
 
               <Link to="/login" className="btn btn-primary" style={{ width: '100%', padding: '1rem', animation: 'pulse 2s infinite' }}>
-                🎯 Économiser €7,200/an Maintenant
+                🎯 Économiser €9,200/an Maintenant
               </Link>
             </div>
           </div>
@@ -852,11 +852,11 @@ export default function LandingPage() {
             marginBottom: '1.5rem',
             animation: 'pulse 2s infinite'
           }}>
-            🚀 Démarrer Mon Essai Gratuit
+            🚀 Démarrer Gratuitement (Sans CB)
           </Link>
 
           <p style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
-            30 jours gratuits • Sans CB • Annulation en 1 clic
+            ✅ Gratuit à vie jusqu'à 10 produits • ✅ Configuration en 2 minutes
           </p>
 
           <div style={{ 
