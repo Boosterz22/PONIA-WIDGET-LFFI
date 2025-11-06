@@ -5,7 +5,7 @@ import { TrendingUp, Clock, Shield, Zap, BarChart3, CheckCircle, Star, Users, X,
 export default function LandingPage() {
   return (
     <div style={{ minHeight: '100vh' }}>
-      {/* HEADER AVEC NAVIGATION PAR SECTIONS */}
+      {/* HEADER SIMPLIFIÉ - 1:1 ATTENTION RATIO */}
       <nav style={{
         padding: '1.25rem 0',
         background: 'rgba(13, 17, 23, 0.95)',
@@ -30,42 +30,10 @@ export default function LandingPage() {
             <span style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'var(--primary)' }}>PONIA</span>
           </Link>
 
-          {/* NAVIGATION SECTIONS */}
-          <div style={{ 
-            display: 'flex', 
-            gap: '2rem', 
-            alignItems: 'center',
-            flexWrap: 'wrap'
-          }}>
-            <a href="#accueil" style={{ color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.95rem', transition: 'color 0.2s' }} 
-               onMouseEnter={(e) => e.target.style.color = 'var(--primary)'}
-               onMouseLeave={(e) => e.target.style.color = 'var(--text-muted)'}>
-              Accueil
-            </a>
-            <a href="#fonctionnalites" style={{ color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.95rem', transition: 'color 0.2s' }}
-               onMouseEnter={(e) => e.target.style.color = 'var(--primary)'}
-               onMouseLeave={(e) => e.target.style.color = 'var(--text-muted)'}>
-              Fonctionnalités
-            </a>
-            <a href="#temoignages" style={{ color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.95rem', transition: 'color 0.2s' }}
-               onMouseEnter={(e) => e.target.style.color = 'var(--primary)'}
-               onMouseLeave={(e) => e.target.style.color = 'var(--text-muted)'}>
-              Témoignages
-            </a>
-            <a href="#tarifs" style={{ color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.95rem', transition: 'color 0.2s' }}
-               onMouseEnter={(e) => e.target.style.color = 'var(--primary)'}
-               onMouseLeave={(e) => e.target.style.color = 'var(--text-muted)'}>
-              Tarifs
-            </a>
-            <a href="#faq" style={{ color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.95rem', transition: 'color 0.2s' }}
-               onMouseEnter={(e) => e.target.style.color = 'var(--primary)'}
-               onMouseLeave={(e) => e.target.style.color = 'var(--text-muted)'}>
-              FAQ
-            </a>
-            <Link to="/login" className="btn btn-primary" style={{ padding: '0.6rem 1.5rem', fontSize: '0.9rem' }}>
-              Essayer Gratuitement
-            </Link>
-          </div>
+          {/* CTA UNIQUE */}
+          <Link to="/login" className="btn btn-primary" style={{ padding: '0.75rem 2rem', fontSize: '1rem', fontWeight: '600' }}>
+            Démarrer Gratuitement
+          </Link>
         </div>
       </nav>
 
@@ -81,14 +49,14 @@ export default function LandingPage() {
             <img src="/ponia-logo.png" alt="PONIA AI" style={{ height: '100px', maxWidth: '90%' }} />
           </div>
 
-          {/* TITRE PRINCIPAL */}
+          {/* TITRE PRINCIPAL - OUTCOME-FOCUSED */}
           <h1 style={{ 
             fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', 
             fontWeight: 'bold', 
             marginBottom: '1.5rem', 
             lineHeight: 1.1
           }}>
-            Gérez votre stock en <span className="gradient-text">2 minutes/jour</span>
+            Zéro Rupture, Zéro Gaspillage : <span className="gradient-text">L'Outil qui Sauve €9,200/an</span>
           </h1>
 
           <p style={{ 
@@ -98,8 +66,8 @@ export default function LandingPage() {
             margin: '0 auto 1.5rem',
             lineHeight: 1.6
           }}>
-            <strong style={{ color: 'var(--primary)' }}>L'IA qui prédit vos ruptures 3 jours à l'avance</strong><br/>
-            Fini le gaspillage. Fini les ruptures. Plus de temps pour vos clients.
+            <strong style={{ color: 'var(--primary)' }}>Gestion de stock intelligente pour boulangeries, restaurants & commerces</strong><br/>
+            Alertes prédictives • 2 minutes/jour • Sans formation
           </p>
 
           {/* SOCIAL PROOF RAPIDE */}
@@ -126,17 +94,20 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* CTA HERO */}
+          {/* CTA HERO - FRICTION RÉDUITE */}
           <Link to="/login" className="btn btn-primary" style={{ 
             fontSize: '1.3rem', 
             padding: '1.25rem 3rem',
             marginBottom: '1rem',
             animation: 'pulse 2s infinite'
           }}>
-            ✅ Tester Gratuitement 30 Jours
+            Démarrer Gratuitement (Sans CB)
           </Link>
+          <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
+            ✅ Gratuit à vie jusqu'à 10 produits • ✅ Configuration en 2 minutes
+          </p>
           <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
-            Sans carte bancaire • Annulez en 1 clic
+            ✅ Aucune carte bancaire requise
           </p>
 
           {/* OFFRE LIMITÉE */}
@@ -167,7 +138,7 @@ export default function LandingPage() {
             border: '1px solid rgba(255, 215, 0, 0.2)'
           }}>
             <div className="stat-card">
-              <div style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: 'bold', color: 'var(--primary)' }}>€7,200</div>
+              <div style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: 'bold', color: 'var(--primary)' }}>€9,200</div>
               <div style={{ color: 'var(--text-muted)', fontSize: '1rem' }}>économisés/an</div>
               <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
                 (pour €588 d'abonnement)
