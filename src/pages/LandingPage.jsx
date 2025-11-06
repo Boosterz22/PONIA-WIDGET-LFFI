@@ -159,22 +159,9 @@ export default function LandingPage() {
 
       {/* SECTION AVANT/APRÈS */}
       <section style={{ 
-        padding: '5rem 0', 
-        background: 'var(--bg-light)',
-        position: 'relative',
-        overflow: 'hidden'
+        padding: '5rem 0',
+        background: 'transparent'
       }}>
-        <div style={{
-          position: 'absolute',
-          top: '10%',
-          right: '-5%',
-          width: '300px',
-          height: '300px',
-          background: 'radial-gradient(circle, rgba(255, 215, 0, 0.15) 0%, transparent 70%)',
-          borderRadius: '50%',
-          filter: 'blur(60px)',
-          pointerEvents: 'none'
-        }}></div>
         <div className="container">
           <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', textAlign: 'center', marginBottom: '1rem' }}>
             Votre quotidien <span className="gradient-text">avant et après</span> PONIA
@@ -326,20 +313,8 @@ export default function LandingPage() {
       {/* FONCTIONNALITÉS */}
       <section id="fonctionnalites" style={{ 
         padding: '5rem 0',
-        position: 'relative',
-        overflow: 'hidden'
+        background: 'transparent'
       }}>
-        <div style={{
-          position: 'absolute',
-          top: '50%',
-          left: '-10%',
-          width: '400px',
-          height: '400px',
-          background: 'radial-gradient(circle, rgba(255, 215, 0, 0.12) 0%, transparent 70%)',
-          borderRadius: '50%',
-          filter: 'blur(80px)',
-          pointerEvents: 'none'
-        }}></div>
         <div className="container">
           <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', textAlign: 'center', marginBottom: '1rem' }}>
             Comment PONIA transforme votre quotidien
@@ -405,22 +380,9 @@ export default function LandingPage() {
 
       {/* TÉMOIGNAGES AVANT/APRÈS */}
       <section id="temoignages" style={{ 
-        padding: '5rem 0', 
-        background: 'var(--bg-light)',
-        position: 'relative',
-        overflow: 'hidden'
+        padding: '5rem 0',
+        background: 'transparent'
       }}>
-        <div style={{
-          position: 'absolute',
-          bottom: '20%',
-          right: '5%',
-          width: '350px',
-          height: '350px',
-          background: 'radial-gradient(circle, rgba(255, 215, 0, 0.18) 0%, transparent 70%)',
-          borderRadius: '50%',
-          filter: 'blur(70px)',
-          pointerEvents: 'none'
-        }}></div>
         <div className="container">
           <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', textAlign: 'center', marginBottom: '1rem' }}>
             Ils ont testé. Ils ont adopté.
@@ -680,7 +642,7 @@ export default function LandingPage() {
       </section>
 
       {/* PRICING */}
-      <section id="tarifs" style={{ padding: '5rem 0', background: 'var(--bg-light)' }}>
+      <section id="tarifs" style={{ padding: '5rem 0', background: 'transparent' }}>
         <div className="container">
           <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', textAlign: 'center', marginBottom: '1rem' }}>
             Tarifs <span className="gradient-text">transparents</span>
@@ -882,7 +844,7 @@ export default function LandingPage() {
       </section>
 
       {/* CTA FINAL */}
-      <section style={{ padding: '5rem 0', textAlign: 'center', background: 'radial-gradient(ellipse at center, rgba(255, 215, 0, 0.1) 0%, transparent 70%)' }}>
+      <section style={{ padding: '5rem 0', textAlign: 'center', background: 'transparent' }}>
         <div className="container">
           <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', marginBottom: '1.5rem', lineHeight: 1.2 }}>
             Prêt à arrêter de perdre du temps et de l'argent ?
@@ -909,26 +871,10 @@ export default function LandingPage() {
       {/* FOOTER */}
       <footer style={{ 
         padding: '3rem 0 2rem', 
-        background: 'var(--bg-light)', 
-        textAlign: 'center', 
-        borderTop: '1px solid rgba(255, 215, 0, 0.1)',
-        position: 'relative',
-        overflow: 'hidden'
+        background: 'transparent', 
+        textAlign: 'center'
       }}>
-        <div style={{
-          position: 'absolute',
-          bottom: '-10%',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: '500px',
-          height: '200px',
-          background: 'radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%)',
-          borderRadius: '50%',
-          filter: 'blur(70px)',
-          pointerEvents: 'none'
-        }}></div>
-        
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+        <div className="container">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
             <img src="/ponia-logo.png" alt="PONIA" style={{ height: '35px' }} />
           </div>
