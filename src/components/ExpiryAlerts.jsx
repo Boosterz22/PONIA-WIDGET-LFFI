@@ -44,37 +44,8 @@ export default function ExpiryAlerts({ expiryAlerts }) {
       .join(',')
   }, [expiryAlerts])
 
-  // Charger automatiquement les suggestions IA pour les produits critiques
-  useEffect(() => {
-    if (!criticalProductsKey) return
-    
-    // Vérifier que les clés OpenAI sont disponibles
-    const hasOpenAIKeys = import.meta.env.AI_INTEGRATIONS_OPENAI_API_KEY && 
-                          import.meta.env.AI_INTEGRATIONS_OPENAI_BASE_URL
-    
-    if (!hasOpenAIKeys) {
-      console.warn('OpenAI keys not configured, skipping AI suggestions')
-      return
-    }
-    
-    const criticalProducts = expiryAlerts
-      .filter(p => p.severity === 'critical' || p.severity === 'expired')
-      .slice(0, 2)
-    
-    criticalProducts.forEach(product => {
-      // Utiliser functional update pour avoir l'état frais
-      setAiSuggestions(prevSuggestions => {
-        setLoadingAI(prevLoading => {
-          // Ne charger que si pas déjà chargé avec succès ET pas en cours
-          if (!prevSuggestions[product.id]?.length && !prevLoading[product.id]) {
-            loadAISuggestions(product)
-          }
-          return prevLoading
-        })
-        return prevSuggestions
-      })
-    })
-  }, [criticalProductsKey]) // Dépend de la clé memoïsée
+  // Auto-load IA désactivé pour sécurité (pas de vérification clés côté frontend)
+  // L'utilisateur peut cliquer sur "Obtenir suggestions IA" manuellement // Dépend de la clé memoïsée
 
   if (!expiryAlerts || expiryAlerts.length === 0) {
     return null
