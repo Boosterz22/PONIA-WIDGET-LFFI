@@ -90,6 +90,11 @@ export default function DashboardPage({ session }) {
     }
   }
 
+  const handleChangePlan = (newPlan) => {
+    localStorage.setItem('ponia_user_plan', newPlan)
+    window.location.reload()
+  }
+
   const alerts = products.filter(p => p.currentQuantity <= p.alertThreshold)
   const lowStock = products.filter(p => p.currentQuantity <= p.alertThreshold && p.currentQuantity > p.alertThreshold * 0.5)
   const critical = products.filter(p => p.currentQuantity <= p.alertThreshold * 0.5)
@@ -162,10 +167,39 @@ export default function DashboardPage({ session }) {
               <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>PONIA AI</div>
             </div>
           </div>
-          <button onClick={handleLogout} className="btn btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <LogOut size={18} />
-            <span>Déconnexion</span>
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+            <div style={{ 
+              background: 'rgba(255, 215, 0, 0.1)', 
+              border: '1px solid rgba(255, 215, 0, 0.3)',
+              borderRadius: '8px',
+              padding: '0.5rem 0.75rem'
+            }}>
+              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>
+                🧪 MODE TEST
+              </div>
+              <select 
+                value={userPlan} 
+                onChange={(e) => handleChangePlan(e.target.value)}
+                style={{
+                  background: 'var(--bg)',
+                  border: '1px solid var(--border)',
+                  borderRadius: '6px',
+                  padding: '0.25rem 0.5rem',
+                  fontSize: '0.85rem',
+                  color: 'var(--text)',
+                  cursor: 'pointer'
+                }}
+              >
+                <option value="gratuit">Plan Gratuit</option>
+                <option value="standard">Plan Standard (49€)</option>
+                <option value="pro">Plan Pro (79€)</option>
+              </select>
+            </div>
+            <button onClick={handleLogout} className="btn btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <LogOut size={18} />
+              <span>Déconnexion</span>
+            </button>
+          </div>
         </div>
       </nav>
 
