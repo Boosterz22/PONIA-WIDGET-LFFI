@@ -58,13 +58,14 @@ export default function LandingPage() {
 
           {/* CTA */}
           {showHeaderCTA && (
-            <Link to="/login" className="btn btn-primary" target="_blank" rel="noopener noreferrer" style={{ 
+            <Link to="/login" className="btn btn-primary" style={{ 
               padding: '0.75rem 1.5rem', 
               fontSize: 'clamp(0.85rem, 1.8vw, 0.95rem)', 
               fontWeight: '600',
-              transition: 'opacity 0.3s ease'
+              transition: 'all 0.3s ease',
+              opacity: showHeaderCTA ? 1 : 0
             }}>
-              Commencer
+              Démarrer
             </Link>
           )}
         </div>
@@ -126,13 +127,13 @@ export default function LandingPage() {
           </div>
 
           {/* CTA HERO - FRICTION RÉDUITE */}
-          <Link to="/login" className="btn btn-primary" target="_blank" rel="noopener noreferrer" style={{ 
+          <Link to="/login" className="btn btn-primary" style={{ 
             fontSize: '1.1rem', 
             padding: '1rem 2.5rem',
             marginBottom: '1rem',
             animation: 'pulse 2s infinite'
           }}>
-            Commencer (Sans CB)
+            Démarrer (Sans CB)
           </Link>
           <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
             ✅ Plan Basique jusqu'à 10 produits • ✅ Configuration en 2 minutes
@@ -717,8 +718,8 @@ export default function LandingPage() {
                 Pour découvrir
               </div>
 
-              <Link to="/login" className="btn btn-secondary" style={{ width: '100%', padding: '1rem', marginBottom: '1.5rem', background: '#e5e7eb', color: '#6b7280' }} target="_blank" rel="noopener noreferrer">
-                Commencer
+              <Link to="/login" className="btn btn-secondary" style={{ width: '100%', padding: '1rem', marginBottom: '1.5rem', background: '#e5e7eb', color: '#6b7280' }}>
+                Démarrer
               </Link>
 
               <div style={{ textAlign: 'left' }}>
@@ -780,7 +781,7 @@ export default function LandingPage() {
                 <s>€98/mois</s> → -50% pendant 3 mois
               </div>
 
-              <Link to="/login?plan=standard" className="btn btn-primary" style={{ width: '100%', padding: '1rem', marginBottom: '1.5rem' }} target="_blank" rel="noopener noreferrer">
+              <Link to="/login?plan=standard" className="btn btn-primary" style={{ width: '100%', padding: '1rem', marginBottom: '1.5rem' }}>
                 ⚡ Passer à Standard
               </Link>
 
@@ -864,7 +865,7 @@ export default function LandingPage() {
                 <s>€138/mois</s> → -50% pendant 3 mois
               </div>
 
-              <Link to="/login?plan=pro" className="btn btn-primary" style={{ width: '100%', padding: '1rem', marginBottom: '1.5rem', animation: 'pulse 2s infinite' }} target="_blank" rel="noopener noreferrer">
+              <Link to="/login?plan=pro" className="btn btn-primary" style={{ width: '100%', padding: '1rem', marginBottom: '1.5rem', animation: 'pulse 2s infinite' }}>
                 🚀 Passer à Pro
               </Link>
 
@@ -933,13 +934,13 @@ export default function LandingPage() {
             Rejoignez les 50+ commerçants qui économisent €600+/mois et gagnent 35h/mois avec PONIA.
           </p>
 
-          <Link to="/login" className="btn btn-primary" target="_blank" rel="noopener noreferrer" style={{ 
+          <Link to="/login" className="btn btn-primary" style={{ 
             fontSize: '1.4rem', 
             padding: '1.5rem 3.5rem',
             marginBottom: '1.5rem',
             animation: 'pulse 2s infinite'
           }}>
-            🚀 Commencer (Sans CB)
+            🚀 Démarrer (Sans CB)
           </Link>
 
           <p style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>
