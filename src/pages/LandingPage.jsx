@@ -11,7 +11,7 @@ export default function LandingPage() {
       {/* HEADER TRANSPARENT */}
       <nav style={{
         padding: 'clamp(1.5rem, 3vw, 2rem) 0',
-        background: 'transparent',
+        background: 'radial-gradient(ellipse at top, rgba(255, 215, 0, 0.15) 0%, rgba(255, 215, 0, 0.08) 40%, transparent 80%)',
         backdropFilter: 'blur(10px)',
         position: 'sticky',
         top: 0,
@@ -885,7 +885,7 @@ export default function LandingPage() {
       }}>
         <div className="container">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
-            <img src="/ponia-logo.png" alt="PONIA" style={{ height: '35px' }} />
+            <img src="/ponia-icon.png" alt="PONIA" style={{ height: '50px' }} />
           </div>
           
           <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
