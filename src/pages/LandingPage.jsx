@@ -769,7 +769,8 @@ export default function LandingPage() {
             <div className="card" style={{ 
               padding: '2.5rem', 
               textAlign: 'center',
-              border: '2px solid rgba(255, 215, 0, 0.3)'
+              border: '3px solid var(--primary)',
+              boxShadow: '0 4px 20px rgba(255, 215, 0, 0.2)'
             }}>
               <div style={{ fontSize: '1.1rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Standard</div>
               <div style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: 'bold', color: 'var(--primary)', marginBottom: '0.5rem' }}>
@@ -837,7 +838,8 @@ export default function LandingPage() {
               textAlign: 'center',
               border: '3px solid var(--primary)',
               position: 'relative',
-              background: 'rgba(255, 215, 0, 0.03)'
+              background: 'rgba(255, 215, 0, 0.03)',
+              boxShadow: '0 4px 20px rgba(255, 215, 0, 0.2)'
             }}>
               <div style={{ 
                 position: 'absolute', 
@@ -856,10 +858,10 @@ export default function LandingPage() {
 
               <div style={{ fontSize: '1.1rem', color: 'var(--text-muted)', marginBottom: '0.5rem', marginTop: '0.5rem' }}>Pro</div>
               <div style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: 'bold', color: 'var(--primary)', marginBottom: '0.5rem' }}>
-                €69.99<span style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>/mois</span>
+                €69<span style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>/mois</span>
               </div>
               <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
-                <s>€139.98/mois</s> → -50% pendant 3 mois
+                <s>€138/mois</s> → -50% pendant 3 mois
               </div>
 
               <Link to="/login?plan=pro" className="btn btn-primary" style={{ width: '100%', padding: '1rem', marginBottom: '1.5rem', animation: 'pulse 2s infinite' }} target="_blank" rel="noopener noreferrer">
