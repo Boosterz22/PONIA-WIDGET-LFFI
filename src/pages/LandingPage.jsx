@@ -180,7 +180,7 @@ export default function LandingPage() {
             {/* AVANT */}
             <div style={{
               padding: '2.5rem',
-              background: 'rgba(239, 68, 68, 0.05)',
+              background: 'linear-gradient(to bottom, rgba(255, 215, 0, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%)',
               borderRadius: '20px',
               border: '2px solid rgba(239, 68, 68, 0.3)'
             }}>
@@ -240,7 +240,7 @@ export default function LandingPage() {
             {/* APRÈS */}
             <div style={{
               padding: '2.5rem',
-              background: 'rgba(74, 222, 128, 0.05)',
+              background: 'linear-gradient(to bottom, rgba(255, 215, 0, 0.1) 0%, rgba(74, 222, 128, 0.05) 100%)',
               borderRadius: '20px',
               border: '2px solid rgba(74, 222, 128, 0.3)'
             }}>
@@ -381,7 +381,7 @@ export default function LandingPage() {
       {/* TÉMOIGNAGES AVANT/APRÈS */}
       <section id="temoignages" style={{ 
         padding: '5rem 0',
-        background: 'rgba(255, 255, 255, 0.85)',
+        background: 'linear-gradient(to bottom, rgba(255, 215, 0, 0.12) 0%, rgba(255, 255, 255, 0.85) 50%)',
         backdropFilter: 'blur(20px)'
       }}>
         <div className="container">
@@ -568,7 +568,7 @@ export default function LandingPage() {
       {/* FAQ */}
       <section id="faq" style={{ 
         padding: '5rem 0',
-        background: 'rgba(255, 255, 255, 0.85)',
+        background: 'linear-gradient(to bottom, rgba(255, 215, 0, 0.1) 0%, rgba(255, 255, 255, 0.85) 40%)',
         backdropFilter: 'blur(20px)'
       }}>
         <div className="container">
@@ -649,7 +649,7 @@ export default function LandingPage() {
       {/* PRICING */}
       <section id="tarifs" style={{ 
         padding: '5rem 0', 
-        background: 'rgba(255, 255, 255, 0.9)',
+        background: 'linear-gradient(to bottom, rgba(255, 215, 0, 0.08) 0%, rgba(255, 255, 255, 0.9) 30%)',
         backdropFilter: 'blur(20px)'
       }}>
         <div className="container">
@@ -674,12 +674,12 @@ export default function LandingPage() {
             <div className="card" style={{ 
               padding: '2.5rem', 
               textAlign: 'center',
-              border: '2px solid rgba(74, 222, 128, 0.4)',
-              background: 'rgba(74, 222, 128, 0.03)'
+              border: '2px solid rgba(200, 200, 200, 0.3)',
+              background: 'rgba(250, 250, 250, 0.5)'
             }}>
               <div style={{ 
-                background: 'linear-gradient(135deg, #4ade80, #22c55e)',
-                color: 'white',
+                background: '#e5e7eb',
+                color: '#6b7280',
                 padding: '0.4rem 1.2rem',
                 borderRadius: '20px',
                 fontSize: '0.85rem',
@@ -687,31 +687,23 @@ export default function LandingPage() {
                 marginBottom: '1rem',
                 display: 'inline-block'
               }}>
-                🎁 GRATUIT À VIE
+                GRATUIT
               </div>
-              <div style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: 'bold', color: 'var(--success)', marginBottom: '0.5rem' }}>
+              <div style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: 'bold', color: '#6b7280', marginBottom: '0.5rem' }}>
                 €0<span style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>/mois</span>
               </div>
               <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '2rem' }}>
-                Parfait pour tester
+                Pour découvrir
               </div>
 
               <div style={{ textAlign: 'left', marginBottom: '2rem' }}>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={20} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span><strong>Jusqu'à 10 produits</strong></span>
+                  <CheckCircle size={20} color="#9ca3af" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ color: 'var(--text-muted)' }}>Max 10 produits</span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={20} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span>Alertes couleur (🟢🟠🔴)</span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={20} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span>Produits pré-configurés</span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={20} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span>Interface mobile rapide</span>
+                  <CheckCircle size={20} color="#9ca3af" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ color: 'var(--text-muted)' }}>Suivi basique</span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
                   <X size={20} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
@@ -721,14 +713,22 @@ export default function LandingPage() {
                   <X size={20} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
                   <span style={{ color: 'var(--text-muted)' }}>Pas d'historique</span>
                 </div>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
+                  <X size={20} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ color: 'var(--text-muted)' }}>Pas d'alertes avancées</span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', alignItems: 'flex-start' }}>
+                  <X size={20} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ color: 'var(--text-muted)' }}>Pas d'export PDF</span>
+                </div>
               </div>
 
-              <Link to="/login" className="btn btn-secondary" style={{ width: '100%', padding: '1rem' }}>
-                Commencer Gratuitement
+              <Link to="/login" className="btn btn-secondary" style={{ width: '100%', padding: '1rem', background: '#e5e7eb', color: '#6b7280' }}>
+                Essayer Gratuitement
               </Link>
               
               <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '1rem' }}>
-                Passez au payant quand vous voulez
+                Limité mais gratuit
               </p>
             </div>
 
