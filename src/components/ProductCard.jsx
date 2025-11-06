@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
-import { Minus, Plus, Trash2, AlertTriangle, CheckCircle, Mic } from 'lucide-react'
+import { Minus, Plus, Trash2, AlertTriangle, CheckCircle, Mic, Lock } from 'lucide-react'
 import VoiceInput from './VoiceInput'
+import { canUseVoiceCommand, getVoiceCommandsUsed, getUserQuotas } from '../services/quotaService'
 
-export default function ProductCard({ product, onUpdateQuantity, onDelete }) {
+export default function ProductCard({ product, onUpdateQuantity, onDelete, userPlan = 'gratuit' }) {
   const [showVoiceInput, setShowVoiceInput] = useState(false)
+  const [showQuotaModal, setShowQuotaModal] = useState(false)
   const stockStatus = product.currentQuantity <= product.alertThreshold * 0.5 
     ? 'critical' 
     : product.currentQuantity <= product.alertThreshold 
@@ -97,7 +99,13 @@ export default function ProductCard({ product, onUpdateQuantity, onDelete }) {
       </div>
 
       <button 
-        onClick={() => setShowVoiceInput(true)}
+        onClick={() => {
+          if (canUseVoiceCommand(userPlan)) {
+            setShowVoiceInput(true)
+          } else {
+            setShowQuotaModal(true)
+          }
+        }}
         className="btn btn-primary"
         style={{ 
           width: '100%', 
@@ -109,17 +117,79 @@ export default function ProductCard({ product, onUpdateQuantity, onDelete }) {
       >
         <Mic size={18} />
         <span>Commande vocale</span>
+        {userPlan === 'gratuit' && (
+          <span style={{ 
+            fontSize: '0.75rem', 
+            background: 'rgba(255,255,255,0.2)', 
+            padding: '0.125rem 0.375rem', 
+            borderRadius: '4px' 
+          }}>
+            {getVoiceCommandsUsed()}/{getUserQuotas(userPlan).voiceCommands}
+          </span>
+        )}
       </button>
 
       {showVoiceInput && (
         <VoiceInput
           productName={product.name}
+          userPlan={userPlan}
           onConfirm={(delta) => {
             onUpdateQuantity(product.id, delta)
             setShowVoiceInput(false)
           }}
           onCancel={() => setShowVoiceInput(false)}
         />
+      )}
+
+      {showQuotaModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.8)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '1rem',
+          zIndex: 1000
+        }} onClick={() => setShowQuotaModal(false)}>
+          <div className="card" style={{ 
+            maxWidth: '400px', 
+            width: '100%',
+            textAlign: 'center'
+          }} onClick={(e) => e.stopPropagation()}>
+            <Lock size={48} color="#f59e0b" style={{ margin: '0 auto 1rem' }} />
+            <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem' }}>
+              Limite quotidienne atteinte
+            </h3>
+            <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
+              Vous avez utilisé vos <strong>5 commandes vocales</strong> gratuites aujourd'hui.
+            </p>
+            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
+              Passez à <strong>Standard (€49/mois)</strong> pour des commandes vocales illimitées + historique 30j + prédictions + bien plus.
+            </p>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button 
+                onClick={() => setShowQuotaModal(false)}
+                className="btn btn-secondary"
+                style={{ flex: 1 }}
+              >
+                Fermer
+              </button>
+              <button 
+                className="btn btn-primary"
+                style={{ flex: 1 }}
+                onClick={() => {
+                  window.location.href = '/#tarifs'
+                }}
+              >
+                Voir les plans
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

@@ -2,8 +2,9 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Mic, MicOff, Check, X, Loader } from 'lucide-react'
 import { parseVoiceCommandLocal } from '../services/voiceParser'
 import { callAIWithTimeout, loadOpenAIService } from '../services/aiUtils'
+import { incrementVoiceCommands } from '../services/quotaService'
 
-export default function VoiceInput({ productName, onConfirm, onCancel }) {
+export default function VoiceInput({ productName, userPlan = 'gratuit', onConfirm, onCancel }) {
   const [isListening, setIsListening] = useState(false)
   const [transcript, setTranscript] = useState('')
   const [parsedCommand, setParsedCommand] = useState(null)
@@ -117,6 +118,7 @@ export default function VoiceInput({ productName, onConfirm, onCancel }) {
 
   const handleConfirm = () => {
     if (parsedCommand && parsedCommand.delta !== undefined) {
+      incrementVoiceCommands()
       onConfirm(parsedCommand.delta)
     }
   }
