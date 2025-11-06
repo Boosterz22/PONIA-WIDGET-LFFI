@@ -109,41 +109,62 @@ Application mobile-first qui permet aux commerçants de :
   - 🔴 Critique (<2j) : action immédiate requise
   - 🟠 Warning (<5j) : promo recommandée
   - 🔵 Info (<10j) : mise en avant suggérée
+- **Suggestions locales** :
+  - Affichées automatiquement (promo, vitrine, retrait)
+  - Basées sur niveau d'urgence
 - **Suggestions IA GPT-4o-mini** :
-  - Auto-chargement pour les 2 produits les plus critiques
-  - Conseils personnalisés (promos, mise en avant, lots)
-  - Bouton retry manuel si échec
-  - Protection concurrence via useRef (pas de doublons API)
+  - Bouton "Conseil IA" sur produits critiques/périmés
+  - Chargement à la demande (contrôle coûts)
+  - Timeout 10s + gestion erreurs complète
+  - Import dynamique sécurisé
 - **Stats gaspillage** :
   - Produits périmés ce mois
   - Produits sauvés grâce aux alertes
   - Produits actuellement à risque
 
-#### 🎤 Commandes Vocales
+#### 🎤 Commandes Vocales (NOUVELLE IMPLÉMENTATION STABLE)
 - **Web Speech API** (fr-FR natif, gratuit, sans config)
-- **Bouton micro** sur chaque carte produit
+- **Bouton "Commande vocale"** sur chaque carte produit
 - **Modal reconnaissance** :
   - Transcription en temps réel
   - Animation pulsante pendant écoute
-  - Parsing local + fallback GPT-4o-mini
+  - Parsing local prioritaire (regex français)
+  - Fallback GPT-4o-mini si parsing échoue
 - **Commandes supportées** :
   - "Plus 5", "Ajouter 10", "2.5 en plus"
   - "Moins 3", "Retirer 7", "10 en moins"
+  - Support décimales (2.5, 3,5)
 - **Confirmation visuelle** avant application au stock
-- **Gestion d'erreurs** : fallback IA si parsing local échoue
+- **Gestion d'erreurs robuste** :
+  - Permissions micro (not-allowed, no-speech)
+  - Timeout 10s sur appels IA
+  - Messages d'erreur contextuels
+  - Fallback IA uniquement si parsing local échoue
 
 #### Architecture technique Phase 1
-- **openaiService.js** : 2 nouvelles fonctions
-  - `getExpiryAISuggestions()` : suggestions péremption
-  - `parseVoiceCommandWithAI()` : parsing vocal IA
-- **expiryService.js** : calculs péremption
-  - `checkExpiryAlerts()` : détection produits urgents
-  - `getExpirySuggestions()` : suggestions locales
-  - `calculateWasteStats()` : stats gaspillage
+- **Services** :
+  - `aiUtils.js` : Helpers timeout + import dynamique
+  - `voiceParser.js` : Parsing local regex français
+  - `openaiService.js` : 2 fonctions IA
+    - `getExpiryAISuggestions()` : suggestions péremption
+    - `parseVoiceCommandWithAI()` : parsing vocal IA
+  - `expiryService.js` : Calculs péremption
+    - `checkExpiryAlerts()` : détection produits urgents
+    - `getExpirySuggestions()` : suggestions locales
+    - `calculateWasteStats()` : stats gaspillage
 - **Composants** :
-  - `ExpiryAlerts.jsx` : section alertes expandable
-  - `VoiceInput.jsx` : modal reconnaissance vocale
-- **Performance** : max 2 auto-loads GPT/dashboard (€0.30/mois/utilisateur)
+  - `ExpiryAlerts.jsx` : Section alertes + bouton IA manuel
+  - `VoiceInput.jsx` : Modal reconnaissance vocale complète
+  - `ProductCard.jsx` : Bouton micro + state local
+- **Sécurité** :
+  - Import dynamique openaiService (pas de crash au load)
+  - Timeout 10s sur tous appels IA
+  - Cleanup proper Web Speech API
+  - Gestion permissions complète
+- **Performance** : 
+  - Parsing local prioritaire (gratuit, instantané)
+  - IA seulement si nécessaire (contrôle coûts)
+  - ~€0.15-0.30/mois/utilisateur selon usage
 
 ## Fonctionnalités à venir
 
