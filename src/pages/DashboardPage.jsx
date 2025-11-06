@@ -7,9 +7,9 @@ import AddProductModal from '../components/AddProductModal'
 import AIInsights from '../components/AIInsights'
 import UpgradeModal from '../components/UpgradeModal'
 import ReferralModal from '../components/ReferralModal'
-// import ExpiryAlerts from '../components/ExpiryAlerts'
+import ExpiryAlerts from '../components/ExpiryAlerts'
 import { getTemplatesForBusinessType } from '../data/productTemplates'
-// import { checkExpiryAlerts, calculateWasteStats } from '../services/expiryService'
+import { checkExpiryAlerts, calculateWasteStats } from '../services/expiryService'
 
 const getTemplateProducts = (businessType) => {
   const templates = getTemplatesForBusinessType(businessType)
@@ -101,9 +101,9 @@ export default function DashboardPage({ session }) {
   const lowStock = products.filter(p => p.currentQuantity <= p.alertThreshold && p.currentQuantity > p.alertThreshold * 0.5)
   const critical = products.filter(p => p.currentQuantity <= p.alertThreshold * 0.5)
   
-  // Alertes de péremption - TEMPORAIREMENT DÉSACTIVÉ
-  // const expiryAlerts = checkExpiryAlerts(products)
-  // const wasteStats = calculateWasteStats(products)
+  // Alertes de péremption
+  const expiryAlerts = checkExpiryAlerts(products)
+  const wasteStats = calculateWasteStats(products)
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
