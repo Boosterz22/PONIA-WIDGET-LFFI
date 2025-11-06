@@ -4,8 +4,11 @@ import { TrendingUp, Clock, Shield, Zap, BarChart3, CheckCircle, Star, Users, X,
 
 export default function LandingPage() {
   return (
-    <div style={{ minHeight: '100vh' }}>
-      {/* HEADER - DÉGRADÉ FLUIDE */}
+    <div style={{ 
+      minHeight: '100vh',
+      background: 'radial-gradient(ellipse at top, rgba(255, 215, 0, 0.2) 0%, rgba(255, 215, 0, 0.12) 30%, transparent 70%), radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.15) 0%, transparent 40%), radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.1) 0%, transparent 50%)'
+    }}>
+      {/* HEADER TRANSPARENT */}
       <nav style={{
         padding: 'clamp(1.5rem, 3vw, 2rem) 0',
         background: 'transparent',
@@ -46,11 +49,11 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* SECTION HERO - DÉGRADÉ CONTINU */}
+      {/* SECTION HERO - TRANSPARENT */}
       <section id="accueil" style={{ 
         padding: 'clamp(2rem, 5vw, 3rem) 0 4rem',
         textAlign: 'center',
-        background: 'radial-gradient(ellipse at top, rgba(255, 215, 0, 0.2) 0%, transparent 60%), radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.15) 0%, transparent 40%), radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.1) 0%, transparent 50%)',
+        background: 'transparent',
         position: 'relative',
         marginTop: '-2rem'
       }} className="fade-in">
