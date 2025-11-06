@@ -1,7 +1,9 @@
-import React from 'react'
-import { Minus, Plus, Trash2, AlertTriangle, CheckCircle } from 'lucide-react'
+import React, { useState } from 'react'
+import { Minus, Plus, Trash2, AlertTriangle, CheckCircle, Mic } from 'lucide-react'
+import VoiceInput from './VoiceInput'
 
 export default function ProductCard({ product, onUpdateQuantity, onDelete }) {
+  const [showVoiceInput, setShowVoiceInput] = useState(false)
   const stockStatus = product.currentQuantity <= product.alertThreshold * 0.5 
     ? 'critical' 
     : product.currentQuantity <= product.alertThreshold 
@@ -63,7 +65,7 @@ export default function ProductCard({ product, onUpdateQuantity, onDelete }) {
         </p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '0.5rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr', gap: '0.5rem' }}>
         <button 
           onClick={() => onUpdateQuantity(product.id, -10)}
           className="btn btn-secondary"
@@ -77,6 +79,14 @@ export default function ProductCard({ product, onUpdateQuantity, onDelete }) {
           style={{ padding: '0.5rem' }}
         >
           <Minus size={18} />
+        </button>
+        <button 
+          onClick={() => setShowVoiceInput(true)}
+          className="btn btn-primary"
+          style={{ padding: '0.5rem' }}
+          title="Commande vocale"
+        >
+          <Mic size={18} />
         </button>
         <button 
           onClick={() => onUpdateQuantity(product.id, 1)}
@@ -93,6 +103,17 @@ export default function ProductCard({ product, onUpdateQuantity, onDelete }) {
           +10
         </button>
       </div>
+
+      {showVoiceInput && (
+        <VoiceInput
+          productName={product.name}
+          onConfirm={(change) => {
+            onUpdateQuantity(product.id, change)
+            setShowVoiceInput(false)
+          }}
+          onCancel={() => setShowVoiceInput(false)}
+        />
+      )}
     </div>
   )
 }

@@ -7,7 +7,8 @@ export default function AddProductModal({ onClose, onAdd }) {
     currentQuantity: '',
     unit: 'kg',
     alertThreshold: '',
-    supplier: ''
+    supplier: '',
+    expiryDate: ''
   })
 
   const handleSubmit = (e) => {
@@ -140,6 +141,22 @@ export default function AddProductModal({ onClose, onAdd }) {
               value={formData.supplier}
               onChange={handleChange}
             />
+          </div>
+
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
+              📅 Date de péremption (DLC/DLUO) (optionnel)
+            </label>
+            <input
+              type="date"
+              name="expiryDate"
+              className="input"
+              value={formData.expiryDate}
+              onChange={handleChange}
+            />
+            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+              Pour réduire le gaspillage, PONIA vous alertera avant la péremption
+            </p>
           </div>
 
           <div style={{ display: 'flex', gap: '1rem' }}>

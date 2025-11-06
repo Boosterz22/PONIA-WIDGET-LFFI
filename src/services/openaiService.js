@@ -179,5 +179,114 @@ Format: Liste numérotée, max 2 lignes par conseil, style direct et professionn
   }
 }
 
+// Fonction pour générer des suggestions IA pour produits en péremption
+export async function getExpiryAISuggestions(product) {
+  const { name, daysUntilExpiry, currentQuantity, unit, severity } = product
+  
+  try {
+    const client = new OpenAI({
+      baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+      apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY
+    })
+    
+    const completion = await client.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [
+        {
+          role: 'system',
+          content: `Tu es un assistant IA pour commerçants français. Donne des conseils pratiques et courts pour gérer les produits en péremption. Format: 3 suggestions max, chacune avec un emoji et un texte court (max 40 caractères).`
+        },
+        {
+          role: 'user',
+          content: `Produit: ${name}
+Périme dans: ${daysUntilExpiry} jour(s)
+Stock actuel: ${currentQuantity} ${unit}
+Gravité: ${severity}
+
+Donne 3 actions concrètes pour éviter le gaspillage.`
+        }
+      ],
+      temperature: 0.7,
+      max_tokens: 200
+    })
+
+    const response = completion.choices[0].message.content
+    
+    // Parser la réponse pour extraire les suggestions
+    const suggestions = []
+    const lines = response.split('\n').filter(line => line.trim())
+    
+    for (let i = 0; i < Math.min(3, lines.length); i++) {
+      const line = lines[i].trim()
+      // Extraire emoji et texte
+      const emojiMatch = line.match(/^(\p{Emoji}+)\s*(.+)$/u)
+      if (emojiMatch) {
+        suggestions.push({
+          icon: emojiMatch[1],
+          text: emojiMatch[2].replace(/^[:\-]\s*/, '').substring(0, 50),
+          action: 'ai_suggestion'
+        })
+      } else if (line.length > 0) {
+        suggestions.push({
+          icon: '💡',
+          text: line.substring(0, 50),
+          action: 'ai_suggestion'
+        })
+      }
+    }
+    
+    return suggestions
+  } catch (error) {
+    console.error('Erreur lors de la génération de suggestions IA:', error)
+    return []
+  }
+}
+
+// Fonction pour parser les commandes vocales avec IA quand le parsing local échoue
+export async function parseVoiceCommandWithAI(transcript) {
+  try {
+    const client = new OpenAI({
+      baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+      apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY
+    })
+    
+    const completion = await client.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [
+        {
+          role: 'system',
+          content: `Tu es un parser de commandes vocales pour gestion de stock. L'utilisateur peut dire des choses comme "plus 5", "moins 10", "ajouter 2.5", "retirer 3".
+Réponds UNIQUEMENT avec un JSON au format: {"action": "add" ou "subtract", "quantity": nombre}.
+Si tu ne comprends pas, réponds: {"action": null, "quantity": 0}`
+        },
+        {
+          role: 'user',
+          content: transcript
+        }
+      ],
+      temperature: 0.3,
+      max_tokens: 50
+    })
+
+    const response = completion.choices[0].message.content.trim()
+    
+    // Extraire le JSON de la réponse
+    const jsonMatch = response.match(/\{[^}]+\}/)
+    if (jsonMatch) {
+      const parsed = JSON.parse(jsonMatch[0])
+      return {
+        action: parsed.action,
+        quantity: parseFloat(parsed.quantity) || 0,
+        isValid: parsed.action !== null && !isNaN(parsed.quantity) && parsed.quantity > 0
+      }
+    }
+    
+    return { action: null, quantity: 0, isValid: false }
+  } catch (error) {
+    console.error('Erreur lors du parsing IA de la commande vocale:', error)
+    return { action: null, quantity: 0, isValid: false }
+  }
+}
+
 // Export instance singleton
 export const openaiService = new OpenAIService()
