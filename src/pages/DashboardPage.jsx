@@ -33,7 +33,7 @@ export default function DashboardPage({ session }) {
   const [showActionLimitModal, setShowActionLimitModal] = useState(false)
   const businessName = session.user.business_name || 'Mon Commerce'
   const businessType = localStorage.getItem('ponia_business_type') || 'default'
-  const userPlan = localStorage.getItem('ponia_user_plan') || 'gratuit'
+  const userPlan = localStorage.getItem('ponia_user_plan') || 'basique'
   const referralCode = localStorage.getItem('ponia_referral_code') || 'CODE-00'
   const [quotaStatus, setQuotaStatus] = useState(getQuotaStatus(userPlan))
 
@@ -57,7 +57,7 @@ export default function DashboardPage({ session }) {
   }
 
   const handleAddProduct = (newProduct) => {
-    if (userPlan === 'gratuit' && products.length >= 10) {
+    if (userPlan === 'basique' && products.length >= 10) {
       setShowAddModal(false)
       setShowUpgradeModal(true)
       return
@@ -82,7 +82,7 @@ export default function DashboardPage({ session }) {
   }
 
   const handleAddProductClick = () => {
-    if (userPlan === 'gratuit' && products.length >= 10) {
+    if (userPlan === 'basique' && products.length >= 10) {
       setShowUpgradeModal(true)
     } else {
       setShowAddModal(true)
@@ -148,7 +148,7 @@ export default function DashboardPage({ session }) {
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <span style={{ fontWeight: 'bold', fontSize: '1.125rem' }}>{businessName}</span>
-                {userPlan === 'gratuit' && (
+                {userPlan === 'basique' && (
                   <span style={{
                     background: 'linear-gradient(135deg, #4ade80, #22c55e)',
                     color: 'white',
@@ -159,7 +159,7 @@ export default function DashboardPage({ session }) {
                     textTransform: 'uppercase',
                     letterSpacing: '0.5px'
                   }}>
-                    Gratuit
+                    Basique
                   </span>
                 )}
                 {userPlan === 'standard' && (
@@ -221,9 +221,9 @@ export default function DashboardPage({ session }) {
                   cursor: 'pointer'
                 }}
               >
-                <option value="gratuit">Plan Gratuit</option>
-                <option value="standard">Plan Standard (49€)</option>
-                <option value="pro">Plan Pro (79€)</option>
+                <option value="basique">Plan Basique (€0)</option>
+                <option value="standard">Plan Standard (€49)</option>
+                <option value="pro">Plan Pro (€69.99)</option>
               </select>
             </div>
             <button onClick={handleLogout} className="btn btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -235,7 +235,7 @@ export default function DashboardPage({ session }) {
       </nav>
 
       <div className="container" style={{ padding: '2rem 1rem' }}>
-        {userPlan === 'gratuit' && (
+        {userPlan === 'basique' && (
           <div className="card" style={{ 
             marginBottom: '2rem', 
             background: 'linear-gradient(135deg, rgba(74, 222, 128, 0.1) 0%, rgba(34, 197, 94, 0.05) 100%)', 
@@ -247,10 +247,10 @@ export default function DashboardPage({ session }) {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
               <div>
                 <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  🎁 Plan Gratuit
+                  🎁 Plan Basique
                 </h3>
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>
-                  Vous utilisez <strong style={{ color: 'var(--success)' }}>{products.length}/10 produits</strong> gratuits
+                  Vous utilisez <strong style={{ color: 'var(--success)' }}>{products.length}/10 produits</strong> du plan Basique
                 </p>
                 {products.length >= 8 && (
                   <p style={{ color: 'var(--warning)', fontSize: '0.875rem', marginTop: '0.5rem' }}>
@@ -358,9 +358,9 @@ export default function DashboardPage({ session }) {
             <h2 style={{ fontSize: '1.75rem', marginBottom: '0.25rem' }}>Mes Produits</h2>
             <p style={{ color: 'var(--text-muted)' }}>
               {products.length} produit{products.length > 1 ? 's' : ''} en stock
-              {userPlan === 'gratuit' && (
+              {userPlan === 'basique' && (
                 <span style={{ color: 'var(--primary)', marginLeft: '0.5rem' }}>
-                  (max 10 en gratuit)
+                  (max 10 en plan Basique)
                 </span>
               )}
             </p>
@@ -437,7 +437,7 @@ export default function DashboardPage({ session }) {
               Limite quotidienne atteinte
             </h3>
             <p style={{ color: 'var(--text-muted)', marginBottom: '0.5rem', fontSize: '1.125rem' }}>
-              Vous avez utilisé vos <strong>20 actions</strong> gratuites aujourd'hui.
+              Vous avez utilisé vos <strong>20 actions</strong> du plan Basique aujourd'hui.
             </p>
             <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '2rem' }}>
               Actions : ajouts, modifications ou suppressions de produits.

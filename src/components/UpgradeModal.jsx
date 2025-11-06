@@ -56,7 +56,7 @@ export default function UpgradeModal({ onClose }) {
             Limite atteinte !
           </h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '1.125rem' }}>
-            Vous avez atteint la limite de <strong style={{ color: 'var(--primary)' }}>10 produits</strong> du plan Gratuit
+            Vous avez atteint la limite de <strong style={{ color: 'var(--primary)' }}>10 produits</strong> du plan Basique
           </p>
         </div>
 
@@ -160,7 +160,7 @@ export default function UpgradeModal({ onClose }) {
               fontSize: '0.875rem'
             }}
           >
-            Rester en plan Gratuit pour le moment
+            Rester en plan Basique pour le moment
           </button>
         </div>
       </div>

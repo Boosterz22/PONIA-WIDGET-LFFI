@@ -23,7 +23,7 @@ export default function LoginPage() {
     localStorage.setItem('ponia_business_name', businessName)
     localStorage.setItem('ponia_business_type', businessType)
     localStorage.setItem('ponia_user_email', email)
-    localStorage.setItem('ponia_user_plan', 'gratuit')
+    localStorage.setItem('ponia_user_plan', 'basique')
     
     const referralCode = generateReferralCode(businessName, businessType)
     localStorage.setItem('ponia_referral_code', referralCode)
@@ -161,7 +161,7 @@ export default function LoginPage() {
               </>
             ) : (
               <>
-                <span>Démarrer l'essai gratuit</span>
+                <span>Créer mon compte</span>
                 <ArrowRight size={20} />
               </>
             )}
@@ -175,7 +175,7 @@ export default function LoginPage() {
             border: '1px solid rgba(74, 222, 128, 0.3)'
           }}>
             <p style={{ fontSize: '0.95rem', color: 'var(--text)', textAlign: 'center', marginBottom: '0.75rem', fontWeight: '600' }}>
-              🎁 <strong style={{ color: 'var(--success)' }}>GRATUIT À VIE</strong> jusqu'à 10 produits
+              🎁 <strong style={{ color: 'var(--success)' }}>PLAN BASIQUE GRATUIT</strong> jusqu'à 10 produits
             </p>
             <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', textAlign: 'center', marginBottom: '0.5rem' }}>
               ✅ Alertes intelligentes 🟢🟠🔴

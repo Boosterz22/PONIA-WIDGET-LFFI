@@ -120,7 +120,7 @@ export default function AIInsights({ products, businessType, plan }) {
         </div>
       </div>
       
-      {plan === 'gratuit' && (
+      {plan === 'basique' && (
         <div className="upgrade-cta">
           <div className="upgrade-content">
             <strong>🚀 Débloquez l'IA Prédictive Avancée</strong>

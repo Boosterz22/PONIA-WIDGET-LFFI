@@ -1,14 +1,14 @@
 const QUOTA_LIMITS = {
-  gratuit: {
+  basique: {
     voiceCommands: 5,
     dailyActions: 20,
     maxProducts: 10,
     historyDays: 0
   },
   standard: {
-    voiceCommands: Infinity,
+    voiceCommands: 50,
     dailyActions: Infinity,
-    maxProducts: Infinity,
+    maxProducts: 100,
     historyDays: 30
   },
   pro: {
@@ -19,8 +19,8 @@ const QUOTA_LIMITS = {
   }
 }
 
-export function getUserQuotas(userPlan = 'gratuit') {
-  return QUOTA_LIMITS[userPlan] || QUOTA_LIMITS.gratuit
+export function getUserQuotas(userPlan = 'basique') {
+  return QUOTA_LIMITS[userPlan] || QUOTA_LIMITS.basique
 }
 
 function getTodayKey() {
@@ -51,7 +51,7 @@ export function incrementVoiceCommands() {
   return current + 1
 }
 
-export function canUseVoiceCommand(userPlan = 'gratuit') {
+export function canUseVoiceCommand(userPlan = 'basique') {
   const quotas = getUserQuotas(userPlan)
   const used = getVoiceCommandsUsed()
   
@@ -82,14 +82,14 @@ export function incrementDailyActions() {
   return current + 1
 }
 
-export function canPerformAction(userPlan = 'gratuit') {
+export function canPerformAction(userPlan = 'basique') {
   const quotas = getUserQuotas(userPlan)
   const used = getDailyActionsUsed()
   
   return used < quotas.dailyActions
 }
 
-export function getQuotaStatus(userPlan = 'gratuit') {
+export function getQuotaStatus(userPlan = 'basique') {
   const quotas = getUserQuotas(userPlan)
   const voiceUsed = getVoiceCommandsUsed()
   const actionsUsed = getDailyActionsUsed()
