@@ -52,15 +52,19 @@ export default function VoiceInput({ productName, onConfirm, onCancel }) {
             const aiCallPromise = parseVoiceCommandWithAI(transcriptText)
             const aiResult = await callAIWithTimeout(aiCallPromise)
             
-            if (aiResult.success && aiResult.data) {
+            if (aiResult.success && aiResult.data && aiResult.data.isValid) {
+              const delta = aiResult.data.action === 'add' 
+                ? aiResult.data.quantity 
+                : -aiResult.data.quantity
+              
               setParsedCommand({
-                delta: aiResult.data.delta,
-                action: aiResult.data.delta > 0 ? 'add' : 'remove',
+                delta: delta,
+                action: aiResult.data.action,
                 confidence: 'medium',
-                reason: aiResult.data.reason || 'Analysé par IA'
+                reason: 'Analysé par IA 🤖'
               })
             } else {
-              setError(aiResult.error || 'Commande non reconnue')
+              setError(aiResult.error || 'Commande non reconnue. Essayez "Plus 5" ou "Moins 10"')
             }
           } catch (err) {
             console.error('Erreur parsing IA:', err)
