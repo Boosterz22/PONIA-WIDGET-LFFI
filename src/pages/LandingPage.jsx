@@ -26,7 +26,7 @@ export default function LandingPage() {
         }}>
           {/* LOGO */}
           <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', cursor: 'pointer' }}>
-            <img src="/ponia-logo.png" alt="PONIA" style={{ height: '40px' }} />
+            <img src="/ponia-logo.png" alt="PONIA" style={{ height: '45' }} />
           </Link>
 
           {/* CTA UNIQUE */}
