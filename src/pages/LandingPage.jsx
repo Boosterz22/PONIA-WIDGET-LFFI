@@ -5,17 +5,17 @@ import { TrendingUp, Clock, Shield, Zap, BarChart3, CheckCircle, Star, Users, X,
 export default function LandingPage() {
   return (
     <div style={{ minHeight: '100vh' }}>
-      {/* HEADER SIMPLIFIÉ - 1:1 ATTENTION RATIO */}
+      {/* HEADER TRANSPARENT & FLUIDE */}
       <nav style={{
         padding: '1.25rem 0',
-        background: 'rgba(13, 17, 23, 0.95)',
-        backdropFilter: 'blur(10px)',
+        background: 'transparent',
+        backdropFilter: 'blur(20px)',
         position: 'sticky',
         top: 0,
         left: 0,
         right: 0,
         zIndex: 1000,
-        borderBottom: '1px solid rgba(255, 215, 0, 0.1)'
+        borderBottom: '1px solid rgba(255, 215, 0, 0.05)'
       }}>
         <div className="container" style={{ 
           display: 'flex', 
