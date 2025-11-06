@@ -6,8 +6,9 @@ export class OpenAIService {
   constructor() {
     // Intégration Replit OpenAI (variables d'env configurées automatiquement)
     this.client = new OpenAI({
-      baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-      apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY
+      baseURL: import.meta.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+      apiKey: import.meta.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+      dangerouslyAllowBrowser: true
     })
     
     // Tracking usage pour limite Standard (1/semaine)
@@ -185,8 +186,9 @@ export async function getExpiryAISuggestions(product) {
   
   try {
     const client = new OpenAI({
-      baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-      apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY
+      baseURL: import.meta.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+      apiKey: import.meta.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+      dangerouslyAllowBrowser: true
     })
     
     const completion = await client.chat.completions.create({
@@ -246,8 +248,9 @@ Donne 3 actions concrètes pour éviter le gaspillage.`
 export async function parseVoiceCommandWithAI(transcript) {
   try {
     const client = new OpenAI({
-      baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-      apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY
+      baseURL: import.meta.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+      apiKey: import.meta.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+      dangerouslyAllowBrowser: true
     })
     
     const completion = await client.chat.completions.create({

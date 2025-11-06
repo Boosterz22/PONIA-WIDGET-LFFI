@@ -48,6 +48,15 @@ export default function ExpiryAlerts({ expiryAlerts }) {
   useEffect(() => {
     if (!criticalProductsKey) return
     
+    // Vérifier que les clés OpenAI sont disponibles
+    const hasOpenAIKeys = import.meta.env.AI_INTEGRATIONS_OPENAI_API_KEY && 
+                          import.meta.env.AI_INTEGRATIONS_OPENAI_BASE_URL
+    
+    if (!hasOpenAIKeys) {
+      console.warn('OpenAI keys not configured, skipping AI suggestions')
+      return
+    }
+    
     const criticalProducts = expiryAlerts
       .filter(p => p.severity === 'critical' || p.severity === 'expired')
       .slice(0, 2)
