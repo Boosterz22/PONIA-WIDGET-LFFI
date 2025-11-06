@@ -485,38 +485,6 @@ export default function DashboardPage({ session }) {
         </div>
       )}
 
-      {userPlan === 'gratuit' && (
-        <div style={{
-          position: 'fixed',
-          bottom: '1rem',
-          right: '1rem',
-          background: 'rgba(0, 0, 0, 0.8)',
-          color: 'white',
-          padding: '0.75rem 1.25rem',
-          borderRadius: '8px',
-          fontSize: '0.875rem',
-          fontWeight: 600,
-          zIndex: 50,
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.5rem',
-          cursor: 'pointer',
-          border: '2px solid rgba(255, 255, 255, 0.2)',
-          backdropFilter: 'blur(10px)'
-        }} onClick={() => window.location.href = '/#tarifs'}>
-          <Crown size={18} />
-          <span>Version Gratuite</span>
-          <div style={{ 
-            fontSize: '0.75rem', 
-            background: 'var(--primary)', 
-            padding: '0.25rem 0.5rem', 
-            borderRadius: '4px',
-            marginLeft: '0.25rem'
-          }}>
-            {quotaStatus.actions.used}/{quotaStatus.actions.limit} actions
-          </div>
-        </div>
-      )}
     </div>
   )
 }

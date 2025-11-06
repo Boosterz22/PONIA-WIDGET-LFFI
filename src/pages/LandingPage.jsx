@@ -696,22 +696,34 @@ export default function LandingPage() {
                 Pour découvrir
               </div>
 
-              <div style={{ textAlign: 'left', marginBottom: '2rem' }}>
+              <Link to="/login" className="btn btn-secondary" style={{ width: '100%', padding: '1rem', marginBottom: '1.5rem', background: '#e5e7eb', color: '#6b7280' }}>
+                Essayer Gratuitement
+              </Link>
+
+              <div style={{ textAlign: 'left' }}>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <CheckCircle size={18} color="#9ca3af" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>10 produits max</span>
+                  <span style={{ fontSize: '0.9rem' }}>Max 10 produits</span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <CheckCircle size={18} color="#9ca3af" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Alertes visuelles 🟢🟠🔴</span>
+                  <span style={{ fontSize: '0.9rem' }}>Alertes visuelles 🟢🟠🔴</span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <CheckCircle size={18} color="#9ca3af" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Templates produits</span>
+                  <span style={{ fontSize: '0.9rem' }}>IA basique (score santé)</span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <CheckCircle size={18} color="#9ca3af" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem' }}>Templates produits</span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <CheckCircle size={18} color="#9ca3af" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem' }}>Support email</span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <X size={18} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Max 20 actions/jour</span>
+                  <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>20 actions/jour max</span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <X size={18} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
@@ -723,25 +735,13 @@ export default function LandingPage() {
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <X size={18} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Pas de prédictions</span>
+                  <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Pas de prédictions futures</span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <X size={18} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
                   <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Pas d'export PDF</span>
                 </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <X size={18} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Watermark "Gratuit"</span>
-                </div>
               </div>
-
-              <Link to="/login" className="btn btn-secondary" style={{ width: '100%', padding: '1rem', background: '#e5e7eb', color: '#6b7280' }}>
-                Essayer Gratuitement
-              </Link>
-              
-              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '1rem' }}>
-                Pour découvrir la valeur
-              </p>
             </div>
 
             {/* PLAN STANDARD */}
@@ -754,11 +754,15 @@ export default function LandingPage() {
               <div style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: 'bold', color: 'var(--primary)', marginBottom: '0.5rem' }}>
                 €49<span style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>/mois</span>
               </div>
-              <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '2rem' }}>
+              <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
                 <s>€98/mois</s> → -50% pendant 3 mois
               </div>
 
-              <div style={{ textAlign: 'left', marginBottom: '2rem' }}>
+              <Link to="/login" className="btn btn-primary" style={{ width: '100%', padding: '1rem', marginBottom: '1.5rem' }}>
+                ⚡ Passer à Standard
+              </Link>
+
+              <div style={{ textAlign: 'left' }}>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
                   <span style={{ fontSize: '0.9rem' }}><strong>Produits illimités</strong></span>
@@ -773,41 +777,37 @@ export default function LandingPage() {
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem' }}><strong>IA intermédiaire</strong> (prédictions 7j)</span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem' }}>Suggestions de commandes IA</span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
                   <span style={{ fontSize: '0.9rem' }}>Historique 30 jours</span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Prédictions 7 jours</span>
+                  <span style={{ fontSize: '0.9rem' }}>Export PDF/CSV</span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Export PDF/CSV sans watermark</span>
+                  <span style={{ fontSize: '0.9rem' }}>Notifications Email</span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Notifications SMS/Email</span>
+                  <span style={{ fontSize: '0.9rem' }}>Gestion fournisseurs</span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Commandes auto-suggérées</span>
+                  <span style={{ fontSize: '0.9rem' }}>3 utilisateurs</span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Gestion fournisseurs & coûts</span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>3 utilisateurs inclus</span>
+                  <span style={{ fontSize: '0.9rem' }}>Support email rapide</span>
                 </div>
               </div>
-
-              <Link to="/login" className="btn btn-primary" style={{ width: '100%', padding: '1rem' }}>
-                Essai 7 jours gratuit
-              </Link>
-              
-              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '1rem' }}>
-                Parfait pour 1 commerce
-              </p>
             </div>
 
             {/* PLAN PRO */}
@@ -837,14 +837,22 @@ export default function LandingPage() {
               <div style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: 'bold', color: 'var(--primary)', marginBottom: '0.5rem' }}>
                 €99<span style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>/mois</span>
               </div>
-              <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '2rem' }}>
+              <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
                 <s>€198/mois</s> → -50% pendant 3 mois
               </div>
 
-              <div style={{ textAlign: 'left', marginBottom: '2rem' }}>
+              <Link to="/login" className="btn btn-primary" style={{ width: '100%', padding: '1rem', marginBottom: '1.5rem', animation: 'pulse 2s infinite' }}>
+                🚀 Passer à Pro
+              </Link>
+
+              <div style={{ textAlign: 'left' }}>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <CheckCircle size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}><strong>Tout du plan Standard +</strong></span>
+                  <span style={{ fontSize: '0.9rem' }}><strong>Tout du Standard +</strong></span>
+                </div>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
+                  <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem' }}><strong>IA avancée</strong> (prédictions 30j)</span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
@@ -856,7 +864,7 @@ export default function LandingPage() {
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Prédictions 30 jours</span>
+                  <span style={{ fontSize: '0.9rem' }}>Intégration météo & événements</span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
@@ -864,11 +872,7 @@ export default function LandingPage() {
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Intégration météo & événements</span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Intégrations POS (Square, etc.)</span>
+                  <span style={{ fontSize: '0.9rem' }}>Intégrations POS (Square)</span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
@@ -876,21 +880,13 @@ export default function LandingPage() {
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Analytics avancées (marges, COGS)</span>
+                  <span style={{ fontSize: '0.9rem' }}>Analytics (marges, COGS)</span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
                   <span style={{ fontSize: '0.9rem' }}>Support prioritaire ({'<'}2h)</span>
                 </div>
               </div>
-
-              <Link to="/login" className="btn btn-primary" style={{ width: '100%', padding: '1rem', animation: 'pulse 2s infinite' }}>
-                🚀 Pour les chaînes
-              </Link>
-              
-              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '1rem' }}>
-                Idéal pour 2-10 commerces
-              </p>
             </div>
           </div>
 
