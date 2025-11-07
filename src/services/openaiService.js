@@ -21,6 +21,12 @@ export class OpenAIService {
       const baseURL = import.meta.env.AI_INTEGRATIONS_OPENAI_BASE_URL
       const apiKey = import.meta.env.AI_INTEGRATIONS_OPENAI_API_KEY
       
+      console.log('🔍 DEBUG OpenAI Config:', {
+        baseURL: baseURL ? '✅ Présent' : '❌ Manquant',
+        apiKey: apiKey ? `✅ Présent (${apiKey.substring(0, 10)}...)` : '❌ Manquant',
+        allEnv: Object.keys(import.meta.env).filter(k => k.includes('AI_'))
+      })
+      
       if (!baseURL || !apiKey) {
         this._clientError = new Error('Configuration OpenAI manquante. Vérifiez que Vite expose AI_INTEGRATIONS_OPENAI_* (envPrefix dans vite.config.js).')
         console.warn('⚠️', this._clientError.message)
