@@ -63,27 +63,10 @@ export default function LoginPage() {
       }}>
         <div style={{ width: '100%', maxWidth: '400px' }}>
           <Link to="/" style={{ 
-            display: 'inline-flex',
-            alignItems: 'center',
-            marginBottom: '3rem',
-            textDecoration: 'none',
-            color: '#000'
+            display: 'inline-block',
+            marginBottom: '3rem'
           }}>
-            <div style={{
-              width: '32px',
-              height: '32px',
-              background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
-              borderRadius: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontWeight: 'bold',
-              fontSize: '1.25rem',
-              marginRight: '0.75rem'
-            }}>
-              ⚡
-            </div>
-            <span style={{ fontSize: '1.5rem', fontWeight: 600, letterSpacing: '-0.02em' }}>PONIA</span>
+            <img src="/ponia-logo.png" alt="PONIA AI" style={{ height: '50px' }} />
           </Link>
 
           <h1 style={{ 
