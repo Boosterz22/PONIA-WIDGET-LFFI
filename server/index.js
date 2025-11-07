@@ -421,6 +421,46 @@ app.get('/api/users/supabase/:supabaseId', async (req, res) => {
   }
 })
 
+// Weather endpoint (sécurisé côté serveur)
+app.get('/api/weather', async (req, res) => {
+  try {
+    const { city = 'Paris', country = 'FR' } = req.query
+    const apiKey = process.env.OPENWEATHER_API_KEY
+    
+    if (!apiKey) {
+      return res.json({ 
+        weather: null, 
+        message: 'OpenWeatherMap API key not configured' 
+      })
+    }
+
+    const response = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${apiKey}&units=metric&lang=fr`
+    )
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch weather data')
+    }
+
+    const data = await response.json()
+    
+    const weather = {
+      temp: Math.round(data.main.temp),
+      feelsLike: Math.round(data.main.feels_like),
+      humidity: data.main.humidity,
+      description: data.weather[0].description,
+      icon: data.weather[0].icon,
+      windSpeed: Math.round(data.wind.speed * 3.6),
+      city: data.name
+    }
+
+    res.json({ weather })
+  } catch (error) {
+    console.error('Weather API error:', error)
+    res.json({ weather: null, error: error.message })
+  }
+})
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', service: 'PONIA AI Backend' })

@@ -8,6 +8,8 @@ import AIInsights from '../components/AIInsights'
 import UpgradeModal from '../components/UpgradeModal'
 import ReferralModal from '../components/ReferralModal'
 import ChatAI from '../components/ChatAI'
+import WeatherWidget from '../components/WeatherWidget'
+import EventsWidget from '../components/EventsWidget'
 import { getTemplatesForBusinessType } from '../data/productTemplates'
 import { checkExpiryAlerts, calculateWasteStats } from '../services/expiryService'
 import { incrementDailyActions, canPerformAction, getQuotaStatus } from '../services/quotaService'
@@ -483,6 +485,16 @@ export default function DashboardPage({ session }) {
             </div>
           </div>
         )}
+
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: '1rem',
+          marginBottom: '2rem'
+        }}>
+          <WeatherWidget />
+          <EventsWidget />
+        </div>
 
         <div style={{
           display: 'grid',
