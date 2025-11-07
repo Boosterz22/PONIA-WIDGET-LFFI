@@ -1,7 +1,7 @@
 import React from 'react'
-import { TrendingUp, AlertTriangle, CheckCircle, Crown } from 'lucide-react'
+import { TrendingUp, AlertTriangle, CheckCircle, Crown, FileText } from 'lucide-react'
 
-export default function AIInsights({ products, businessType, plan }) {
+export default function AIInsights({ products, businessType, plan, onGenerateOrder }) {
   if (!products || products.length === 0) {
     return null
   }
@@ -173,6 +173,34 @@ export default function AIInsights({ products, businessType, plan }) {
               )
             })}
           </div>
+          
+          {(criticalProducts.length > 0 || lowStockProducts.length > 0) && (
+            <button
+              onClick={onGenerateOrder}
+              style={{
+                marginTop: '1rem',
+                padding: '0.875rem 1.25rem',
+                background: 'linear-gradient(135deg, #FFD700, #FFA500)',
+                border: 'none',
+                borderRadius: '8px',
+                color: '#1F2937',
+                fontWeight: '600',
+                fontSize: '0.9rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+                width: '100%',
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
+              onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
+            >
+              <FileText size={18} />
+              Générer bon de commande
+            </button>
+          )}
         </div>
       )}
 
