@@ -291,5 +291,120 @@ Si tu ne comprends pas, réponds: {"action": null, "quantity": 0}`
   }
 }
 
+// Fonction pour chat conversationnel intelligent avec contexte stock complet
+export async function getChatResponse(userMessage, products, conversationHistory = []) {
+  try {
+    const client = new OpenAI({
+      baseURL: import.meta.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+      apiKey: import.meta.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+      dangerouslyAllowBrowser: true
+    })
+    
+    const stockContext = buildStockContext(products)
+    
+    const messages = [
+      {
+        role: 'system',
+        content: `Tu es PONIA AI, assistant intelligent de gestion de stock pour commerçants français. Tu es sympathique, professionnel et ULTRA-PRATIQUE.
+
+CONTEXTE STOCK ACTUEL :
+${stockContext}
+
+RÈGLES :
+- Réponds en français naturel et conversationnel
+- Sois concis mais précis (2-3 phrases max par défaut)
+- Utilise des emojis pertinents pour clarifier
+- Donne des chiffres exacts et des conseils actionnables
+- Si on te demande ce que tu peux faire, liste 3-4 exemples concrets
+- Tu peux calculer, analyser et suggérer des actions intelligentes
+- Adapte ton ton : professionnel mais chaleureux
+
+EXEMPLES DE TON :
+❌ "Selon mes analyses, il conviendrait de..."
+✅ "Je vois que ta farine est basse (2kg). Je te conseille de commander 15-20kg cette semaine 👍"
+
+❌ "Voulez-vous que j'effectue une génération..."
+✅ "Tu veux que je te fasse un bon de commande ? 📄"
+
+Tu es là pour SIMPLIFIER la vie des commerçants, pas compliquer.`
+      },
+      ...conversationHistory.map(msg => ({
+        role: msg.role === 'user' ? 'user' : 'assistant',
+        content: msg.content
+      })),
+      {
+        role: 'user',
+        content: userMessage
+      }
+    ]
+    
+    const completion = await client.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: messages,
+      temperature: 0.8,
+      max_tokens: 300
+    })
+
+    return completion.choices[0].message.content
+
+  } catch (error) {
+    console.error('Erreur chat IA:', error)
+    return "Désolé, j'ai un souci technique 😅 Réessaie dans quelques secondes !"
+  }
+}
+
+function buildStockContext(products) {
+  if (!products || products.length === 0) {
+    return "Aucun produit en stock pour le moment."
+  }
+  
+  const critical = products.filter(p => {
+    const threshold = p.alertThreshold || 10
+    return p.currentQuantity <= threshold * 0.5
+  })
+  
+  const low = products.filter(p => {
+    const threshold = p.alertThreshold || 10
+    return p.currentQuantity <= threshold && p.currentQuantity > threshold * 0.5
+  })
+  
+  const healthy = products.filter(p => {
+    const threshold = p.alertThreshold || 10
+    return p.currentQuantity > threshold
+  })
+  
+  let context = `INVENTAIRE (${products.length} produits) :\n\n`
+  
+  if (critical.length > 0) {
+    context += `🔴 STOCK CRITIQUE (${critical.length}) :\n`
+    critical.slice(0, 5).forEach(p => {
+      const threshold = p.alertThreshold || 10
+      context += `  - ${p.name}: ${p.currentQuantity} ${p.unit} (seuil: ${threshold})\n`
+    })
+    context += '\n'
+  }
+  
+  if (low.length > 0) {
+    context += `🟠 STOCK FAIBLE (${low.length}) :\n`
+    low.slice(0, 5).forEach(p => {
+      const threshold = p.alertThreshold || 10
+      context += `  - ${p.name}: ${p.currentQuantity} ${p.unit} (seuil: ${threshold})\n`
+    })
+    context += '\n'
+  }
+  
+  if (healthy.length > 0) {
+    context += `✅ STOCK OPTIMAL (${healthy.length}) :\n`
+    healthy.slice(0, 3).forEach(p => {
+      context += `  - ${p.name}: ${p.currentQuantity} ${p.unit}\n`
+    })
+    if (healthy.length > 3) {
+      context += `  ... et ${healthy.length - 3} autres produits OK\n`
+    }
+  }
+  
+  return context
+}
+
 // Export instance singleton
 export const openaiService = new OpenAIService()

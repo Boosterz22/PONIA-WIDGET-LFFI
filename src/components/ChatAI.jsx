@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { MessageCircle, X, Send, Loader } from 'lucide-react'
+import { getChatResponse } from '../services/openaiService'
 
 export default function ChatAI({ products, userPlan }) {
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: 'Bonjour ! Je suis votre assistant IA PONIA. Posez-moi des questions sur vos stocks, je peux vous aider à optimiser vos commandes.'
+      content: 'Salut ! 👋 Je suis PONIA, ton assistant IA de gestion de stock. Demande-moi n\'importe quoi sur tes produits, je connais tout ton inventaire !'
     }
   ])
   const [input, setInput] = useState('')
@@ -26,16 +27,18 @@ export default function ChatAI({ products, userPlan }) {
 
     const userMessage = input.trim()
     setInput('')
-    setMessages(prev => [...prev, { role: 'user', content: userMessage }])
+    
+    const newMessages = [...messages, { role: 'user', content: userMessage }]
+    setMessages(newMessages)
     setLoading(true)
 
     try {
-      const response = await getAIResponse(userMessage, products, userPlan)
+      const response = await getChatResponse(userMessage, products, messages)
       setMessages(prev => [...prev, { role: 'assistant', content: response }])
     } catch (error) {
       setMessages(prev => [...prev, { 
         role: 'assistant', 
-        content: 'Désolé, une erreur est survenue. Veuillez réessayer.' 
+        content: 'Désolé, j\'ai un souci technique 😅 Réessaie dans quelques secondes !' 
       }])
     } finally {
       setLoading(false)
@@ -257,52 +260,4 @@ export default function ChatAI({ products, userPlan }) {
       </style>
     </>
   )
-}
-
-async function getAIResponse(message, products, userPlan) {
-  const lowercaseMsg = message.toLowerCase()
-
-  if (lowercaseMsg.includes('combien') || lowercaseMsg.includes('quantité')) {
-    const productName = products.find(p => 
-      lowercaseMsg.includes(p.name.toLowerCase())
-    )
-    if (productName) {
-      return `Vous avez actuellement ${productName.currentQuantity} ${productName.unit} de ${productName.name} en stock.`
-    }
-  }
-
-  if (lowercaseMsg.includes('commander') || lowercaseMsg.includes('commande')) {
-    const critical = products.filter(p => p.currentQuantity <= p.alertThreshold * 0.5)
-    const low = products.filter(p => p.currentQuantity <= p.alertThreshold && p.currentQuantity > p.alertThreshold * 0.5)
-    
-    if (critical.length === 0 && low.length === 0) {
-      return "Bonne nouvelle ! Tous vos stocks sont au niveau optimal. Aucune commande urgente nécessaire."
-    }
-    
-    let response = "D'après l'analyse de vos stocks :\n\n"
-    if (critical.length > 0) {
-      response += `🔴 URGENT (${critical.length}) :\n`
-      critical.forEach(p => {
-        response += `• ${p.name} (${p.currentQuantity} ${p.unit})\n`
-      })
-    }
-    if (low.length > 0) {
-      response += `\n🟠 À commander cette semaine (${low.length}) :\n`
-      low.forEach(p => {
-        response += `• ${p.name} (${p.currentQuantity} ${p.unit})\n`
-      })
-    }
-    response += "\nVoulez-vous que je génère un bon de commande ?"
-    return response
-  }
-
-  if (lowercaseMsg.includes('stock') || lowercaseMsg.includes('inventaire')) {
-    const critical = products.filter(p => p.currentQuantity <= p.alertThreshold * 0.5).length
-    const low = products.filter(p => p.currentQuantity <= p.alertThreshold && p.currentQuantity > p.alertThreshold * 0.5).length
-    const healthy = products.filter(p => p.currentQuantity > p.alertThreshold).length
-    
-    return `Aperçu de vos stocks :\n\n✅ ${healthy} produits optimaux\n🟠 ${low} produits en stock faible\n🔴 ${critical} produits en rupture imminente\n\nTotal : ${products.length} produits suivis`
-  }
-
-  return "Je suis là pour vous aider ! Vous pouvez me demander :\n\n• \"Combien j'ai de farine ?\"\n• \"Qu'est-ce que je dois commander ?\"\n• \"Montre-moi mes stocks\"\n• \"Génère un bon de commande\"\n\nQue puis-je faire pour vous ?"
 }
