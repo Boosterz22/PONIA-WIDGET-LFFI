@@ -1,12 +1,29 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { MessageCircle, X, Send, Loader } from 'lucide-react'
 
-async function getChatResponse(userMessage, products, conversationHistory) {
+async function getChatResponse(userMessage, products, conversationHistory, insights) {
   try {
-    const { getChatResponse: getChatResponseReal } = await import('../services/openaiService')
-    return await getChatResponseReal(userMessage, products, conversationHistory)
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userMessage,
+        products,
+        conversationHistory,
+        insights
+      })
+    })
+
+    if (!response.ok) {
+      throw new Error(`Erreur API: ${response.status}`)
+    }
+
+    const data = await response.json()
+    return data.response
   } catch (error) {
-    console.error('Error loading chat service:', error)
+    console.error('Error calling chat API:', error)
     return "Désolé, j'ai un souci technique 😅 Réessaie dans quelques secondes !"
   }
 }
@@ -42,7 +59,7 @@ export default function ChatAI({ products, userPlan }) {
     setLoading(true)
 
     try {
-      const response = await getChatResponse(userMessage, products, messages)
+      const response = await getChatResponse(userMessage, products, messages, null)
       setMessages(prev => [...prev, { role: 'assistant', content: response }])
     } catch (error) {
       setMessages(prev => [...prev, { 
