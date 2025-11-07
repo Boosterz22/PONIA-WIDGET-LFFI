@@ -697,7 +697,9 @@ export default function LandingPage() {
               padding: '2.5rem', 
               textAlign: 'center',
               border: '2px solid rgba(200, 200, 200, 0.3)',
-              background: 'rgba(250, 250, 250, 0.5)'
+              background: 'rgba(250, 250, 250, 0.5)',
+              display: 'flex',
+              flexDirection: 'column'
             }}>
               <div style={{ 
                 background: '#e5e7eb',
@@ -707,14 +709,15 @@ export default function LandingPage() {
                 fontSize: '0.85rem',
                 fontWeight: 'bold',
                 marginBottom: '1rem',
-                display: 'inline-block'
+                display: 'inline-block',
+                alignSelf: 'center'
               }}>
                 BASIQUE
               </div>
               <div style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: 'bold', color: '#6b7280', marginBottom: '0.5rem' }}>
                 €0<span style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>/mois</span>
               </div>
-              <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '2rem' }}>
+              <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '2rem', minHeight: '1.5rem' }}>
                 Pour découvrir
               </div>
 
@@ -771,13 +774,15 @@ export default function LandingPage() {
               padding: '2.5rem', 
               textAlign: 'center',
               border: '3px solid var(--primary)',
-              boxShadow: '0 4px 20px rgba(255, 215, 0, 0.2)'
+              boxShadow: '0 4px 20px rgba(255, 215, 0, 0.2)',
+              display: 'flex',
+              flexDirection: 'column'
             }}>
-              <div style={{ fontSize: '1.1rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Standard</div>
+              <div style={{ fontSize: '1.1rem', color: 'var(--text-muted)', marginBottom: '0.5rem', minHeight: '1.5rem' }}>Standard</div>
               <div style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: 'bold', color: 'var(--primary)', marginBottom: '0.5rem' }}>
                 €49<span style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>/mois</span>
               </div>
-              <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
+              <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '2rem', minHeight: '1.5rem' }}>
                 <s>€98/mois</s> → -50% pendant 3 mois
               </div>
 
@@ -840,7 +845,9 @@ export default function LandingPage() {
               border: '3px solid var(--primary)',
               position: 'relative',
               background: 'rgba(255, 215, 0, 0.03)',
-              boxShadow: '0 4px 20px rgba(255, 215, 0, 0.2)'
+              boxShadow: '0 4px 20px rgba(255, 215, 0, 0.2)',
+              display: 'flex',
+              flexDirection: 'column'
             }}>
               <div style={{ 
                 position: 'absolute', 
@@ -857,11 +864,11 @@ export default function LandingPage() {
                 ⭐ RECOMMANDÉ
               </div>
 
-              <div style={{ fontSize: '1.1rem', color: 'var(--text-muted)', marginBottom: '0.5rem', marginTop: '0.5rem' }}>Pro</div>
+              <div style={{ fontSize: '1.1rem', color: 'var(--text-muted)', marginBottom: '0.5rem', minHeight: '1.5rem' }}>Pro</div>
               <div style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: 'bold', color: 'var(--primary)', marginBottom: '0.5rem' }}>
                 €69<span style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>/mois</span>
               </div>
-              <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
+              <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '2rem', minHeight: '1.5rem' }}>
                 <s>€138/mois</s> → -50% pendant 3 mois
               </div>
 
