@@ -157,10 +157,10 @@ Tu es l'outil qui transforme les commerçants en experts de leur propre stock.`
     res.json({ response })
 
   } catch (error) {
-    console.error('Erreur chat IA:', error)
+    console.error('Erreur chat IA:', error.message)
     res.status(500).json({ 
       error: 'Erreur serveur', 
-      message: error.message 
+      message: 'Une erreur est survenue lors du traitement de votre demande.'
     })
   }
 })
