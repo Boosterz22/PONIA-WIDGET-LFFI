@@ -5,6 +5,7 @@ import LoginPage from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
 import ProfilePage from './pages/ProfilePage'
 import SettingsPage from './pages/SettingsPage'
+import HistoryPage from './pages/HistoryPage'
 import { supabase } from './services/supabase'
 
 function App() {
@@ -53,6 +54,10 @@ function App() {
         <Route 
           path="/settings" 
           element={session ? <SettingsPage session={session} /> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="/history" 
+          element={session ? <HistoryPage session={session} /> : <Navigate to="/login" />} 
         />
       </Routes>
     </BrowserRouter>

@@ -1,5 +1,16 @@
 import express from 'express'
 import OpenAI from 'openai'
+import { 
+  getUserByEmail,
+  getUserBySupabaseId, 
+  createUser, 
+  getProductsByUserId, 
+  createProduct, 
+  updateProduct, 
+  deleteProduct,
+  addStockMovement,
+  getAllStockHistory
+} from './storage.js'
 
 const app = express()
 const PORT = 3000
@@ -305,6 +316,108 @@ TOTAL INDICATIF : XXX€ (prix marché ${new Date().getFullYear()}, à confirmer
       error: 'Erreur serveur',
       message: 'Impossible de générer le bon de commande.'
     })
+  }
+})
+
+// Products endpoints
+app.get('/api/products/:userId', async (req, res) => {
+  try {
+    const userId = parseInt(req.params.userId)
+    const products = await getProductsByUserId(userId)
+    res.json(products)
+  } catch (error) {
+    console.error('Erreur récupération produits:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+app.post('/api/products', async (req, res) => {
+  try {
+    const product = await createProduct(req.body)
+    res.json(product)
+  } catch (error) {
+    console.error('Erreur création produit:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+app.put('/api/products/:id', async (req, res) => {
+  try {
+    const productId = parseInt(req.params.id)
+    const { previousQuantity, ...updates } = req.body
+    
+    const product = await updateProduct(productId, updates)
+    
+    // Si la quantité change, enregistrer le mouvement
+    if (updates.currentQuantity !== undefined && previousQuantity !== undefined) {
+      const quantityChange = parseFloat(updates.currentQuantity) - parseFloat(previousQuantity)
+      await addStockMovement(
+        productId,
+        quantityChange,
+        parseFloat(updates.currentQuantity),
+        quantityChange > 0 ? 'increase' : 'decrease',
+        req.body.notes || null
+      )
+    }
+    
+    res.json(product)
+  } catch (error) {
+    console.error('Erreur modification produit:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+app.delete('/api/products/:id', async (req, res) => {
+  try {
+    const productId = parseInt(req.params.id)
+    await deleteProduct(productId)
+    res.json({ success: true })
+  } catch (error) {
+    console.error('Erreur suppression produit:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+app.get('/api/stock-history/:userId', async (req, res) => {
+  try {
+    const userId = parseInt(req.params.userId)
+    const limit = parseInt(req.query.limit) || 100
+    const history = await getAllStockHistory(userId, limit)
+    res.json(history)
+  } catch (error) {
+    console.error('Erreur récupération historique:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// User endpoints
+app.post('/api/users', async (req, res) => {
+  try {
+    const user = await createUser(req.body)
+    res.json(user)
+  } catch (error) {
+    console.error('Erreur création utilisateur:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+app.get('/api/users/email/:email', async (req, res) => {
+  try {
+    const user = await getUserByEmail(req.params.email)
+    res.json(user)
+  } catch (error) {
+    console.error('Erreur récupération utilisateur:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+app.get('/api/users/supabase/:supabaseId', async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.params.supabaseId)
+    res.json(user)
+  } catch (error) {
+    console.error('Erreur récupération utilisateur:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
   }
 })
 
