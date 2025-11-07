@@ -1,24 +1,9 @@
-import React, { useState, useEffect } from 'react'
-import { Brain, AlertTriangle, TrendingUp, Lightbulb, Loader, Sparkles } from 'lucide-react'
-import '../styles/aiInsights.css'
+import React from 'react'
+import { TrendingUp, AlertTriangle, CheckCircle, Crown } from 'lucide-react'
 
 export default function AIInsights({ products, businessType, plan }) {
-  const [loading, setLoading] = useState(false)
-  
   if (!products || products.length === 0) {
-    return (
-      <div className="ai-insights-panel">
-        <div className="ai-header">
-          <div className="ai-title">
-            <Brain size={24} color="#F59E0B" />
-            <h2>🤖 PONIA AI - Analyse Intelligente</h2>
-          </div>
-        </div>
-        <div className="ai-summary empty">
-          📦 Ajoutez des produits pour voir l'analyse IA PONIA
-        </div>
-      </div>
-    )
+    return null
   }
 
   const criticalProducts = products.filter(p => p.currentQuantity <= (p.alertThreshold || 10) * 0.5)
@@ -31,102 +16,291 @@ export default function AIInsights({ products, businessType, plan }) {
   const healthScore = Math.round((healthyProducts.length / products.length) * 100)
   
   let status = 'good'
-  let message = '🎉 Parfait ! Votre stock est bien géré.'
+  let message = 'Votre stock est optimal'
+  let statusColor = '#10B981'
   
   if (criticalProducts.length > 0) {
     status = 'critical'
-    message = `🔴 URGENT : ${criticalProducts.length} produit${criticalProducts.length > 1 ? 's' : ''} en rupture imminente !`
+    message = `${criticalProducts.length} produit${criticalProducts.length > 1 ? 's' : ''} nécessite${criticalProducts.length > 1 ? 'nt' : ''} une action urgente`
+    statusColor = '#EF4444'
   } else if (lowStockProducts.length > 0) {
     status = 'warning'
-    message = `🟠 Attention : ${lowStockProducts.length} produit${lowStockProducts.length > 1 ? 's' : ''} en stock faible.`
+    message = `${lowStockProducts.length} produit${lowStockProducts.length > 1 ? 's' : ''} en stock faible`
+    statusColor = '#F59E0B'
   }
   
   const topActions = []
   
   if (criticalProducts.length > 0) {
     topActions.push({
-      priority: 1,
-      icon: '🔴',
-      title: 'Commande urgente',
-      description: `${criticalProducts.map(p => p.name).join(', ')} - Commandez AUJOURD'HUI`
+      priority: 'urgent',
+      title: 'Commander immédiatement',
+      products: criticalProducts.map(p => p.name).join(', '),
+      color: '#EF4444',
+      icon: AlertTriangle
     })
   }
   
   if (lowStockProducts.length > 0 && topActions.length < 3) {
     topActions.push({
-      priority: 2,
-      icon: '🟠',
-      title: 'Planifier commande',
-      description: `${lowStockProducts.slice(0, 2).map(p => p.name).join(', ')} - Commandez cette semaine`
+      priority: 'moderate',
+      title: 'Planifier une commande cette semaine',
+      products: lowStockProducts.slice(0, 2).map(p => p.name).join(', '),
+      color: '#F59E0B',
+      icon: TrendingUp
     })
   }
   
   if (healthyProducts.length === products.length) {
     topActions.push({
-      priority: 4,
-      icon: '🎉',
-      title: 'Parfait !',
-      description: 'Votre gestion de stock est optimale. Continuez comme ça !'
+      priority: 'success',
+      title: 'Gestion optimale',
+      products: 'Tous vos stocks sont au niveau idéal',
+      color: '#10B981',
+      icon: CheckCircle
     })
   }
 
   return (
-    <div className="ai-insights-panel">
-      <div className="ai-header">
-        <div className="ai-title">
-          <Brain size={24} color="#F59E0B" />
-          <h2>🤖 PONIA AI - Analyse Intelligente</h2>
-        </div>
-        <div className={`health-score ${status}`}>
-          <span className="score-value">{healthScore}%</span>
-          <span className="score-label">Santé Stock</span>
-        </div>
-      </div>
-      
-      <div className={`ai-summary ${status}`}>
-        {message}
-      </div>
-      
-      {topActions.length > 0 && (
-        <div className="top-actions">
-          <h3>
-            <AlertTriangle size={18} />
-            Actions Prioritaires
+    <div style={{
+      background: 'white',
+      border: '1px solid #E5E7EB',
+      borderRadius: '12px',
+      padding: '2rem',
+      marginBottom: '2rem',
+      boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+    }}>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        marginBottom: '1.5rem',
+        flexWrap: 'wrap',
+        gap: '1rem'
+      }}>
+        <div>
+          <h3 style={{ 
+            fontSize: '1.25rem', 
+            fontWeight: '600', 
+            color: '#111827',
+            marginBottom: '0.5rem'
+          }}>
+            Analyse intelligente
           </h3>
-          {topActions.slice(0, 3).map((action, index) => (
-            <div key={index} className={`action-card priority-${action.priority}`}>
-              <div className="action-icon">{action.icon}</div>
-              <div className="action-content">
-                <h4>{action.title}</h4>
-                <p>{action.description}</p>
-              </div>
-            </div>
-          ))}
+          <p style={{ 
+            color: '#6B7280', 
+            fontSize: '0.875rem',
+            margin: 0
+          }}>
+            {message}
+          </p>
+        </div>
+        
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          padding: '1rem 1.5rem',
+          background: '#F9FAFB',
+          borderRadius: '10px',
+          minWidth: '120px'
+        }}>
+          <div style={{
+            fontSize: '2rem',
+            fontWeight: '700',
+            color: statusColor,
+            lineHeight: '1'
+          }}>
+            {healthScore}%
+          </div>
+          <div style={{
+            fontSize: '0.75rem',
+            color: '#6B7280',
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px',
+            marginTop: '0.25rem'
+          }}>
+            Santé Stock
+          </div>
+        </div>
+      </div>
+
+      {topActions.length > 0 && (
+        <div style={{ marginBottom: '1.5rem' }}>
+          <h4 style={{
+            fontSize: '0.875rem',
+            fontWeight: '600',
+            color: '#6B7280',
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px',
+            marginBottom: '1rem'
+          }}>
+            Actions recommandées
+          </h4>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            {topActions.slice(0, 3).map((action, index) => {
+              const Icon = action.icon
+              return (
+                <div key={index} style={{
+                  display: 'flex',
+                  gap: '1rem',
+                  padding: '1rem',
+                  background: '#F9FAFB',
+                  borderRadius: '8px',
+                  borderLeft: `3px solid ${action.color}`,
+                  alignItems: 'flex-start'
+                }}>
+                  <Icon size={20} color={action.color} style={{ flexShrink: 0, marginTop: '2px' }} />
+                  <div style={{ flex: 1 }}>
+                    <div style={{
+                      fontWeight: '600',
+                      color: '#111827',
+                      fontSize: '0.9rem',
+                      marginBottom: '0.25rem'
+                    }}>
+                      {action.title}
+                    </div>
+                    <div style={{
+                      color: '#6B7280',
+                      fontSize: '0.875rem',
+                      lineHeight: '1.5'
+                    }}>
+                      {action.products}
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
         </div>
       )}
-      
-      <div className="ai-stats">
-        <div className="stat-card">
-          <div className="stat-value" style={{ color: '#EF4444' }}>{criticalProducts.length}</div>
-          <div className="stat-label">Rupture imminente</div>
+
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+        gap: '1rem',
+        paddingTop: '1rem',
+        borderTop: '1px solid #F3F4F6'
+      }}>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          padding: '0.75rem'
+        }}>
+          <div style={{
+            fontSize: '1.75rem',
+            fontWeight: '700',
+            color: '#EF4444',
+            lineHeight: '1'
+          }}>
+            {criticalProducts.length}
+          </div>
+          <div style={{
+            fontSize: '0.75rem',
+            color: '#6B7280',
+            marginTop: '0.25rem',
+            textAlign: 'center'
+          }}>
+            Rupture imminente
+          </div>
         </div>
-        <div className="stat-card">
-          <div className="stat-value" style={{ color: '#F59E0B' }}>{lowStockProducts.length}</div>
-          <div className="stat-label">Stock faible</div>
+        
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          padding: '0.75rem'
+        }}>
+          <div style={{
+            fontSize: '1.75rem',
+            fontWeight: '700',
+            color: '#F59E0B',
+            lineHeight: '1'
+          }}>
+            {lowStockProducts.length}
+          </div>
+          <div style={{
+            fontSize: '0.75rem',
+            color: '#6B7280',
+            marginTop: '0.25rem',
+            textAlign: 'center'
+          }}>
+            Stock faible
+          </div>
         </div>
-        <div className="stat-card">
-          <div className="stat-value" style={{ color: '#10B981' }}>{healthyProducts.length}</div>
-          <div className="stat-label">Stock OK</div>
+        
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          padding: '0.75rem'
+        }}>
+          <div style={{
+            fontSize: '1.75rem',
+            fontWeight: '700',
+            color: '#10B981',
+            lineHeight: '1'
+          }}>
+            {healthyProducts.length}
+          </div>
+          <div style={{
+            fontSize: '0.75rem',
+            color: '#6B7280',
+            marginTop: '0.25rem',
+            textAlign: 'center'
+          }}>
+            Stock optimal
+          </div>
         </div>
       </div>
-      
+
       {plan === 'basique' && (
-        <div className="upgrade-cta">
-          <div className="upgrade-content">
-            <strong>🚀 Débloquez l'IA Prédictive Avancée</strong>
-            <p>Prédictions rupture 3 jours à l'avance + Suggestions commandes optimisées par GPT-4</p>
+        <div style={{
+          marginTop: '1.5rem',
+          padding: '1rem 1.25rem',
+          background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+          borderRadius: '8px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '1rem',
+          flexWrap: 'wrap'
+        }}>
+          <div style={{ flex: 1 }}>
+            <div style={{
+              fontWeight: '600',
+              color: '#1F2937',
+              marginBottom: '0.25rem',
+              fontSize: '0.95rem'
+            }}>
+              Débloquez les prédictions avancées
+            </div>
+            <div style={{
+              color: '#374151',
+              fontSize: '0.875rem'
+            }}>
+              Prédictions 7 jours + Suggestions optimisées par IA
+            </div>
           </div>
-          <button className="upgrade-btn">Passer à Standard €49</button>
+          <button style={{
+            background: '#1F2937',
+            color: 'white',
+            border: 'none',
+            padding: '0.625rem 1.25rem',
+            borderRadius: '6px',
+            fontWeight: '600',
+            fontSize: '0.875rem',
+            cursor: 'pointer',
+            whiteSpace: 'nowrap',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
+          }}>
+            <Crown size={16} />
+            Passer à Standard
+          </button>
         </div>
       )}
     </div>

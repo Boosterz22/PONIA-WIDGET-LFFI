@@ -344,14 +344,7 @@ export default function DashboardPage({ session }) {
           </div>
         )}
 
-        {/* Alertes de péremption (DLC/DLUO) - TEMPORAIREMENT DÉSACTIVÉ POUR DEBUG */}
-        {/* <ExpiryAlerts expiryAlerts={expiryAlerts} /> */}
-
-        {/* Statistiques de gaspillage - TEMPORAIREMENT DÉSACTIVÉ */}
-        {/* {expiryAlerts.length > 0 && (...)} */}
-
-        {/* TEMPORAIRE: AIInsights désactivé pour debug */}
-        {/* <AIInsights products={products} businessType={businessType} plan={userPlan} /> */}
+        <AIInsights products={products} businessType={businessType} plan={userPlan} />
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
