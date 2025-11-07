@@ -11,7 +11,6 @@ import ChatAI from '../components/ChatAI'
 import { getTemplatesForBusinessType } from '../data/productTemplates'
 import { checkExpiryAlerts, calculateWasteStats } from '../services/expiryService'
 import { incrementDailyActions, canPerformAction, getQuotaStatus } from '../services/quotaService'
-import { generateOrderPDF } from '../services/pdfService'
 
 const getTemplateProducts = (businessType) => {
   const templates = getTemplatesForBusinessType(businessType)
@@ -121,10 +120,6 @@ export default function DashboardPage({ session }) {
   const handleChangePlan = (newPlan) => {
     localStorage.setItem('ponia_user_plan', newPlan)
     window.location.reload()
-  }
-
-  const handleGenerateOrder = () => {
-    generateOrderPDF(products, businessName)
   }
 
   const alerts = products.filter(p => p.currentQuantity <= p.alertThreshold)
@@ -364,7 +359,6 @@ export default function DashboardPage({ session }) {
             products={products} 
             businessType={businessType} 
             plan={userPlan}
-            onGenerateOrder={handleGenerateOrder}
           />
 
           {(critical.length > 0 || lowStock.length > 0 || expiryAlerts.length > 0) && (
