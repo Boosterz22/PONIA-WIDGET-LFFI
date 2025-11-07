@@ -117,7 +117,7 @@ export default function LoginPage() {
               </label>
               <input
                 type="email"
-                placeholder="vous@votrecommerce.fr"
+                placeholder=""
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -149,7 +149,7 @@ export default function LoginPage() {
               </label>
               <input
                 type="password"
-                placeholder="Minimum 8 caractères"
+                placeholder=""
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -182,7 +182,7 @@ export default function LoginPage() {
               </label>
               <input
                 type="text"
-                placeholder="Boulangerie Martin"
+                placeholder=""
                 value={businessName}
                 onChange={(e) => setBusinessName(e.target.value)}
                 required
@@ -291,16 +291,16 @@ export default function LoginPage() {
             fontSize: '0.875rem'
           }}>
             Déjà un compte ?{' '}
-            <Link 
-              to="/dashboard" 
+            <span 
               style={{ 
-                color: '#000', 
+                color: '#9ca3af', 
                 textDecoration: 'none', 
-                fontWeight: 600 
+                fontWeight: 600,
+                cursor: 'not-allowed'
               }}
             >
-              Se connecter
-            </Link>
+              Se connecter (bientôt)
+            </span>
           </p>
         </div>
       </div>
@@ -339,7 +339,7 @@ export default function LoginPage() {
             opacity: 0.9,
             marginBottom: '2rem'
           }}>
-            Rejoignez 50+ commerces qui économisent €9,200/an avec des alertes IA prédictives.
+            Économisez 35h/mois et €9,200/an. Sans effort, sans formation.
           </p>
           <div style={{
             display: 'flex',
@@ -357,7 +357,7 @@ export default function LoginPage() {
                 justifyContent: 'center',
                 fontSize: '0.75rem'
               }}>✓</div>
-              <span style={{ fontSize: '0.9375rem' }}>Configuration en 2 minutes</span>
+              <span style={{ fontSize: '0.9375rem' }}>Installation en 2 minutes chrono</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <div style={{
@@ -383,7 +383,7 @@ export default function LoginPage() {
                 justifyContent: 'center',
                 fontSize: '0.75rem'
               }}>✓</div>
-              <span style={{ fontSize: '0.9375rem' }}>Commandes vocales sans les mains</span>
+              <span style={{ fontSize: '0.9375rem' }}>ROI positif dès le 1er mois garanti</span>
             </div>
           </div>
         </div>
