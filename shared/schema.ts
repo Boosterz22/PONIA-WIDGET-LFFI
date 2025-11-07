@@ -1,0 +1,48 @@
+import { pgTable, serial, varchar, integer, timestamp, decimal, text, boolean } from 'drizzle-orm/pg-core'
+import { sql } from 'drizzle-orm'
+
+export const users = pgTable('users', {
+  id: serial('id').primaryKey(),
+  email: varchar('email', { length: 255 }).notNull(),
+  businessName: varchar('business_name', { length: 255 }),
+  businessType: varchar('business_type', { length: 100 }),
+  plan: varchar('plan', { length: 50 }).default('basique'),
+  referralCode: varchar('referral_code', { length: 20 }),
+  referredBy: varchar('referred_by', { length: 20 }),
+  supabaseId: varchar('supabase_id', { length: 255 }),
+  createdAt: timestamp('created_at').defaultNow()
+})
+
+export const products = pgTable('products', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }),
+  name: varchar('name', { length: 255 }).notNull(),
+  currentQuantity: decimal('current_quantity', { precision: 10, scale: 2 }).notNull().default('0'),
+  unit: varchar('unit', { length: 50 }).notNull(),
+  alertThreshold: decimal('alert_threshold', { precision: 10, scale: 2 }).notNull(),
+  supplier: varchar('supplier', { length: 255 }),
+  expiryDate: timestamp('expiry_date'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+})
+
+export const stockHistory = pgTable('stock_history', {
+  id: serial('id').primaryKey(),
+  productId: integer('product_id').references(() => products.id, { onDelete: 'cascade' }),
+  quantityChange: decimal('quantity_change', { precision: 10, scale: 2 }).notNull(),
+  quantityAfter: decimal('quantity_after', { precision: 10, scale: 2 }).notNull(),
+  changeType: varchar('change_type', { length: 50 }).notNull(),
+  notes: text('notes'),
+  createdAt: timestamp('created_at').defaultNow()
+})
+
+export const notifications = pgTable('notifications', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  type: varchar('type', { length: 50 }).notNull(),
+  productId: integer('product_id').references(() => products.id, { onDelete: 'cascade' }),
+  message: text('message').notNull(),
+  sent: boolean('sent').notNull().default(false),
+  sentAt: timestamp('sent_at'),
+  createdAt: timestamp('created_at').notNull().defaultNow()
+})
