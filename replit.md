@@ -15,7 +15,15 @@ PONIA AI is an AI-powered inventory management system designed for small busines
 
 ## System Architecture
 
-The PONIA AI system is a mobile-first application built with a React 18 frontend using Vite 5. Routing is handled by React Router DOM, and styling employs custom CSS. Icons are provided by Lucide React. Data storage currently uses LocalStorage, with a planned migration to PostgreSQL via Supabase. The core AI functionality leverages a hybrid architecture combining a local rules engine with OpenAI's GPT-4o-mini via Replit AI Integrations.
+The PONIA AI system is a **secure full-stack application** with an Express backend (Node.js) and React 18 frontend (Vite 5). The architecture follows a client-server pattern where the frontend runs on port 5000 and proxies API calls to the backend on port 3000. Routing is handled by React Router DOM, and styling employs custom CSS. Icons are provided by Lucide React. Data storage currently uses LocalStorage, with a planned migration to PostgreSQL via Supabase. 
+
+**Security Architecture:**
+- **Backend (Express, port 3000):** Securely handles all OpenAI API calls server-side, protecting AI integration keys that are never exposed to the browser
+- **Frontend (Vite, port 5000):** Proxies `/api/*` requests to backend via Vite proxy configuration
+- **AI Integration:** OpenAI GPT-4o-mini credentials (`AI_INTEGRATIONS_OPENAI_*`) remain server-side only
+- **Deployment:** Managed via `start.sh` script that launches backend and frontend simultaneously
+
+The core AI functionality leverages a hybrid architecture combining a local rules engine with OpenAI's GPT-4o-mini via Replit AI Integrations (server-side).
 
 **Key Features and Implementations:**
 
@@ -41,10 +49,14 @@ The PONIA AI system is a mobile-first application built with a React 18 frontend
 
 **Technical Implementations:**
 
-*   **Services:** `aiUtils.js` (timeout, dynamic import), `voiceParser.js` (local regex parsing), `openaiService.js` (GPT-4o-mini integrations for expiry suggestions, voice parsing, and chat responses), `expiryService.js` (expiry calculations, local suggestions, waste stats), `rulesEngine.js` (AI rules), `aiService.js` (AI orchestration), `pdfService.js` (order document generation), `supabase.js` (Auth + DB).
-*   **Components:** `ProductCard.jsx`, `AddProductModal.jsx`, `AIInsights.jsx`, `UpgradeModal.jsx`, `ReferralModal.jsx`, `ExpiryAlerts.jsx`, `VoiceInput.jsx`, `ChatAI.jsx`.
-*   **File Structure:** Organized logically with `components`, `pages`, `services`, and `styles` directories.
-*   **Vite Configuration:** Runs on port 5000 (`npm run dev`).
+*   **Backend (server/):** `index.js` (Express server with `/api/chat` endpoint for secure OpenAI calls, `/api/health` health check)
+*   **Frontend Services:** `aiUtils.js` (timeout, dynamic import), `voiceParser.js` (local regex parsing), `expiryService.js` (expiry calculations, local suggestions, waste stats), `rulesEngine.js` (AI rules), `aiService.js` (AI orchestration), `pdfService.js` (order document generation), `supabase.js` (Auth + DB)
+*   **Components:** `ProductCard.jsx`, `AddProductModal.jsx`, `AIInsights.jsx`, `UpgradeModal.jsx`, `ReferralModal.jsx`, `ExpiryAlerts.jsx`, `VoiceInput.jsx`, `ChatAI.jsx`
+*   **File Structure:** `server/` (backend), `src/components`, `src/pages`, `src/services`, `src/styles`
+*   **Configuration:** 
+    - `vite.config.js`: Port 5000, proxy `/api` → `localhost:3000`
+    - `start.sh`: Orchestrates backend + frontend startup
+    - `package.json`: Scripts for `dev` (frontend), `backend` (server)
 
 **Recent Changes (November 2025):**
 
@@ -58,13 +70,16 @@ The PONIA AI system is a mobile-first application built with a React 18 frontend
 *   ✅ **Authentication Flow (Nov 7):** Supabase integration with login/signup toggle on same page, conditional form fields (business details only for signup), async logout handling
 *   ✅ **Dashboard UX (Nov 7):** Streamlined user menu to show profile icon only (no email text)
 *   ✅ **ChatAI Expert Transformation (Nov 7):** 
-    - Fixed OpenAI integration (Vite envPrefix configuration)
+    - **CRITICAL SECURITY FIX:** Migrated to secure backend architecture - OpenAI keys never exposed to browser
+    - Created Express backend (`server/index.js`) with `/api/chat` endpoint
+    - Frontend now calls backend API instead of OpenAI directly
+    - Vite proxy configuration routes `/api/*` to backend (port 3000)
     - Transformed AI into sophisticated supply-chain expert
     - Advanced expertise: FEFO/FIFO, EOQ, coverage days, rupture/overstock costs
     - Structured methodology: Analysis → Immediate Actions → Projection → Process Recommendations
     - Enriched context: health score, coverage days, suppliers, expiry dates
     - Temperature reduced to 0.4 for rigor, max_tokens 500 for complete responses
-    - Lazy client pattern for graceful degradation
+    - Enhanced error handling with generic client messages (no sensitive data leakage)
 
 **Roadmap:**
 
@@ -73,11 +88,11 @@ The PONIA AI system is a mobile-first application built with a React 18 frontend
 
 ## External Dependencies
 
-*   **AI:** OpenAI GPT-4o-mini (via Replit AI Integrations)
+*   **Backend:** Express 5, OpenAI SDK 6.8.1 (GPT-4o-mini via Replit AI Integrations, server-side only)
 *   **Frontend:** React 18, Vite 5, React Router DOM
 *   **Icons:** Lucide React
 *   **Speech Recognition:** Web Speech API (browser-native)
-*   **Database (Planned):** PostgreSQL (via Supabase)
+*   **Database:** PostgreSQL (Replit integrated), Supabase client (@supabase/supabase-js)
 *   **Payments (Planned):** Stripe
 *   **Weather Data (Planned):** OpenWeatherMap
 *   **Calendar (Planned):** Google Calendar
