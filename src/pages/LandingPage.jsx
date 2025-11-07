@@ -678,11 +678,8 @@ export default function LandingPage() {
           <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', textAlign: 'center', marginBottom: '1rem' }}>
             Tarifs <span className="gradient-text">transparents</span>
           </h2>
-          <p style={{ textAlign: 'center', fontSize: '1.25rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
+          <p style={{ textAlign: 'center', fontSize: '1.25rem', color: 'var(--text-muted)', marginBottom: '4rem' }}>
             Économisez 12x votre investissement dès le 1er mois
-          </p>
-          <p style={{ textAlign: 'center', fontSize: '1rem', color: 'var(--primary)', marginBottom: '4rem', fontWeight: '500' }}>
-            🎁 <strong>Offre Lancement :</strong> 3 mois à -50% pour les 100 premiers (Déjà 73 inscrits)
           </p>
 
           <div style={{ 

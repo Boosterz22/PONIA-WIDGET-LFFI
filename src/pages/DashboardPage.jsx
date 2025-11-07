@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { Plus, LogOut, AlertCircle, Package, Crown, Gift } from 'lucide-react'
+import { Plus, LogOut, AlertCircle, Package, Crown, Gift, User, Settings, Info, Mail, ChevronDown } from 'lucide-react'
 import { supabase } from '../services/supabase'
 import ProductCard from '../components/ProductCard'
 import AddProductModal from '../components/AddProductModal'
@@ -31,11 +31,23 @@ export default function DashboardPage({ session }) {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false)
   const [showReferralModal, setShowReferralModal] = useState(false)
   const [showActionLimitModal, setShowActionLimitModal] = useState(false)
+  const [showUserMenu, setShowUserMenu] = useState(false)
+  const menuRef = useRef(null)
   const businessName = session.user.business_name || 'Mon Commerce'
   const businessType = localStorage.getItem('ponia_business_type') || 'default'
   const userPlan = localStorage.getItem('ponia_user_plan') || 'basique'
   const referralCode = localStorage.getItem('ponia_referral_code') || 'CODE-00'
   const [quotaStatus, setQuotaStatus] = useState(getQuotaStatus(userPlan))
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowUserMenu(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   useEffect(() => {
     const savedProducts = localStorage.getItem('ponia_products')
@@ -226,10 +238,190 @@ export default function DashboardPage({ session }) {
                 <option value="pro">Plan Pro (€69)</option>
               </select>
             </div>
-            <button onClick={handleLogout} className="btn btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <LogOut size={18} />
-              <span>Déconnexion</span>
-            </button>
+            <div ref={menuRef} style={{ position: 'relative' }}>
+              <button 
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                className="btn btn-secondary" 
+                style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '0.5rem',
+                  padding: '0.5rem 0.75rem'
+                }}
+              >
+                <User size={18} />
+                <span>{session.user.email?.split('@')[0] || 'Utilisateur'}</span>
+                <ChevronDown size={16} style={{ 
+                  transform: showUserMenu ? 'rotate(180deg)' : 'rotate(0)',
+                  transition: 'transform 0.2s'
+                }} />
+              </button>
+
+              {showUserMenu && (
+                <div style={{
+                  position: 'absolute',
+                  top: 'calc(100% + 0.5rem)',
+                  right: 0,
+                  background: 'white',
+                  border: '1px solid #E5E7EB',
+                  borderRadius: '10px',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                  minWidth: '220px',
+                  zIndex: 1000,
+                  overflow: 'hidden'
+                }}>
+                  <div style={{ 
+                    padding: '0.75rem 1rem',
+                    borderBottom: '1px solid #E5E7EB',
+                    background: '#FAFAFA'
+                  }}>
+                    <div style={{ fontWeight: '600', fontSize: '0.875rem', color: '#111827' }}>
+                      {businessName}
+                    </div>
+                    <div style={{ fontSize: '0.75rem', color: '#6B7280', marginTop: '0.25rem' }}>
+                      {session.user.email}
+                    </div>
+                  </div>
+
+                  <div style={{ padding: '0.5rem 0' }}>
+                    <button
+                      onClick={() => {
+                        setShowUserMenu(false)
+                        alert('Profil - Fonctionnalité à venir')
+                      }}
+                      style={{
+                        width: '100%',
+                        textAlign: 'left',
+                        padding: '0.75rem 1rem',
+                        background: 'transparent',
+                        border: 'none',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.75rem',
+                        fontSize: '0.875rem',
+                        color: '#374151',
+                        transition: 'background 0.15s'
+                      }}
+                      onMouseEnter={(e) => e.target.style.background = '#F3F4F6'}
+                      onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                    >
+                      <User size={16} />
+                      <span>Profil</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setShowUserMenu(false)
+                        alert('Paramètres - Fonctionnalité à venir')
+                      }}
+                      style={{
+                        width: '100%',
+                        textAlign: 'left',
+                        padding: '0.75rem 1rem',
+                        background: 'transparent',
+                        border: 'none',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.75rem',
+                        fontSize: '0.875rem',
+                        color: '#374151',
+                        transition: 'background 0.15s'
+                      }}
+                      onMouseEnter={(e) => e.target.style.background = '#F3F4F6'}
+                      onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                    >
+                      <Settings size={16} />
+                      <span>Paramètres</span>
+                    </button>
+
+                    <div style={{ height: '1px', background: '#E5E7EB', margin: '0.5rem 0' }} />
+
+                    <button
+                      onClick={() => {
+                        setShowUserMenu(false)
+                        alert('À propos de PONIA AI - Version 1.0.0')
+                      }}
+                      style={{
+                        width: '100%',
+                        textAlign: 'left',
+                        padding: '0.75rem 1rem',
+                        background: 'transparent',
+                        border: 'none',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.75rem',
+                        fontSize: '0.875rem',
+                        color: '#374151',
+                        transition: 'background 0.15s'
+                      }}
+                      onMouseEnter={(e) => e.target.style.background = '#F3F4F6'}
+                      onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                    >
+                      <Info size={16} />
+                      <span>À propos</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setShowUserMenu(false)
+                        window.location.href = 'mailto:contact@ponia.ai'
+                      }}
+                      style={{
+                        width: '100%',
+                        textAlign: 'left',
+                        padding: '0.75rem 1rem',
+                        background: 'transparent',
+                        border: 'none',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.75rem',
+                        fontSize: '0.875rem',
+                        color: '#374151',
+                        transition: 'background 0.15s'
+                      }}
+                      onMouseEnter={(e) => e.target.style.background = '#F3F4F6'}
+                      onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                    >
+                      <Mail size={16} />
+                      <span>Contact</span>
+                    </button>
+
+                    <div style={{ height: '1px', background: '#E5E7EB', margin: '0.5rem 0' }} />
+
+                    <button
+                      onClick={() => {
+                        setShowUserMenu(false)
+                        handleLogout()
+                      }}
+                      style={{
+                        width: '100%',
+                        textAlign: 'left',
+                        padding: '0.75rem 1rem',
+                        background: 'transparent',
+                        border: 'none',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.75rem',
+                        fontSize: '0.875rem',
+                        color: '#EF4444',
+                        transition: 'background 0.15s',
+                        fontWeight: '500'
+                      }}
+                      onMouseEnter={(e) => e.target.style.background = '#FEF2F2'}
+                      onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                    >
+                      <LogOut size={16} />
+                      <span>Déconnexion</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </nav>
