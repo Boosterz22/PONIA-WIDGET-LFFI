@@ -33,21 +33,29 @@ The PONIA AI system is a mobile-first application built with a React 18 frontend
     *   **Expiry Alerts:** Tracks product expiration dates (DLC/DLUO) with color-coded urgency (Expired, Critical, Warning, Info) and offers local and AI-generated suggestions for action (promo, display, disposal). Calculates waste statistics.
     *   **Voice Commands:** Integrates Web Speech API (fr-FR) for hands-free stock adjustments. Uses local regex parsing primarily, with GPT-4o-mini as a fallback for complex commands. Supports adding/removing quantities with numerical and decimal inputs.
 *   **Dashboard:** Completely redesigned with a modern, compact layout inspired by Stripe/Linear. Features a KPI grid (4 cards showing Total products, Critical stock, Low stock, Optimal stock), a slim single-line Basique plan banner, and a 2-column layout with AI Insights (left) and Active Alerts sidebar (right). Expiry alerts are integrated into the alerts panel alongside stock warnings. The design maximizes horizontal space usage and minimizes vertical scrolling for better UX.
+*   **Chat AI:** Floating chat button (bottom-right) with gold gradient styling opens a conversational AI drawer. Merchants can ask natural questions like "Combien j'ai de farine?", "Qu'est-ce que je dois commander?", and receive intelligent, context-aware responses based on their current inventory. Features clean, modern UI with smooth animations and mobile-responsive design.
+*   **PDF Order Generation:** "Générer bon de commande" button integrated into AI Insights panel automatically generates professional order documents (.txt format) when critical or low stock is detected. Includes product details, current stock levels, suggested quantities, urgency indicators (🔴 URGENT / 🟠 Cette semaine), and supplier information. Uses consistent threshold fallbacks to prevent calculation errors.
 *   **Product Management:** Simple forms for adding products, specifying name, quantity, unit, alert threshold, and supplier. Supports 6 units (kg, L, pieces, bottles, sachets, boxes). Pre-configured product templates are available based on business type.
 *   **UI/UX:** Emphasizes simplicity and speed for mobile-first usage. Features dynamic scores, prioritized actions, contextual messages, and visual statistics.
 *   **Security & Performance:** Dynamic import of `openaiService`, 10-second timeouts for all AI calls, proper cleanup of Web Speech API, and comprehensive permission management. Local parsing is prioritized for speed and cost efficiency, with AI used only when necessary.
 
 **Technical Implementations:**
 
-*   **Services:** `aiUtils.js` (timeout, dynamic import), `voiceParser.js` (local regex parsing), `openaiService.js` (GPT-4o-mini integrations for expiry suggestions and voice parsing), `expiryService.js` (expiry calculations, local suggestions, waste stats), `rulesEngine.js` (AI rules), `aiService.js` (AI orchestration), `supabase.js` (Auth + DB).
-*   **Components:** `ProductCard.jsx`, `AddProductModal.jsx`, `AIInsights.jsx`, `UpgradeModal.jsx`, `ReferralModal.jsx`, `ExpiryAlerts.jsx`, `VoiceInput.jsx`.
+*   **Services:** `aiUtils.js` (timeout, dynamic import), `voiceParser.js` (local regex parsing), `openaiService.js` (GPT-4o-mini integrations for expiry suggestions, voice parsing, and chat responses), `expiryService.js` (expiry calculations, local suggestions, waste stats), `rulesEngine.js` (AI rules), `aiService.js` (AI orchestration), `pdfService.js` (order document generation), `supabase.js` (Auth + DB).
+*   **Components:** `ProductCard.jsx`, `AddProductModal.jsx`, `AIInsights.jsx`, `UpgradeModal.jsx`, `ReferralModal.jsx`, `ExpiryAlerts.jsx`, `VoiceInput.jsx`, `ChatAI.jsx`.
 *   **File Structure:** Organized logically with `components`, `pages`, `services`, and `styles` directories.
 *   **Vite Configuration:** Runs on port 5000 (`npm run dev`).
 
+**Recent Changes (November 2025):**
+
+*   ✅ **ChatAI Component:** Floating conversational AI interface for natural inventory queries
+*   ✅ **PDF Order Generation:** Automatic order document creation with smart quantity suggestions
+*   ✅ **Enhanced AI Insights:** Integrated "Générer bon de commande" button in dashboard
+
 **Roadmap:**
 
-*   **In Development:** Graphical movement history, Stripe integration, integrated weather predictions (OpenWeatherMap), local events (Google Calendar).
-*   **Phase 2:** POS integrations (Square API), PDF export of orders, multi-user support, SMS/email notifications.
+*   **In Development:** Graphical movement history, Stripe/Revolut integration, integrated weather predictions (OpenWeatherMap), local events (Google Calendar).
+*   **Phase 2:** POS integrations (Square API), multi-user support, SMS/email notifications, enhanced PDF formats.
 
 ## External Dependencies
 
