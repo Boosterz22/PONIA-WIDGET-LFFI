@@ -54,6 +54,9 @@ The PONIA AI system is a mobile-first application built with a React 18 frontend
 *   ✅ **User Menu & Navigation:** Professional dropdown menu with Profile, Settings, About, Contact, Logout
 *   ✅ **Profile Page:** Complete user profile with editable business name, email, plan display, referral code
 *   ✅ **Settings Page:** Notifications toggles, data export (JSON), password change, account deletion
+*   ✅ **Landing Page Updates (Nov 7):** Unified hero/header gradient (removed visual line), Twitter→X icon in footer, green Basique badge, removed promotional pricing, updated ROI to €767/month (€9,200/year), aligned Basique button, added CGV/Mentions Légales
+*   ✅ **Authentication Flow (Nov 7):** Supabase integration with login/signup toggle on same page, conditional form fields (business details only for signup), async logout handling
+*   ✅ **Dashboard UX (Nov 7):** Streamlined user menu to show profile icon only (no email text)
 
 **Roadmap:**
 
