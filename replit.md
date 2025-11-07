@@ -48,9 +48,12 @@ The PONIA AI system is a mobile-first application built with a React 18 frontend
 
 **Recent Changes (November 2025):**
 
-*   ✅ **ChatAI Component:** Floating conversational AI interface for natural inventory queries
+*   ✅ **ChatAI Component:** Floating conversational AI interface for natural inventory queries (FIXED - conversation history now passed correctly)
 *   ✅ **PDF Order Generation:** Automatic order document creation with smart quantity suggestions
 *   ✅ **Enhanced AI Insights:** Integrated "Générer bon de commande" button in dashboard
+*   ✅ **User Menu & Navigation:** Professional dropdown menu with Profile, Settings, About, Contact, Logout
+*   ✅ **Profile Page:** Complete user profile with editable business name, email, plan display, referral code
+*   ✅ **Settings Page:** Notifications toggles, data export (JSON), password change, account deletion
 
 **Roadmap:**
 
