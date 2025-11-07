@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
+import ProfilePage from './pages/ProfilePage'
+import SettingsPage from './pages/SettingsPage'
 import { supabase } from './services/supabase'
 
 function App() {
@@ -43,6 +45,14 @@ function App() {
         <Route 
           path="/dashboard" 
           element={session ? <DashboardPage session={session} /> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="/profile" 
+          element={session ? <ProfilePage session={session} /> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="/settings" 
+          element={session ? <SettingsPage session={session} /> : <Navigate to="/login" />} 
         />
       </Routes>
     </BrowserRouter>

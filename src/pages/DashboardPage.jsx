@@ -287,7 +287,7 @@ export default function DashboardPage({ session }) {
                     <button
                       onClick={() => {
                         setShowUserMenu(false)
-                        alert('Profil - Fonctionnalité à venir')
+                        navigate('/profile')
                       }}
                       style={{
                         width: '100%',
@@ -313,7 +313,7 @@ export default function DashboardPage({ session }) {
                     <button
                       onClick={() => {
                         setShowUserMenu(false)
-                        alert('Paramètres - Fonctionnalité à venir')
+                        navigate('/settings')
                       }}
                       style={{
                         width: '100%',

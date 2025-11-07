@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { MessageCircle, X, Send, Loader } from 'lucide-react'
 
-async function getChatResponse(userMessage, products) {
+async function getChatResponse(userMessage, products, conversationHistory) {
   try {
     const { getChatResponse: getChatResponseReal } = await import('../services/openaiService')
-    return await getChatResponseReal(userMessage, products, [])
+    return await getChatResponseReal(userMessage, products, conversationHistory)
   } catch (error) {
     console.error('Error loading chat service:', error)
-    return "Désolé, j'ai un souci technique 😅"
+    return "Désolé, j'ai un souci technique 😅 Réessaie dans quelques secondes !"
   }
 }
 
