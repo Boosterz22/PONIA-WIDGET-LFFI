@@ -165,6 +165,149 @@ Tu es l'outil qui transforme les commerçants en experts de leur propre stock.`
   }
 })
 
+// Endpoint génération bon de commande intelligent
+app.post('/api/generate-order', async (req, res) => {
+  try {
+    const { products, businessName, businessType } = req.body
+    
+    if (!businessName || typeof businessName !== 'string') {
+      return res.status(400).json({ error: 'Nom du commerce requis' })
+    }
+    
+    if (!products || !Array.isArray(products) || products.length === 0) {
+      return res.status(400).json({ error: 'Produits requis (tableau non vide)' })
+    }
+
+    for (const p of products) {
+      if (!p || typeof p !== 'object') {
+        return res.status(400).json({ error: 'Produits invalides (objets requis)' })
+      }
+      if (!p.name || typeof p.name !== 'string' || !p.unit || typeof p.unit !== 'string') {
+        return res.status(400).json({ error: 'Produits invalides (name et unit string requis)' })
+      }
+      if (!Number.isFinite(p.currentQuantity) || p.currentQuantity < 0) {
+        return res.status(400).json({ error: 'Produits invalides (currentQuantity nombre positif requis)' })
+      }
+      if (p.alertThreshold !== undefined && (!Number.isFinite(p.alertThreshold) || p.alertThreshold <= 0)) {
+        return res.status(400).json({ error: 'Produits invalides (alertThreshold doit être > 0 si fourni)' })
+      }
+    }
+
+    const critical = products.filter(p => {
+      const threshold = Number.isFinite(p.alertThreshold) && p.alertThreshold > 0 ? p.alertThreshold : 10
+      return p.currentQuantity <= threshold * 0.5
+    })
+    
+    const low = products.filter(p => {
+      const threshold = Number.isFinite(p.alertThreshold) && p.alertThreshold > 0 ? p.alertThreshold : 10
+      return p.currentQuantity > threshold * 0.5 && p.currentQuantity <= threshold
+    })
+    
+    const orderProducts = [...critical, ...low]
+    
+    if (orderProducts.length === 0) {
+      return res.json({ 
+        content: null,
+        message: 'Aucun produit à commander pour le moment !'
+      })
+    }
+
+    const productsContext = orderProducts.map(p => {
+      const threshold = Number.isFinite(p.alertThreshold) && p.alertThreshold > 0 ? p.alertThreshold : 10
+      const dailyConsumption = threshold / 7
+      const coverageDays = dailyConsumption > 0 ? (p.currentQuantity / dailyConsumption).toFixed(1) : '0.0'
+      return `- ${p.name}: ${p.currentQuantity} ${p.unit} (seuil: ${threshold} ${p.unit}, couverture: ~${coverageDays}j, fournisseur: ${p.supplier || 'À définir'})`
+    }).join('\n')
+
+    const prompt = `Tu es un expert en gestion de stock pour ${businessType || 'commerce'}. 
+
+MISSION : Génère un bon de commande professionnel pour "${businessName}".
+
+PRODUITS À COMMANDER :
+${productsContext}
+
+INSTRUCTIONS CRITIQUES :
+1. **Quantités suggérées** : Propose quantités pour atteindre 7-14 jours de couverture
+   - Base-toi sur les seuils fournis (consommation hebdomadaire = seuil)
+   - Produits critiques (<2j couverture) → 14 jours minimum
+   - Produits faibles (3-7j) → 10 jours standard
+   - IMPORTANT : Ne fabrique PAS de formules EOQ complexes, suggère des quantités RONDES et pratiques
+
+2. **Priorisation** :
+   - 🔴 URGENT (couverture <2j) : commande aujourd'hui
+   - 🟠 CETTE SEMAINE (couverture 3-7j) : planifier sous 3-5j
+   - Regroupe par fournisseur pour optimiser livraison
+
+3. **Tarifs** :
+   - Indique clairement : "Prix indicatifs marché français ${new Date().getFullYear()}"
+   - Estime selon standards secteur ${businessType || 'commerce'}
+   - Précise que ce sont des ESTIMATIONS, pas des prix contractuels
+
+4. **Recommandations** :
+   - 2-3 conseils actionnables (ajuster seuils, négocier volumes, diversifier fournisseurs)
+   - Base-toi sur les données fournies, ne suppose rien
+
+FORMAT REQUIS :
+═══════════════════════════════════════════════════════
+              BON DE COMMANDE - ${businessName.toUpperCase()}
+═══════════════════════════════════════════════════════
+Date : ${new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}
+Généré par : PONIA AI
+
+───────────────────────────────────────────────────────
+🔴 COMMANDES URGENTES (livraison <48h)
+───────────────────────────────────────────────────────
+[Si produits critiques : liste avec nom, quantité suggérée, prix unitaire indicatif, total]
+[Sinon : "Aucune urgence détectée"]
+
+───────────────────────────────────────────────────────
+🟠 COMMANDES SEMAINE (livraison 3-5j)
+───────────────────────────────────────────────────────
+[Si produits faibles : liste avec nom, quantité suggérée, prix unitaire indicatif, total]
+[Sinon : "Aucune commande planifiée"]
+
+───────────────────────────────────────────────────────
+📦 RÉCAPITULATIF PAR FOURNISSEUR
+───────────────────────────────────────────────────────
+[Fournisseur] : X produits → Total indicatif: XXX€
+
+───────────────────────────────────────────────────────
+💡 RECOMMANDATIONS
+───────────────────────────────────────────────────────
+1. [Recommandation actionnable 1]
+2. [Recommandation actionnable 2]
+
+═══════════════════════════════════════════════════════
+TOTAL INDICATIF : XXX€ (prix marché ${new Date().getFullYear()}, à confirmer)
+═══════════════════════════════════════════════════════`
+
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [
+        { role: 'user', content: prompt }
+      ],
+      temperature: 0.3,
+      max_tokens: 1500
+    })
+
+    const orderContent = completion.choices[0].message.content
+    
+    res.json({ 
+      content: orderContent,
+      productsCount: orderProducts.length,
+      criticalCount: critical.length,
+      lowCount: low.length
+    })
+
+  } catch (error) {
+    console.error('Erreur génération bon de commande:', error.message)
+    res.status(500).json({ 
+      error: 'Erreur serveur',
+      message: 'Impossible de générer le bon de commande.'
+    })
+  }
+})
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', service: 'PONIA AI Backend' })

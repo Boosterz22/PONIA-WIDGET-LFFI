@@ -134,6 +134,11 @@ export default function DashboardPage({ session }) {
     window.location.reload()
   }
 
+  const handleGenerateOrder = async () => {
+    const { generateOrderPDF } = await import('../services/pdfService')
+    await generateOrderPDF(products, businessName, businessType)
+  }
+
   const alerts = products.filter(p => p.currentQuantity <= p.alertThreshold)
   const lowStock = products.filter(p => p.currentQuantity <= p.alertThreshold && p.currentQuantity > p.alertThreshold * 0.5)
   const critical = products.filter(p => p.currentQuantity <= p.alertThreshold * 0.5)
@@ -548,6 +553,7 @@ export default function DashboardPage({ session }) {
             products={products} 
             businessType={businessType} 
             plan={userPlan}
+            onGenerateOrder={handleGenerateOrder}
           />
 
           {(critical.length > 0 || lowStock.length > 0 || expiryAlerts.length > 0) && (
