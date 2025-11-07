@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { ArrowRight } from 'lucide-react'
 
 export default function LoginPage() {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [businessName, setBusinessName] = useState('')
   const [businessType, setBusinessType] = useState('boulangerie')
   const [loading, setLoading] = useState(false)
@@ -36,167 +36,368 @@ export default function LoginPage() {
   }
 
   const businessTypes = [
-    { value: 'boulangerie', emoji: '🥖', label: 'Boulangerie / Pâtisserie' },
-    { value: 'restaurant', emoji: '🍕', label: 'Restaurant / Traiteur' },
-    { value: 'bar', emoji: '☕', label: 'Bar / Café' },
-    { value: 'cave', emoji: '🍷', label: 'Cave à vin' },
-    { value: 'tabac', emoji: '🚬', label: 'Tabac / Presse' },
-    { value: 'boucherie', emoji: '🥩', label: 'Boucherie / Charcuterie' },
-    { value: 'fromagerie', emoji: '🧀', label: 'Fromagerie' },
-    { value: 'epicerie', emoji: '🛒', label: 'Épicerie / Superette' },
-    { value: 'autre', emoji: '📦', label: 'Autre commerce' }
+    { value: 'boulangerie', label: 'Boulangerie / Pâtisserie' },
+    { value: 'restaurant', label: 'Restaurant / Traiteur' },
+    { value: 'bar', label: 'Bar / Café' },
+    { value: 'cave', label: 'Cave à vin' },
+    { value: 'tabac', label: 'Tabac / Presse' },
+    { value: 'boucherie', label: 'Boucherie / Charcuterie' },
+    { value: 'fromagerie', label: 'Fromagerie' },
+    { value: 'epicerie', label: 'Épicerie / Superette' },
+    { value: 'autre', label: 'Autre commerce' }
   ]
 
   return (
     <div style={{ 
       minHeight: '100vh', 
-      display: 'flex', 
-      alignItems: 'center', 
-      justifyContent: 'center',
-      background: 'radial-gradient(ellipse at center, rgba(255, 215, 0, 0.05) 0%, transparent 70%)',
-      padding: '2rem 1rem'
+      display: 'flex',
+      background: '#fafafa'
     }}>
-      <div style={{ width: '100%', maxWidth: '480px' }} className="fade-in">
-        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+      <div style={{
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '2rem 1rem'
+      }}>
+        <div style={{ width: '100%', maxWidth: '400px' }}>
           <Link to="/" style={{ 
-            display: 'inline-block',
-            marginBottom: '1.5rem'
+            display: 'inline-flex',
+            alignItems: 'center',
+            marginBottom: '3rem',
+            textDecoration: 'none',
+            color: '#000'
           }}>
-            <img src="/ponia-logo.png" alt="PONIA AI" style={{ height: '70px' }} />
-          </Link>
-          <h1 style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>
-            Bienvenue ! 👋
-          </h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1.125rem' }}>
-            Créez votre compte en <strong style={{ color: 'var(--primary)' }}>30 secondes</strong>
-          </p>
-        </div>
-
-        <form onSubmit={handleLogin} className="card" style={{ padding: '2.5rem' }}>
-          <div style={{ marginBottom: '2rem' }}>
-            <label style={{ 
-              display: 'block', 
-              marginBottom: '0.75rem', 
-              fontWeight: 600,
-              fontSize: '0.95rem'
-            }}>
-              📧 Votre email
-            </label>
-            <input
-              type="email"
-              className="input"
-              placeholder="votre@email.fr"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              style={{ fontSize: '1rem' }}
-            />
-          </div>
-
-          <div style={{ marginBottom: '2rem' }}>
-            <label style={{ 
-              display: 'block', 
-              marginBottom: '0.75rem', 
-              fontWeight: 600,
-              fontSize: '0.95rem'
-            }}>
-              🏪 Nom de votre commerce
-            </label>
-            <input
-              type="text"
-              className="input"
-              placeholder="Ex: Boulangerie Martin"
-              value={businessName}
-              onChange={(e) => setBusinessName(e.target.value)}
-              required
-              style={{ fontSize: '1rem' }}
-            />
-          </div>
-
-          <div style={{ marginBottom: '2.5rem' }}>
-            <label style={{ 
-              display: 'block', 
-              marginBottom: '0.75rem', 
-              fontWeight: 600,
-              fontSize: '0.95rem'
-            }}>
-              🎯 Type de commerce
-            </label>
-            <select
-              className="input"
-              value={businessType}
-              onChange={(e) => setBusinessType(e.target.value)}
-              required
-              style={{ fontSize: '1rem' }}
-            >
-              {businessTypes.map(type => (
-                <option key={type.value} value={type.value}>
-                  {type.emoji} {type.label}
-                </option>
-              ))}
-            </select>
-            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginTop: '0.75rem' }}>
-              💡 On va pré-configurer vos produits selon votre type
-            </p>
-          </div>
-
-          <button 
-            type="submit" 
-            className="btn btn-primary" 
-            disabled={loading}
-            style={{ 
-              width: '100%',
-              fontSize: '1.125rem',
-              padding: '1rem',
+            <div style={{
+              width: '32px',
+              height: '32px',
+              background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+              borderRadius: '8px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '0.5rem'
-            }}
-          >
-            {loading ? (
-              <>
-                <div className="spinner" style={{ width: '20px', height: '20px', borderWidth: '2px' }}></div>
-                <span>Création en cours...</span>
-              </>
-            ) : (
-              <>
-                <span>Créer mon compte</span>
-                <ArrowRight size={20} />
-              </>
-            )}
-          </button>
+              fontWeight: 'bold',
+              fontSize: '1.25rem',
+              marginRight: '0.75rem'
+            }}>
+              ⚡
+            </div>
+            <span style={{ fontSize: '1.5rem', fontWeight: 600, letterSpacing: '-0.02em' }}>PONIA</span>
+          </Link>
 
-          <div style={{ 
-            marginTop: '2rem', 
-            padding: '1.5rem', 
-            background: 'rgba(74, 222, 128, 0.1)',
-            borderRadius: '12px',
-            border: '1px solid rgba(74, 222, 128, 0.3)'
+          <h1 style={{ 
+            fontSize: '1.875rem', 
+            fontWeight: 600,
+            marginBottom: '0.5rem',
+            letterSpacing: '-0.03em',
+            color: '#000'
           }}>
-            <p style={{ fontSize: '0.95rem', color: 'var(--text)', textAlign: 'center', marginBottom: '0.75rem', fontWeight: '600' }}>
-              🎁 <strong style={{ color: 'var(--success)' }}>PLAN BASIQUE GRATUIT</strong> jusqu'à 10 produits
-            </p>
-            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', textAlign: 'center', marginBottom: '0.5rem' }}>
-              ✅ Alertes intelligentes 🟢🟠🔴
-            </p>
-            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', textAlign: 'center', marginBottom: '0.5rem' }}>
-              ✅ Produits pré-configurés selon votre type
-            </p>
-            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', textAlign: 'center' }}>
-              ✅ Passage au plan payant quand vous voulez
+            Créer un compte
+          </h1>
+          <p style={{ 
+            color: '#6b7280', 
+            fontSize: '0.9375rem',
+            marginBottom: '2rem',
+            lineHeight: 1.5
+          }}>
+            Commencez gratuitement. Aucune carte bancaire requise.
+          </p>
+
+          <form onSubmit={handleLogin} style={{ marginBottom: '2rem' }}>
+            <div style={{ marginBottom: '1.25rem' }}>
+              <label style={{ 
+                display: 'block', 
+                marginBottom: '0.5rem',
+                fontSize: '0.875rem',
+                fontWeight: 500,
+                color: '#374151'
+              }}>
+                Email professionnel
+              </label>
+              <input
+                type="email"
+                placeholder="vous@votrecommerce.fr"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem',
+                  fontSize: '0.9375rem',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '8px',
+                  background: '#fff',
+                  outline: 'none',
+                  transition: 'all 0.15s ease',
+                  boxSizing: 'border-box'
+                }}
+                onFocus={(e) => e.target.style.borderColor = '#FFD700'}
+                onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
+              />
+            </div>
+
+            <div style={{ marginBottom: '1.25rem' }}>
+              <label style={{ 
+                display: 'block', 
+                marginBottom: '0.5rem',
+                fontSize: '0.875rem',
+                fontWeight: 500,
+                color: '#374151'
+              }}>
+                Mot de passe
+              </label>
+              <input
+                type="password"
+                placeholder="Minimum 8 caractères"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={8}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem',
+                  fontSize: '0.9375rem',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '8px',
+                  background: '#fff',
+                  outline: 'none',
+                  transition: 'all 0.15s ease',
+                  boxSizing: 'border-box'
+                }}
+                onFocus={(e) => e.target.style.borderColor = '#FFD700'}
+                onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
+              />
+            </div>
+
+            <div style={{ marginBottom: '1.25rem' }}>
+              <label style={{ 
+                display: 'block', 
+                marginBottom: '0.5rem',
+                fontSize: '0.875rem',
+                fontWeight: 500,
+                color: '#374151'
+              }}>
+                Nom du commerce
+              </label>
+              <input
+                type="text"
+                placeholder="Boulangerie Martin"
+                value={businessName}
+                onChange={(e) => setBusinessName(e.target.value)}
+                required
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem',
+                  fontSize: '0.9375rem',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '8px',
+                  background: '#fff',
+                  outline: 'none',
+                  transition: 'all 0.15s ease',
+                  boxSizing: 'border-box'
+                }}
+                onFocus={(e) => e.target.style.borderColor = '#FFD700'}
+                onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
+              />
+            </div>
+
+            <div style={{ marginBottom: '1.75rem' }}>
+              <label style={{ 
+                display: 'block', 
+                marginBottom: '0.5rem',
+                fontSize: '0.875rem',
+                fontWeight: 500,
+                color: '#374151'
+              }}>
+                Type de commerce
+              </label>
+              <select
+                value={businessType}
+                onChange={(e) => setBusinessType(e.target.value)}
+                required
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem',
+                  fontSize: '0.9375rem',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '8px',
+                  background: '#fff',
+                  outline: 'none',
+                  transition: 'all 0.15s ease',
+                  boxSizing: 'border-box',
+                  cursor: 'pointer'
+                }}
+                onFocus={(e) => e.target.style.borderColor = '#FFD700'}
+                onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
+              >
+                {businessTypes.map(type => (
+                  <option key={type.value} value={type.value}>
+                    {type.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <button 
+              type="submit" 
+              disabled={loading}
+              style={{ 
+                width: '100%',
+                padding: '0.875rem 1rem',
+                fontSize: '0.9375rem',
+                fontWeight: 600,
+                color: '#000',
+                background: loading ? '#e5e7eb' : '#FFD700',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                transition: 'all 0.15s ease',
+                outline: 'none',
+                letterSpacing: '-0.01em'
+              }}
+              onMouseEnter={(e) => {
+                if (!loading) e.target.style.background = '#FFC700'
+              }}
+              onMouseLeave={(e) => {
+                if (!loading) e.target.style.background = '#FFD700'
+              }}
+            >
+              {loading ? 'Création du compte...' : 'Continuer'}
+            </button>
+          </form>
+
+          <div style={{
+            padding: '1rem',
+            background: '#f9fafb',
+            borderRadius: '8px',
+            border: '1px solid #e5e7eb'
+          }}>
+            <p style={{
+              fontSize: '0.8125rem',
+              color: '#6b7280',
+              lineHeight: 1.6,
+              margin: 0
+            }}>
+              Plan <strong style={{ color: '#000' }}>Basique gratuit</strong> jusqu'à 10 produits. 
+              Passez à Standard (49€/mois) ou Pro (69€/mois) quand vous voulez.
             </p>
           </div>
-        </form>
 
-        <p style={{ 
-          marginTop: '2rem', 
-          textAlign: 'center', 
-          color: 'var(--text-muted)',
-          fontSize: '0.875rem'
+          <p style={{ 
+            marginTop: '2rem', 
+            textAlign: 'center', 
+            color: '#6b7280',
+            fontSize: '0.875rem'
+          }}>
+            Déjà un compte ?{' '}
+            <Link 
+              to="/dashboard" 
+              style={{ 
+                color: '#000', 
+                textDecoration: 'none', 
+                fontWeight: 600 
+              }}
+            >
+              Se connecter
+            </Link>
+          </p>
+        </div>
+      </div>
+
+      <div style={{
+        flex: 1,
+        background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '4rem',
+        position: 'relative',
+        overflow: 'hidden'
+      }}
+      className="hide-mobile">
+        <div style={{
+          maxWidth: '500px',
+          color: '#000',
+          position: 'relative',
+          zIndex: 1
         }}>
-          Déjà un compte ? <Link to="/dashboard" style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: 600 }}>Se connecter →</Link>
-        </p>
+          <div style={{
+            fontSize: '3rem',
+            marginBottom: '1.5rem',
+            fontWeight: 700,
+            letterSpacing: '-0.04em',
+            lineHeight: 1.1
+          }}>
+            Zéro rupture.
+            <br />
+            Zéro gaspillage.
+          </div>
+          <p style={{
+            fontSize: '1.125rem',
+            lineHeight: 1.7,
+            opacity: 0.9,
+            marginBottom: '2rem'
+          }}>
+            Rejoignez 50+ commerces qui économisent €9,200/an avec des alertes IA prédictives.
+          </p>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.75rem'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <div style={{
+                width: '24px',
+                height: '24px',
+                borderRadius: '50%',
+                background: 'rgba(0,0,0,0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '0.75rem'
+              }}>✓</div>
+              <span style={{ fontSize: '0.9375rem' }}>Configuration en 2 minutes</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <div style={{
+                width: '24px',
+                height: '24px',
+                borderRadius: '50%',
+                background: 'rgba(0,0,0,0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '0.75rem'
+              }}>✓</div>
+              <span style={{ fontSize: '0.9375rem' }}>Alertes intelligentes en temps réel</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <div style={{
+                width: '24px',
+                height: '24px',
+                borderRadius: '50%',
+                background: 'rgba(0,0,0,0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '0.75rem'
+              }}>✓</div>
+              <span style={{ fontSize: '0.9375rem' }}>Commandes vocales sans les mains</span>
+            </div>
+          </div>
+        </div>
+        
+        <div style={{
+          position: 'absolute',
+          top: '-20%',
+          right: '-10%',
+          width: '600px',
+          height: '600px',
+          borderRadius: '50%',
+          background: 'rgba(255, 255, 255, 0.1)',
+          filter: 'blur(100px)'
+        }} />
       </div>
     </div>
   )
