@@ -57,6 +57,14 @@ The PONIA AI system is a mobile-first application built with a React 18 frontend
 *   ✅ **Landing Page Updates (Nov 7):** Unified hero/header gradient (removed visual line), Twitter→X icon in footer, green Basique badge, removed promotional pricing, updated ROI to €767/month (€9,200/year), aligned Basique button, added CGV/Mentions Légales
 *   ✅ **Authentication Flow (Nov 7):** Supabase integration with login/signup toggle on same page, conditional form fields (business details only for signup), async logout handling
 *   ✅ **Dashboard UX (Nov 7):** Streamlined user menu to show profile icon only (no email text)
+*   ✅ **ChatAI Expert Transformation (Nov 7):** 
+    - Fixed OpenAI integration (Vite envPrefix configuration)
+    - Transformed AI into sophisticated supply-chain expert
+    - Advanced expertise: FEFO/FIFO, EOQ, coverage days, rupture/overstock costs
+    - Structured methodology: Analysis → Immediate Actions → Projection → Process Recommendations
+    - Enriched context: health score, coverage days, suppliers, expiry dates
+    - Temperature reduced to 0.4 for rigor, max_tokens 500 for complete responses
+    - Lazy client pattern for graceful degradation
 
 **Roadmap:**
 
