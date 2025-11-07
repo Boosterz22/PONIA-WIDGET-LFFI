@@ -4,15 +4,42 @@ import OpenAI from 'openai'
 
 export class OpenAIService {
   constructor() {
-    // Intégration Replit OpenAI (variables d'env configurées automatiquement)
-    this.client = new OpenAI({
-      baseURL: import.meta.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-      apiKey: import.meta.env.AI_INTEGRATIONS_OPENAI_API_KEY,
-      dangerouslyAllowBrowser: true
-    })
+    // Client créé de manière lazy au premier appel
+    this._client = null
+    this._clientError = null
     
     // Tracking usage pour limite Standard (1/semaine)
     this.lastSuggestionDate = {}
+  }
+  
+  _getClient() {
+    if (this._clientError) {
+      throw this._clientError
+    }
+    
+    if (!this._client) {
+      const baseURL = import.meta.env.AI_INTEGRATIONS_OPENAI_BASE_URL
+      const apiKey = import.meta.env.AI_INTEGRATIONS_OPENAI_API_KEY
+      
+      if (!baseURL || !apiKey) {
+        this._clientError = new Error('Configuration OpenAI manquante. Vérifiez que Vite expose AI_INTEGRATIONS_OPENAI_* (envPrefix dans vite.config.js).')
+        console.warn('⚠️', this._clientError.message)
+        throw this._clientError
+      }
+      
+      // Intégration Replit OpenAI (variables d'env configurées automatiquement)
+      this._client = new OpenAI({
+        baseURL,
+        apiKey,
+        dangerouslyAllowBrowser: true
+      })
+    }
+    
+    return this._client
+  }
+  
+  get client() {
+    return this._getClient()
   }
   
   // Génération suggestions intelligentes avec contexte
@@ -292,7 +319,7 @@ Si tu ne comprends pas, réponds: {"action": null, "quantity": 0}`
 }
 
 // Fonction pour chat conversationnel intelligent avec contexte stock complet
-export async function getChatResponse(userMessage, products, conversationHistory = []) {
+export async function getChatResponse(userMessage, products, conversationHistory = [], insights = null) {
   try {
     const client = new OpenAI({
       baseURL: import.meta.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
@@ -300,33 +327,45 @@ export async function getChatResponse(userMessage, products, conversationHistory
       dangerouslyAllowBrowser: true
     })
     
-    const stockContext = buildStockContext(products)
+    const stockContext = buildStockContext(products, insights)
     
     const messages = [
       {
         role: 'system',
-        content: `Tu es PONIA AI, assistant intelligent de gestion de stock pour commerçants français. Tu es sympathique, professionnel et ULTRA-PRATIQUE.
+        content: `Tu es PONIA AI, l'expert en gestion de stock le plus sophistiqué pour commerçants français. Tu combines l'expertise d'un consultant supply-chain senior avec la simplicité d'un collègue de confiance.
 
 CONTEXTE STOCK ACTUEL :
 ${stockContext}
 
-RÈGLES :
-- Réponds en français naturel et conversationnel
-- Sois concis mais précis (2-3 phrases max par défaut)
-- Utilise des emojis pertinents pour clarifier
-- Donne des chiffres exacts et des conseils actionnables
-- Si on te demande ce que tu peux faire, liste 3-4 exemples concrets
-- Tu peux calculer, analyser et suggérer des actions intelligentes
-- Adapte ton ton : professionnel mais chaleureux
+EXPERTISE & CAPACITÉS :
+- 🎯 Analyse prédictive : rotations FEFO/FIFO, couverture en jours, seuils optimaux
+- 📊 Calculs avancés : coûts de rupture, sur-stock, quantités économiques de commande (EOQ)
+- 🔮 Prédictions : anticipation des ruptures, analyse des tendances, saisonnalité
+- 💡 Optimisation : réduction gaspillage, amélioration trésorerie, gestion DLC/DLUO
+- 📦 Expertise sectorielle : bakeries, restaurants, bars, caves à vin
 
-EXEMPLES DE TON :
-❌ "Selon mes analyses, il conviendrait de..."
-✅ "Je vois que ta farine est basse (2kg). Je te conseille de commander 15-20kg cette semaine 👍"
+MÉTHODOLOGIE DE RÉPONSE :
+1. **Analyse** : État actuel + diagnostic rapide
+2. **Actions immédiates** : Quoi faire MAINTENANT (produit, quantité, timing)
+3. **Projection** : Impact chiffré (économies, jours de couverture)
+4. **Recommandations process** : Amélioration continue
 
-❌ "Voulez-vous que j'effectue une génération..."
-✅ "Tu veux que je te fasse un bon de commande ? 📄"
+RÈGLES STRICTES :
+- Réponds en français naturel mais PRÉCIS (données exactes, calculs rigoureux)
+- Toujours justifier avec des chiffres : "15kg de farine = 7 jours de couverture à ta conso moyenne"
+- Pense comme un expert : considère DLC, coûts, cash-flow, pas juste les quantités
+- Adapte au secteur : une boulangerie ≠ un bar ≠ un restaurant
+- Sois proactif : suggère des améliorations même si on ne demande pas
+- Utilise des emojis stratégiquement pour structurer (pas décorer)
 
-Tu es là pour SIMPLIFIER la vie des commerçants, pas compliquer.`
+EXEMPLES DE NIVEAU D'EXPERTISE :
+❌ Basique : "Tu manques de farine, commande-en"
+✅ Expert : "🔴 Farine T55 : 2kg restants = 1,5 jours de couverture. Risque rupture dimanche. Commande 25kg aujourd'hui (5 jours de prod + marge) via ton fournisseur habituel. Économie : -12% vs commande urgente."
+
+❌ Vague : "Fais attention aux DLC"
+✅ Expert : "⚠️ 3 produits expirent sous 48h (valeur 45€). Plan d'action : Beurre (1,2kg) → promo -30% aujourd'hui | Crème (0,8L) → intégrer menu du jour | Fromage (400g) → offre employés. Économie gaspillage : 35€."
+
+Tu es l'outil qui transforme les commerçants en experts de leur propre stock.`
       },
       ...conversationHistory.map(msg => ({
         role: msg.role === 'user' ? 'user' : 'assistant',
@@ -341,8 +380,8 @@ Tu es là pour SIMPLIFIER la vie des commerçants, pas compliquer.`
     const completion = await client.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: messages,
-      temperature: 0.8,
-      max_tokens: 300
+      temperature: 0.4,
+      max_tokens: 500
     })
 
     return completion.choices[0].message.content
@@ -353,7 +392,7 @@ Tu es là pour SIMPLIFIER la vie des commerçants, pas compliquer.`
   }
 }
 
-function buildStockContext(products) {
+function buildStockContext(products, insights = null) {
   if (!products || products.length === 0) {
     return "Aucun produit en stock pour le moment."
   }
@@ -373,22 +412,38 @@ function buildStockContext(products) {
     return p.currentQuantity > threshold
   })
   
-  let context = `INVENTAIRE (${products.length} produits) :\n\n`
+  let context = `INVENTAIRE COMPLET (${products.length} produits) :\n\n`
+  
+  // Ajouter analyse globale si disponible
+  if (insights) {
+    context += `📊 ANALYSE GLOBALE :\n`
+    context += `  - Score santé stock : ${insights.summary?.healthScore || 'N/A'}%\n`
+    context += `  - Produits en risque rupture : ${insights.stockoutRisks?.length || 0}\n`
+    context += `  - Produits en sur-stock : ${insights.overstockAlerts?.length || 0}\n`
+    if (insights.recommendations?.length > 0) {
+      context += `  - Recommandations prioritaires : ${insights.recommendations.length}\n`
+    }
+    context += '\n'
+  }
   
   if (critical.length > 0) {
-    context += `🔴 STOCK CRITIQUE (${critical.length}) :\n`
+    context += `🔴 STOCK CRITIQUE - ACTION URGENTE (${critical.length}) :\n`
     critical.slice(0, 5).forEach(p => {
       const threshold = p.alertThreshold || 10
-      context += `  - ${p.name}: ${p.currentQuantity} ${p.unit} (seuil: ${threshold})\n`
+      const coverageDays = Math.floor(p.currentQuantity / (threshold / 7))
+      context += `  - ${p.name}: ${p.currentQuantity} ${p.unit} (seuil: ${threshold}) → Couverture: ~${coverageDays}j`
+      if (p.supplier) context += ` | Fournisseur: ${p.supplier}`
+      context += '\n'
     })
     context += '\n'
   }
   
   if (low.length > 0) {
-    context += `🟠 STOCK FAIBLE (${low.length}) :\n`
+    context += `🟠 STOCK FAIBLE - SURVEILLER (${low.length}) :\n`
     low.slice(0, 5).forEach(p => {
       const threshold = p.alertThreshold || 10
-      context += `  - ${p.name}: ${p.currentQuantity} ${p.unit} (seuil: ${threshold})\n`
+      const coverageDays = Math.floor(p.currentQuantity / (threshold / 7))
+      context += `  - ${p.name}: ${p.currentQuantity} ${p.unit} (seuil: ${threshold}) → Couverture: ~${coverageDays}j\n`
     })
     context += '\n'
   }
@@ -401,6 +456,16 @@ function buildStockContext(products) {
     if (healthy.length > 3) {
       context += `  ... et ${healthy.length - 3} autres produits OK\n`
     }
+  }
+  
+  // Ajouter produits avec DLC proche si disponible
+  const productsWithExpiry = products.filter(p => p.expiryDate)
+  if (productsWithExpiry.length > 0) {
+    context += `\n⏰ PRODUITS AVEC DATE LIMITE :\n`
+    productsWithExpiry.slice(0, 3).forEach(p => {
+      const daysUntil = Math.floor((new Date(p.expiryDate) - new Date()) / (1000 * 60 * 60 * 24))
+      context += `  - ${p.name}: expire dans ${daysUntil}j (${p.currentQuantity} ${p.unit})\n`
+    })
   }
   
   return context
