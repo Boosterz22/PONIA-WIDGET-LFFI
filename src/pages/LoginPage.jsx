@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { supabase } from '../services/supabase'
 
 export default function LoginPage() {
   const navigate = useNavigate()
+  const [isSignup, setIsSignup] = useState(true)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [businessName, setBusinessName] = useState('')
@@ -16,23 +18,60 @@ export default function LoginPage() {
     return `${name}-${type}${random}`
   }
 
+  const handleSignup = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+    
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            business_name: businessName,
+            business_type: businessType
+          }
+        }
+      })
+      
+      if (error) throw error
+      
+      localStorage.setItem('ponia_business_type', businessType)
+      localStorage.setItem('ponia_user_plan', 'basique')
+      
+      const referralCode = generateReferralCode(businessName, businessType)
+      localStorage.setItem('ponia_referral_code', referralCode)
+      localStorage.setItem('ponia_referrals', JSON.stringify([]))
+      localStorage.setItem('ponia_free_months', '0')
+      
+      setTimeout(() => {
+        navigate('/dashboard')
+      }, 800)
+    } catch (error) {
+      alert(error.message)
+      setLoading(false)
+    }
+  }
+
   const handleLogin = async (e) => {
     e.preventDefault()
     setLoading(true)
     
-    localStorage.setItem('ponia_business_name', businessName)
-    localStorage.setItem('ponia_business_type', businessType)
-    localStorage.setItem('ponia_user_email', email)
-    localStorage.setItem('ponia_user_plan', 'basique')
-    
-    const referralCode = generateReferralCode(businessName, businessType)
-    localStorage.setItem('ponia_referral_code', referralCode)
-    localStorage.setItem('ponia_referrals', JSON.stringify([]))
-    localStorage.setItem('ponia_free_months', '0')
-    
-    setTimeout(() => {
-      navigate('/dashboard')
-    }, 800)
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      })
+      
+      if (error) throw error
+      
+      setTimeout(() => {
+        navigate('/dashboard')
+      }, 800)
+    } catch (error) {
+      alert(error.message)
+      setLoading(false)
+    }
   }
 
   const businessTypes = [
@@ -76,7 +115,7 @@ export default function LoginPage() {
             letterSpacing: '-0.03em',
             color: '#000'
           }}>
-            Créer un compte
+            {isSignup ? 'Créer un compte' : 'Se connecter'}
           </h1>
           <p style={{ 
             color: '#6b7280', 
@@ -84,10 +123,10 @@ export default function LoginPage() {
             marginBottom: '2rem',
             lineHeight: 1.5
           }}>
-            Commencez gratuitement. Aucune carte bancaire requise.
+            {isSignup ? 'Commencez gratuitement. Aucune carte bancaire requise.' : 'Accédez à votre compte PONIA.'}
           </p>
 
-          <form onSubmit={handleLogin} style={{ marginBottom: '2rem' }}>
+          <form onSubmit={isSignup ? handleSignup : handleLogin} style={{ marginBottom: '2rem' }}>
             <div style={{ marginBottom: '1.25rem' }}>
               <label style={{ 
                 display: 'block', 
@@ -119,6 +158,40 @@ export default function LoginPage() {
                 onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
               />
             </div>
+
+            {isSignup && (
+              <div style={{ marginBottom: '1.25rem' }}>
+                <label style={{ 
+                  display: 'block', 
+                  marginBottom: '0.5rem',
+                  fontSize: '0.875rem',
+                  fontWeight: 500,
+                  color: '#374151'
+                }}>
+                  Nom du commerce
+                </label>
+                <input
+                  type="text"
+                  placeholder=""
+                  value={businessName}
+                  onChange={(e) => setBusinessName(e.target.value)}
+                  required
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem 1rem',
+                    fontSize: '0.9375rem',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '8px',
+                    background: '#fff',
+                    outline: 'none',
+                    transition: 'all 0.15s ease',
+                    boxSizing: 'border-box'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#FFD700'}
+                  onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
+                />
+              </div>
+            )}
 
             <div style={{ marginBottom: '1.25rem' }}>
               <label style={{ 
@@ -153,74 +226,44 @@ export default function LoginPage() {
               />
             </div>
 
-            <div style={{ marginBottom: '1.25rem' }}>
-              <label style={{ 
-                display: 'block', 
-                marginBottom: '0.5rem',
-                fontSize: '0.875rem',
-                fontWeight: 500,
-                color: '#374151'
-              }}>
-                Nom du commerce
-              </label>
-              <input
-                type="text"
-                placeholder=""
-                value={businessName}
-                onChange={(e) => setBusinessName(e.target.value)}
-                required
-                style={{
-                  width: '100%',
-                  padding: '0.75rem 1rem',
-                  fontSize: '0.9375rem',
-                  border: '1px solid #e5e7eb',
-                  borderRadius: '8px',
-                  background: '#fff',
-                  outline: 'none',
-                  transition: 'all 0.15s ease',
-                  boxSizing: 'border-box'
-                }}
-                onFocus={(e) => e.target.style.borderColor = '#FFD700'}
-                onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
-              />
-            </div>
-
-            <div style={{ marginBottom: '1.75rem' }}>
-              <label style={{ 
-                display: 'block', 
-                marginBottom: '0.5rem',
-                fontSize: '0.875rem',
-                fontWeight: 500,
-                color: '#374151'
-              }}>
-                Type de commerce
-              </label>
-              <select
-                value={businessType}
-                onChange={(e) => setBusinessType(e.target.value)}
-                required
-                style={{
-                  width: '100%',
-                  padding: '0.75rem 1rem',
-                  fontSize: '0.9375rem',
-                  border: '1px solid #e5e7eb',
-                  borderRadius: '8px',
-                  background: '#fff',
-                  outline: 'none',
-                  transition: 'all 0.15s ease',
-                  boxSizing: 'border-box',
-                  cursor: 'pointer'
-                }}
-                onFocus={(e) => e.target.style.borderColor = '#FFD700'}
-                onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
-              >
-                {businessTypes.map(type => (
-                  <option key={type.value} value={type.value}>
-                    {type.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+            {isSignup && (
+              <div style={{ marginBottom: '1.75rem' }}>
+                <label style={{ 
+                  display: 'block', 
+                  marginBottom: '0.5rem',
+                  fontSize: '0.875rem',
+                  fontWeight: 500,
+                  color: '#374151'
+                }}>
+                  Type de commerce
+                </label>
+                <select
+                  value={businessType}
+                  onChange={(e) => setBusinessType(e.target.value)}
+                  required
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem 1rem',
+                    fontSize: '0.9375rem',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '8px',
+                    background: '#fff',
+                    outline: 'none',
+                    transition: 'all 0.15s ease',
+                    boxSizing: 'border-box',
+                    cursor: 'pointer'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#FFD700'}
+                  onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
+                >
+                  {businessTypes.map(type => (
+                    <option key={type.value} value={type.value}>
+                      {type.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             <button 
               type="submit" 
@@ -246,26 +289,29 @@ export default function LoginPage() {
                 if (!loading) e.target.style.background = '#FFD700'
               }}
             >
-              {loading ? 'Création du compte...' : 'Continuer'}
+              {loading ? (isSignup ? 'Création du compte...' : 'Connexion...') : (isSignup ? 'Continuer' : 'Se connecter')}
             </button>
           </form>
 
-          <div style={{
-            padding: '1rem',
-            background: '#f9fafb',
-            borderRadius: '8px',
-            border: '1px solid #e5e7eb'
-          }}>
-            <p style={{
-              fontSize: '0.8125rem',
-              color: '#6b7280',
-              lineHeight: 1.6,
-              margin: 0
+          {isSignup && (
+            <div style={{
+              padding: '1rem',
+              background: '#f9fafb',
+              borderRadius: '8px',
+              border: '1px solid #e5e7eb',
+              marginBottom: '2rem'
             }}>
-              Plan <strong style={{ color: '#000' }}>Basique gratuit</strong> jusqu'à 10 produits. 
-              Passez à Standard (49€/mois) ou Pro (69€/mois) quand vous voulez.
-            </p>
-          </div>
+              <p style={{
+                fontSize: '0.8125rem',
+                color: '#6b7280',
+                lineHeight: 1.6,
+                margin: 0
+              }}>
+                Plan <strong style={{ color: '#000' }}>Basique gratuit</strong> jusqu'à 10 produits. 
+                Passez à Standard (49€/mois) ou Pro (69€/mois) quand vous voulez.
+              </p>
+            </div>
+          )}
 
           <p style={{ 
             marginTop: '2rem', 
@@ -273,16 +319,17 @@ export default function LoginPage() {
             color: '#6b7280',
             fontSize: '0.875rem'
           }}>
-            Déjà un compte ?{' '}
+            {isSignup ? 'Déjà un compte ?' : 'Pas encore de compte ?'}{' '}
             <span 
+              onClick={() => setIsSignup(!isSignup)}
               style={{ 
-                color: '#9ca3af', 
+                color: '#FFD700', 
                 textDecoration: 'none', 
                 fontWeight: 600,
-                cursor: 'not-allowed'
+                cursor: 'pointer'
               }}
             >
-              Se connecter (bientôt)
+              {isSignup ? 'Se connecter' : 'Créer un compte'}
             </span>
           </p>
         </div>

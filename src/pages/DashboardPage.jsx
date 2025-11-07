@@ -245,16 +245,13 @@ export default function DashboardPage({ session }) {
                 style={{ 
                   display: 'flex', 
                   alignItems: 'center', 
-                  gap: '0.5rem',
-                  padding: '0.5rem 0.75rem'
+                  justifyContent: 'center',
+                  padding: '0.65rem',
+                  minWidth: '44px',
+                  minHeight: '44px'
                 }}
               >
-                <User size={18} />
-                <span>{session.user.email?.split('@')[0] || 'Utilisateur'}</span>
-                <ChevronDown size={16} style={{ 
-                  transform: showUserMenu ? 'rotate(180deg)' : 'rotate(0)',
-                  transition: 'transform 0.2s'
-                }} />
+                <User size={20} />
               </button>
 
               {showUserMenu && (
@@ -393,9 +390,9 @@ export default function DashboardPage({ session }) {
                     <div style={{ height: '1px', background: '#E5E7EB', margin: '0.5rem 0' }} />
 
                     <button
-                      onClick={() => {
+                      onClick={async () => {
                         setShowUserMenu(false)
-                        handleLogout()
+                        await handleLogout()
                       }}
                       style={{
                         width: '100%',

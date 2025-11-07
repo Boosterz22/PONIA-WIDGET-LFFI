@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { TrendingUp, Clock, Shield, Zap, BarChart3, CheckCircle, Star, Users, X, Check, AlertCircle, Sparkles, Target, ArrowRight, Twitter, Linkedin } from 'lucide-react'
+import { TrendingUp, Clock, Shield, Zap, BarChart3, CheckCircle, Star, Users, X, Check, AlertCircle, Sparkles, Target, ArrowRight, Linkedin } from 'lucide-react'
 
 export default function LandingPage() {
   const [showHeaderCTA, setShowHeaderCTA] = useState(true)
@@ -29,7 +29,7 @@ export default function LandingPage() {
       {/* HEADER TRANSPARENT */}
       <nav style={{
         padding: 'clamp(1.5rem, 3vw, 2rem) 0',
-        background: 'radial-gradient(ellipse at top, rgba(255, 215, 0, 0.15) 0%, rgba(255, 215, 0, 0.08) 40%, transparent 80%)',
+        background: 'linear-gradient(180deg, rgba(255, 215, 0, 0.12) 0%, rgba(255, 215, 0, 0.08) 50%, rgba(255, 215, 0, 0.04) 100%)',
         backdropFilter: 'blur(10px)',
         position: 'sticky',
         top: 0,
@@ -75,9 +75,8 @@ export default function LandingPage() {
       <section id="accueil" style={{ 
         padding: 'clamp(2rem, 5vw, 3rem) 0 4rem',
         textAlign: 'center',
-        background: 'radial-gradient(ellipse at top, rgba(255, 215, 0, 0.2) 0%, rgba(255, 215, 0, 0.12) 30%, transparent 70%), radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.15) 0%, transparent 40%), radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.1) 0%, transparent 50%)',
-        position: 'relative',
-        marginTop: '-2rem'
+        background: 'linear-gradient(180deg, rgba(255, 215, 0, 0.04) 0%, rgba(255, 215, 0, 0.08) 30%, rgba(255, 215, 0, 0.12) 60%, transparent 100%)',
+        position: 'relative'
       }} className="fade-in">
         <div className="container">
 
@@ -369,7 +368,7 @@ export default function LandingPage() {
               <BarChart3 size={48} color="#FFD700" style={{ margin: '0 auto 1.5rem' }} />
               <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>ROI x12 immédiat</h3>
               <p style={{ color: 'var(--text-muted)', lineHeight: 1.7 }}>
-                €49/mois pour économiser €600+/mois. Récupérez <strong>12x votre investissement</strong> dès le 1er mois.
+                €49/mois pour économiser €767/mois. Récupérez <strong>15x votre investissement</strong> dès le 1er mois.
               </p>
             </div>
 
@@ -699,8 +698,8 @@ export default function LandingPage() {
               flexDirection: 'column'
             }}>
               <div style={{ 
-                background: '#e5e7eb',
-                color: '#6b7280',
+                background: 'linear-gradient(135deg, #d1fae5, #a7f3d0)',
+                color: '#065f46',
                 padding: '0.4rem 1.2rem',
                 borderRadius: '20px',
                 fontSize: '0.85rem',
@@ -718,9 +717,11 @@ export default function LandingPage() {
                 Pour découvrir
               </div>
 
-              <Link to="/login" className="btn btn-secondary" style={{ width: '100%', padding: '1rem', marginBottom: '1.5rem', background: '#e5e7eb', color: '#6b7280' }}>
+              <Link to="/login" className="btn btn-secondary" style={{ width: '100%', padding: '1rem', background: '#e5e7eb', color: '#6b7280' }}>
                 Démarrer
               </Link>
+
+              <div style={{ flexGrow: 1, minHeight: '1.5rem' }} />
 
               <div style={{ textAlign: 'left' }}>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
@@ -780,7 +781,7 @@ export default function LandingPage() {
                 €49<span style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>/mois</span>
               </div>
               <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '2rem', minHeight: '1.5rem' }}>
-                <s>€98/mois</s> → -50% pendant 3 mois
+                Le plus populaire
               </div>
 
               <Link to="/login?plan=standard" className="btn btn-primary" style={{ width: '100%', padding: '1rem', marginBottom: '1.5rem' }}>
@@ -866,7 +867,7 @@ export default function LandingPage() {
                 €69<span style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>/mois</span>
               </div>
               <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '2rem', minHeight: '1.5rem' }}>
-                <s>€138/mois</s> → -50% pendant 3 mois
+                Pour les commerces exigeants
               </div>
 
               <Link to="/login?plan=pro" className="btn btn-primary" style={{ width: '100%', padding: '1rem', marginBottom: '1.5rem', animation: 'pulse 2s infinite' }}>
@@ -935,7 +936,7 @@ export default function LandingPage() {
             Prêt à arrêter de perdre du temps et de l'argent ?
           </h2>
           <p style={{ fontSize: 'clamp(1.1rem, 2vw, 1.5rem)', color: 'var(--text-muted)', maxWidth: '800px', margin: '0 auto 3rem', lineHeight: 1.6 }}>
-            Rejoignez les 50+ commerçants qui économisent €600+/mois et gagnent 35h/mois avec PONIA.
+            Rejoignez les 50+ commerçants qui économisent €767/mois et gagnent 35h/mois avec PONIA.
           </p>
 
           <Link to="/login" className="btn btn-primary" style={{ 
@@ -971,7 +972,7 @@ export default function LandingPage() {
           {/* RÉSEAUX SOCIAUX */}
           <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', marginBottom: '2rem' }}>
             <a 
-              href="https://twitter.com/ponia_ai" 
+              href="https://x.com/ponia_ai" 
               target="_blank" 
               rel="noopener noreferrer"
               style={{ 
@@ -984,7 +985,7 @@ export default function LandingPage() {
               onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary)'}
               onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
             >
-              <Twitter size={24} />
+              <X size={24} />
             </a>
             <a 
               href="https://linkedin.com/company/ponia" 
@@ -1010,6 +1011,17 @@ export default function LandingPage() {
             color: 'var(--text-muted)',
             fontSize: '0.85rem'
           }}>
+            <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'center', gap: '1.5rem', fontSize: '0.9rem' }}>
+              <a href="#" style={{ color: 'var(--text-muted)', textDecoration: 'none' }} onClick={(e) => { e.preventDefault(); alert('Conditions Générales de Vente - Page à venir') }}>
+                CGV
+              </a>
+              <a href="#" style={{ color: 'var(--text-muted)', textDecoration: 'none' }} onClick={(e) => { e.preventDefault(); alert('Mentions Légales - Page à venir') }}>
+                Mentions Légales
+              </a>
+              <a href="#" style={{ color: 'var(--text-muted)', textDecoration: 'none' }} onClick={(e) => { e.preventDefault(); alert('Politique de Confidentialité - Page à venir') }}>
+                Confidentialité
+              </a>
+            </div>
             <p style={{ margin: '0 0 0.5rem', fontWeight: '500' }}>
               © Copyright 2025 - Ponia SAS
             </p>
