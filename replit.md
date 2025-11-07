@@ -42,14 +42,20 @@ The core AI functionality leverages a hybrid architecture combining a local rule
     *   **Voice Commands:** Integrates Web Speech API (fr-FR) for hands-free stock adjustments. Uses local regex parsing primarily, with GPT-4o-mini as a fallback for complex commands. Supports adding/removing quantities with numerical and decimal inputs.
 *   **Dashboard:** Completely redesigned with a modern, compact layout inspired by Stripe/Linear. Features a KPI grid (4 cards showing Total products, Critical stock, Low stock, Optimal stock), a slim single-line Basique plan banner, and a 2-column layout with AI Insights (left) and Active Alerts sidebar (right). Expiry alerts are integrated into the alerts panel alongside stock warnings. The design maximizes horizontal space usage and minimizes vertical scrolling for better UX.
 *   **Chat AI:** Floating chat button (bottom-right) with gold gradient styling opens a conversational AI drawer. Merchants can ask natural questions like "Combien j'ai de farine?", "Qu'est-ce que je dois commander?", and receive intelligent, context-aware responses based on their current inventory. Features clean, modern UI with smooth animations and mobile-responsive design.
-*   **PDF Order Generation:** "Générer bon de commande" button integrated into AI Insights panel automatically generates professional order documents (.txt format) when critical or low stock is detected. Includes product details, current stock levels, suggested quantities, urgency indicators (🔴 URGENT / 🟠 Cette semaine), and supplier information. Uses consistent threshold fallbacks to prevent calculation errors.
+*   **AI-Powered Order Generation:** "Générer bon de commande" button integrated into AI Insights panel automatically generates intelligent purchase orders (.txt format) using GPT-4o-mini. The system:
+    *   **Backend Endpoint:** `/api/generate-order` with production-ready input validation (rejects null/undefined products, validates alertThreshold > 0, ensures numeric fields are finite)
+    *   **AI Expert System:** Supply-chain consultant prompt optimized for honest, actionable recommendations (temperature 0.4, max_tokens 500)
+    *   **Smart Calculations:** Coverage days (currentQuantity / dailyConsumption with 1 decimal precision), critical/low classification, supplier grouping
+    *   **Order Format:** Professional structure with urgency sections (🔴 URGENT <48h / 🟠 SEMAINE 3-5j), rounded practical quantities (not complex EOQ), indicative market prices (€, 2025), supplier totals
+    *   **Frontend Resilience:** 30s timeout with AbortController, detailed error handling, automatic file download (.txt format)
+    *   **Honest Pricing:** All prices marked "indicatifs marché 2025, à confirmer" to avoid contractual confusion
 *   **Product Management:** Simple forms for adding products, specifying name, quantity, unit, alert threshold, and supplier. Supports 6 units (kg, L, pieces, bottles, sachets, boxes). Pre-configured product templates are available based on business type.
 *   **UI/UX:** Emphasizes simplicity and speed for mobile-first usage. Features dynamic scores, prioritized actions, contextual messages, and visual statistics.
 *   **Security & Performance:** Dynamic import of `openaiService`, 10-second timeouts for all AI calls, proper cleanup of Web Speech API, and comprehensive permission management. Local parsing is prioritized for speed and cost efficiency, with AI used only when necessary.
 
 **Technical Implementations:**
 
-*   **Backend (server/):** `index.js` (Express server with `/api/chat` endpoint for secure OpenAI calls, `/api/health` health check)
+*   **Backend (server/):** `index.js` (Express server with `/api/chat` for conversational AI, `/api/generate-order` for intelligent purchase orders, `/api/health` health check)
 *   **Frontend Services:** `aiUtils.js` (timeout, dynamic import), `voiceParser.js` (local regex parsing), `expiryService.js` (expiry calculations, local suggestions, waste stats), `rulesEngine.js` (AI rules), `aiService.js` (AI orchestration), `pdfService.js` (order document generation), `supabase.js` (Auth + DB)
 *   **Components:** `ProductCard.jsx`, `AddProductModal.jsx`, `AIInsights.jsx`, `UpgradeModal.jsx`, `ReferralModal.jsx`, `ExpiryAlerts.jsx`, `VoiceInput.jsx`, `ChatAI.jsx`
 *   **File Structure:** `server/` (backend), `src/components`, `src/pages`, `src/services`, `src/styles`
@@ -80,6 +86,13 @@ The core AI functionality leverages a hybrid architecture combining a local rule
     - Enriched context: health score, coverage days, suppliers, expiry dates
     - Temperature reduced to 0.4 for rigor, max_tokens 500 for complete responses
     - Enhanced error handling with generic client messages (no sensitive data leakage)
+*   ✅ **AI Order Generation (Nov 7):**
+    - **Production-Ready Backend:** `/api/generate-order` endpoint with comprehensive input validation (null/undefined guards, type checks, boundary validation)
+    - **Intelligent Prompt Engineering:** Honest market pricing ("indicatifs 2025"), rounded practical quantities (not complex formulas), actionable recommendations
+    - **Robust Calculations:** Coverage days with decimal precision, critical/low classification with Number.isFinite guards, supplier grouping
+    - **Frontend Resilience:** 30s timeout, AbortController cleanup, detailed error messages for timeout vs server errors
+    - **Validated Edge Cases:** Tested null products (→ 400), alertThreshold=0 (→ 400), valid data (→ 200 + AI-generated order)
+    - **Architect Approved:** Production-ready with no critical gaps blocking release
 
 **Roadmap:**
 
