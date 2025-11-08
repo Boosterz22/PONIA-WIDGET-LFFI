@@ -24,8 +24,8 @@ const openai = new OpenAI({
   apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY
 })
 
-// Helper pour construire le contexte stock enrichi
-function buildStockContext(products, insights = null) {
+// Helper pour construire le contexte stock enrichi avec météo et événements
+async function buildStockContext(products, insights = null, includeExternalContext = true) {
   if (!products || products.length === 0) {
     return "Aucun produit en stock pour le moment."
   }
@@ -52,6 +52,49 @@ function buildStockContext(products, insights = null) {
     context += `  - Score santé stock : ${insights.summary?.healthScore || 'N/A'}%\n`
     context += `  - Produits en risque rupture : ${insights.stockoutRisks?.length || 0}\n`
     context += `  - Produits en sur-stock : ${insights.overstockAlerts?.length || 0}\n\n`
+  }
+  
+  if (includeExternalContext) {
+    try {
+      const apiKey = process.env.OPENWEATHER_API_KEY
+      if (apiKey) {
+        const weatherRes = await fetch(
+          `https://api.openweathermap.org/data/2.5/weather?q=Paris,FR&appid=${apiKey}&units=metric&lang=fr`
+        )
+        const weatherData = await weatherRes.json()
+        
+        context += `🌤️ MÉTÉO ACTUELLE (Paris) :\n`
+        context += `  - Température: ${Math.round(weatherData.main?.temp || 0)}°C (ressenti ${Math.round(weatherData.main?.feels_like || 0)}°C)\n`
+        context += `  - Humidité: ${weatherData.main?.humidity || 0}%\n`
+        context += `  - Conditions: ${weatherData.weather?.[0]?.description || 'N/A'}\n`
+        
+        if (weatherData.main?.temp > 30) {
+          context += `  ⚠️ ALERTE CHALEUR : Surveiller DLC produits frais, augmenter renouvellement\n`
+        }
+        if (weatherData.main?.humidity > 70) {
+          context += `  ⚠️ HUMIDITÉ ÉLEVÉE : Risque moisissures produits secs, vérifier stockage\n`
+        }
+        context += '\n'
+      }
+    } catch (error) {
+      console.log('Météo non disponible')
+    }
+    
+    try {
+      const { getLocalPublicEvents } = await import('./googleCalendar.js')
+      const events = await getLocalPublicEvents('Paris')
+      
+      if (events && events.length > 0) {
+        context += `📅 ÉVÉNEMENTS LOCAUX PROCHAINS :\n`
+        events.slice(0, 3).forEach(event => {
+          const daysUntil = Math.ceil((new Date(event.start) - new Date()) / (1000 * 60 * 60 * 24))
+          context += `  - ${event.name} (dans ${daysUntil}j): ${event.impact.expectedVisitors} fréquentation → ${event.impact.stockAdvice}\n`
+        })
+        context += '\n'
+      }
+    } catch (error) {
+      console.log('Événements non disponibles')
+    }
   }
   
   if (critical.length > 0) {
@@ -107,7 +150,7 @@ app.post('/api/chat', async (req, res) => {
       return res.status(400).json({ error: 'Message utilisateur requis' })
     }
     
-    const stockContext = buildStockContext(products || [], insights)
+    const stockContext = await buildStockContext(products || [], insights, true)
     
     const messages = [
       {
@@ -123,6 +166,8 @@ EXPERTISE & CAPACITÉS :
 - 🔮 Prédictions : anticipation des ruptures, analyse des tendances, saisonnalité
 - 💡 Optimisation : réduction gaspillage, amélioration trésorerie, gestion DLC/DLUO
 - 📦 Expertise sectorielle : bakeries, restaurants, bars, caves à vin
+- 🌤️ Analyse contextuelle : impact météo sur DLC, événements locaux sur demande
+- 📅 Anticipation événements : pics de fréquentation, ajustements stock préventifs
 
 MÉTHODOLOGIE DE RÉPONSE :
 1. **Analyse** : État actuel + diagnostic rapide
