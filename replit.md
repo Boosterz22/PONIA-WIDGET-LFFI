@@ -62,7 +62,25 @@ The core AI functionality uses a hybrid architecture combining a local rules eng
 
 ## Recent Changes (Nov 08, 2025)
 
-### ✅ Complete UI/UX Overhaul - Final Version (Latest)
+### ✅ CRITICAL: Complete Security Overhaul - JWT Authentication (Latest)
+*   **Products now persist to PostgreSQL** - Removed localStorage, all data saved to database via API
+*   **Server-side JWT verification** - New `authenticateSupabaseUser` middleware validates every request
+    → Extracts `req.supabaseUserId` from verified Supabase JWT token
+    → No client-supplied user IDs trusted - prevents user impersonation attacks
+*   **All endpoints secured** - Every protected endpoint now requires `Authorization: Bearer <token>`
+    → GET/POST/PUT/DELETE /api/products (authenticated)
+    → GET /api/stock-history (authenticated)
+    → GET /api/users/me (authenticated)
+    → PUT /api/users/business (authenticated)
+*   **Legacy insecure endpoints REMOVED** - Deleted unauthenticated routes that allowed data exfiltration
+    → REMOVED: GET /api/products/:userId
+    → REMOVED: GET /api/stock-history/:userId
+*   **Frontend security** - All pages (StockPage, DashboardPage, AnalyticsPage, SettingsPage) use authenticated API
+*   **Business name editable** - Users can now change their commerce name/type in SettingsPage
+*   **Referral code tracking** - Added referredBy field during signup in CompleteProfilePage
+*   **Architect approved** - Production-ready with zero security vulnerabilities
+
+### ✅ Complete UI/UX Overhaul - Final Version
 *   **Navigation professionnelle** - Barre horizontale avec type de commerce à gauche + icône profil à droite
     → Menu dropdown complet : Mon Profil, Parrainage, Paramètres, Contact, Déconnexion
     → Affiche le type de commerce (Boulangerie, Restaurant, etc.) au lieu de "PONIA AI"
