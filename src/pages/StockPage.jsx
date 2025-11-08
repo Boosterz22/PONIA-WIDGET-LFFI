@@ -187,7 +187,7 @@ export default function StockPage({ session }) {
         />
       )}
 
-      <ChatAI products={products} />
+      <ChatAI products={products} userPlan={userPlan} />
     </div>
   )
 }

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import { Package, AlertCircle, User, LogOut } from 'lucide-react'
-import { supabase } from '../services/supabase'
+import { useNavigate } from 'react-router-dom'
+import { Package, AlertCircle } from 'lucide-react'
 import Navigation from '../components/Navigation'
 import AIInsights from '../components/AIInsights'
+import ChatAI from '../components/ChatAI'
 import { checkExpiryAlerts } from '../services/expiryService'
 
 export default function DashboardPage({ session }) {
@@ -19,11 +19,6 @@ export default function DashboardPage({ session }) {
       setProducts(JSON.parse(savedProducts))
     }
   }, [])
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    navigate('/login')
-  }
 
   const handleGenerateOrder = async () => {
     const { generateOrderPDF } = await import('../services/pdfService')
@@ -42,50 +37,7 @@ export default function DashboardPage({ session }) {
     <div style={{ minHeight: '100vh', background: '#F9FAFB' }}>
       <Navigation />
       
-      <nav style={{
-        borderBottom: '1px solid #E5E7EB',
-        padding: '1rem 0',
-        background: 'white',
-        position: 'sticky',
-        top: '58px',
-        zIndex: 99
-      }}>
-        <div className="container" style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center', 
-          flexWrap: 'wrap', 
-          gap: '1rem',
-          maxWidth: '1400px',
-          margin: '0 auto',
-          padding: '0 1rem'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <Link to="/" style={{ display: 'flex', alignItems: 'center' }}>
-              <img src="/ponia-icon.png" alt="PONIA AI" style={{ height: '36px' }} />
-            </Link>
-            <div>
-              <div style={{ fontWeight: 'bold', fontSize: '1.125rem' }}>{businessName}</div>
-              <div style={{ fontSize: '0.875rem', color: '#6B7280' }}>PONIA AI</div>
-            </div>
-          </div>
-          <button 
-            onClick={handleLogout}
-            className="btn btn-secondary" 
-            style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '0.5rem',
-              padding: '0.5rem 1rem'
-            }}
-          >
-            <LogOut size={18} />
-            Déconnexion
-          </button>
-        </div>
-      </nav>
-
-      <div className="container" style={{ padding: '2rem 1rem', maxWidth: '1400px', margin: '0 auto' }}>
+      <div className="container" style={{ padding: '2rem 1rem', maxWidth: '1400px', margin: '0 auto', paddingBottom: '100px' }}>
         <div style={{ marginBottom: '2rem' }}>
           <h1 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '0.5rem' }}>
             Tableau de bord
@@ -237,6 +189,8 @@ export default function DashboardPage({ session }) {
           </button>
         </div>
       </div>
+
+      <ChatAI products={products} userPlan={userPlan} />
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { MessageCircle, X, Send, Loader } from 'lucide-react'
+import { Send, Loader, Sparkles, ChevronDown, ChevronUp } from 'lucide-react'
 
 async function getChatResponse(userMessage, products, conversationHistory, insights) {
   try {
@@ -29,11 +29,11 @@ async function getChatResponse(userMessage, products, conversationHistory, insig
 }
 
 export default function ChatAI({ products, userPlan }) {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false)
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: 'Salut ! 👋 Je suis PONIA, ton assistant IA de gestion de stock. Demande-moi n\'importe quoi sur tes produits, je connais tout ton inventaire !'
+      content: '👋 Salut ! Je suis PONIA, ton assistant IA. Demande-moi n\'importe quoi sur tes stocks !'
     }
   ])
   const [input, setInput] = useState('')
@@ -79,211 +79,145 @@ export default function ChatAI({ products, userPlan }) {
   }
 
   return (
-    <>
-      <button
-        onClick={() => setIsOpen(true)}
-        style={{
-          position: 'fixed',
-          bottom: '2rem',
-          right: '2rem',
-          width: '60px',
-          height: '60px',
-          borderRadius: '50%',
-          background: 'linear-gradient(135deg, #FFD700, #FFA500)',
-          border: 'none',
-          boxShadow: '0 4px 12px rgba(255, 215, 0, 0.4)',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 999,
-          transition: 'all 0.3s ease',
-          transform: isOpen ? 'scale(0)' : 'scale(1)',
-          pointerEvents: isOpen ? 'none' : 'auto'
-        }}
-        onMouseEnter={(e) => {
-          if (!isOpen) e.target.style.transform = 'scale(1.1)'
-        }}
-        onMouseLeave={(e) => {
-          if (!isOpen) e.target.style.transform = 'scale(1)'
-        }}
-      >
-        <MessageCircle size={28} color="#1F2937" />
-      </button>
-
-      {isOpen && (
+    <div style={{
+      position: 'fixed',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      zIndex: 998,
+      background: 'white',
+      borderTop: '2px solid #FFD700',
+      boxShadow: '0 -4px 12px rgba(0,0,0,0.1)',
+      transition: 'all 0.3s ease'
+    }}>
+      {isExpanded && (
         <div style={{
-          position: 'fixed',
-          top: 0,
-          right: 0,
-          width: '100%',
-          maxWidth: '450px',
-          height: '100vh',
-          background: 'white',
-          boxShadow: '-4px 0 24px rgba(0,0,0,0.15)',
-          zIndex: 1000,
-          display: 'flex',
-          flexDirection: 'column',
-          animation: 'slideIn 0.3s ease-out'
+          maxHeight: '400px',
+          overflowY: 'auto',
+          padding: '1rem',
+          background: '#FAFAFA',
+          borderBottom: '1px solid #E5E7EB'
         }}>
-          <div style={{
-            padding: '1.5rem',
-            borderBottom: '1px solid #E5E7EB',
-            background: 'linear-gradient(135deg, #FFD700, #FFA500)',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}>
-            <div>
-              <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: '700', color: '#1F2937' }}>
-                Assistant IA PONIA
-              </h3>
-              <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.875rem', color: '#374151' }}>
-                Gérez vos stocks intelligemment
-              </p>
-            </div>
-            <button
-              onClick={() => setIsOpen(false)}
+          {messages.map((msg, idx) => (
+            <div
+              key={idx}
               style={{
-                background: 'rgba(255,255,255,0.3)',
-                border: 'none',
-                borderRadius: '6px',
-                padding: '0.5rem',
-                cursor: 'pointer',
+                marginBottom: '0.75rem',
                 display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start'
               }}
             >
-              <X size={24} color="#1F2937" />
-            </button>
-          </div>
-
-          <div style={{
-            flex: 1,
-            overflowY: 'auto',
-            padding: '1.5rem',
-            background: '#FAFAFA'
-          }}>
-            {messages.map((msg, idx) => (
-              <div
-                key={idx}
-                style={{
-                  marginBottom: '1rem',
-                  display: 'flex',
-                  justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start'
-                }}
-              >
-                <div style={{
-                  maxWidth: '80%',
-                  padding: '0.875rem 1.125rem',
-                  borderRadius: msg.role === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
-                  background: msg.role === 'user' 
-                    ? 'linear-gradient(135deg, #FFD700, #FFA500)' 
-                    : 'white',
-                  color: msg.role === 'user' ? '#1F2937' : '#111827',
-                  fontSize: '0.9rem',
-                  lineHeight: '1.5',
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-                  fontWeight: msg.role === 'user' ? '500' : '400'
-                }}>
-                  {msg.content}
-                </div>
-              </div>
-            ))}
-            {loading && (
               <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: '0.875rem 1.125rem',
-                background: 'white',
-                borderRadius: '16px',
-                maxWidth: '80%',
-                boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                maxWidth: '70%',
+                padding: '0.75rem 1rem',
+                borderRadius: msg.role === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+                background: msg.role === 'user' 
+                  ? 'linear-gradient(135deg, #FFD700, #FFA500)' 
+                  : 'white',
+                color: msg.role === 'user' ? '#1F2937' : '#111827',
+                fontSize: '0.875rem',
+                lineHeight: '1.5',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                fontWeight: msg.role === 'user' ? '500' : '400'
               }}>
-                <Loader size={16} className="spin" />
-                <span style={{ fontSize: '0.9rem', color: '#6B7280' }}>PONIA réfléchit...</span>
+                {msg.content}
               </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-
-          <div style={{
-            padding: '1rem 1.5rem',
-            borderTop: '1px solid #E5E7EB',
-            background: 'white'
-          }}>
-            <div style={{ display: 'flex', gap: '0.75rem' }}>
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Posez une question sur vos stocks..."
-                disabled={loading}
-                style={{
-                  flex: 1,
-                  padding: '0.875rem 1rem',
-                  border: '1px solid #E5E7EB',
-                  borderRadius: '10px',
-                  fontSize: '0.9rem',
-                  outline: 'none',
-                  background: '#FAFAFA'
-                }}
-              />
-              <button
-                onClick={handleSend}
-                disabled={loading || !input.trim()}
-                style={{
-                  background: loading || !input.trim() 
-                    ? '#E5E7EB' 
-                    : 'linear-gradient(135deg, #FFD700, #FFA500)',
-                  border: 'none',
-                  borderRadius: '10px',
-                  padding: '0.875rem 1.25rem',
-                  cursor: loading || !input.trim() ? 'not-allowed' : 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'all 0.2s'
-                }}
-              >
-                <Send size={20} color={loading || !input.trim() ? '#9CA3AF' : '#1F2937'} />
-              </button>
             </div>
-            <p style={{
-              margin: '0.75rem 0 0 0',
-              fontSize: '0.75rem',
-              color: '#9CA3AF',
-              textAlign: 'center'
+          ))}
+          {loading && (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '0.75rem 1rem',
+              background: 'white',
+              borderRadius: '16px',
+              maxWidth: '70%',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
             }}>
-              {userPlan === 'basique' 
-                ? 'Plan Basique : 5 questions IA/jour' 
-                : 'Questions illimitées'}
-            </p>
-          </div>
+              <Loader size={16} style={{ animation: 'spin 1s linear infinite' }} />
+              <span style={{ fontSize: '0.875rem', color: '#6B7280' }}>PONIA réfléchit...</span>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
         </div>
       )}
 
-      <style>
-        {`
-          @keyframes slideIn {
-            from {
-              transform: translateX(100%);
-            }
-            to {
-              transform: translateX(0);
-            }
-          }
-          .spin {
-            animation: spin 1s linear infinite;
-          }
-          @keyframes spin {
-            to { transform: rotate(360deg); }
-          }
-        `}
-      </style>
-    </>
+      <div style={{
+        padding: '0.75rem 1rem',
+        background: 'white',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.75rem',
+        maxWidth: '1400px',
+        margin: '0 auto'
+      }}>
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          style={{
+            background: 'transparent',
+            border: 'none',
+            cursor: 'pointer',
+            padding: '0.5rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#6B7280'
+          }}
+        >
+          {isExpanded ? <ChevronDown size={20} /> : <ChevronUp size={20} />}
+        </button>
+
+        <Sparkles size={20} color="#FFD700" style={{ flexShrink: 0 }} />
+        
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyPress={handleKeyPress}
+          placeholder="Demandez quelque chose à PONIA AI..."
+          style={{
+            flex: 1,
+            border: 'none',
+            outline: 'none',
+            fontSize: '0.95rem',
+            padding: '0.5rem',
+            background: 'transparent',
+            color: '#111827'
+          }}
+        />
+
+        <button
+          onClick={handleSend}
+          disabled={!input.trim() || loading}
+          style={{
+            background: input.trim() && !loading ? 'linear-gradient(135deg, #FFD700, #FFA500)' : '#E5E7EB',
+            border: 'none',
+            borderRadius: '8px',
+            padding: '0.5rem 1rem',
+            cursor: input.trim() && !loading ? 'pointer' : 'not-allowed',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            transition: 'all 0.2s',
+            fontWeight: '500',
+            fontSize: '0.875rem',
+            color: input.trim() && !loading ? '#1F2937' : '#9CA3AF'
+          }}
+        >
+          {loading ? <Loader size={16} /> : <Send size={16} />}
+          <span style={{ display: window.innerWidth < 640 ? 'none' : 'inline' }}>
+            {loading ? 'Envoi...' : 'Envoyer'}
+          </span>
+        </button>
+      </div>
+
+      <style>{`
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
+    </div>
   )
 }

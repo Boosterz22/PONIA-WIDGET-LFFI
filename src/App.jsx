@@ -8,6 +8,7 @@ import InsightsPage from './pages/InsightsPage'
 import HistoryPage from './pages/HistoryPage'
 import ProfilePage from './pages/ProfilePage'
 import SettingsPage from './pages/SettingsPage'
+import ReferralPage from './pages/ReferralPage'
 import { supabase } from './services/supabase'
 
 function App() {
@@ -68,6 +69,10 @@ function App() {
         <Route 
           path="/settings" 
           element={session ? <SettingsPage session={session} /> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="/referral" 
+          element={session ? <ReferralPage session={session} /> : <Navigate to="/login" />} 
         />
       </Routes>
     </BrowserRouter>
