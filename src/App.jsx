@@ -4,6 +4,7 @@ import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
+import CompleteProfilePage from './pages/CompleteProfilePage'
 import DashboardPage from './pages/DashboardPage'
 import StockPage from './pages/StockPage'
 import InsightsPage from './pages/InsightsPage'
@@ -16,17 +17,46 @@ import { supabase } from './services/supabase'
 function App() {
   const [session, setSession] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [needsProfile, setNeedsProfile] = useState(false)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session)
+      
+      if (session) {
+        const userRes = await fetch(`/api/users/me?supabaseId=${session.user.id}`)
+        const { user } = await userRes.json()
+        
+        if (!user || !user.businessName) {
+          setNeedsProfile(true)
+        } else {
+          localStorage.setItem('ponia_business_type', user.businessType || 'default')
+          localStorage.setItem('ponia_user_plan', user.plan || 'basique')
+          localStorage.setItem('ponia_referral_code', user.referralCode || '')
+        }
+      }
+      
       setLoading(false)
     })
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setSession(session)
+      
+      if (session) {
+        const userRes = await fetch(`/api/users/me?supabaseId=${session.user.id}`)
+        const { user } = await userRes.json()
+        
+        if (!user || !user.businessName) {
+          setNeedsProfile(true)
+        } else {
+          setNeedsProfile(false)
+          localStorage.setItem('ponia_business_type', user.businessType || 'default')
+          localStorage.setItem('ponia_user_plan', user.plan || 'basique')
+          localStorage.setItem('ponia_referral_code', user.referralCode || '')
+        }
+      }
     })
 
     return () => subscription.unsubscribe()
@@ -46,13 +76,17 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route 
           path="/login" 
-          element={session ? <Navigate to="/dashboard" /> : <LoginPage />} 
+          element={session ? (needsProfile ? <Navigate to="/complete-profile" /> : <Navigate to="/dashboard" />) : <LoginPage />} 
         />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route 
+          path="/complete-profile" 
+          element={session && needsProfile ? <CompleteProfilePage session={session} /> : <Navigate to="/dashboard" />} 
+        />
+        <Route 
           path="/dashboard" 
-          element={session ? <DashboardPage session={session} /> : <Navigate to="/login" />} 
+          element={session ? (needsProfile ? <Navigate to="/complete-profile" /> : <DashboardPage session={session} />) : <Navigate to="/login" />} 
         />
         <Route 
           path="/stock" 
