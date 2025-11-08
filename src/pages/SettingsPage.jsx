@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Crown, Mail, Lock, Trash2, Briefcase } from 'lucide-react'
 import { supabase } from '../services/supabase'
@@ -11,10 +11,37 @@ export default function SettingsPage({ session }) {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
+  const [businessName, setBusinessName] = useState('')
+  const [businessType, setBusinessType] = useState('')
+  const [userData, setUserData] = useState(null)
   
   const userPlan = localStorage.getItem('ponia_user_plan') || 'basique'
-  const businessName = session.user.business_name || 'Mon Commerce'
-  const businessType = localStorage.getItem('ponia_business_type') || 'default'
+
+  useEffect(() => {
+    loadUserData()
+  }, [])
+
+  const loadUserData = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) return
+
+      const response = await fetch('/api/users/me', {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`
+        }
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        setUserData(data.user)
+        setBusinessName(data.user.businessName || '')
+        setBusinessType(data.user.businessType || '')
+      }
+    } catch (error) {
+      console.error('Erreur chargement données utilisateur:', error)
+    }
+  }
 
   const planInfo = {
     basique: { name: 'Basique', color: '#22c55e', price: '€0/mois', features: ['10 produits max', 'Alertes basiques', 'Support email'] },
@@ -54,6 +81,45 @@ export default function SettingsPage({ session }) {
       setMessage('✅ Mot de passe mis à jour avec succès !')
       setNewPassword('')
       setConfirmPassword('')
+    } catch (error) {
+      setMessage('❌ Erreur : ' + error.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleUpdateBusinessInfo = async () => {
+    if (!businessName.trim()) {
+      setMessage('❌ Le nom du commerce est requis')
+      return
+    }
+
+    setLoading(true)
+    setMessage('')
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) return
+
+      const response = await fetch('/api/users/business', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify({
+          businessName,
+          businessType
+        })
+      })
+
+      if (response.ok) {
+        setMessage('✅ Informations mises à jour avec succès !')
+        localStorage.setItem('ponia_business_type', businessType)
+        await loadUserData()
+      } else {
+        const error = await response.json()
+        setMessage(`❌ Erreur: ${error.message || 'Impossible de mettre à jour'}`)
+      }
     } catch (error) {
       setMessage('❌ Erreur : ' + error.message)
     } finally {
@@ -156,38 +222,54 @@ export default function SettingsPage({ session }) {
             <input
               type="text"
               value={businessName}
-              disabled
+              onChange={(e) => setBusinessName(e.target.value)}
+              placeholder="Ex: Boulangerie Martin"
               style={{
                 width: '100%',
                 padding: '0.75rem',
                 border: '1px solid #E5E7EB',
                 borderRadius: '8px',
-                fontSize: '0.95rem',
-                background: '#F9FAFB',
-                color: '#6B7280'
+                fontSize: '0.95rem'
               }}
             />
           </div>
 
-          <div>
+          <div style={{ marginBottom: '1rem' }}>
             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>
               Type de commerce
             </label>
-            <input
-              type="text"
+            <select
               value={businessType}
-              disabled
+              onChange={(e) => setBusinessType(e.target.value)}
               style={{
                 width: '100%',
                 padding: '0.75rem',
                 border: '1px solid #E5E7EB',
                 borderRadius: '8px',
-                fontSize: '0.95rem',
-                background: '#F9FAFB',
-                color: '#6B7280'
+                fontSize: '0.95rem'
               }}
-            />
+            >
+              <option value="">Sélectionnez un type</option>
+              <option value="boulangerie">Boulangerie</option>
+              <option value="patisserie">Pâtisserie</option>
+              <option value="restaurant">Restaurant</option>
+              <option value="bar">Bar/Café</option>
+              <option value="cave">Cave à vin</option>
+              <option value="epicerie">Épicerie</option>
+              <option value="traiteur">Traiteur</option>
+              <option value="fromagerie">Fromagerie</option>
+              <option value="boucherie">Boucherie</option>
+            </select>
           </div>
+
+          <button
+            onClick={handleUpdateBusinessInfo}
+            disabled={loading || !businessName.trim()}
+            className="btn btn-primary"
+            style={{ opacity: !businessName.trim() ? 0.5 : 1 }}
+          >
+            {loading ? 'Mise à jour...' : 'Mettre à jour'}
+          </button>
         </div>
 
         <div className="card" style={{ padding: '1.5rem', marginBottom: '1.5rem' }}>

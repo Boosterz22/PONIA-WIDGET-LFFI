@@ -10,22 +10,43 @@ import ChatAI from '../components/ChatAI'
 export default function StockPage({ session }) {
   const navigate = useNavigate()
   const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
   const [showAddModal, setShowAddModal] = useState(false)
   const businessType = localStorage.getItem('ponia_business_type') || 'default'
   const userPlan = localStorage.getItem('ponia_user_plan') || 'basique'
 
   useEffect(() => {
-    const savedProducts = localStorage.getItem('ponia_products')
-    if (savedProducts) {
-      setProducts(JSON.parse(savedProducts))
-    }
+    loadProducts()
   }, [])
 
-  useEffect(() => {
-    localStorage.setItem('ponia_products', JSON.stringify(products))
-  }, [products])
+  const loadProducts = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        navigate('/login')
+        return
+      }
 
-  const handleAddProduct = (newProduct) => {
+      const response = await fetch('/api/products', {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`
+        }
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setProducts(data.products || [])
+      } else {
+        console.error('Erreur chargement produits:', response.statusText)
+      }
+    } catch (error) {
+      console.error('Erreur chargement produits:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleAddProduct = async (newProduct) => {
     if (userPlan === 'basique' && products.length >= 10) {
       alert('Limite atteinte : le plan Basique permet max 10 produits. Passez à Standard ou Pro.')
       setShowAddModal(false)
@@ -37,48 +58,133 @@ export default function StockPage({ session }) {
       setShowAddModal(false)
       return
     }
-    
-    const product = {
-      id: products.length + 1,
-      ...newProduct,
-      currentQuantity: parseFloat(newProduct.currentQuantity),
-      alertThreshold: parseFloat(newProduct.alertThreshold)
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) return
+
+      const response = await fetch('/api/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify({
+          name: newProduct.name,
+          currentQuantity: parseFloat(newProduct.currentQuantity),
+          unit: newProduct.unit,
+          alertThreshold: parseFloat(newProduct.alertThreshold),
+          supplier: newProduct.supplier || null,
+          expiryDate: newProduct.expiryDate || null
+        })
+      })
+
+      if (response.ok) {
+        await loadProducts()
+        setShowAddModal(false)
+      } else {
+        const error = await response.json()
+        alert(`Erreur: ${error.message || 'Impossible d\'ajouter le produit'}`)
+      }
+    } catch (error) {
+      console.error('Erreur ajout produit:', error)
+      alert('Erreur lors de l\'ajout du produit')
     }
-    setProducts([...products, product])
-    setShowAddModal(false)
   }
 
-  const handleUpdateQuantity = (id, change) => {
-    setProducts(products.map(p => 
-      p.id === id 
-        ? { ...p, currentQuantity: Math.max(0, p.currentQuantity + change) }
-        : p
-    ))
+  const handleUpdateQuantity = async (id, change) => {
+    const product = products.find(p => p.id === id)
+    if (!product) return
+
+    const newQuantity = Math.max(0, parseFloat(product.currentQuantity) + change)
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) return
+
+      const response = await fetch(`/api/products/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify({
+          currentQuantity: newQuantity,
+          previousQuantity: parseFloat(product.currentQuantity),
+          notes: `Ajustement manuel: ${change > 0 ? '+' : ''}${change}`
+        })
+      })
+
+      if (response.ok) {
+        setProducts(products.map(p => 
+          p.id === id ? { ...p, currentQuantity: newQuantity.toString() } : p
+        ))
+      } else {
+        alert('Erreur lors de la mise à jour')
+      }
+    } catch (error) {
+      console.error('Erreur update quantité:', error)
+      alert('Erreur lors de la mise à jour')
+    }
   }
 
-  const handleDeleteProduct = (id) => {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
-      setProducts(products.filter(p => p.id !== id))
+  const handleDeleteProduct = async (id) => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) return
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) return
+
+      const response = await fetch(`/api/products/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`
+        }
+      })
+
+      if (response.ok) {
+        setProducts(products.filter(p => p.id !== id))
+      } else {
+        alert('Erreur lors de la suppression')
+      }
+    } catch (error) {
+      console.error('Erreur suppression produit:', error)
+      alert('Erreur lors de la suppression')
     }
+  }
+
+  if (loading) {
+    return (
+      <div style={{ minHeight: '100vh', background: '#F9FAFB' }}>
+        <Navigation />
+        <div style={{ padding: '4rem 2rem', textAlign: 'center' }}>
+          <div className="spinner"></div>
+          <p style={{ marginTop: '1rem', color: '#6B7280' }}>Chargement de vos produits...</p>
+        </div>
+      </div>
+    )
   }
 
   const critical = products.filter(p => {
-    const threshold = p.alertThreshold || 10
-    return p.currentQuantity <= threshold * 0.5
+    const threshold = parseFloat(p.alertThreshold) || 10
+    const qty = parseFloat(p.currentQuantity) || 0
+    return qty <= threshold * 0.5
   })
 
   const lowStock = products.filter(p => {
-    const threshold = p.alertThreshold || 10
-    return p.currentQuantity <= threshold && p.currentQuantity > threshold * 0.5
+    const threshold = parseFloat(p.alertThreshold) || 10
+    const qty = parseFloat(p.currentQuantity) || 0
+    return qty <= threshold && qty > threshold * 0.5
   })
 
   const healthyProducts = products.filter(p => {
-    const threshold = p.alertThreshold || 10
-    return p.currentQuantity > threshold
+    const threshold = parseFloat(p.alertThreshold) || 10
+    const qty = parseFloat(p.currentQuantity) || 0
+    return qty > threshold
   })
 
   return (
-    <div style={{ minHeight: '100vh', background: '#F9FAFB' }}>
+    <div style={{ minHeight: '100vh', background: '#F9FAFB', paddingBottom: '8rem' }}>
       <Navigation />
       
       <div className="container" style={{ padding: '2rem 1rem', maxWidth: '1400px', margin: '0 auto' }}>
@@ -169,7 +275,11 @@ export default function StockPage({ session }) {
             {products.map(product => (
               <ProductCard
                 key={product.id}
-                product={product}
+                product={{
+                  ...product,
+                  currentQuantity: parseFloat(product.currentQuantity),
+                  alertThreshold: parseFloat(product.alertThreshold)
+                }}
                 userPlan={userPlan}
                 onUpdateQuantity={handleUpdateQuantity}
                 onDelete={handleDeleteProduct}
@@ -183,11 +293,14 @@ export default function StockPage({ session }) {
         <AddProductModal
           onClose={() => setShowAddModal(false)}
           onSave={handleAddProduct}
-          businessType={businessType}
         />
       )}
 
-      <ChatAI products={products} userPlan={userPlan} />
+      <ChatAI products={products.map(p => ({
+        ...p,
+        currentQuantity: parseFloat(p.currentQuantity),
+        alertThreshold: parseFloat(p.alertThreshold)
+      }))} />
     </div>
   )
 }

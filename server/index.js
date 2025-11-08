@@ -1,5 +1,6 @@
 import express from 'express'
 import OpenAI from 'openai'
+import { createClient } from '@supabase/supabase-js'
 import { 
   getUserByEmail,
   getUserBySupabaseId, 
@@ -9,14 +10,47 @@ import {
   updateProduct, 
   deleteProduct,
   addStockMovement,
-  getAllStockHistory
+  getAllStockHistory,
+  updateUser
 } from './storage.js'
 
 const app = express()
 const PORT = 3000
 
+// Supabase client for JWT verification
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
+)
+
 // Middleware
 app.use(express.json())
+
+// Auth middleware to verify Supabase JWT and extract user
+async function authenticateSupabaseUser(req, res, next) {
+  try {
+    const authHeader = req.headers.authorization
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'Non autorisé - token manquant' })
+    }
+
+    const token = authHeader.split(' ')[1]
+    
+    // Verify JWT with Supabase
+    const { data: { user }, error } = await supabase.auth.getUser(token)
+    
+    if (error || !user) {
+      return res.status(401).json({ error: 'Non autorisé - token invalide' })
+    }
+
+    // Attach verified user ID to request
+    req.supabaseUserId = user.id
+    next()
+  } catch (error) {
+    console.error('Erreur authentification:', error)
+    return res.status(401).json({ error: 'Non autorisé' })
+  }
+}
 
 // ============================================
 // ENDPOINTS USERS (Supabase sync)
@@ -52,16 +86,11 @@ app.post('/api/users/sync', async (req, res) => {
   }
 })
 
-// Récupérer les données utilisateur complètes
-app.get('/api/users/me', async (req, res) => {
+// Récupérer les données utilisateur complètes (SÉCURISÉ)
+app.get('/api/users/me', authenticateSupabaseUser, async (req, res) => {
   try {
-    const supabaseId = req.query.supabaseId
-    
-    if (!supabaseId) {
-      return res.status(400).json({ error: 'supabaseId requis' })
-    }
-    
-    const user = await getUserBySupabaseId(supabaseId)
+    // Use VERIFIED user ID from JWT
+    const user = await getUserBySupabaseId(req.supabaseUserId)
     
     if (!user) {
       return res.status(404).json({ error: 'Utilisateur non trouvé' })
@@ -421,25 +450,48 @@ TOTAL INDICATIF : XXX€ (prix marché ${new Date().getFullYear()}, à confirmer
   }
 })
 
-// Products endpoints
-app.get('/api/products/:userId', async (req, res) => {
+// Products endpoints (avec auth Supabase SÉCURISÉ)
+app.get('/api/products', authenticateSupabaseUser, async (req, res) => {
   try {
-    const userId = parseInt(req.params.userId)
-    const products = await getProductsByUserId(userId)
-    res.json(products)
+    // Use VERIFIED user ID from JWT, not client-supplied value
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+    
+    const products = await getProductsByUserId(user.id)
+    res.json({ products })
   } catch (error) {
     console.error('Erreur récupération produits:', error)
     res.status(500).json({ error: 'Erreur serveur' })
   }
 })
 
-app.post('/api/products', async (req, res) => {
+// REMOVED: Insecure legacy endpoint that allowed user impersonation
+
+app.post('/api/products', authenticateSupabaseUser, async (req, res) => {
   try {
-    const product = await createProduct(req.body)
-    res.json(product)
+    // Use VERIFIED user ID from JWT
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+    
+    const productData = {
+      name: req.body.name,
+      currentQuantity: req.body.currentQuantity,
+      unit: req.body.unit,
+      alertThreshold: req.body.alertThreshold,
+      supplier: req.body.supplier || null,
+      expiryDate: req.body.expiryDate || null,
+      userId: user.id
+    }
+    
+    const product = await createProduct(productData)
+    res.json({ product })
   } catch (error) {
     console.error('Erreur création produit:', error)
-    res.status(500).json({ error: 'Erreur serveur' })
+    res.status(500).json({ error: 'Erreur serveur', message: error.message })
   }
 })
 
@@ -480,17 +532,24 @@ app.delete('/api/products/:id', async (req, res) => {
   }
 })
 
-app.get('/api/stock-history/:userId', async (req, res) => {
+app.get('/api/stock-history', authenticateSupabaseUser, async (req, res) => {
   try {
-    const userId = parseInt(req.params.userId)
+    // Use VERIFIED user ID from JWT
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+    
     const limit = parseInt(req.query.limit) || 100
-    const history = await getAllStockHistory(userId, limit)
-    res.json(history)
+    const history = await getAllStockHistory(user.id, limit)
+    res.json({ history })
   } catch (error) {
     console.error('Erreur récupération historique:', error)
     res.status(500).json({ error: 'Erreur serveur' })
   }
 })
+
+// REMOVED: Insecure legacy endpoint that allowed user impersonation
 
 // User endpoints
 app.post('/api/users', async (req, res) => {
@@ -520,6 +579,27 @@ app.get('/api/users/supabase/:supabaseId', async (req, res) => {
   } catch (error) {
     console.error('Erreur récupération utilisateur:', error)
     res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// Update user business info
+app.put('/api/users/business', authenticateSupabaseUser, async (req, res) => {
+  try {
+    // Use VERIFIED user ID from JWT
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+    
+    const updates = {}
+    if (req.body.businessName) updates.businessName = req.body.businessName
+    if (req.body.businessType) updates.businessType = req.body.businessType
+    
+    const updatedUser = await updateUser(user.id, updates)
+    res.json({ user: updatedUser })
+  } catch (error) {
+    console.error('Erreur mise à jour commerce:', error)
+    res.status(500).json({ error: 'Erreur serveur', message: error.message })
   }
 })
 

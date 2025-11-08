@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Package, AlertCircle } from 'lucide-react'
+import { supabase } from '../services/supabase'
 import Navigation from '../components/Navigation'
 import AIInsights from '../components/AIInsights'
 import ChatAI from '../components/ChatAI'
@@ -9,16 +10,60 @@ import { checkExpiryAlerts } from '../services/expiryService'
 export default function DashboardPage({ session }) {
   const navigate = useNavigate()
   const [products, setProducts] = useState([])
-  const businessName = session.user.business_name || 'Mon Commerce'
+  const [loading, setLoading] = useState(true)
+  const [businessName, setBusinessName] = useState('')
   const businessType = localStorage.getItem('ponia_business_type') || 'default'
   const userPlan = localStorage.getItem('ponia_user_plan') || 'basique'
 
   useEffect(() => {
-    const savedProducts = localStorage.getItem('ponia_products')
-    if (savedProducts) {
-      setProducts(JSON.parse(savedProducts))
-    }
+    loadProducts()
+    loadUserData()
   }, [])
+
+  const loadProducts = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        navigate('/login')
+        return
+      }
+
+      const response = await fetch('/api/products', {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`
+        }
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setProducts(data.products || [])
+      }
+    } catch (error) {
+      console.error('Erreur chargement produits:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const loadUserData = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) return
+
+      const response = await fetch('/api/users/me', {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`
+        }
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        setBusinessName(data.user.businessName || 'Mon Commerce')
+      }
+    } catch (error) {
+      console.error('Erreur chargement utilisateur:', error)
+    }
+  }
 
   const handleGenerateOrder = async () => {
     const { generateOrderPDF } = await import('../services/pdfService')

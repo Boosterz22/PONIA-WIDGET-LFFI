@@ -36,11 +36,21 @@ export default function AnalyticsPage() {
   const loadData = async () => {
     setLoading(true)
     try {
-      const token = (await supabase.auth.getSession()).data.session?.access_token
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        navigate('/login')
+        return
+      }
+
+      const token = session.access_token
 
       const [productsRes, historyRes] = await Promise.all([
-        fetch('/api/products', { headers: { 'Authorization': `Bearer ${token}` } }),
-        fetch('/api/stock-history', { headers: { 'Authorization': `Bearer ${token}` } })
+        fetch('/api/products', { 
+          headers: { 'Authorization': `Bearer ${token}` } 
+        }),
+        fetch('/api/stock-history', { 
+          headers: { 'Authorization': `Bearer ${token}` } 
+        })
       ])
 
       if (productsRes.ok) {

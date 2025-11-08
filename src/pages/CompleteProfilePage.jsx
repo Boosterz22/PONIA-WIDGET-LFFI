@@ -6,6 +6,7 @@ export default function CompleteProfilePage({ session }) {
   const navigate = useNavigate()
   const [businessName, setBusinessName] = useState('')
   const [businessType, setBusinessType] = useState('boulangerie')
+  const [referredByCode, setReferredByCode] = useState('')
   const [loading, setLoading] = useState(false)
 
   const generateReferralCode = (businessName, businessType) => {
@@ -31,7 +32,7 @@ export default function CompleteProfilePage({ session }) {
           businessName,
           businessType,
           referralCode,
-          referredBy: null
+          referredBy: referredByCode.trim() || null
         })
       })
 
@@ -121,7 +122,7 @@ export default function CompleteProfilePage({ session }) {
             />
           </div>
 
-          <div style={{ marginBottom: '2rem' }}>
+          <div style={{ marginBottom: '1.25rem' }}>
             <label style={{ 
               display: 'block', 
               marginBottom: '0.5rem',
@@ -149,6 +150,38 @@ export default function CompleteProfilePage({ session }) {
                 </option>
               ))}
             </select>
+          </div>
+
+          <div style={{ marginBottom: '2rem' }}>
+            <label style={{ 
+              display: 'block', 
+              marginBottom: '0.5rem',
+              fontSize: '0.875rem',
+              fontWeight: 500,
+              color: '#374151'
+            }}>
+              Code de parrainage (optionnel)
+            </label>
+            <input
+              type="text"
+              placeholder="Ex: BOULANG-BOUL12"
+              value={referredByCode}
+              onChange={(e) => setReferredByCode(e.target.value.toUpperCase())}
+              className="input"
+              style={{
+                width: '100%',
+                padding: '0.75rem 1rem',
+                fontSize: '0.9375rem'
+              }}
+            />
+            <p style={{
+              fontSize: '0.75rem',
+              color: '#6b7280',
+              marginTop: '0.5rem',
+              lineHeight: 1.5
+            }}>
+              Si un commerçant vous a recommandé PONIA, entrez son code de parrainage
+            </p>
           </div>
 
           <button
