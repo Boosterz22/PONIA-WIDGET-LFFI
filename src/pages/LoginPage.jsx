@@ -36,13 +36,28 @@ export default function LoginPage() {
       
       if (error) throw error
       
-      localStorage.setItem('ponia_business_type', businessType)
-      localStorage.setItem('ponia_user_plan', 'basique')
-      
-      const referralCode = generateReferralCode(businessName, businessType)
-      localStorage.setItem('ponia_referral_code', referralCode)
-      localStorage.setItem('ponia_referrals', JSON.stringify([]))
-      localStorage.setItem('ponia_free_months', '0')
+      if (data.user) {
+        const referralCode = generateReferralCode(businessName, businessType)
+        
+        await fetch('/api/users/sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            supabaseId: data.user.id,
+            email: data.user.email,
+            businessName,
+            businessType,
+            referralCode,
+            referredBy: null
+          })
+        })
+        
+        localStorage.setItem('ponia_business_type', businessType)
+        localStorage.setItem('ponia_user_plan', 'basique')
+        localStorage.setItem('ponia_referral_code', referralCode)
+        localStorage.setItem('ponia_referrals', JSON.stringify([]))
+        localStorage.setItem('ponia_free_months', '0')
+      }
       
       setTimeout(() => {
         navigate('/dashboard')
@@ -64,6 +79,17 @@ export default function LoginPage() {
       })
       
       if (error) throw error
+      
+      if (data.user) {
+        const userRes = await fetch(`/api/users/me?supabaseId=${data.user.id}`)
+        const { user } = await userRes.json()
+        
+        if (user) {
+          localStorage.setItem('ponia_business_type', user.businessType || 'default')
+          localStorage.setItem('ponia_user_plan', user.plan || 'basique')
+          localStorage.setItem('ponia_referral_code', user.referralCode || '')
+        }
+      }
       
       setTimeout(() => {
         navigate('/dashboard')
