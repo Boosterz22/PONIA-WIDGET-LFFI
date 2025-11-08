@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { X } from 'lucide-react'
 
-export default function AddProductModal({ onClose, onAdd }) {
+export default function AddProductModal({ onClose, onSave }) {
   const [formData, setFormData] = useState({
     name: '',
     currentQuantity: '',
@@ -13,7 +13,7 @@ export default function AddProductModal({ onClose, onAdd }) {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    onAdd(formData)
+    onSave(formData)
   }
 
   const handleChange = (e) => {
