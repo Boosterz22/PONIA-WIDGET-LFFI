@@ -8,6 +8,7 @@ import CompleteProfilePage from './pages/CompleteProfilePage'
 import DashboardPage from './pages/DashboardPage'
 import StockPage from './pages/StockPage'
 import InsightsPage from './pages/InsightsPage'
+import AnalyticsPage from './pages/AnalyticsPage'
 import HistoryPage from './pages/HistoryPage'
 import ProfilePage from './pages/ProfilePage'
 import SettingsPage from './pages/SettingsPage'
@@ -112,6 +113,10 @@ function App() {
         <Route 
           path="/insights" 
           element={session ? <InsightsPage /> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="/analytics" 
+          element={session ? <AnalyticsPage /> : <Navigate to="/login" />} 
         />
         <Route 
           path="/history" 

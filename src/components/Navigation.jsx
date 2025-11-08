@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Package, Brain, History, Settings, User, LogOut, Gift, Mail } from 'lucide-react'
+import { LayoutDashboard, Package, Brain, Activity, History, Settings, User, LogOut, Gift, Mail } from 'lucide-react'
 import { supabase } from '../services/supabase'
 
 const businessTypeLabels = {
@@ -28,6 +28,7 @@ export default function Navigation() {
     { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { path: '/stock', icon: Package, label: 'Stocks' },
     { path: '/insights', icon: Brain, label: 'Insights IA' },
+    { path: '/analytics', icon: Activity, label: 'Analytics' },
     { path: '/history', icon: History, label: 'Historique' },
     { path: '/settings', icon: Settings, label: 'Paramètres' }
   ]
