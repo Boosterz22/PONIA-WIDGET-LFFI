@@ -80,14 +80,21 @@ export default function LoginPage() {
       
       if (error) throw error
       
-      if (data.user) {
-        const userRes = await fetch(`/api/users/me?supabaseId=${data.user.id}`)
-        const { user } = await userRes.json()
+      if (data.user && data.session) {
+        const userRes = await fetch('/api/users/me', {
+          headers: {
+            'Authorization': `Bearer ${data.session.access_token}`
+          }
+        })
         
-        if (user) {
-          localStorage.setItem('ponia_business_type', user.businessType || 'default')
-          localStorage.setItem('ponia_user_plan', user.plan || 'basique')
-          localStorage.setItem('ponia_referral_code', user.referralCode || '')
+        if (userRes.ok) {
+          const { user } = await userRes.json()
+          
+          if (user) {
+            localStorage.setItem('ponia_business_type', user.businessType || 'default')
+            localStorage.setItem('ponia_user_plan', user.plan || 'basique')
+            localStorage.setItem('ponia_referral_code', user.referralCode || '')
+          }
         }
       }
       
