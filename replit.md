@@ -54,8 +54,17 @@ The core AI functionality uses a hybrid architecture combining a local rules eng
 *   **Frontend:** React, Vite, React Router DOM, Recharts, Lucide React
 *   **Speech Recognition:** Web Speech API
 *   **Database:** PostgreSQL, Drizzle ORM, Supabase client
-*   **Weather:** OpenWeatherMap API
-*   **Payments (Planned):** Stripe
-*   **Calendar (Planned):** Google Calendar API
-*   **Email (Documented):** SendGrid / Resend / Replit Mail
+*   **Weather:** OpenWeatherMap API (✅ CONFIGURED - API key in secrets)
+*   **Calendar:** Google Calendar API (✅ INTEGRATED - connection:conn_google-calendar_01K9HDYE51T3DR8T6KJKM5YFM0)
+*   **Payments (In Progress):** Stripe
+*   **Email (Pending):** Resend integration dismissed - can configure later with API key
 *   **POS Integrations (Planned):** Square API, Lightspeed
+
+## Recent Changes (Nov 08, 2025)
+
+*   ✅ Weather API integrated with OpenWeatherMap - AI analyzes temperature/humidity for stock predictions
+*   ✅ Google Calendar connected - fetches local events to anticipate demand spikes
+*   ✅ AI enriched with context - now considers weather + events in predictions
+*   🔄 Multi-stores schema - in progress
+*   🔄 Quota enforcement system - in progress
+*   🔄 Stripe payment integration - in progress

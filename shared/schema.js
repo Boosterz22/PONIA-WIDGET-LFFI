@@ -10,12 +10,29 @@ export const users = pgTable('users', {
   referralCode: varchar('referral_code', { length: 20 }),
   referredBy: varchar('referred_by', { length: 20 }),
   supabaseId: varchar('supabase_id', { length: 255 }),
+  stripeCustomerId: varchar('stripe_customer_id', { length: 255 }),
+  stripeSubscriptionId: varchar('stripe_subscription_id', { length: 255 }),
+  subscriptionStatus: varchar('subscription_status', { length: 50 }).default('inactive'),
+  trialEndsAt: timestamp('trial_ends_at'),
+  subscriptionEndsAt: timestamp('subscription_ends_at'),
+  createdAt: timestamp('created_at').defaultNow()
+})
+
+export const stores = pgTable('stores', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }),
+  name: varchar('name', { length: 255 }).notNull(),
+  address: varchar('address', { length: 500 }),
+  city: varchar('city', { length: 100 }),
+  country: varchar('country', { length: 50 }).default('FR'),
+  isMain: boolean('is_main').default(false),
   createdAt: timestamp('created_at').defaultNow()
 })
 
 export const products = pgTable('products', {
   id: serial('id').primaryKey(),
   userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }),
+  storeId: integer('store_id').references(() => stores.id, { onDelete: 'cascade' }),
   name: varchar('name', { length: 255 }).notNull(),
   currentQuantity: decimal('current_quantity', { precision: 10, scale: 2 }).notNull().default('0'),
   unit: varchar('unit', { length: 50 }).notNull(),
