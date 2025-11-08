@@ -62,31 +62,31 @@ The core AI functionality uses a hybrid architecture combining a local rules eng
 
 ## Recent Changes (Nov 08, 2025)
 
-### ✅ Major UI/UX Restructure - Mobile-First Navigation (Latest)
-*   **Navigation Component** - New horizontal navigation bar with categories: Dashboard | Stocks | Insights IA | Historique | Paramètres
-    → Mobile-responsive with CSS media queries (icons-only on ≤640px screens)
-    → Sticky navigation at top with active state highlighting
-*   **DashboardPage Simplified** - Now KPIs-only view:
-    → Displays Total produits, Rupture imminente, Stock faible, Stock optimal metrics
-    → AIInsights panel with AI-powered suggestions
-    → Active Alerts sidebar for critical/low stock warnings
-    → Removed weather/events widgets (moved to InsightsPage)
-    → Removed product management UI (moved to StockPage)
-*   **StockPage Created** - Dedicated product management page:
-    → Complete CRUD operations (add, update quantity, delete products)
-    → Visual stock indicators (🔴 Critique, 🟠 Faible, ✅ Optimal)
-    → Product quota enforcement (Basique: 10, Standard: 50, Pro: unlimited)
-    → Includes ChatAI integration for voice/text inventory updates
-*   **InsightsPage Created** - AI analysis hub:
-    → WeatherWidget showing temperature/humidity with AI analysis
-    → EventsWidget displaying Google Calendar events
-    → ChatAI for natural language inventory queries
-    → Contextual AI predictions based on weather + events data
-*   **Architecture Improvements:**
-    → Separation of concerns: DashboardPage (read-only KPIs) vs StockPage (product mutations)
-    → No code duplication between pages
-    → Proper responsive design without window.innerWidth inline rendering
-    → All routes configured in App.jsx (/dashboard, /stock, /insights, /history, /settings)
+### ✅ Complete UI/UX Overhaul - Final Version (Latest)
+*   **Navigation professionnelle** - Barre horizontale avec type de commerce à gauche + icône profil à droite
+    → Menu dropdown complet : Mon Profil, Parrainage, Paramètres, Contact, Déconnexion
+    → Affiche le type de commerce (Boulangerie, Restaurant, etc.) au lieu de "PONIA AI"
+    → Mobile-responsive avec CSS media queries (icônes-only sur ≤640px)
+*   **Chat AI en barre fixe** - Remplace le bouton flottant
+    → Barre fixe en bas de l'écran avec champ de saisie permanent
+    → Historique expandable/collapsible avec ChevronUp/ChevronDown
+    → Plus d'espace utilisable dans les pages
+*   **Page Paramètres complète** - Tout en un seul endroit
+    → Plan actuel avec upgrade button (Basique/Standard/Pro)
+    → Gestion email (modification avec validation Supabase)
+    → Changement mot de passe (validation 6+ caractères)
+    → Informations commerce (lecture seule)
+    → Zone danger (suppression compte)
+*   **Page Parrainage dédiée** - Programme complet
+    → Explication step-by-step du système
+    → Statistiques : filleuls inscrits, gains totaux, revenu par parrainage
+    → Lien de parrainage copyable avec code unique
+    → Design engageant avec gradient doré PONIA
+*   **DashboardPage nettoyé** - Plus de barre secondaire
+    → Supprimé l'ancienne nav avec logo PONIA AI
+    → Chat AI intégré en bas de page
+    → Focus sur KPIs + Insights uniquement
+*   **Routes App.jsx** - Ajout /settings et /referral avec auth gate
 
 ### ✅ Intégrations Externes Complétées
 *   **Weather API (OpenWeatherMap)** - AI analyzes temperature/humidity for stock predictions
