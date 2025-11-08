@@ -2,7 +2,7 @@
 
 ## Overview
 
-PONIA AI is an AI-powered inventory management system designed for small businesses in France (bakeries, restaurants, bars, wine cellars, etc.). The project aims to provide a mobile-first application that helps merchants track inventory in real-time, receive low-stock alerts, get AI-optimized order suggestions, and reduce waste while preventing stockouts. The business vision is to achieve €4,000-6,000 MRR within 2-3 months post-launch by serving 51-76 clients with a three-tier pricing strategy: Basique (€0/month), Standard (€49/month), and Pro (€69.99/month). The market validation revealed that inventory management is a significant daily problem for small businesses, and PONIA AI offers a simple, fast, and mobile-first solution at an accessible price point compared to complex existing ERP systems.
+PONIA AI is an AI-powered inventory management system for small businesses in France (bakeries, restaurants, bars, wine cellars, etc.). It provides a mobile-first application for real-time inventory tracking, low-stock alerts, AI-optimized order suggestions, and aims to reduce waste and prevent stockouts. The project targets €4,000-6,000 MRR post-launch by serving 51-76 clients with a three-tier pricing model: Basique (€0/month), Standard (€49/month), and Pro (€69.99/month). The core ambition is to offer a simple, fast, and mobile-first solution to a significant daily problem for small businesses.
 
 ## User Preferences
 
@@ -15,98 +15,47 @@ PONIA AI is an AI-powered inventory management system designed for small busines
 
 ## System Architecture
 
-The PONIA AI system is a **secure full-stack application** with an Express backend (Node.js) and React 18 frontend (Vite 5). The architecture follows a client-server pattern where the frontend runs on port 5000 and proxies API calls to the backend on port 3000. Routing is handled by React Router DOM, and styling employs custom CSS. Icons are provided by Lucide React. Data storage currently uses LocalStorage, with a planned migration to PostgreSQL via Supabase. 
+PONIA AI is a secure full-stack application featuring an Express backend (Node.js) and a React 18 frontend (Vite 5). It uses a client-server pattern with the frontend on port 5000 and the backend on port 3000. Data is stored in PostgreSQL via Drizzle ORM, and Supabase handles authentication.
 
 **Security Architecture:**
-- **Backend (Express, port 3000):** Securely handles all OpenAI API calls server-side, protecting AI integration keys that are never exposed to the browser
-- **Frontend (Vite, port 5000):** Proxies `/api/*` requests to backend via Vite proxy configuration
-- **AI Integration:** OpenAI GPT-4o-mini credentials (`AI_INTEGRATIONS_OPENAI_*`) remain server-side only
-- **Deployment:** Managed via `start.sh` script that launches backend and frontend simultaneously
+- All OpenAI API calls are handled server-side via the Express backend to protect AI integration keys.
+- The frontend proxies `/api/*` requests to the backend.
+- Deployment is managed via a `start.sh` script.
 
-The core AI functionality leverages a hybrid architecture combining a local rules engine with OpenAI's GPT-4o-mini via Replit AI Integrations (server-side).
+The core AI functionality uses a hybrid architecture combining a local rules engine with OpenAI's GPT-4o-mini (via Replit AI Integrations) for tiered AI predictions and advanced features.
 
 **Key Features and Implementations:**
 
-*   **Landing Page:** Features a professional marketing approach with a clear problem-solution narrative, ROI statistics, before/after comparisons, customer testimonials, a comprehensive FAQ, and contextual CTAs, including an authentic urgency offer for early adopters. Smart sticky navigation with scroll listener that hides the CTA button when users reach the pricing section for better UX. All signup links open in new tabs (target="_blank") for smooth navigation.
-*   **Authentication & Plans:** Simplified email-based registration supporting 9 business types. Implements a three-tier pricing model:
-    *   **Basique (€0/month):** 10 products max, basic AI (health score only), 20 actions/day, 5 voice commands/day, email support
-    *   **Standard (€49/month):** 100 products, 7-day AI predictions, unlimited actions, 50 voice commands/day, priority support
-    *   **Pro (€69.99/month):** Unlimited products, 30-day AI predictions + weather/events integration, unlimited everything, priority support, advanced features
-    A unique referral code system rewards both referrer and referee.
+*   **Landing Page:** Professional marketing focus with problem/solution, ROI, testimonials, FAQ, CTAs, and sticky navigation.
+*   **Authentication & Plans:** Email-based registration for 9 business types, supporting a three-tier pricing model with varying product limits, AI capabilities, and support. Includes a referral code system.
 *   **Stock Management:**
-    *   **Visual Stock:** Products are color-coded (Green: OK, Orange: low, Red: critical) with quick adjustment buttons (+/-1, +/-10).
-    *   **AI Predictive Engine:** A hybrid architecture.
-        *   **Rules Engine (local):** Provides instant predictions for stockout, overstock detection, optimal order suggestions, waste detection, and a global stock "health score" (0-100%).
-        *   **GPT-4o-mini (Tiered AI):** Offers basic predictions for Basique users, 7-day predictions for Standard, and 30-day predictions + advanced integrations for Pro users. It also powers advanced suggestions for expiry alerts and voice command parsing.
-    *   **Expiry Alerts:** Tracks product expiration dates (DLC/DLUO) with color-coded urgency (Expired, Critical, Warning, Info) and offers local and AI-generated suggestions for action (promo, display, disposal). Calculates waste statistics.
-    *   **Voice Commands:** Integrates Web Speech API (fr-FR) for hands-free stock adjustments. Uses local regex parsing primarily, with GPT-4o-mini as a fallback for complex commands. Supports adding/removing quantities with numerical and decimal inputs.
-*   **Dashboard:** Completely redesigned with a modern, compact layout inspired by Stripe/Linear. Features a KPI grid (4 cards showing Total products, Critical stock, Low stock, Optimal stock), a slim single-line Basique plan banner, and a 2-column layout with AI Insights (left) and Active Alerts sidebar (right). Expiry alerts are integrated into the alerts panel alongside stock warnings. The design maximizes horizontal space usage and minimizes vertical scrolling for better UX.
-*   **Chat AI:** Floating chat button (bottom-right) with gold gradient styling opens a conversational AI drawer. Merchants can ask natural questions like "Combien j'ai de farine?", "Qu'est-ce que je dois commander?", and receive intelligent, context-aware responses based on their current inventory. Features clean, modern UI with smooth animations and mobile-responsive design.
-*   **AI-Powered Order Generation:** "Générer bon de commande" button integrated into AI Insights panel automatically generates intelligent purchase orders (.txt format) using GPT-4o-mini. The system:
-    *   **Backend Endpoint:** `/api/generate-order` with production-ready input validation (rejects null/undefined products, validates alertThreshold > 0, ensures numeric fields are finite)
-    *   **AI Expert System:** Supply-chain consultant prompt optimized for honest, actionable recommendations (temperature 0.4, max_tokens 500)
-    *   **Smart Calculations:** Coverage days (currentQuantity / dailyConsumption with 1 decimal precision), critical/low classification, supplier grouping
-    *   **Order Format:** Professional structure with urgency sections (🔴 URGENT <48h / 🟠 SEMAINE 3-5j), rounded practical quantities (not complex EOQ), indicative market prices (€, 2025), supplier totals
-    *   **Frontend Resilience:** 30s timeout with AbortController, detailed error handling, automatic file download (.txt format)
-    *   **Honest Pricing:** All prices marked "indicatifs marché 2025, à confirmer" to avoid contractual confusion
-*   **Product Management:** Simple forms for adding products, specifying name, quantity, unit, alert threshold, and supplier. Supports 6 units (kg, L, pieces, bottles, sachets, boxes). Pre-configured product templates are available based on business type.
-*   **UI/UX:** Emphasizes simplicity and speed for mobile-first usage. Features dynamic scores, prioritized actions, contextual messages, and visual statistics.
-*   **Security & Performance:** Dynamic import of `openaiService`, 10-second timeouts for all AI calls, proper cleanup of Web Speech API, and comprehensive permission management. Local parsing is prioritized for speed and cost efficiency, with AI used only when necessary.
+    *   **Visual Stock:** Color-coded products (Green, Orange, Red) with quick adjustment buttons.
+    *   **AI Predictive Engine:** Hybrid system with a local rules engine for instant predictions (stockout, overstock, health score) and GPT-4o-mini for tiered predictions (7-day for Standard, 30-day for Pro) and advanced suggestions (expiry, voice commands).
+    *   **Expiry Alerts:** Tracks product expiration dates with visual urgency and AI-generated suggestions for action.
+    *   **Voice Commands:** Hands-free stock adjustments using Web Speech API, with local regex parsing and GPT-4o-mini as a fallback.
+*   **Dashboard:** Modern layout inspired by Stripe/Linear, featuring a KPI grid, AI Insights, and an Active Alerts sidebar.
+*   **Chat AI:** Floating conversational AI for natural language queries about inventory, providing context-aware responses.
+*   **AI-Powered Order Generation:** Automated intelligent purchase order generation (.txt format) via a dedicated backend endpoint (`/api/generate-order`) using GPT-4o-mini, including smart calculations, supplier grouping, and professional formatting.
+*   **Product Management:** Simple forms for adding products with name, quantity, unit, alert threshold, and supplier, supporting 6 units and pre-configured templates.
+*   **UI/UX:** Emphasizes simplicity, speed, mobile-first design, dynamic scores, and contextual messages.
+*   **Security & Performance:** Dynamic imports, timeouts for AI calls, Web Speech API cleanup, and permission management. Prioritizes local parsing for efficiency.
 
-**Technical Implementations:**
+**System Design Choices:**
 
-*   **Backend (server/):** `index.js` (Express server with `/api/chat` for conversational AI, `/api/generate-order` for intelligent purchase orders, `/api/health` health check)
-*   **Frontend Services:** `aiUtils.js` (timeout, dynamic import), `voiceParser.js` (local regex parsing), `expiryService.js` (expiry calculations, local suggestions, waste stats), `rulesEngine.js` (AI rules), `aiService.js` (AI orchestration), `pdfService.js` (order document generation), `supabase.js` (Auth + DB)
-*   **Components:** `ProductCard.jsx`, `AddProductModal.jsx`, `AIInsights.jsx`, `UpgradeModal.jsx`, `ReferralModal.jsx`, `ExpiryAlerts.jsx`, `VoiceInput.jsx`, `ChatAI.jsx`
-*   **File Structure:** `server/` (backend), `src/components`, `src/pages`, `src/services`, `src/styles`
-*   **Configuration:** 
-    - `vite.config.js`: Port 5000, proxy `/api` → `localhost:3000`
-    - `start.sh`: Orchestrates backend + frontend startup
-    - `package.json`: Scripts for `dev` (frontend), `backend` (server)
-
-**Recent Changes (November 2025):**
-
-*   ✅ **ChatAI Component:** Floating conversational AI interface for natural inventory queries (FIXED - conversation history now passed correctly)
-*   ✅ **PDF Order Generation:** Automatic order document creation with smart quantity suggestions
-*   ✅ **Enhanced AI Insights:** Integrated "Générer bon de commande" button in dashboard
-*   ✅ **User Menu & Navigation:** Professional dropdown menu with Profile, Settings, About, Contact, Logout
-*   ✅ **Profile Page:** Complete user profile with editable business name, email, plan display, referral code
-*   ✅ **Settings Page:** Notifications toggles, data export (JSON), password change, account deletion
-*   ✅ **Landing Page Updates (Nov 7):** Unified hero/header gradient (removed visual line), Twitter→X icon in footer, green Basique badge, removed promotional pricing, updated ROI to €767/month (€9,200/year), aligned Basique button, added CGV/Mentions Légales
-*   ✅ **Authentication Flow (Nov 7):** Supabase integration with login/signup toggle on same page, conditional form fields (business details only for signup), async logout handling
-*   ✅ **Dashboard UX (Nov 7):** Streamlined user menu to show profile icon only (no email text)
-*   ✅ **ChatAI Expert Transformation (Nov 7):** 
-    - **CRITICAL SECURITY FIX:** Migrated to secure backend architecture - OpenAI keys never exposed to browser
-    - Created Express backend (`server/index.js`) with `/api/chat` endpoint
-    - Frontend now calls backend API instead of OpenAI directly
-    - Vite proxy configuration routes `/api/*` to backend (port 3000)
-    - Transformed AI into sophisticated supply-chain expert
-    - Advanced expertise: FEFO/FIFO, EOQ, coverage days, rupture/overstock costs
-    - Structured methodology: Analysis → Immediate Actions → Projection → Process Recommendations
-    - Enriched context: health score, coverage days, suppliers, expiry dates
-    - Temperature reduced to 0.4 for rigor, max_tokens 500 for complete responses
-    - Enhanced error handling with generic client messages (no sensitive data leakage)
-*   ✅ **AI Order Generation (Nov 7):**
-    - **Production-Ready Backend:** `/api/generate-order` endpoint with comprehensive input validation (null/undefined guards, type checks, boundary validation)
-    - **Intelligent Prompt Engineering:** Honest market pricing ("indicatifs 2025"), rounded practical quantities (not complex formulas), actionable recommendations
-    - **Robust Calculations:** Coverage days with decimal precision, critical/low classification with Number.isFinite guards, supplier grouping
-    - **Frontend Resilience:** 30s timeout, AbortController cleanup, detailed error messages for timeout vs server errors
-    - **Validated Edge Cases:** Tested null products (→ 400), alertThreshold=0 (→ 400), valid data (→ 200 + AI-generated order)
-    - **Architect Approved:** Production-ready with no critical gaps blocking release
-
-**Roadmap:**
-
-*   **In Development:** Graphical movement history, Stripe/Revolut integration, integrated weather predictions (OpenWeatherMap), local events (Google Calendar).
-*   **Phase 2:** POS integrations (Square API), multi-user support, SMS/email notifications, enhanced PDF formats.
+*   **Backend (server/):** Express server with REST API endpoints for chat, order generation, products, users, stock history, weather, and health. Uses `storage.js` for database operations and `db.js` for Drizzle client.
+*   **Database (shared/):** `schema.js` defines Drizzle ORM schema for users, products, stockHistory, and notifications.
+*   **Frontend Services:** Dedicated services for AI utilities, voice parsing, expiry tracking, rules engine, AI service integration, PDF generation, weather, and Supabase interaction.
+*   **Components/Pages:** Modular component-based architecture for UI elements and distinct pages (e.g., LandingPage, DashboardPage, StockPage).
+*   **Configuration:** `vite.config.js` for frontend proxying, `start.sh` for orchestration, and `drizzle.config.js` for database migrations.
 
 ## External Dependencies
 
-*   **Backend:** Express 5, OpenAI SDK 6.8.1 (GPT-4o-mini via Replit AI Integrations, server-side only)
-*   **Frontend:** React 18, Vite 5, React Router DOM
-*   **Icons:** Lucide React
-*   **Speech Recognition:** Web Speech API (browser-native)
-*   **Database:** PostgreSQL (Replit integrated), Supabase client (@supabase/supabase-js)
+*   **Backend:** Express, OpenAI SDK (GPT-4o-mini)
+*   **Frontend:** React, Vite, React Router DOM, Recharts, Lucide React
+*   **Speech Recognition:** Web Speech API
+*   **Database:** PostgreSQL, Drizzle ORM, Supabase client
+*   **Weather:** OpenWeatherMap API
 *   **Payments (Planned):** Stripe
-*   **Weather Data (Planned):** OpenWeatherMap
-*   **Calendar (Planned):** Google Calendar
+*   **Calendar (Planned):** Google Calendar API
+*   **Email (Documented):** SendGrid / Resend / Replit Mail
 *   **POS Integrations (Planned):** Square API, Lightspeed
