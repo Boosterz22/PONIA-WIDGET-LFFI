@@ -47,7 +47,7 @@ export async function getGoogleCalendarClient() {
   return google.calendar({ version: 'v3', auth: oauth2Client })
 }
 
-export async function getUpcomingEvents(city = 'Paris', maxResults = 10) {
+export async function getUpcomingEvents(maxResults = 10) {
   try {
     const calendar = await getGoogleCalendarClient()
     
@@ -61,8 +61,7 @@ export async function getUpcomingEvents(city = 'Paris', maxResults = 10) {
       timeMax: twoWeeksFromNow.toISOString(),
       maxResults: maxResults,
       singleEvents: true,
-      orderBy: 'startTime',
-      q: city
+      orderBy: 'startTime'
     })
 
     const events = response.data.items || []
@@ -71,7 +70,7 @@ export async function getUpcomingEvents(city = 'Paris', maxResults = 10) {
       id: event.id,
       name: event.summary || 'Événement sans titre',
       description: event.description || '',
-      location: event.location || city,
+      location: event.location || '',
       start: event.start.dateTime || event.start.date,
       end: event.end.dateTime || event.end.date,
       attendees: event.attendees?.length || 0,
@@ -79,7 +78,7 @@ export async function getUpcomingEvents(city = 'Paris', maxResults = 10) {
     }))
   } catch (error) {
     console.error('Erreur récupération événements Google Calendar:', error)
-    return []
+    throw error
   }
 }
 
@@ -116,45 +115,12 @@ function estimateEventImpact(event) {
   }
 }
 
-export async function getLocalPublicEvents(city = 'Paris') {
-  const mockEvents = [
-    {
-      id: 'local-1',
-      name: 'Festival de Jazz',
-      description: 'Festival annuel de jazz dans le quartier',
-      location: city,
-      start: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
-      end: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
-      attendees: 2000,
-      impact: {
-        level: 'high',
-        expectedVisitors: '+40%',
-        stockAdvice: 'Augmentez vos stocks de boissons et snacks',
-        priority: 1
-      }
-    },
-    {
-      id: 'local-2',
-      name: 'Marathon de Paris',
-      description: 'Course annuelle traversant la ville',
-      location: city,
-      start: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-      end: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-      attendees: 500,
-      impact: {
-        level: 'medium',
-        expectedVisitors: '+25%',
-        stockAdvice: 'Prévoyez plus de produits énergétiques',
-        priority: 2
-      }
-    }
-  ]
-
+export async function getLocalPublicEvents() {
   try {
-    const calendarEvents = await getUpcomingEvents(city, 5)
-    return calendarEvents.length > 0 ? calendarEvents : mockEvents
+    const calendarEvents = await getUpcomingEvents(10)
+    return calendarEvents
   } catch (error) {
-    console.log('Utilisation des événements mock (Google Calendar non disponible)')
-    return mockEvents
+    console.error('Google Calendar non disponible:', error.message)
+    return []
   }
 }
