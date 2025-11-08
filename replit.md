@@ -62,9 +62,22 @@ The core AI functionality uses a hybrid architecture combining a local rules eng
 
 ## Recent Changes (Nov 08, 2025)
 
-*   ✅ Weather API integrated with OpenWeatherMap - AI analyzes temperature/humidity for stock predictions
-*   ✅ Google Calendar connected - fetches local events to anticipate demand spikes
-*   ✅ AI enriched with context - now considers weather + events in predictions
-*   🔄 Multi-stores schema - in progress
-*   🔄 Quota enforcement system - in progress
-*   🔄 Stripe payment integration - in progress
+### ✅ Intégrations Externes Complétées
+*   **Weather API (OpenWeatherMap)** - AI analyzes temperature/humidity for stock predictions
+*   **Google Calendar API** - Fetches local events to anticipate demand spikes  
+    → Connection ID: `connection:conn_google-calendar_01K9HDYE51T3DR8T6KJKM5YFM0`
+*   **AI Context Enrichment** - Chat AI now considers weather + events in predictions
+    → Backend endpoint `/api/events` for local events
+    → Weather data integrated in `buildStockContext()` function
+
+### ✅ Database Schema Updates
+*   **Multi-stores support** - New `stores` table with userId, name, address, city, isMain
+*   **Stripe fields prepared** - Added stripeCustomerId, stripeSubscriptionId, subscriptionStatus, trialEndsAt to users table
+*   **Products linked to stores** - Added storeId foreign key to products table
+*   Database pushed successfully with `npm run db:push --force`
+
+### 🔄 Pending Tasks (On Hold)
+*   Email notifications (Resend integration dismissed - can be configured later with API key)
+*   Stripe payment integration (User requested to skip for now)
+*   Quota enforcement system (Basique: 10 products, Standard: 50, Pro: unlimited)
+*   Multi-store UI implementation
