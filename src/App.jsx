@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
+import ResetPasswordPage from './pages/ResetPasswordPage'
 import DashboardPage from './pages/DashboardPage'
 import StockPage from './pages/StockPage'
 import InsightsPage from './pages/InsightsPage'
@@ -46,6 +48,8 @@ function App() {
           path="/login" 
           element={session ? <Navigate to="/dashboard" /> : <LoginPage />} 
         />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route 
           path="/dashboard" 
           element={session ? <DashboardPage session={session} /> : <Navigate to="/login" />} 
