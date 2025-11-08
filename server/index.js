@@ -421,6 +421,19 @@ app.get('/api/users/supabase/:supabaseId', async (req, res) => {
   }
 })
 
+// Events endpoint (Google Calendar)
+app.get('/api/events', async (req, res) => {
+  try {
+    const { city = 'Paris' } = req.query
+    const { getLocalPublicEvents } = await import('./googleCalendar.js')
+    const events = await getLocalPublicEvents(city)
+    res.json({ events })
+  } catch (error) {
+    console.error('Events API error:', error)
+    res.json({ events: [], error: error.message })
+  }
+})
+
 // Weather endpoint (sécurisé côté serveur)
 app.get('/api/weather', async (req, res) => {
   try {
