@@ -24,15 +24,23 @@ function App() {
       setSession(session)
       
       if (session) {
-        const userRes = await fetch(`/api/users/me?supabaseId=${session.user.id}`)
-        const { user } = await userRes.json()
-        
-        if (!user || !user.businessName) {
+        try {
+          const userRes = await fetch(`/api/users/me?supabaseId=${session.user.id}`)
+          if (!userRes.ok) throw new Error('Failed to fetch user')
+          
+          const { user } = await userRes.json()
+          
+          if (!user || !user.businessName) {
+            setNeedsProfile(true)
+          } else {
+            setNeedsProfile(false)
+            localStorage.setItem('ponia_business_type', user.businessType || 'default')
+            localStorage.setItem('ponia_user_plan', user.plan || 'basique')
+            localStorage.setItem('ponia_referral_code', user.referralCode || '')
+          }
+        } catch (error) {
+          console.error('Error fetching user:', error)
           setNeedsProfile(true)
-        } else {
-          localStorage.setItem('ponia_business_type', user.businessType || 'default')
-          localStorage.setItem('ponia_user_plan', user.plan || 'basique')
-          localStorage.setItem('ponia_referral_code', user.referralCode || '')
         }
       }
       
@@ -45,17 +53,26 @@ function App() {
       setSession(session)
       
       if (session) {
-        const userRes = await fetch(`/api/users/me?supabaseId=${session.user.id}`)
-        const { user } = await userRes.json()
-        
-        if (!user || !user.businessName) {
+        try {
+          const userRes = await fetch(`/api/users/me?supabaseId=${session.user.id}`)
+          if (!userRes.ok) throw new Error('Failed to fetch user')
+          
+          const { user } = await userRes.json()
+          
+          if (!user || !user.businessName) {
+            setNeedsProfile(true)
+          } else {
+            setNeedsProfile(false)
+            localStorage.setItem('ponia_business_type', user.businessType || 'default')
+            localStorage.setItem('ponia_user_plan', user.plan || 'basique')
+            localStorage.setItem('ponia_referral_code', user.referralCode || '')
+          }
+        } catch (error) {
+          console.error('Error fetching user:', error)
           setNeedsProfile(true)
-        } else {
-          setNeedsProfile(false)
-          localStorage.setItem('ponia_business_type', user.businessType || 'default')
-          localStorage.setItem('ponia_user_plan', user.plan || 'basique')
-          localStorage.setItem('ponia_referral_code', user.referralCode || '')
         }
+      } else {
+        setNeedsProfile(false)
       }
     })
 

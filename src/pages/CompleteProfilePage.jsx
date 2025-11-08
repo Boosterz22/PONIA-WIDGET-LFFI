@@ -41,7 +41,7 @@ export default function CompleteProfilePage({ session }) {
       localStorage.setItem('ponia_referrals', JSON.stringify([]))
       localStorage.setItem('ponia_free_months', '0')
 
-      navigate('/dashboard')
+      window.location.href = '/dashboard'
     } catch (error) {
       alert(error.message)
       setLoading(false)
