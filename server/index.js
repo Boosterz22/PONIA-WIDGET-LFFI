@@ -483,7 +483,7 @@ app.post('/api/products', authenticateSupabaseUser, async (req, res) => {
       unit: req.body.unit,
       alertThreshold: req.body.alertThreshold,
       supplier: req.body.supplier || null,
-      expiryDate: req.body.expiryDate || null,
+      expiryDate: req.body.expiryDate ? new Date(req.body.expiryDate) : null,
       userId: user.id
     }
     
@@ -499,6 +499,11 @@ app.put('/api/products/:id', async (req, res) => {
   try {
     const productId = parseInt(req.params.id)
     const { previousQuantity, ...updates } = req.body
+    
+    // Convert expiryDate string to Date object if present
+    if (updates.expiryDate && typeof updates.expiryDate === 'string') {
+      updates.expiryDate = new Date(updates.expiryDate)
+    }
     
     const product = await updateProduct(productId, updates)
     
