@@ -3,9 +3,11 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
+import StockPage from './pages/StockPage'
+import InsightsPage from './pages/InsightsPage'
+import HistoryPage from './pages/HistoryPage'
 import ProfilePage from './pages/ProfilePage'
 import SettingsPage from './pages/SettingsPage'
-import HistoryPage from './pages/HistoryPage'
 import { supabase } from './services/supabase'
 
 function App() {
@@ -48,16 +50,24 @@ function App() {
           element={session ? <DashboardPage session={session} /> : <Navigate to="/login" />} 
         />
         <Route 
+          path="/stock" 
+          element={session ? <StockPage session={session} /> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="/insights" 
+          element={session ? <InsightsPage /> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="/history" 
+          element={session ? <HistoryPage session={session} /> : <Navigate to="/login" />} 
+        />
+        <Route 
           path="/profile" 
           element={session ? <ProfilePage session={session} /> : <Navigate to="/login" />} 
         />
         <Route 
           path="/settings" 
           element={session ? <SettingsPage session={session} /> : <Navigate to="/login" />} 
-        />
-        <Route 
-          path="/history" 
-          element={session ? <HistoryPage session={session} /> : <Navigate to="/login" />} 
         />
       </Routes>
     </BrowserRouter>
