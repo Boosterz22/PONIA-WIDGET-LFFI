@@ -26,7 +26,11 @@ function App() {
       
       if (session) {
         try {
-          const userRes = await fetch(`/api/users/me?supabaseId=${session.user.id}`)
+          const userRes = await fetch('/api/users/me', {
+            headers: {
+              'Authorization': `Bearer ${session.access_token}`
+            }
+          })
           if (!userRes.ok) throw new Error('Failed to fetch user')
           
           const { user } = await userRes.json()
@@ -55,7 +59,11 @@ function App() {
       
       if (session) {
         try {
-          const userRes = await fetch(`/api/users/me?supabaseId=${session.user.id}`)
+          const userRes = await fetch('/api/users/me', {
+            headers: {
+              'Authorization': `Bearer ${session.access_token}`
+            }
+          })
           if (!userRes.ok) throw new Error('Failed to fetch user')
           
           const { user } = await userRes.json()
