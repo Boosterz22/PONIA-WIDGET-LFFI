@@ -146,7 +146,8 @@ export default function DashboardPage({ session }) {
   const healthyProducts = products.filter(p => p.currentQuantity > p.alertThreshold)
 
   return (
-    <div style={{ minHeight: '100vh', background: '#FAFAFA' }}>
+    <div style={{ minHeight: '100vh', background: '#F9FAFB' }}>
+      <Navigation />
       <nav style={{
         borderBottom: '1px solid #E5E7EB',
         padding: '1rem 0',
@@ -484,16 +485,6 @@ export default function DashboardPage({ session }) {
 
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-          gap: '1rem',
-          marginBottom: '2rem'
-        }}>
-          <WeatherWidget />
-          <EventsWidget />
-        </div>
-
-        <div style={{
-          display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
           gap: '1rem',
           marginBottom: '2rem'
@@ -630,41 +621,29 @@ export default function DashboardPage({ session }) {
           )}
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-          <div>
-            <h2 style={{ fontSize: '1.5rem', marginBottom: '0.25rem', fontWeight: '600' }}>Mes Produits</h2>
-            <p style={{ color: '#6B7280', fontSize: '0.875rem' }}>
-              {products.length} produit{products.length > 1 ? 's' : ''} en stock
-            </p>
-          </div>
-          <button onClick={handleAddProductClick} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Plus size={20} />
-            <span>Ajouter un produit</span>
+        <div style={{ 
+          textAlign: 'center', 
+          padding: '3rem 1rem',
+          background: 'white',
+          borderRadius: '12px',
+          border: '1px solid #E5E7EB'
+        }}>
+          <Package size={48} style={{ color: '#9CA3AF', margin: '0 auto 1rem' }} />
+          <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.5rem' }}>
+            Gérez vos produits
+          </h2>
+          <p style={{ color: '#6B7280', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+            Accédez à la page Stocks pour gérer vos {products.length} produit{products.length > 1 ? 's' : ''}
+          </p>
+          <button
+            onClick={() => navigate('/stock')}
+            className="btn btn-primary"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}
+          >
+            <Package size={18} />
+            Voir tous mes produits
           </button>
         </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
-          {products.map(product => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              userPlan={userPlan}
-              onUpdateQuantity={handleUpdateQuantity}
-              onDelete={handleDeleteProduct}
-            />
-          ))}
-        </div>
-
-        {products.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '4rem 1rem', color: '#6B7280' }}>
-            <img src="/ponia-icon.png" alt="PONIA" style={{ height: '64px', opacity: 0.3, marginBottom: '1rem' }} />
-            <p style={{ fontSize: '1.125rem' }}>Aucun produit en stock</p>
-            <p style={{ marginTop: '0.5rem' }}>Commencez par ajouter vos premiers produits</p>
-            <button onClick={handleAddProductClick} className="btn btn-primary" style={{ marginTop: '1.5rem' }}>
-              Ajouter un produit
-            </button>
-          </div>
-        )}
       </div>
 
       {showAddModal && (
