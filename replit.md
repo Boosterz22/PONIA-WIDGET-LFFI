@@ -62,6 +62,32 @@ The core AI functionality uses a hybrid architecture combining a local rules eng
 
 ## Recent Changes (Nov 08, 2025)
 
+### ✅ Major UI/UX Restructure - Mobile-First Navigation (Latest)
+*   **Navigation Component** - New horizontal navigation bar with categories: Dashboard | Stocks | Insights IA | Historique | Paramètres
+    → Mobile-responsive with CSS media queries (icons-only on ≤640px screens)
+    → Sticky navigation at top with active state highlighting
+*   **DashboardPage Simplified** - Now KPIs-only view:
+    → Displays Total produits, Rupture imminente, Stock faible, Stock optimal metrics
+    → AIInsights panel with AI-powered suggestions
+    → Active Alerts sidebar for critical/low stock warnings
+    → Removed weather/events widgets (moved to InsightsPage)
+    → Removed product management UI (moved to StockPage)
+*   **StockPage Created** - Dedicated product management page:
+    → Complete CRUD operations (add, update quantity, delete products)
+    → Visual stock indicators (🔴 Critique, 🟠 Faible, ✅ Optimal)
+    → Product quota enforcement (Basique: 10, Standard: 50, Pro: unlimited)
+    → Includes ChatAI integration for voice/text inventory updates
+*   **InsightsPage Created** - AI analysis hub:
+    → WeatherWidget showing temperature/humidity with AI analysis
+    → EventsWidget displaying Google Calendar events
+    → ChatAI for natural language inventory queries
+    → Contextual AI predictions based on weather + events data
+*   **Architecture Improvements:**
+    → Separation of concerns: DashboardPage (read-only KPIs) vs StockPage (product mutations)
+    → No code duplication between pages
+    → Proper responsive design without window.innerWidth inline rendering
+    → All routes configured in App.jsx (/dashboard, /stock, /insights, /history, /settings)
+
 ### ✅ Intégrations Externes Complétées
 *   **Weather API (OpenWeatherMap)** - AI analyzes temperature/humidity for stock predictions
 *   **Google Calendar API** - Fetches local events to anticipate demand spikes  
@@ -79,5 +105,4 @@ The core AI functionality uses a hybrid architecture combining a local rules eng
 ### 🔄 Pending Tasks (On Hold)
 *   Email notifications (Resend integration dismissed - can be configured later with API key)
 *   Stripe payment integration (User requested to skip for now)
-*   Quota enforcement system (Basique: 10 products, Standard: 50, Pro: unlimited)
-*   Multi-store UI implementation
+*   Multi-store UI implementation (database ready, UI pending)
