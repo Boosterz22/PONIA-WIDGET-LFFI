@@ -26,8 +26,12 @@ export async function createUser(userData) {
 }
 
 export async function updateUser(userId, updates) {
+  const updateData = { ...updates }
+  delete updateData.id
+  delete updateData.createdAt
+  
   const result = await db.update(users)
-    .set(updates)
+    .set(updateData)
     .where(eq(users.id, userId))
     .returning()
   return result[0]

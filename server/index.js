@@ -18,6 +18,63 @@ const PORT = 3000
 // Middleware
 app.use(express.json())
 
+// ============================================
+// ENDPOINTS USERS (Supabase sync)
+// ============================================
+
+// Créer ou synchroniser utilisateur après inscription Supabase
+app.post('/api/users/sync', async (req, res) => {
+  try {
+    const { supabaseId, email, businessName, businessType, referralCode, referredBy } = req.body
+    
+    if (!supabaseId || !email) {
+      return res.status(400).json({ error: 'supabaseId et email requis' })
+    }
+    
+    let user = await getUserBySupabaseId(supabaseId)
+    
+    if (!user) {
+      user = await createUser({
+        supabaseId,
+        email,
+        businessName,
+        businessType,
+        plan: 'basique',
+        referralCode,
+        referredBy
+      })
+    }
+    
+    res.json({ user })
+  } catch (error) {
+    console.error('Erreur sync user:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// Récupérer les données utilisateur complètes
+app.get('/api/users/me', async (req, res) => {
+  try {
+    const supabaseId = req.query.supabaseId
+    
+    if (!supabaseId) {
+      return res.status(400).json({ error: 'supabaseId requis' })
+    }
+    
+    const user = await getUserBySupabaseId(supabaseId)
+    
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+    
+    res.json({ user })
+  } catch (error) {
+    console.error('Erreur get user:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// ============================================
 // Configuration OpenAI côté serveur (SÉCURISÉ - jamais exposé au frontend)
 const openai = new OpenAI({
   baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
