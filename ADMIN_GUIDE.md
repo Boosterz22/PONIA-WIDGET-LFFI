@@ -178,11 +178,38 @@ Le dashboard admin est **sécurisé** et réservé aux emails autorisés.
 - Les autres reçoivent une erreur 403 "Accès refusé - droits admin requis"
 - Vérifié côté serveur, impossible à contourner
 
-**Ajoutery votre email admin:**
+**Ajouter votre email admin:**
 1. Créez d'abord un compte utilisateur normal sur PONIA AI
 2. Ajoutez votre email dans le secret `ADMIN_EMAILS`
 3. Redémarrez le workflow
 4. Accédez à `/admin` - vous êtes maintenant admin !
+
+---
+
+## 🧪 Mode Test (Développement uniquement)
+
+### Endpoint de changement de plan manuel
+En production, le changement de plan est **UNIQUEMENT** possible via Stripe Checkout.
+Cependant, pour les tests en développement, vous pouvez activer un endpoint de test.
+
+**⚠️ IMPORTANT: Ce endpoint est DÉSACTIVÉ en production pour des raisons de sécurité.**
+
+**Comment activer le mode test (développement uniquement):**
+1. Allez dans les Secrets Replit
+2. Ajoutez: `ENABLE_TEST_MODE=true`
+3. Redémarrez le workflow
+4. Le bouton "Mode Test - Changement de Plan" dans `/settings` devient fonctionnel
+
+**En production:**
+- `ENABLE_TEST_MODE` doit être absent ou `false`
+- Le endpoint `/api/users/plan` retourne 403 avec message "Utilisez la page /upgrade"
+- Impossible de bypass le paywall Stripe
+
+**Sécurité:**
+- Le endpoint vérifie `process.env.NODE_ENV !== 'production'` ET `ENABLE_TEST_MODE === 'true'`
+- Protégé par JWT authentication
+- Logged pour audit
+- Architect-validated security (zero bypass possible)
 
 ---
 

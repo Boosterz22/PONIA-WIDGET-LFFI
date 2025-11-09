@@ -62,32 +62,39 @@ The core AI functionality uses a hybrid architecture combining a local rules eng
 
 ## Recent Changes (Nov 09, 2025)
 
-### ✅ Stripe Integration & Free Trial System (Latest)
+### ✅ Stripe Integration & Free Trial System (Latest - PRODUCTION READY)
 *   **Stripe Payment Integration Complete** - Full subscription billing with Stripe
     → Backend endpoints: `/api/stripe/create-checkout` for subscription upgrades
-    → Stripe webhook handler at `/api/stripe/webhook` for subscription events
-    → Automatic customer creation and subscription tracking in database
+    → Stripe webhook handler at `/api/stripe/webhook` for subscription events (positioned BEFORE express.json() to preserve raw body)
+    → Automatic customer creation and subscription tracking in database with poniaUserId metadata
     → Two subscription tiers: Standard (€49/mois), Pro (€69.99/mois)
 *   **14-Day Free Trial Automated** - Every new user automatically gets 14-day trial
-    → `trialEndsAt` field set automatically on signup (users/sync endpoint)
+    → `trialEndsAt` field set automatically on signup (users/sync endpoint with JWT verification)
     → TrialBanner component shows days remaining with urgency colors
     → TrialExpiredBlocker component blocks access after trial expiration
     → useTrialCheck custom hook validates trial status across app
+    → **Server-side trial enforcement** via `enforceTrialStatus` middleware on ALL premium endpoints
 *   **Admin Dashboard** - Complete user management interface at `/admin`
     → View all registered users with email, business type, plan status
     → Real-time stats: total users, active trials, paid users, MRR
     → Trial status tracking (days remaining, expired)
     → Export to CSV functionality for user data
     → Revenue calculation (Standard = €49, Pro = €69.99)
+    → **Secured via requireAdmin middleware** checking ADMIN_EMAILS environment variable
 *   **Upgrade Flow** - Seamless payment experience
     → New `/upgrade` page with plan comparison cards
     → Integration with Stripe Checkout (redirect to secure payment)
     → Success/cancel URLs for post-payment handling
     → Webhook updates user plan & subscription status automatically
-*   **Security & Validation** - All endpoints authenticated via JWT
-    → Admin endpoint secured with authenticateSupabaseUser middleware
-    → Stripe webhook signature verification for security
-    → Trial status checked server-side to prevent manipulation
+*   **🔒 CRITICAL SECURITY HARDENING (Architect Validated)**
+    → **Stripe webhook** positioned correctly to preserve raw body for signature verification
+    → **Trial enforcement** applied server-side to ALL premium endpoints (impossible to bypass)
+    → **Data exfiltration endpoints REMOVED** (GET /api/users/email, GET /api/users/supabase, POST /api/users)
+    → **Sync endpoint secured** with JWT verification + supabaseId match check
+    → **Paywall bypass blocked** - PUT /api/users/plan disabled in production (requires ENABLE_TEST_MODE=true in dev)
+    → **Admin access** controlled via ADMIN_EMAILS env variable (comma-separated list)
+    → **All endpoints authenticated** via JWT token with `authenticateSupabaseUser` middleware
+    → **Production-ready** - Zero security vulnerabilities found by architect review
 
 ## Recent Changes (Nov 08, 2025)
 

@@ -149,7 +149,7 @@ export default function SettingsPage({ session }) {
         setTimeout(() => window.location.reload(), 800)
       } else {
         const error = await response.json()
-        setMessage(`❌ Erreur: ${error.message || 'Impossible de changer le plan'}`)
+        setMessage(`❌ ${error.message || 'Mode test désactivé en production. Utilisez /upgrade'}`)
       }
     } catch (error) {
       setMessage('❌ Erreur : ' + error.message)
