@@ -1,6 +1,176 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { TrendingUp, Clock, Shield, Zap, BarChart3, CheckCircle, Star, Users, X, Check, AlertCircle, Sparkles, Target, ArrowRight, Linkedin } from 'lucide-react'
+import { TrendingUp, Clock, Shield, Zap, BarChart3, CheckCircle, Star, Users, X, Check, AlertCircle, Sparkles, Target, ArrowRight, Linkedin, Building2 } from 'lucide-react'
+
+function PricingCards() {
+  const plans = [
+    {
+      name: 'Basique',
+      price: 0,
+      icon: Zap,
+      color: '#94a3b8',
+      description: 'Pour tester PONIA AI',
+      features: [
+        { text: '10 produits maximum', included: true },
+        { text: 'Alertes de stock simples', included: true },
+        { text: 'Gestion manuelle', included: true },
+        { text: 'Support email standard', included: true },
+        { text: 'Prédictions IA', included: false },
+        { text: 'Génération de commandes', included: false },
+        { text: 'Alertes expiration', included: false },
+        { text: 'Multi-magasins', included: false }
+      ],
+      cta: 'Commencer gratuitement',
+      popular: false
+    },
+    {
+      name: 'Standard',
+      price: 49,
+      icon: TrendingUp,
+      color: '#FFD700',
+      description: 'Pour commerces sérieux',
+      features: [
+        { text: '50 produits maximum', included: true },
+        { text: 'Prédictions IA 7 jours', included: true },
+        { text: 'Génération commandes auto', included: true },
+        { text: 'Alertes expiration produits', included: true },
+        { text: 'Chat IA illimité', included: true },
+        { text: 'Support prioritaire', included: true },
+        { text: 'Multi-magasins', included: false }
+      ],
+      cta: 'Essai gratuit 14 jours',
+      popular: true
+    },
+    {
+      name: 'Pro',
+      price: 69,
+      icon: Building2,
+      color: '#4ade80',
+      description: 'Pour réseaux et chaînes',
+      features: [
+        { text: 'Produits ILLIMITÉS', included: true },
+        { text: 'Prédictions IA 30 jours', included: true },
+        { text: 'Multi-magasins illimité', included: true },
+        { text: 'Génération commandes avancée', included: true },
+        { text: 'Intégrations POS (Square, etc.)', included: true },
+        { text: 'Analytics avancées', included: true },
+        { text: 'Support prioritaire 24/7', included: true },
+        { text: 'Onboarding personnalisé', included: true }
+      ],
+      cta: 'Essai gratuit 14 jours',
+      popular: false
+    }
+  ]
+
+  return (
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+      gap: '2rem',
+      marginBottom: '2rem'
+    }}>
+      {plans.map((plan, idx) => {
+        const Icon = plan.icon
+        return (
+          <div key={idx} style={{
+            background: 'white',
+            borderRadius: '16px',
+            padding: '2.5rem',
+            boxShadow: plan.popular ? '0 10px 40px rgba(255, 215, 0, 0.3)' : '0 4px 20px rgba(0,0,0,0.08)',
+            border: plan.popular ? `3px solid ${plan.color}` : '1px solid #e5e7eb',
+            position: 'relative',
+            transform: plan.popular ? 'scale(1.05)' : 'scale(1)',
+            transition: 'transform 0.3s'
+          }}>
+            {plan.popular && (
+              <div style={{
+                position: 'absolute',
+                top: '-15px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                background: plan.color,
+                color: '#1a1a1a',
+                padding: '0.4rem 1.5rem',
+                borderRadius: '20px',
+                fontSize: '0.85rem',
+                fontWeight: '700',
+                boxShadow: '0 4px 12px rgba(255, 215, 0, 0.4)'
+              }}>
+                ⭐ PLUS POPULAIRE
+              </div>
+            )}
+
+            <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+              <Icon size={40} color={plan.color} style={{ marginBottom: '1rem' }} />
+              <h3 style={{ fontSize: '1.8rem', fontWeight: '700', color: '#1a1a1a', marginBottom: '0.5rem' }}>
+                {plan.name}
+              </h3>
+              <p style={{ fontSize: '0.95rem', color: '#666', marginBottom: '1.5rem' }}>
+                {plan.description}
+              </p>
+              <div style={{ marginBottom: '0.5rem' }}>
+                {plan.price === 0 ? (
+                  <div style={{ fontSize: '3rem', fontWeight: '700', color: plan.color }}>
+                    Gratuit
+                  </div>
+                ) : (
+                  <>
+                    <span style={{ fontSize: '3rem', fontWeight: '700', color: plan.color }}>
+                      {plan.price}€
+                    </span>
+                    <span style={{ fontSize: '1.1rem', color: '#666' }}>/mois</span>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 2rem 0' }}>
+              {plan.features.map((feature, idx) => (
+                <li key={idx} style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.75rem',
+                  marginBottom: '0.9rem',
+                  fontSize: '0.95rem',
+                  color: feature.included ? '#1a1a1a' : '#999'
+                }}>
+                  {feature.included ? (
+                    <Check size={20} color={plan.color} style={{ flexShrink: 0 }} />
+                  ) : (
+                    <X size={20} color="#cbd5e1" style={{ flexShrink: 0 }} />
+                  )}
+                  <span style={{ textDecoration: feature.included ? 'none' : 'line-through' }}>
+                    {feature.text}
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            <Link
+              to="/login"
+              style={{
+                width: '100%',
+                display: 'block',
+                textAlign: 'center',
+                background: plan.popular ? `linear-gradient(135deg, ${plan.color} 0%, ${plan.color} 100%)` : 'white',
+                color: plan.popular ? '#1a1a1a' : plan.color,
+                border: `2px solid ${plan.color}`,
+                padding: '1rem',
+                borderRadius: '10px',
+                fontSize: '1.05rem',
+                fontWeight: '700',
+                textDecoration: 'none',
+                transition: 'all 0.2s'
+              }}
+            >
+              {plan.cta}
+            </Link>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
 
 export default function LandingPage() {
   const [showHeaderCTA, setShowHeaderCTA] = useState(true)
@@ -715,214 +885,105 @@ export default function LandingPage() {
       }}>
         <div className="container">
           <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', textAlign: 'center', marginBottom: '1rem' }}>
-            Tarifs <span className="gradient-text">transparents</span>
+            Des tarifs <span className="gradient-text">simples et transparents</span>
           </h2>
-          <p style={{ textAlign: 'center', fontSize: '1.25rem', color: 'var(--text-muted)', marginBottom: '4rem' }}>
-            Économisez 12x votre investissement dès le 1er mois
+          <p style={{ textAlign: 'center', fontSize: '1.25rem', color: 'var(--text-muted)', marginBottom: '2rem' }}>
+            Choisissez le plan qui correspond à votre commerce. Pas de frais cachés, résiliez quand vous voulez.
           </p>
 
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
-            gap: '2rem',
-            maxWidth: '1200px',
-            margin: '0 auto'
+          <div style={{
+            display: 'inline-flex',
+            background: 'white',
+            borderRadius: '12px',
+            padding: '0.4rem',
+            boxShadow: '0 2px 8px rgba(255, 215, 0, 0.2)',
+            margin: '0 auto 3rem',
+            display: 'flex',
+            justifyContent: 'center',
+            width: '100%'
           }}>
-            {/* PLAN GRATUIT */}
-            <div className="card" style={{ 
-              padding: '2.5rem', 
-              textAlign: 'center',
-              border: '2px solid rgba(200, 200, 200, 0.3)',
-              background: 'rgba(250, 250, 250, 0.5)',
-              display: 'flex',
-              flexDirection: 'column'
-            }}>
-              <div style={{ 
-                background: 'linear-gradient(135deg, #d1fae5, #a7f3d0)',
-                color: '#065f46',
-                padding: '0.4rem 1.2rem',
-                borderRadius: '20px',
-                fontSize: '0.85rem',
-                fontWeight: 'bold',
-                marginBottom: '1rem',
-                display: 'inline-block',
-                alignSelf: 'center'
+            <div style={{ display: 'inline-flex', background: 'white', borderRadius: '12px', padding: '0.4rem' }}>
+              <span style={{
+                padding: '0.7rem 2rem',
+                borderRadius: '8px',
+                fontSize: '1rem',
+                fontWeight: '600',
+                background: 'linear-gradient(135deg, #FFD700 0%, #4ade80 100%)',
+                color: '#1a1a1a'
               }}>
-                BASIQUE
-              </div>
-              <div style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: 'bold', color: '#6b7280', marginBottom: '0.5rem' }}>
-                €0<span style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>/mois</span>
-              </div>
-              <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '2rem', minHeight: '1.5rem' }}>
-                Pour découvrir
-              </div>
-
-              <Link to="/login" className="btn btn-secondary" style={{ width: '100%', padding: '1rem', background: '#e5e7eb', color: '#6b7280' }}>
-                Démarrer
+                Mensuel
+              </span>
+              <Link 
+                to="/pricing" 
+                style={{
+                  padding: '0.7rem 2rem',
+                  borderRadius: '8px',
+                  fontSize: '1rem',
+                  fontWeight: '600',
+                  background: 'transparent',
+                  color: '#666',
+                  textDecoration: 'none',
+                  position: 'relative',
+                  cursor: 'pointer'
+                }}
+              >
+                Annuel
+                <span style={{
+                  position: 'absolute',
+                  top: '-8px',
+                  right: '-8px',
+                  background: '#4ade80',
+                  color: 'white',
+                  fontSize: '0.65rem',
+                  padding: '0.15rem 0.4rem',
+                  borderRadius: '4px',
+                  fontWeight: '700'
+                }}>
+                  -20%
+                </span>
               </Link>
-
-              <div style={{ flexGrow: 1, minHeight: '1.5rem' }} />
-
-              <div style={{ textAlign: 'left' }}>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={18} color="#9ca3af" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Max 10 produits</span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={18} color="#9ca3af" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Alertes visuelles 🟢🟠🔴</span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={18} color="#9ca3af" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>IA basique (score santé)</span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={18} color="#9ca3af" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Templates produits</span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={18} color="#9ca3af" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Support email</span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <X size={18} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>20 actions/jour max</span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <X size={18} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Pas d'historique</span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <X size={18} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Pas de prédictions futures</span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <X size={18} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Pas d'export PDF</span>
-                </div>
-              </div>
             </div>
+          </div>
 
-            {/* PLAN STANDARD */}
-            <div className="card" style={{ 
-              padding: '2.5rem', 
-              textAlign: 'center',
-              border: '3px solid var(--primary)',
-              boxShadow: '0 4px 20px rgba(255, 215, 0, 0.2)',
-              display: 'flex',
-              flexDirection: 'column'
+          <PricingCards />
+
+          <div style={{
+            background: 'linear-gradient(135deg, #FFD700 0%, #4ade80 100%)',
+            borderRadius: '16px',
+            padding: '3rem',
+            textAlign: 'center',
+            marginTop: '4rem',
+            boxShadow: '0 10px 30px rgba(255, 215, 0, 0.4)'
+          }}>
+            <h3 style={{ fontSize: '2rem', fontWeight: '700', color: '#1a1a1a', marginBottom: '1rem' }}>
+              Économisez €9,200/an en moyenne 💰
+            </h3>
+            <p style={{ fontSize: '1.1rem', color: '#1a1a1a', marginBottom: '2rem', maxWidth: '700px', margin: '0 auto 2rem', fontWeight: '500' }}>
+              Nos clients réduisent le gaspillage de 63% et évitent les ruptures de stock coûteuses. 
+              Pour un investissement de €49/mois, c'est un ROI de x15.
+            </p>
+            <Link to="/login" className="btn" style={{
+              background: 'white',
+              color: '#1a1a1a',
+              border: 'none',
+              padding: '1rem 3rem',
+              borderRadius: '12px',
+              fontSize: '1.1rem',
+              fontWeight: '700',
+              cursor: 'pointer',
+              boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+              transition: 'transform 0.2s',
+              textDecoration: 'none',
+              display: 'inline-block'
             }}>
-              <div style={{ fontSize: '1.1rem', color: 'var(--text-muted)', marginBottom: '0.5rem', minHeight: '1.5rem' }}>Standard</div>
-              <div style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: 'bold', color: 'var(--primary)', marginBottom: '0.5rem' }}>
-                €49<span style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>/mois</span>
-              </div>
-              <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '2rem', minHeight: '1.5rem' }}>
-                Le plus populaire
-              </div>
-
-              <Link to="/login?plan=standard" className="btn btn-primary" style={{ width: '100%', padding: '1rem', marginBottom: '1.5rem' }}>
-                ⚡ Passer à Standard
-              </Link>
-
-              <div style={{ textAlign: 'left' }}>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}><strong>50 produits maximum</strong></span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}><strong>IA prédictive 7 jours</strong></span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}><strong>Chat AI illimité</strong></span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Alertes intelligentes</span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Support prioritaire</span>
-                </div>
-              </div>
-            </div>
-
-            {/* PLAN PRO */}
-            <div className="card" style={{ 
-              padding: '2.5rem', 
-              textAlign: 'center',
-              border: '3px solid var(--primary)',
-              position: 'relative',
-              background: 'rgba(255, 215, 0, 0.03)',
-              boxShadow: '0 4px 20px rgba(255, 215, 0, 0.2)',
-              display: 'flex',
-              flexDirection: 'column'
-            }}>
-              <div style={{ 
-                position: 'absolute', 
-                top: '-15px', 
-                left: '50%', 
-                transform: 'translateX(-50%)',
-                background: 'var(--primary)',
-                color: 'var(--bg)',
-                padding: '0.4rem 1.5rem',
-                borderRadius: '20px',
-                fontSize: '0.85rem',
-                fontWeight: 'bold'
-              }}>
-                ⭐ RECOMMANDÉ
-              </div>
-
-              <div style={{ fontSize: '1.1rem', color: 'var(--text-muted)', marginBottom: '0.5rem', minHeight: '1.5rem' }}>Pro</div>
-              <div style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', fontWeight: 'bold', color: 'var(--primary)', marginBottom: '0.5rem' }}>
-                €69<span style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>/mois</span>
-              </div>
-              <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '2rem', minHeight: '1.5rem' }}>
-                Pour les commerces exigeants
-              </div>
-
-              <Link to="/login?plan=pro" className="btn btn-primary" style={{ width: '100%', padding: '1rem', marginBottom: '1.5rem', animation: 'pulse 2s infinite' }}>
-                🚀 Passer à Pro
-              </Link>
-
-              <div style={{ textAlign: 'left' }}>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}><strong>Produits illimités</strong></span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}><strong>IA prédictive 30 jours</strong></span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}><strong>Multi-magasins</strong></span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Chat AI premium</span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Alertes avancées</span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Intégrations POS</span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Support VIP 24/7</span>
-                </div>
-              </div>
-            </div>
+              Essayer gratuitement 14 jours
+            </Link>
           </div>
 
           <div style={{ textAlign: 'center', marginTop: '3rem', maxWidth: '700px', margin: '3rem auto 0' }}>
             <p style={{ fontSize: '0.95rem', color: 'var(--text-muted)', lineHeight: 1.7 }}>
               <Shield size={18} style={{ verticalAlign: 'middle', color: 'var(--success)' }} /> 
-              <strong style={{ color: 'var(--text)' }}> 30 jours gratuits</strong> • Annulation en 1 clic • Sans carte bancaire • 
+              <strong style={{ color: 'var(--text)' }}> 14 jours d'essai gratuit</strong> • Annulation en 1 clic • Sans carte bancaire • 
               <strong style={{ color: 'var(--text)' }}> Données sécurisées en France</strong> (RGPD)
             </p>
           </div>

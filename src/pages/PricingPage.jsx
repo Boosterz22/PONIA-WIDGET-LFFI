@@ -33,7 +33,7 @@ export default function PricingPage() {
       priceYearly: 470,
       savings: 118,
       icon: TrendingUp,
-      color: '#667eea',
+      color: '#FFD700',
       description: 'Pour commerces sérieux',
       features: [
         { text: '50 produits maximum', included: true },
@@ -54,7 +54,7 @@ export default function PricingPage() {
       priceYearly: 660,
       savings: 168,
       icon: Building2,
-      color: '#764ba2',
+      color: '#4ade80',
       description: 'Pour réseaux et chaînes',
       features: [
         { text: 'Produits ILLIMITÉS', included: true },
@@ -101,29 +101,43 @@ export default function PricingPage() {
   return (
     <div style={{ minHeight: '100vh', background: '#fafafa' }}>
       <nav style={{
-        background: 'white',
-        padding: '1rem 2rem',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+        background: 'linear-gradient(180deg, rgba(255, 215, 0, 0.12) 0%, rgba(255, 215, 0, 0.08) 50%, rgba(255, 215, 0, 0.04) 100%)',
+        padding: '1.5rem 2rem',
+        boxShadow: '0 2px 8px rgba(255, 215, 0, 0.15)',
         position: 'sticky',
         top: 0,
-        zIndex: 100
+        zIndex: 100,
+        backdropFilter: 'blur(10px)'
       }}>
         <div style={{ maxWidth: '1400px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#667eea', margin: 0, cursor: 'pointer' }} onClick={() => navigate('/')}>
-            PONIA AI
-          </h1>
+          <img 
+            src="/ponia-logo.png" 
+            alt="PONIA" 
+            style={{ 
+              height: 'clamp(120px, 20vw, 180px)',
+              cursor: 'pointer',
+              transition: 'transform 0.3s ease'
+            }}
+            onClick={() => navigate('/')}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
+            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          />
           <button
             onClick={() => navigate('/')}
             style={{
-              background: 'white',
-              color: '#667eea',
-              border: '2px solid #667eea',
-              padding: '0.6rem 1.5rem',
-              borderRadius: '8px',
+              background: 'linear-gradient(135deg, #FFD700 0%, #4ade80 100%)',
+              color: '#1a1a1a',
+              border: 'none',
+              padding: '0.75rem 1.75rem',
+              borderRadius: '10px',
               fontSize: '0.95rem',
-              fontWeight: '600',
-              cursor: 'pointer'
+              fontWeight: '700',
+              cursor: 'pointer',
+              boxShadow: '0 4px 12px rgba(255, 215, 0, 0.3)',
+              transition: 'transform 0.2s'
             }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
           >
             Retour à l'accueil
           </button>
@@ -144,7 +158,7 @@ export default function PricingPage() {
             background: 'white',
             borderRadius: '12px',
             padding: '0.4rem',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+            boxShadow: '0 2px 8px rgba(255, 215, 0, 0.2)'
           }}>
             <button
               onClick={() => setBillingPeriod('monthly')}
@@ -155,8 +169,8 @@ export default function PricingPage() {
                 fontSize: '1rem',
                 fontWeight: '600',
                 cursor: 'pointer',
-                background: billingPeriod === 'monthly' ? '#667eea' : 'transparent',
-                color: billingPeriod === 'monthly' ? 'white' : '#666',
+                background: billingPeriod === 'monthly' ? 'linear-gradient(135deg, #FFD700 0%, #4ade80 100%)' : 'transparent',
+                color: billingPeriod === 'monthly' ? '#1a1a1a' : '#666',
                 transition: 'all 0.2s'
               }}
             >
@@ -171,8 +185,8 @@ export default function PricingPage() {
                 fontSize: '1rem',
                 fontWeight: '600',
                 cursor: 'pointer',
-                background: billingPeriod === 'yearly' ? '#667eea' : 'transparent',
-                color: billingPeriod === 'yearly' ? 'white' : '#666',
+                background: billingPeriod === 'yearly' ? 'linear-gradient(135deg, #FFD700 0%, #4ade80 100%)' : 'transparent',
+                color: billingPeriod === 'yearly' ? '#1a1a1a' : '#666',
                 transition: 'all 0.2s',
                 position: 'relative'
               }}
@@ -182,14 +196,14 @@ export default function PricingPage() {
                 position: 'absolute',
                 top: '-8px',
                 right: '-8px',
-                background: '#10b981',
+                background: '#4ade80',
                 color: 'white',
                 fontSize: '0.65rem',
                 padding: '0.15rem 0.4rem',
                 borderRadius: '4px',
                 fontWeight: '700'
               }}>
-                -17%
+                -20%
               </span>
             </button>
           </div>
@@ -207,17 +221,17 @@ export default function PricingPage() {
         </div>
 
         <div style={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          background: 'linear-gradient(135deg, #FFD700 0%, #4ade80 100%)',
           borderRadius: '16px',
           padding: '3rem',
           textAlign: 'center',
           marginBottom: '5rem',
-          boxShadow: '0 10px 30px rgba(102,126,234,0.3)'
+          boxShadow: '0 10px 30px rgba(255, 215, 0, 0.4)'
         }}>
-          <h2 style={{ fontSize: '2rem', fontWeight: '700', color: 'white', marginBottom: '1rem' }}>
+          <h2 style={{ fontSize: '2rem', fontWeight: '700', color: '#1a1a1a', marginBottom: '1rem' }}>
             Économisez €9,200/an en moyenne 💰
           </h2>
-          <p style={{ fontSize: '1.1rem', color: 'rgba(255,255,255,0.95)', marginBottom: '2rem', maxWidth: '700px', margin: '0 auto 2rem' }}>
+          <p style={{ fontSize: '1.1rem', color: '#1a1a1a', marginBottom: '2rem', maxWidth: '700px', margin: '0 auto 2rem', fontWeight: '500' }}>
             Nos clients réduisent le gaspillage de 63% et évitent les ruptures de stock coûteuses. 
             Pour un investissement de €49/mois, c'est un ROI de x15.
           </p>
@@ -225,15 +239,18 @@ export default function PricingPage() {
             onClick={() => navigate('/login')}
             style={{
               background: 'white',
-              color: '#667eea',
+              color: '#1a1a1a',
               border: 'none',
               padding: '1rem 3rem',
               borderRadius: '12px',
               fontSize: '1.1rem',
               fontWeight: '700',
               cursor: 'pointer',
-              boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
+              boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+              transition: 'transform 0.2s'
             }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
           >
             Essayer gratuitement 14 jours
           </button>
@@ -265,14 +282,18 @@ export default function PricingPage() {
             href="mailto:support@myponia.fr"
             style={{
               display: 'inline-block',
-              background: '#667eea',
-              color: 'white',
+              background: 'linear-gradient(135deg, #FFD700 0%, #4ade80 100%)',
+              color: '#1a1a1a',
               padding: '0.9rem 2.5rem',
               borderRadius: '10px',
               fontSize: '1rem',
-              fontWeight: '600',
-              textDecoration: 'none'
+              fontWeight: '700',
+              textDecoration: 'none',
+              transition: 'transform 0.2s',
+              boxShadow: '0 4px 12px rgba(255, 215, 0, 0.3)'
             }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
           >
             Contacter notre équipe
           </a>
@@ -305,7 +326,7 @@ function PlanCard({ plan, billingPeriod, navigate }) {
       background: 'white',
       borderRadius: '16px',
       padding: '2.5rem',
-      boxShadow: plan.popular ? '0 10px 40px rgba(102,126,234,0.3)' : '0 4px 20px rgba(0,0,0,0.08)',
+      boxShadow: plan.popular ? '0 10px 40px rgba(255, 215, 0, 0.3)' : '0 4px 20px rgba(0,0,0,0.08)',
       border: plan.popular ? `3px solid ${plan.color}` : '1px solid #e5e7eb',
       position: 'relative',
       transform: plan.popular ? 'scale(1.05)' : 'scale(1)',
@@ -323,7 +344,7 @@ function PlanCard({ plan, billingPeriod, navigate }) {
           borderRadius: '20px',
           fontSize: '0.85rem',
           fontWeight: '700',
-          boxShadow: '0 4px 12px rgba(102,126,234,0.4)'
+          boxShadow: '0 4px 12px rgba(255, 215, 0, 0.4)'
         }}>
           ⭐ PLUS POPULAIRE
         </div>
@@ -401,14 +422,18 @@ function PlanCard({ plan, billingPeriod, navigate }) {
         }}
         onMouseEnter={(e) => {
           if (!plan.popular) {
-            e.target.style.background = plan.color
-            e.target.style.color = 'white'
+            e.target.style.background = `linear-gradient(135deg, ${plan.color} 0%, ${plan.color} 100%)`
+            e.target.style.color = '#1a1a1a'
+          } else {
+            e.target.style.transform = 'scale(1.02)'
           }
         }}
         onMouseLeave={(e) => {
           if (!plan.popular) {
             e.target.style.background = 'white'
             e.target.style.color = plan.color
+          } else {
+            e.target.style.transform = 'scale(1)'
           }
         }}
       >
@@ -434,7 +459,7 @@ function FAQItem({ question, answer }) {
         <h4 style={{ fontSize: '1.1rem', fontWeight: '600', color: '#1a1a1a', margin: 0 }}>
           {question}
         </h4>
-        <span style={{ fontSize: '1.5rem', color: '#667eea', transition: 'transform 0.3s', transform: isOpen ? 'rotate(180deg)' : 'rotate(0)' }}>
+        <span style={{ fontSize: '1.5rem', color: '#FFD700', transition: 'transform 0.3s', transform: isOpen ? 'rotate(180deg)' : 'rotate(0)' }}>
           ↓
         </span>
       </div>
