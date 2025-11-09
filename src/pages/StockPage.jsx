@@ -80,8 +80,13 @@ export default function StockPage({ session }) {
       })
 
       if (response.ok) {
-        await loadProducts()
+        const { product } = await response.json()
+        
+        // Fermer modal immédiatement pour UX fluide
         setShowAddModal(false)
+        
+        // Ajouter optimistiquement à la liste locale (pas de rechargement)
+        setProducts(prev => [...prev, product])
       } else {
         const error = await response.json()
         alert(`Erreur: ${error.message || 'Impossible d\'ajouter le produit'}`)

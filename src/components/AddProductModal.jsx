@@ -10,10 +10,16 @@ export default function AddProductModal({ onClose, onSave }) {
     supplier: '',
     expiryDate: ''
   })
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    onSave(formData)
+    setLoading(true)
+    try {
+      await onSave(formData)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleChange = (e) => {
@@ -160,11 +166,11 @@ export default function AddProductModal({ onClose, onSave }) {
           </div>
 
           <div style={{ display: 'flex', gap: '1rem' }}>
-            <button type="button" onClick={onClose} className="btn btn-secondary" style={{ flex: 1 }}>
+            <button type="button" onClick={onClose} className="btn btn-secondary" style={{ flex: 1 }} disabled={loading}>
               Annuler
             </button>
-            <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
-              Ajouter
+            <button type="submit" className="btn btn-primary" style={{ flex: 1 }} disabled={loading}>
+              {loading ? 'Ajout...' : 'Ajouter'}
             </button>
           </div>
         </form>
