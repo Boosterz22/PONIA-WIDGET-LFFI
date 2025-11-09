@@ -1,5 +1,6 @@
 import express from 'express'
 import OpenAI from 'openai'
+import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
 import { eq } from 'drizzle-orm'
 import { db } from './db.js'
@@ -18,6 +19,11 @@ import {
   getProductById
 } from './storage.js'
 
+// Stripe configuration
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: '2024-11-20.acacia'
+})
+
 const app = express()
 const PORT = 3000
 
@@ -27,7 +33,62 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY
 )
 
-// Middleware
+// Stripe webhook handler MUST be BEFORE express.json() to preserve raw body
+app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  const sig = req.headers['stripe-signature']
+  let event
+
+  try {
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET
+    )
+  } catch (err) {
+    console.error('Webhook signature verification failed:', err.message)
+    return res.status(400).send(`Webhook Error: ${err.message}`)
+  }
+
+  try {
+    switch (event.type) {
+      case 'checkout.session.completed': {
+        const session = event.data.object
+        const poniaUserId = parseInt(session.metadata.poniaUserId)
+        const plan = session.metadata.plan
+
+        await updateUser(poniaUserId, {
+          plan,
+          stripeSubscriptionId: session.subscription,
+          subscriptionStatus: 'active',
+          trialEndsAt: null
+        })
+        break
+      }
+
+      case 'customer.subscription.updated':
+      case 'customer.subscription.deleted': {
+        const subscription = event.data.object
+        const customer = await stripe.customers.retrieve(subscription.customer)
+        const poniaUserId = parseInt(customer.metadata.poniaUserId)
+
+        if (subscription.status === 'canceled' || subscription.status === 'unpaid') {
+          await updateUser(poniaUserId, {
+            plan: 'basique',
+            subscriptionStatus: 'canceled'
+          })
+        }
+        break
+      }
+    }
+
+    res.json({ received: true })
+  } catch (error) {
+    console.error('Webhook handler error:', error)
+    res.status(500).json({ error: 'Webhook handling failed' })
+  }
+})
+
+// Middleware - JSON parser for all other routes
 app.use(express.json())
 
 // Auth middleware to verify Supabase JWT and extract user
@@ -56,22 +117,60 @@ async function authenticateSupabaseUser(req, res, next) {
   }
 }
 
+// Trial enforcement middleware - block expired trials from premium endpoints
+async function enforceTrialStatus(req, res, next) {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
+    if (user.plan !== 'basique' || !user.trialEndsAt) {
+      return next()
+    }
+
+    const trialEnd = new Date(user.trialEndsAt)
+    const now = new Date()
+
+    if (trialEnd <= now) {
+      return res.status(403).json({ 
+        error: 'Essai gratuit expiré',
+        trialExpired: true,
+        message: 'Passez à un plan payant pour continuer'
+      })
+    }
+
+    next()
+  } catch (error) {
+    console.error('Erreur vérification essai:', error)
+    return res.status(500).json({ error: 'Erreur serveur' })
+  }
+}
+
 // ============================================
 // ENDPOINTS USERS (Supabase sync)
 // ============================================
 
-// Créer ou synchroniser utilisateur après inscription Supabase
-app.post('/api/users/sync', async (req, res) => {
+// Créer ou synchroniser utilisateur après inscription Supabase (SECURED)
+app.post('/api/users/sync', authenticateSupabaseUser, async (req, res) => {
   try {
     const { supabaseId, email, businessName, businessType, referralCode, referredBy } = req.body
     
     if (!supabaseId || !email) {
       return res.status(400).json({ error: 'supabaseId et email requis' })
     }
+
+    if (supabaseId !== req.supabaseUserId) {
+      return res.status(403).json({ error: 'Supabase ID mismatch - impossible de créer un compte pour un autre utilisateur' })
+    }
     
     let user = await getUserBySupabaseId(supabaseId)
     
     if (!user) {
+      const trialEndsAt = new Date()
+      trialEndsAt.setDate(trialEndsAt.getDate() + 14)
+      
       user = await createUser({
         supabaseId,
         email,
@@ -79,7 +178,8 @@ app.post('/api/users/sync', async (req, res) => {
         businessType,
         plan: 'basique',
         referralCode,
-        referredBy
+        referredBy,
+        trialEndsAt
       })
     }
     
@@ -232,7 +332,7 @@ async function buildStockContext(products, insights = null, includeExternalConte
 }
 
 // Endpoint chat IA sécurisé
-app.post('/api/chat', async (req, res) => {
+app.post('/api/chat', authenticateSupabaseUser, enforceTrialStatus, async (req, res) => {
   try {
     const { userMessage, products, conversationHistory = [], insights = null } = req.body
     
@@ -312,7 +412,7 @@ Tu es l'outil qui transforme les commerçants en experts de leur propre stock.`
 })
 
 // Endpoint génération bon de commande intelligent (SÉCURISÉ)
-app.post('/api/generate-order', authenticateSupabaseUser, async (req, res) => {
+app.post('/api/generate-order', authenticateSupabaseUser, enforceTrialStatus, async (req, res) => {
   try {
     // Verify user ownership
     const user = await getUserBySupabaseId(req.supabaseUserId)
@@ -461,7 +561,7 @@ TOTAL INDICATIF : XXX€ (prix marché ${new Date().getFullYear()}, à confirmer
 })
 
 // Products endpoints (avec auth Supabase SÉCURISÉ)
-app.get('/api/products', authenticateSupabaseUser, async (req, res) => {
+app.get('/api/products', authenticateSupabaseUser, enforceTrialStatus, async (req, res) => {
   try {
     // Use VERIFIED user ID from JWT, not client-supplied value
     const user = await getUserBySupabaseId(req.supabaseUserId)
@@ -479,7 +579,7 @@ app.get('/api/products', authenticateSupabaseUser, async (req, res) => {
 
 // REMOVED: Insecure legacy endpoint that allowed user impersonation
 
-app.post('/api/products', authenticateSupabaseUser, async (req, res) => {
+app.post('/api/products', authenticateSupabaseUser, enforceTrialStatus, async (req, res) => {
   try {
     // Use VERIFIED user ID from JWT
     const user = await getUserBySupabaseId(req.supabaseUserId)
@@ -505,7 +605,7 @@ app.post('/api/products', authenticateSupabaseUser, async (req, res) => {
   }
 })
 
-app.put('/api/products/:id', authenticateSupabaseUser, async (req, res) => {
+app.put('/api/products/:id', authenticateSupabaseUser, enforceTrialStatus, async (req, res) => {
   try {
     const productId = parseInt(req.params.id)
     const productToUpdate = await getProductById(productId)
@@ -550,7 +650,7 @@ app.put('/api/products/:id', authenticateSupabaseUser, async (req, res) => {
   }
 })
 
-app.delete('/api/products/:id', authenticateSupabaseUser, async (req, res) => {
+app.delete('/api/products/:id', authenticateSupabaseUser, enforceTrialStatus, async (req, res) => {
   try {
     const productId = parseInt(req.params.id)
     const productToDelete = await getProductById(productId)
@@ -573,7 +673,7 @@ app.delete('/api/products/:id', authenticateSupabaseUser, async (req, res) => {
   }
 })
 
-app.get('/api/stock-history', authenticateSupabaseUser, async (req, res) => {
+app.get('/api/stock-history', authenticateSupabaseUser, enforceTrialStatus, async (req, res) => {
   try {
     // Use VERIFIED user ID from JWT
     const user = await getUserBySupabaseId(req.supabaseUserId)
@@ -590,38 +690,10 @@ app.get('/api/stock-history', authenticateSupabaseUser, async (req, res) => {
   }
 })
 
-// REMOVED: Insecure legacy endpoint that allowed user impersonation
-
-// User endpoints
-app.post('/api/users', async (req, res) => {
-  try {
-    const user = await createUser(req.body)
-    res.json(user)
-  } catch (error) {
-    console.error('Erreur création utilisateur:', error)
-    res.status(500).json({ error: 'Erreur serveur' })
-  }
-})
-
-app.get('/api/users/email/:email', async (req, res) => {
-  try {
-    const user = await getUserByEmail(req.params.email)
-    res.json(user)
-  } catch (error) {
-    console.error('Erreur récupération utilisateur:', error)
-    res.status(500).json({ error: 'Erreur serveur' })
-  }
-})
-
-app.get('/api/users/supabase/:supabaseId', async (req, res) => {
-  try {
-    const user = await getUserBySupabaseId(req.params.supabaseId)
-    res.json(user)
-  } catch (error) {
-    console.error('Erreur récupération utilisateur:', error)
-    res.status(500).json({ error: 'Erreur serveur' })
-  }
-})
+// REMOVED: Insecure legacy endpoints that allowed user impersonation and data exfiltration
+// - POST /api/users (unauthenticated user creation)
+// - GET /api/users/email/:email (email enumeration + data leak)
+// - GET /api/users/supabase/:supabaseId (UUID enumeration + data leak)
 
 // Update user business info
 app.put('/api/users/business', authenticateSupabaseUser, async (req, res) => {
@@ -746,6 +818,129 @@ app.get('/api/weather', async (req, res) => {
   } catch (error) {
     console.error('Weather API error:', error)
     res.json({ weather: null, error: error.message })
+  }
+})
+
+// ============================================
+// STRIPE ENDPOINTS
+// ============================================
+
+// Create Stripe checkout session for subscription upgrade
+app.post('/api/stripe/create-checkout', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const { plan } = req.body
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
+    const prices = {
+      standard: 'price_standard_49eur',
+      pro: 'price_pro_6999eur'
+    }
+
+    if (!prices[plan]) {
+      return res.status(400).json({ error: 'Plan invalide' })
+    }
+
+    let customerId = user.stripeCustomerId
+
+    if (!customerId) {
+      const customer = await stripe.customers.create({
+        email: user.email,
+        metadata: {
+          poniaUserId: user.id.toString(),
+          supabaseId: user.supabaseId
+        }
+      })
+      customerId = customer.id
+      await updateUser(user.id, { stripeCustomerId: customerId })
+    }
+
+    const session = await stripe.checkout.sessions.create({
+      customer: customerId,
+      payment_method_types: ['card'],
+      line_items: [{
+        price: prices[plan],
+        quantity: 1
+      }],
+      mode: 'subscription',
+      success_url: `${process.env.REPLIT_DEV_DOMAIN || 'http://localhost:5000'}/dashboard?upgrade=success`,
+      cancel_url: `${process.env.REPLIT_DEV_DOMAIN || 'http://localhost:5000'}/settings?upgrade=cancelled`,
+      metadata: {
+        poniaUserId: user.id.toString(),
+        plan
+      }
+    })
+
+    res.json({ sessionId: session.id, url: session.url })
+  } catch (error) {
+    console.error('Erreur création checkout Stripe:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// ============================================
+// ADMIN ENDPOINTS
+// ============================================
+
+// Admin check middleware
+async function requireAdmin(req, res, next) {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
+    const adminEmails = (process.env.ADMIN_EMAILS || '').split(',').map(e => e.trim().toLowerCase())
+    const isAdmin = adminEmails.includes(user.email.toLowerCase())
+
+    if (!isAdmin) {
+      return res.status(403).json({ 
+        error: 'Accès refusé - droits admin requis',
+        message: 'Cette page est réservée aux administrateurs'
+      })
+    }
+
+    next()
+  } catch (error) {
+    console.error('Erreur vérification admin:', error)
+    return res.status(500).json({ error: 'Erreur serveur' })
+  }
+}
+
+// Admin: Get all users and stats (SECURED with admin check)
+app.get('/api/admin/users', authenticateSupabaseUser, requireAdmin, async (req, res) => {
+  try {
+    const allUsers = await db.select().from(users).orderBy(users.createdAt)
+
+    const now = new Date()
+    const activeTrials = allUsers.filter(u => 
+      u.trialEndsAt && new Date(u.trialEndsAt) > now && u.plan === 'basique'
+    ).length
+
+    const paidUsers = allUsers.filter(u => u.plan === 'standard' || u.plan === 'pro').length
+
+    const totalRevenue = allUsers.reduce((sum, u) => {
+      if (u.plan === 'standard') return sum + 49
+      if (u.plan === 'pro') return sum + 69.99
+      return sum
+    }, 0)
+
+    res.json({
+      users: allUsers,
+      stats: {
+        totalUsers: allUsers.length,
+        activeTrials,
+        paidUsers,
+        totalRevenue: Math.round(totalRevenue)
+      }
+    })
+  } catch (error) {
+    console.error('Erreur admin users:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
   }
 })
 

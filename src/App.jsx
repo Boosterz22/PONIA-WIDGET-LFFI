@@ -13,6 +13,8 @@ import HistoryPage from './pages/HistoryPage'
 import ProfilePage from './pages/ProfilePage'
 import SettingsPage from './pages/SettingsPage'
 import ReferralPage from './pages/ReferralPage'
+import UpgradePage from './pages/UpgradePage'
+import AdminPage from './pages/AdminPage'
 import PrivacyPage from './pages/PrivacyPage'
 import TermsPage from './pages/TermsPage'
 import PricingPage from './pages/PricingPage'
@@ -147,6 +149,14 @@ function App() {
         <Route 
           path="/referral" 
           element={session ? <ReferralPage session={session} /> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="/upgrade" 
+          element={session ? <UpgradePage /> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="/admin" 
+          element={session ? <AdminPage /> : <Navigate to="/login" />} 
         />
       </Routes>
     </BrowserRouter>

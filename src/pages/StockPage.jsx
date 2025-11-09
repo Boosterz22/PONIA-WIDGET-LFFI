@@ -3,9 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import { Package, Plus } from 'lucide-react'
 import { supabase } from '../services/supabase'
 import Navigation from '../components/Navigation'
+import TrialBanner from '../components/TrialBanner'
+import TrialExpiredBlocker from '../components/TrialExpiredBlocker'
 import ProductCard from '../components/ProductCard'
 import AddProductModal from '../components/AddProductModal'
 import ChatAI from '../components/ChatAI'
+import { useTrialCheck } from '../hooks/useTrialCheck'
 
 export default function StockPage({ session }) {
   const navigate = useNavigate()
@@ -14,6 +17,7 @@ export default function StockPage({ session }) {
   const [showAddModal, setShowAddModal] = useState(false)
   const businessType = localStorage.getItem('ponia_business_type') || 'default'
   const userPlan = localStorage.getItem('ponia_user_plan') || 'basique'
+  const { trialExpired, loading: trialLoading } = useTrialCheck()
 
   useEffect(() => {
     loadProducts()
@@ -158,7 +162,7 @@ export default function StockPage({ session }) {
     }
   }
 
-  if (loading) {
+  if (loading || trialLoading) {
     return (
       <div style={{ minHeight: '100vh', background: '#F9FAFB' }}>
         <Navigation />
@@ -190,6 +194,8 @@ export default function StockPage({ session }) {
 
   return (
     <div style={{ minHeight: '100vh', background: '#F9FAFB', paddingBottom: '8rem' }}>
+      {trialExpired && <TrialExpiredBlocker />}
+      <TrialBanner />
       <Navigation />
       
       <div className="container" style={{ padding: '2rem 1rem', maxWidth: '1400px', margin: '0 auto' }}>

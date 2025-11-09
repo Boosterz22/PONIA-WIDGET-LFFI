@@ -3,8 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import { Package, AlertCircle } from 'lucide-react'
 import { supabase } from '../services/supabase'
 import Navigation from '../components/Navigation'
+import TrialBanner from '../components/TrialBanner'
+import TrialExpiredBlocker from '../components/TrialExpiredBlocker'
 import AIInsights from '../components/AIInsights'
 import ChatAI from '../components/ChatAI'
+import { useTrialCheck } from '../hooks/useTrialCheck'
 import { checkExpiryAlerts } from '../services/expiryService'
 
 export default function DashboardPage({ session }) {
@@ -14,6 +17,7 @@ export default function DashboardPage({ session }) {
   const [businessName, setBusinessName] = useState('')
   const businessType = localStorage.getItem('ponia_business_type') || 'default'
   const userPlan = localStorage.getItem('ponia_user_plan') || 'basique'
+  const { trialExpired, loading: trialLoading } = useTrialCheck()
 
   useEffect(() => {
     loadProducts()
@@ -89,8 +93,14 @@ export default function DashboardPage({ session }) {
   const expiryAlerts = checkExpiryAlerts(products)
   const healthyProducts = products.filter(p => p.currentQuantity > (p.alertThreshold || 10))
 
+  if (trialLoading) {
+    return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}><div className="spinner"></div></div>
+  }
+
   return (
     <div style={{ minHeight: '100vh', background: '#F9FAFB' }}>
+      {trialExpired && <TrialExpiredBlocker />}
+      <TrialBanner />
       <Navigation />
       
       <div className="container" style={{ padding: '2rem 1rem', maxWidth: '1400px', margin: '0 auto', paddingBottom: '100px' }}>

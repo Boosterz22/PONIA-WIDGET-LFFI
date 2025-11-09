@@ -209,17 +209,14 @@ export default function SettingsPage({ session }) {
                   {planInfo[userPlan].price}
                 </p>
               </div>
-              {userPlan !== 'pro' && (
+              {userPlan === 'basique' && (
                 <button
-                  onClick={() => {
-                    localStorage.setItem('ponia_user_plan', 'pro')
-                    window.location.reload()
-                  }}
+                  onClick={() => navigate('/upgrade')}
                   className="btn btn-primary"
                   style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
                 >
                   <Crown size={16} />
-                  Upgrader vers Pro
+                  Upgrader maintenant
                 </button>
               )}
             </div>
