@@ -15,28 +15,29 @@ PONIA AI is an AI-powered inventory management system designed for small busines
 
 ## Recent Changes (Nov 09, 2025)
 
-### ✅ Pages de Tarifs Redesignées (Latest)
-*   **PricingPage (/pricing) aux couleurs PONIA** - Design complètement refait
-    → Logo PONIA en haut à gauche (clamp 120-180px) au lieu du texte "PONIA AI"
-    → Navigation avec gradient doré PONIA (rgba(255, 215, 0, 0.12-0.04))
-    → TOUTES les couleurs violettes (#667eea, #764ba2) remplacées par #FFD700 (doré) et #4ade80 (vert)
-    → Toggle mensuel/annuel avec gradient PONIA au lieu du violet
-    → Badge "-20%" sur annuel en vert #4ade80
-    → Section ROI avec gradient doré → vert
-    → Boutons CTA avec gradient PONIA
-    → Flèches FAQ en doré #FFD700
-*   **Section Tarifs Landing Page Remplacée** - Nouvelle structure moderne
-    → Ancien design simple remplacé par cards PricingPage (component PricingCards créé)
-    → 3 plans affichés: Basique (gratuit), Standard (€49/mois - POPULAIRE), Pro (€69/mois)
-    → Toggle mensuel/annuel qui redirige vers /pricing pour voir les prix annuels
-    → Cards avec icônes (Zap, TrendingUp, Building2), features check/X, shadows dorées
-    → Plan Standard avec badge "⭐ PLUS POPULAIRE" en doré
-    → Section ROI €9,200/an avec gradient PONIA en dessous
-    → Footer "14 jours d'essai gratuit" + RGPD
-*   **Cohérence Visuelle Parfaite** - Validé par architect
-    → LandingPage et PricingPage utilisent exactement les mêmes couleurs PONIA
-    → Aucune trace de violet restante (audit complet effectué)
-    → Design moderne, professionnel, brand-aligned
+### ✅ Branding PONIA 100% Doré - Audit Complet (Latest)
+*   **Palette de couleurs PONIA strictement dorée #FFD700** - Validation architect complète
+    → TOUTES les couleurs non-neutres supprimées: vert (#4ade80, #22c55e, #16a34a, #10B981), violet (#667eea, #764ba2, #a855f7, #7c3aed), orange (#FFA500), marron (#92400e), bleu-gris (#94a3b8, #f0f4ff)
+    → Couleur de brand EXCLUSIVE: #FFD700 (doré PONIA)
+    → Plan Basique: #6B7280 (gris neutre uniquement)
+    → Warning système: #F59E0B (conservé pour alertes non-brand)
+    → Danger: #EF4444 (rouge pour erreurs)
+    → CSS variables globales mises à jour: --primary, --primary-dark, --success = #FFD700
+*   **PricingPage, LandingPage, UpgradePage** - Cohérence totale
+    → Logo PONIA (clamp 120-180px), navigation, badges, icônes, gradients = doré pur
+    → Toggle mensuel/annuel avec badge "-20%" doré
+    → Témoignages avec avatars et boxes "APRÈS" dorés
+    → Section "AVEC PONIA" avec icônes et borders dorés
+    → Boutons CTA avec gradient doré
+    → Flèches FAQ dorées
+*   **Toggle annuel supprimé de landing** - Simplification UX
+    → Section tarifs landing affiche uniquement les prix mensuels
+    → Toggle annuel disponible uniquement sur /pricing
+*   **Intégrations POS supprimées** - Features réalistes
+    → "Intégrations POS (Square, etc.)" supprimé de tous les plans
+    → Remplacé par "API développeur"
+*   **Redirections /login** - Parcours utilisateur optimisé
+    → Tous les boutons CTA tarifs redirigent vers /login
 
 ## System Architecture
 
