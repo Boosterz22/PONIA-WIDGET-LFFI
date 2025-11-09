@@ -15,29 +15,24 @@ PONIA AI is an AI-powered inventory management system designed for small busines
 
 ## Recent Changes (Nov 09, 2025)
 
-### ✅ Branding PONIA 100% Doré - Audit Complet (Latest)
-*   **Palette de couleurs PONIA strictement dorée #FFD700** - Validation architect complète
-    → TOUTES les couleurs non-neutres supprimées: vert (#4ade80, #22c55e, #16a34a, #10B981), violet (#667eea, #764ba2, #a855f7, #7c3aed), orange (#FFA500), marron (#92400e), bleu-gris (#94a3b8, #f0f4ff)
-    → Couleur de brand EXCLUSIVE: #FFD700 (doré PONIA)
-    → Plan Basique: #6B7280 (gris neutre uniquement)
-    → Warning système: #F59E0B (conservé pour alertes non-brand)
-    → Danger: #EF4444 (rouge pour erreurs)
-    → CSS variables globales mises à jour: --primary, --primary-dark, --success = #FFD700
-*   **PricingPage, LandingPage, UpgradePage** - Cohérence totale
-    → Logo PONIA (clamp 120-180px), navigation, badges, icônes, gradients = doré pur
-    → Toggle mensuel/annuel avec badge "-20%" doré
-    → Témoignages avec avatars et boxes "APRÈS" dorés
-    → Section "AVEC PONIA" avec icônes et borders dorés
-    → Boutons CTA avec gradient doré
-    → Flèches FAQ dorées
-*   **Toggle annuel supprimé de landing** - Simplification UX
-    → Section tarifs landing affiche uniquement les prix mensuels
-    → Toggle annuel disponible uniquement sur /pricing
-*   **Intégrations POS supprimées** - Features réalistes
-    → "Intégrations POS (Square, etc.)" supprimé de tous les plans
-    → Remplacé par "API développeur"
-*   **Redirections /login** - Parcours utilisateur optimisé
-    → Tous les boutons CTA tarifs redirigent vers /login
+### ✅ Plan Pro RECOMMANDÉ - Corrections Finales (Latest)
+*   **Couleur PONIA #FFD700 restaurée** - Correction branding
+    → #FFD700 (doré PONIA) remis partout après correction temporaire erronée
+    → CSS variables: --primary: #FFD700, --primary-dark: #FFA500
+    → Toutes les pages (PricingPage, LandingPage, UpgradePage) corrigées
+*   **Plan Pro en vedette** - Stratégie commerciale
+    → popular: true pour Pro (au lieu de Standard)
+    → Badge "⭐ RECOMMANDÉ" sur plan Pro
+    → Plan Basique: gris neutre (#6B7280)
+    → Plans Standard et Pro: doré PONIA (#FFD700)
+*   **Intégrations POS restaurées** - Features réalistes
+    → "Intégrations POS (Square, etc.)" remis dans plan Pro
+    → Texte erroné "API développeur" supprimé
+*   **Toggle annuel fonctionnel** - Pricing UX
+    → Toggle Mensuel/Annuel sur /pricing
+    → Badge "-20%" sur bouton Annuel
+    → Prix annuels: Standard €470, Pro €660
+    → Économies affichées: Standard -€118, Pro -€168
 
 ## System Architecture
 
