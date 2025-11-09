@@ -94,18 +94,17 @@ export default function LoginPage() {
         flex: 1,
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '2rem 1rem'
+        padding: '1.5rem 1rem'
       }}>
-        <div style={{ width: '100%', maxWidth: '400px' }}>
-          <Link to="/" style={{ 
-            display: 'inline-block',
-            marginBottom: '1rem'
-          }}>
-            <img src="/ponia-logo.png" alt="PONIA AI" style={{ height: '200px' }} />
-          </Link>
+        <Link to="/" style={{ 
+          display: 'inline-block',
+          marginBottom: '0.5rem',
+          alignSelf: 'flex-start'
+        }}>
+          <img src="/ponia-logo.png" alt="PONIA AI" style={{ height: '200px' }} />
+        </Link>
 
+        <div style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}>
           <h1 style={{ 
             fontSize: '1.875rem', 
             fontWeight: 600,
@@ -118,7 +117,7 @@ export default function LoginPage() {
           <p style={{ 
             color: '#6b7280', 
             fontSize: '0.9375rem',
-            marginBottom: '1.5rem',
+            marginBottom: '1.25rem',
             lineHeight: 1.5
           }}>
             {isSignup ? 'Commencez gratuitement. Aucune carte bancaire requise.' : 'Accédez à votre compte PONIA.'}
