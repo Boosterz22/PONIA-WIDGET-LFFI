@@ -6,58 +6,50 @@ import { supabase } from '../services/supabase'
 
 export default function HistoryPage() {
   const navigate = useNavigate()
-  const [session, setSession] = useState(null)
-  const [userId, setUserId] = useState(null)
   const [history, setHistory] = useState([])
   const [products, setProducts] = useState([])
   const [selectedProduct, setSelectedProduct] = useState('all')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) {
-        navigate('/login')
-      } else {
-        setSession(session)
-        fetchUserData(session.user.id)
-      }
-    })
+    checkAuthAndLoadData()
   }, [navigate])
 
-  const fetchUserData = async (supabaseId) => {
+  const checkAuthAndLoadData = async () => {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) {
+      navigate('/login')
+      return
+    }
+    fetchData(session)
+  }
+
+  const fetchData = async (session) => {
     try {
-      const userRes = await fetch(`/api/users/supabase/${supabaseId}`)
-      const userData = await userRes.json()
-      
-      if (userData && userData.id) {
-        setUserId(userData.id)
-        await fetchHistory(userData.id)
-        await fetchProducts(userData.id)
+      const token = session.access_token
+
+      const [productsRes, historyRes] = await Promise.all([
+        fetch('/api/products', { 
+          headers: { 'Authorization': `Bearer ${token}` } 
+        }),
+        fetch('/api/stock-history', { 
+          headers: { 'Authorization': `Bearer ${token}` } 
+        })
+      ])
+
+      if (productsRes.ok) {
+        const data = await productsRes.json()
+        setProducts(data.products || [])
+      }
+
+      if (historyRes.ok) {
+        const data = await historyRes.json()
+        setHistory(data.history || [])
       }
     } catch (error) {
       console.error('Erreur chargement données:', error)
     } finally {
       setLoading(false)
-    }
-  }
-
-  const fetchHistory = async (uid) => {
-    try {
-      const response = await fetch(`/api/stock-history/${uid}`)
-      const data = await response.json()
-      setHistory(data)
-    } catch (error) {
-      console.error('Erreur chargement historique:', error)
-    }
-  }
-
-  const fetchProducts = async (uid) => {
-    try {
-      const response = await fetch(`/api/products/${uid}`)
-      const data = await response.json()
-      setProducts(data)
-    } catch (error) {
-      console.error('Erreur chargement produits:', error)
     }
   }
 

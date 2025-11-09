@@ -495,9 +495,21 @@ app.post('/api/products', authenticateSupabaseUser, async (req, res) => {
   }
 })
 
-app.put('/api/products/:id', async (req, res) => {
+app.put('/api/products/:id', authenticateSupabaseUser, async (req, res) => {
   try {
     const productId = parseInt(req.params.id)
+    const productToUpdate = await getProductById(productId)
+    
+    if (!productToUpdate) {
+      return res.status(404).json({ error: 'Produit non trouvé' })
+    }
+
+    // Verify ownership
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user || productToUpdate.userId !== user.id) {
+      return res.status(403).json({ error: 'Accès refusé' })
+    }
+
     const { previousQuantity, ...updates } = req.body
     
     // Convert expiryDate string to Date object if present
@@ -510,13 +522,15 @@ app.put('/api/products/:id', async (req, res) => {
     // Si la quantité change, enregistrer le mouvement
     if (updates.currentQuantity !== undefined && previousQuantity !== undefined) {
       const quantityChange = parseFloat(updates.currentQuantity) - parseFloat(previousQuantity)
-      await addStockMovement(
-        productId,
-        quantityChange,
-        parseFloat(updates.currentQuantity),
-        quantityChange > 0 ? 'increase' : 'decrease',
-        req.body.notes || null
-      )
+      if (quantityChange !== 0) {
+        await addStockMovement(
+          productId,
+          quantityChange,
+          parseFloat(updates.currentQuantity),
+          quantityChange > 0 ? 'increase' : 'decrease',
+          req.body.notes || null
+        )
+      }
     }
     
     res.json(product)
@@ -526,9 +540,21 @@ app.put('/api/products/:id', async (req, res) => {
   }
 })
 
-app.delete('/api/products/:id', async (req, res) => {
+app.delete('/api/products/:id', authenticateSupabaseUser, async (req, res) => {
   try {
     const productId = parseInt(req.params.id)
+    const productToDelete = await getProductById(productId)
+    
+    if (!productToDelete) {
+      return res.status(404).json({ error: 'Produit non trouvé' })
+    }
+
+    // Verify ownership
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user || productToDelete.userId !== user.id) {
+      return res.status(403).json({ error: 'Accès refusé' })
+    }
+
     await deleteProduct(productId)
     res.json({ success: true })
   } catch (error) {
