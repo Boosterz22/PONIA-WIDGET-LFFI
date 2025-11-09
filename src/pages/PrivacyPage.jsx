@@ -52,25 +52,14 @@ export default function PrivacyPage() {
           <Section title="1. Responsable du traitement">
             <div style={{ padding: '1.5rem', background: '#f9fafb', borderRadius: '12px', marginBottom: '1rem' }}>
               <p style={{ margin: '0 0 0.5rem 0', fontWeight: '600', color: '#1a1a1a' }}>
-                PONIA SAS
+                ENOCK LIGUE
               </p>
               <p style={{ margin: '0.25rem 0', color: '#444' }}>
-                SIRET : [À compléter avant lancement]
-              </p>
-              <p style={{ margin: '0.25rem 0', color: '#444' }}>
-                Siège social : [Adresse à compléter]
-              </p>
-              <p style={{ margin: '0.25rem 0', color: '#444' }}>
-                Email : support@myponia.fr
-              </p>
-              <p style={{ margin: '0.25rem 0', color: '#444' }}>
-                Délégué à la Protection des Données (DPO) : support@myponia.fr
+                📧 Email : support@myponia.fr
               </p>
             </div>
             <p>
-              PONIA AI ("nous", "notre", "nos") s'engage à protéger la confidentialité de vos données personnelles. 
-              Cette politique de confidentialité explique comment nous collectons, utilisons, stockons et protégeons 
-              vos informations conformément au Règlement Général sur la Protection des Données (RGPD).
+              PONIA AI s'engage à protéger la confidentialité de vos données personnelles conformément au RGPD.
             </p>
           </Section>
 
@@ -191,13 +180,10 @@ export default function PrivacyPage() {
           <Section title="11. Contact">
             <div style={{ padding: '1.5rem', background: '#f9fafb', borderRadius: '12px', marginTop: '1rem' }}>
               <p style={{ margin: '0 0 0.5rem 0', fontWeight: '600', color: '#1a1a1a' }}>
-                Pour toute question concernant vos données personnelles :
+                ENOCK LIGUE
               </p>
               <p style={{ margin: '0.25rem 0', color: '#444' }}>
                 📧 Email : <a href="mailto:support@myponia.fr" style={{ color: '#667eea', fontWeight: '600', textDecoration: 'none' }}>support@myponia.fr</a>
-              </p>
-              <p style={{ margin: '0.25rem 0', color: '#444' }}>
-                ⚖️ Autorité de contrôle : <a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer" style={{ color: '#667eea', textDecoration: 'none' }}>CNIL (Commission Nationale de l'Informatique et des Libertés)</a>
               </p>
             </div>
           </Section>
@@ -210,7 +196,7 @@ export default function PrivacyPage() {
             <a href="mailto:support@myponia.fr" style={{ color: 'white', textDecoration: 'none', fontSize: '0.9rem' }}>Contact</a>
           </div>
           <p style={{ fontSize: '0.85rem', opacity: 0.9 }}>
-            © {new Date().getFullYear()} PONIA AI - Tous droits réservés
+            © {new Date().getFullYear()} ENOCK LIGUE - Tous droits réservés
           </p>
         </footer>
       </div>
