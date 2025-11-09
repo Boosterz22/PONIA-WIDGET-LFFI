@@ -790,10 +790,6 @@ export default function LandingPage() {
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <X size={18} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>5 commandes vocales/jour</span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <X size={18} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
                   <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Pas d'historique</span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
