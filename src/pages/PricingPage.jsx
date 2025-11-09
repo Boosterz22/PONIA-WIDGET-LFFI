@@ -12,7 +12,7 @@ export default function PricingPage() {
       price: 0,
       priceYearly: 0,
       icon: Zap,
-      color: '#94a3b8',
+      color: '#6B7280',
       description: 'Pour tester PONIA AI',
       features: [
         { text: '10 produits maximum', included: true },
@@ -54,17 +54,17 @@ export default function PricingPage() {
       priceYearly: 660,
       savings: 168,
       icon: Building2,
-      color: '#4ade80',
+      color: '#FFD700',
       description: 'Pour réseaux et chaînes',
       features: [
         { text: 'Produits ILLIMITÉS', included: true },
         { text: 'Prédictions IA 30 jours', included: true },
         { text: 'Multi-magasins illimité', included: true },
         { text: 'Génération commandes avancée', included: true },
-        { text: 'Intégrations POS (Square, etc.)', included: true },
         { text: 'Analytics avancées', included: true },
         { text: 'Support prioritaire 24/7', included: true },
-        { text: 'Onboarding personnalisé', included: true }
+        { text: 'Onboarding personnalisé', included: true },
+        { text: 'API développeur', included: true }
       ],
       cta: 'Essai gratuit 14 jours',
       popular: false
@@ -125,7 +125,7 @@ export default function PricingPage() {
           <button
             onClick={() => navigate('/')}
             style={{
-              background: 'linear-gradient(135deg, #FFD700 0%, #4ade80 100%)',
+              background: '#FFD700',
               color: '#1a1a1a',
               border: 'none',
               padding: '0.75rem 1.75rem',
@@ -169,7 +169,7 @@ export default function PricingPage() {
                 fontSize: '1rem',
                 fontWeight: '600',
                 cursor: 'pointer',
-                background: billingPeriod === 'monthly' ? 'linear-gradient(135deg, #FFD700 0%, #4ade80 100%)' : 'transparent',
+                background: billingPeriod === 'monthly' ? '#FFD700' : 'transparent',
                 color: billingPeriod === 'monthly' ? '#1a1a1a' : '#666',
                 transition: 'all 0.2s'
               }}
@@ -185,7 +185,7 @@ export default function PricingPage() {
                 fontSize: '1rem',
                 fontWeight: '600',
                 cursor: 'pointer',
-                background: billingPeriod === 'yearly' ? 'linear-gradient(135deg, #FFD700 0%, #4ade80 100%)' : 'transparent',
+                background: billingPeriod === 'yearly' ? '#FFD700' : 'transparent',
                 color: billingPeriod === 'yearly' ? '#1a1a1a' : '#666',
                 transition: 'all 0.2s',
                 position: 'relative'
@@ -196,7 +196,7 @@ export default function PricingPage() {
                 position: 'absolute',
                 top: '-8px',
                 right: '-8px',
-                background: '#4ade80',
+                background: '#FFD700',
                 color: 'white',
                 fontSize: '0.65rem',
                 padding: '0.15rem 0.4rem',
@@ -221,7 +221,7 @@ export default function PricingPage() {
         </div>
 
         <div style={{
-          background: 'linear-gradient(135deg, #FFD700 0%, #4ade80 100%)',
+          background: '#FFD700',
           borderRadius: '16px',
           padding: '3rem',
           textAlign: 'center',
@@ -266,7 +266,7 @@ export default function PricingPage() {
         </div>
 
         <div style={{
-          background: '#f0f4ff',
+          background: '#f9fafb',
           borderRadius: '16px',
           padding: '3rem',
           textAlign: 'center',
@@ -282,7 +282,7 @@ export default function PricingPage() {
             href="mailto:support@myponia.fr"
             style={{
               display: 'inline-block',
-              background: 'linear-gradient(135deg, #FFD700 0%, #4ade80 100%)',
+              background: '#FFD700',
               color: '#1a1a1a',
               padding: '0.9rem 2.5rem',
               borderRadius: '10px',

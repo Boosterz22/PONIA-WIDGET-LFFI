@@ -16,7 +16,7 @@ export default function UpgradePage() {
       name: 'Standard',
       priceMonthly: 49,
       priceYearly: 470,
-      color: '#4ade80',
+      color: '#FFD700',
       icon: Crown,
       features: [
         '50 produits maximum',
@@ -38,7 +38,7 @@ export default function UpgradePage() {
         'Multi-magasins',
         'Chat AI premium',
         'Alertes avancées',
-        'Intégrations POS',
+        'API développeur',
         'Support VIP 24/7'
       ]
     }
@@ -96,7 +96,7 @@ export default function UpgradePage() {
   return (
     <div style={{ 
       minHeight: '100vh', 
-      background: 'linear-gradient(180deg, rgba(255, 215, 0, 0.08) 0%, rgba(74, 222, 128, 0.06) 50%, rgba(255, 255, 255, 0.95) 100%)',
+      background: 'linear-gradient(180deg, rgba(255, 215, 0, 0.08) 0%, rgba(255, 215, 0, 0.06) 50%, rgba(255, 255, 255, 0.95) 100%)',
       paddingBottom: '80px' 
     }}>
       <Navigation />
@@ -122,14 +122,14 @@ export default function UpgradePage() {
             display: 'inline-flex',
             alignItems: 'center',
             gap: '0.5rem',
-            background: 'linear-gradient(135deg, rgba(74, 222, 128, 0.15) 0%, rgba(255, 215, 0, 0.15) 100%)',
+            background: 'rgba(255, 215, 0, 0.15)',
             padding: '0.5rem 1.5rem',
             borderRadius: '50px',
             marginBottom: '1.5rem',
-            border: '1px solid rgba(74, 222, 128, 0.3)'
+            border: '1px solid rgba(255, 215, 0, 0.3)'
           }}>
             <Sparkles size={18} color="#FFD700" />
-            <span style={{ fontSize: '0.9rem', fontWeight: '600', color: '#166534' }}>
+            <span style={{ fontSize: '0.9rem', fontWeight: '600', color: '#FFD700' }}>
               Essai gratuit 14 jours · Sans carte bancaire
             </span>
           </div>
@@ -138,10 +138,7 @@ export default function UpgradePage() {
             fontSize: 'clamp(2rem, 5vw, 3rem)', 
             fontWeight: '800', 
             marginBottom: '1rem',
-            background: 'linear-gradient(135deg, #4ade80 0%, #FFD700 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text'
+            color: '#FFD700'
           }}>
             Passez à la vitesse supérieure
           </h1>
@@ -169,11 +166,11 @@ export default function UpgradePage() {
             style={{
               padding: '0.75rem 2rem',
               borderRadius: '12px',
-              border: billingPeriod === 'monthly' ? '2px solid #4ade80' : '2px solid #E5E7EB',
+              border: billingPeriod === 'monthly' ? '2px solid #FFD700' : '2px solid #E5E7EB',
               background: billingPeriod === 'monthly' 
-                ? 'linear-gradient(135deg, rgba(74, 222, 128, 0.2) 0%, rgba(74, 222, 128, 0.1) 100%)'
+                ? 'rgba(255, 215, 0, 0.15)'
                 : 'white',
-              color: billingPeriod === 'monthly' ? '#166534' : '#6B7280',
+              color: billingPeriod === 'monthly' ? '#FFD700' : '#6B7280',
               fontSize: '1rem',
               fontWeight: '600',
               cursor: 'pointer',
@@ -192,7 +189,7 @@ export default function UpgradePage() {
               background: billingPeriod === 'yearly'
                 ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 215, 0, 0.1) 100%)'
                 : 'white',
-              color: billingPeriod === 'yearly' ? '#92400e' : '#6B7280',
+              color: billingPeriod === 'yearly' ? '#FFD700' : '#6B7280',
               fontSize: '1rem',
               fontWeight: '600',
               cursor: 'pointer',
@@ -237,19 +234,17 @@ export default function UpgradePage() {
                 onClick={() => setSelectedPlan(key)}
                 style={{ 
                   position: 'relative',
-                  background: isPro 
-                    ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.12) 0%, rgba(255, 215, 0, 0.06) 100%)'
-                    : 'linear-gradient(135deg, rgba(74, 222, 128, 0.12) 0%, rgba(74, 222, 128, 0.06) 100%)',
+                  background: 'rgba(255, 215, 0, 0.08)',
                   borderRadius: '20px',
                   padding: '2.5rem 2rem',
                   border: isSelected 
                     ? `3px solid ${plan.color}` 
-                    : `2px solid ${isPro ? 'rgba(255, 215, 0, 0.3)' : 'rgba(74, 222, 128, 0.3)'}`,
+                    : '2px solid rgba(255, 215, 0, 0.3)',
                   cursor: 'pointer',
                   transition: 'all 0.3s ease',
                   transform: isSelected ? 'scale(1.03)' : 'scale(1)',
                   boxShadow: isSelected 
-                    ? `0 10px 40px ${isPro ? 'rgba(255, 215, 0, 0.3)' : 'rgba(74, 222, 128, 0.3)'}`
+                    ? '0 10px 40px rgba(255, 215, 0, 0.3)'
                     : '0 4px 20px rgba(0, 0, 0, 0.08)'
                 }}
               >
@@ -258,7 +253,7 @@ export default function UpgradePage() {
                     position: 'absolute',
                     top: '-12px',
                     right: '20px',
-                    background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+                    background: 'linear-gradient(135deg, #FFD700 0%, #FFD700 100%)',
                     color: '#1a1a1a',
                     padding: '0.4rem 1rem',
                     borderRadius: '20px',
@@ -284,9 +279,7 @@ export default function UpgradePage() {
                     width: '80px',
                     height: '80px',
                     borderRadius: '50%',
-                    background: isPro 
-                      ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(255, 215, 0, 0.1) 100%)'
-                      : 'linear-gradient(135deg, rgba(74, 222, 128, 0.3) 0%, rgba(74, 222, 128, 0.1) 100%)',
+                    background: 'rgba(255, 215, 0, 0.2)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center'
@@ -373,7 +366,7 @@ export default function UpgradePage() {
                     fontWeight: '700',
                     color: isSelected ? '#fff' : '#1a1a1a',
                     background: isSelected 
-                      ? `linear-gradient(135deg, ${plan.color} 0%, ${isPro ? '#FFA500' : '#22c55e'} 100%)`
+                      ? `linear-gradient(135deg, ${plan.color} 0%, #FFD700 100%)`
                       : 'white',
                     border: isSelected ? 'none' : `2px solid ${plan.color}`,
                     borderRadius: '12px',
@@ -384,12 +377,12 @@ export default function UpgradePage() {
                     justifyContent: 'center',
                     gap: '0.5rem',
                     boxShadow: isSelected 
-                      ? `0 8px 24px ${isPro ? 'rgba(255, 215, 0, 0.4)' : 'rgba(74, 222, 128, 0.4)'}`
+                      ? '0 8px 24px rgba(255, 215, 0, 0.4)'
                       : '0 2px 8px rgba(0, 0, 0, 0.1)'
                   }}
                   onMouseEnter={(e) => {
                     if (!loading && !isSelected) {
-                      e.currentTarget.style.background = `linear-gradient(135deg, ${plan.color} 0%, ${isPro ? '#FFA500' : '#22c55e'} 100%)`
+                      e.currentTarget.style.background = `linear-gradient(135deg, ${plan.color} 0%, #FFD700 100%)`
                       e.currentTarget.style.color = '#fff'
                     }
                   }}
@@ -419,8 +412,8 @@ export default function UpgradePage() {
 
         {/* Security Notice */}
         <div style={{
-          background: 'linear-gradient(135deg, rgba(74, 222, 128, 0.15) 0%, rgba(255, 215, 0, 0.1) 100%)',
-          border: '2px solid rgba(74, 222, 128, 0.4)',
+          background: 'rgba(255, 215, 0, 0.1)',
+          border: '2px solid rgba(255, 215, 0, 0.4)',
           borderRadius: '16px',
           padding: '1.5rem 2rem',
           textAlign: 'center',
@@ -429,7 +422,7 @@ export default function UpgradePage() {
         }}>
           <p style={{ 
             fontSize: '1rem', 
-            color: '#166534', 
+            color: '#FFD700', 
             lineHeight: '1.6', 
             margin: 0,
             fontWeight: '600'

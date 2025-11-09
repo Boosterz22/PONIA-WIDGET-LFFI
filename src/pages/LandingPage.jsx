@@ -8,7 +8,7 @@ function PricingCards() {
       name: 'Basique',
       price: 0,
       icon: Zap,
-      color: '#94a3b8',
+      color: '#6B7280',
       description: 'Pour tester PONIA AI',
       features: [
         { text: '10 produits maximum', included: true },
@@ -45,17 +45,17 @@ function PricingCards() {
       name: 'Pro',
       price: 69,
       icon: Building2,
-      color: '#4ade80',
+      color: '#FFD700',
       description: 'Pour réseaux et chaînes',
       features: [
         { text: 'Produits ILLIMITÉS', included: true },
         { text: 'Prédictions IA 30 jours', included: true },
         { text: 'Multi-magasins illimité', included: true },
         { text: 'Génération commandes avancée', included: true },
-        { text: 'Intégrations POS (Square, etc.)', included: true },
         { text: 'Analytics avancées', included: true },
         { text: 'Support prioritaire 24/7', included: true },
-        { text: 'Onboarding personnalisé', included: true }
+        { text: 'Onboarding personnalisé', included: true },
+        { text: 'API développeur', included: true }
       ],
       cta: 'Essai gratuit 14 jours',
       popular: false
@@ -152,7 +152,7 @@ function PricingCards() {
                 width: '100%',
                 display: 'block',
                 textAlign: 'center',
-                background: plan.popular ? `linear-gradient(135deg, ${plan.color} 0%, ${plan.color} 100%)` : 'white',
+                background: plan.popular ? plan.color : 'white',
                 color: plan.popular ? '#1a1a1a' : plan.color,
                 border: `2px solid ${plan.color}`,
                 padding: '1rem',
@@ -282,7 +282,7 @@ export default function LandingPage() {
             color: 'var(--text-muted)'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <CheckCircle size={20} color="#4ade80" />
+              <CheckCircle size={20} color="#FFD700" />
               <span><strong style={{ color: 'var(--success)' }}>50+</strong> commerces utilisent PONIA</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -290,7 +290,7 @@ export default function LandingPage() {
               <span><strong style={{ color: 'var(--primary)' }}>4.9/5</strong> satisfaction client</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Shield size={20} color="#4ade80" />
+              <Shield size={20} color="#FFD700" />
               <span><strong style={{ color: 'var(--success)' }}>100%</strong> sécurisé</span>
             </div>
           </div>
@@ -451,10 +451,10 @@ export default function LandingPage() {
             {/* APRÈS */}
             <div style={{
               padding: '2.5rem',
-              background: 'linear-gradient(135deg, rgba(74, 222, 128, 0.08) 0%, rgba(255, 215, 0, 0.06) 100%)',
+              background: 'rgba(255, 215, 0, 0.08)',
               borderRadius: '20px',
-              border: '3px solid rgba(74, 222, 128, 0.5)',
-              boxShadow: '0 8px 32px rgba(74, 222, 128, 0.2)'
+              border: '3px solid rgba(255, 215, 0, 0.5)',
+              boxShadow: '0 8px 32px rgba(255, 215, 0, 0.2)'
             }}>
               <div style={{ 
                 display: 'flex', 
@@ -463,51 +463,51 @@ export default function LandingPage() {
                 marginBottom: '1.5rem',
                 fontSize: '1.6rem',
                 fontWeight: 'bold',
-                color: '#16a34a'
+                color: '#FFD700'
               }}>
                 <Sparkles size={36} />
                 <span>AVEC PONIA : LA PERFECTION</span>
               </div>
 
-              <p style={{ fontSize: '1.05rem', color: '#16a34a', marginBottom: '2rem', fontWeight: '600', lineHeight: 1.6 }}>
+              <p style={{ fontSize: '1.05rem', color: '#FFD700', marginBottom: '2rem', fontWeight: '600', lineHeight: 1.6 }}>
                 Imaginez : votre stock géré parfaitement, automatiquement, sans effort. C'est possible maintenant.
               </p>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={22} color="#16a34a" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
+                  <CheckCircle size={22} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
                   <div>
-                    <strong style={{ color: '#16a34a', fontSize: '1.05rem' }}>2 minutes chrono par jour</strong> avec l'application mobile ultra-simple (boutons +1, -5, +10). <span style={{ color: 'var(--text-muted)' }}>Aussi facile que d'envoyer un SMS. Même votre grand-mère comprendrait.</span>
+                    <strong style={{ color: '#FFD700', fontSize: '1.05rem' }}>2 minutes chrono par jour</strong> avec l'application mobile ultra-simple (boutons +1, -5, +10). <span style={{ color: 'var(--text-muted)' }}>Aussi facile que d'envoyer un SMS. Même votre grand-mère comprendrait.</span>
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={22} color="#16a34a" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
+                  <CheckCircle size={22} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
                   <div>
-                    <strong style={{ color: '#16a34a', fontSize: '1.05rem' }}>€670 économisés chaque mois</strong> — gaspillage réduit à €130/mois (-84%). <span style={{ color: 'var(--text-muted)' }}>C'est €8,040/an qui restent dans votre poche. De quoi faire de beaux investissements.</span>
+                    <strong style={{ color: '#FFD700', fontSize: '1.05rem' }}>€670 économisés chaque mois</strong> — gaspillage réduit à €130/mois (-84%). <span style={{ color: 'var(--text-muted)' }}>C'est €8,040/an qui restent dans votre poche. De quoi faire de beaux investissements.</span>
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={22} color="#16a34a" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
+                  <CheckCircle size={22} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
                   <div>
-                    <strong style={{ color: '#16a34a', fontSize: '1.05rem' }}>Zéro rupture garantie</strong> — l'IA vous alerte 3 jours AVANT que vous manquiez de quelque chose. <span style={{ color: 'var(--text-muted)' }}>Vos clients sont toujours satisfaits, votre réputation monte en flèche.</span>
+                    <strong style={{ color: '#FFD700', fontSize: '1.05rem' }}>Zéro rupture garantie</strong> — l'IA vous alerte 3 jours AVANT que vous manquiez de quelque chose. <span style={{ color: 'var(--text-muted)' }}>Vos clients sont toujours satisfaits, votre réputation monte en flèche.</span>
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={22} color="#16a34a" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
+                  <CheckCircle size={22} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
                   <div>
-                    <strong style={{ color: '#16a34a', fontSize: '1.05rem' }}>Sérénité absolue 24/7</strong> : dormez tranquille, PONIA surveille tout pour vous jour et nuit. <span style={{ color: 'var(--text-muted)' }}>Fini le stress. Vous pouvez enfin profiter de vos soirées et weekends en paix.</span>
+                    <strong style={{ color: '#FFD700', fontSize: '1.05rem' }}>Sérénité absolue 24/7</strong> : dormez tranquille, PONIA surveille tout pour vous jour et nuit. <span style={{ color: 'var(--text-muted)' }}>Fini le stress. Vous pouvez enfin profiter de vos soirées et weekends en paix.</span>
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={22} color="#16a34a" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
+                  <CheckCircle size={22} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
                   <div>
-                    <strong style={{ color: '#16a34a', fontSize: '1.05rem' }}>Tout centralisé sur votre téléphone</strong> — plus de carnets, plus de post-its, plus d'Excel. <span style={{ color: 'var(--text-muted)' }}>Une seule app claire et organisée. C'est magique.</span>
+                    <strong style={{ color: '#FFD700', fontSize: '1.05rem' }}>Tout centralisé sur votre téléphone</strong> — plus de carnets, plus de post-its, plus d'Excel. <span style={{ color: 'var(--text-muted)' }}>Une seule app claire et organisée. C'est magique.</span>
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={22} color="#16a34a" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
+                  <CheckCircle size={22} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
                   <div>
-                    <strong style={{ color: '#16a34a', fontSize: '1.05rem' }}>Bon de commande intelligent généré en 1 clic</strong> — l'IA calcule exactement ce qu'il faut commander. <span style={{ color: 'var(--text-muted)' }}>Plus de devinettes. Précision mathématique basée sur vos vraies données.</span>
+                    <strong style={{ color: '#FFD700', fontSize: '1.05rem' }}>Bon de commande intelligent généré en 1 clic</strong> — l'IA calcule exactement ce qu'il faut commander. <span style={{ color: 'var(--text-muted)' }}>Plus de devinettes. Précision mathématique basée sur vos vraies données.</span>
                   </div>
                 </div>
               </div>
@@ -515,11 +515,11 @@ export default function LandingPage() {
               <div style={{ 
                 marginTop: '2rem', 
                 padding: '1.5rem', 
-                background: 'linear-gradient(135deg, rgba(74, 222, 128, 0.2) 0%, rgba(255, 215, 0, 0.15) 100%)', 
+                background: 'rgba(255, 215, 0, 0.2)', 
                 borderRadius: '12px',
-                borderLeft: '4px solid #16a34a'
+                borderLeft: '4px solid #FFD700'
               }}>
-                <p style={{ margin: 0, fontSize: '1.15rem', fontWeight: 'bold', color: '#16a34a', marginBottom: '0.5rem' }}>
+                <p style={{ margin: 0, fontSize: '1.15rem', fontWeight: 'bold', color: '#FFD700', marginBottom: '0.5rem' }}>
                   ✨ Résultat : Vous gagnez €9,200/an + 420h de temps libre
                 </p>
                 <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-muted)' }}>
@@ -567,7 +567,7 @@ export default function LandingPage() {
             </div>
 
             <div className="card" style={{ textAlign: 'center', padding: '2.5rem 1.5rem' }}>
-              <TrendingUp size={48} color="#4ade80" style={{ margin: '0 auto 1.5rem' }} />
+              <TrendingUp size={48} color="#FFD700" style={{ margin: '0 auto 1.5rem' }} />
               <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>IA Prédictive</h3>
               <p style={{ color: 'var(--text-muted)', lineHeight: 1.7 }}>
                 <strong>L'IA vous alerte 3 jours avant</strong> chaque rupture. Elle analyse vos ventes et anticipe vos besoins.
@@ -583,7 +583,7 @@ export default function LandingPage() {
             </div>
 
             <div className="card" style={{ textAlign: 'center', padding: '2.5rem 1.5rem' }}>
-              <Target size={48} color="#4ade80" style={{ margin: '0 auto 1.5rem' }} />
+              <Target size={48} color="#FFD700" style={{ margin: '0 auto 1.5rem' }} />
               <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Alertes intelligentes</h3>
               <p style={{ color: 'var(--text-muted)', lineHeight: 1.7 }}>
                 🔴 Rouge (critique), 🟠 Orange (faible), 🟢 Vert (OK). Vous savez en 1 coup d'œil ce qui urge.
@@ -599,7 +599,7 @@ export default function LandingPage() {
             </div>
 
             <div className="card" style={{ textAlign: 'center', padding: '2.5rem 1.5rem' }}>
-              <Shield size={48} color="#4ade80" style={{ margin: '0 auto 1.5rem' }} />
+              <Shield size={48} color="#FFD700" style={{ margin: '0 auto 1.5rem' }} />
               <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>100% sécurisé</h3>
               <p style={{ color: 'var(--text-muted)', lineHeight: 1.7 }}>
                 Vos données chiffrées et hébergées en France. Conforme RGPD. Sauvegarde automatique 24/7.
@@ -637,7 +637,7 @@ export default function LandingPage() {
                   width: '60px', 
                   height: '60px', 
                   borderRadius: '50%', 
-                  background: 'linear-gradient(135deg, #FFD700, #FFA500)',
+                  background: 'linear-gradient(135deg, #FFD700, #FFD700)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -665,12 +665,12 @@ export default function LandingPage() {
               </div>
 
               <div style={{ 
-                background: 'rgba(74, 222, 128, 0.1)', 
+                background: 'rgba(255, 215, 0, 0.1)', 
                 padding: '1rem', 
                 borderRadius: '10px',
-                borderLeft: '3px solid #4ade80'
+                borderLeft: '3px solid #FFD700'
               }}>
-                <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#4ade80', marginBottom: '0.5rem' }}>✅ APRÈS 1 MOIS</div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#FFD700', marginBottom: '0.5rem' }}>✅ APRÈS 1 MOIS</div>
                 <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.6 }}>
                   "<strong>Zéro rupture depuis 4 semaines.</strong> Mon CA weekend a augmenté de 18%. PONIA m'alerte 2 jours avant, je commande pile ce qu'il faut."
                 </p>
@@ -688,7 +688,7 @@ export default function LandingPage() {
                   width: '60px', 
                   height: '60px', 
                   borderRadius: '50%', 
-                  background: 'linear-gradient(135deg, #4ade80, #22c55e)',
+                  background: '#FFD700',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -716,12 +716,12 @@ export default function LandingPage() {
               </div>
 
               <div style={{ 
-                background: 'rgba(74, 222, 128, 0.1)', 
+                background: 'rgba(255, 215, 0, 0.1)', 
                 padding: '1rem', 
                 borderRadius: '10px',
-                borderLeft: '3px solid #4ade80'
+                borderLeft: '3px solid #FFD700'
               }}>
-                <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#4ade80', marginBottom: '0.5rem' }}>✅ APRÈS 6 SEMAINES</div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#FFD700', marginBottom: '0.5rem' }}>✅ APRÈS 6 SEMAINES</div>
                 <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.6 }}>
                   "Gaspillage réduit à <strong>€80/mois (-80%)</strong>. L'IA me dit exactement combien commander. J'ai récupéré mon investissement en 4 jours."
                 </p>
@@ -739,7 +739,7 @@ export default function LandingPage() {
                   width: '60px', 
                   height: '60px', 
                   borderRadius: '50%', 
-                  background: 'linear-gradient(135deg, #a855f7, #7c3aed)',
+                  background: '#FFD700',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -767,12 +767,12 @@ export default function LandingPage() {
               </div>
 
               <div style={{ 
-                background: 'rgba(74, 222, 128, 0.1)', 
+                background: 'rgba(255, 215, 0, 0.1)', 
                 padding: '1rem', 
                 borderRadius: '10px',
-                borderLeft: '3px solid #4ade80'
+                borderLeft: '3px solid #FFD700'
               }}>
-                <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#4ade80', marginBottom: '0.5rem' }}>✅ APRÈS 3 SEMAINES</div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#FFD700', marginBottom: '0.5rem' }}>✅ APRÈS 3 SEMAINES</div>
                 <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.6 }}>
                   "<strong>10 minutes/semaine maximum.</strong> L'app est tellement rapide. Alertes automatiques quand un Bordeaux populaire descend. Mes clients adorent."
                 </p>
@@ -891,59 +891,11 @@ export default function LandingPage() {
             Choisissez le plan qui correspond à votre commerce. Pas de frais cachés, résiliez quand vous voulez.
           </p>
 
-          <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            width: '100%',
-            marginBottom: '3rem'
-          }}>
-            <div style={{ display: 'inline-flex', background: 'white', borderRadius: '12px', padding: '0.4rem' }}>
-              <span style={{
-                padding: '0.7rem 2rem',
-                borderRadius: '8px',
-                fontSize: '1rem',
-                fontWeight: '600',
-                background: 'linear-gradient(135deg, #FFD700 0%, #4ade80 100%)',
-                color: '#1a1a1a'
-              }}>
-                Mensuel
-              </span>
-              <Link 
-                to="/pricing" 
-                style={{
-                  padding: '0.7rem 2rem',
-                  borderRadius: '8px',
-                  fontSize: '1rem',
-                  fontWeight: '600',
-                  background: 'transparent',
-                  color: '#666',
-                  textDecoration: 'none',
-                  position: 'relative',
-                  cursor: 'pointer'
-                }}
-              >
-                Annuel
-                <span style={{
-                  position: 'absolute',
-                  top: '-8px',
-                  right: '-8px',
-                  background: '#4ade80',
-                  color: 'white',
-                  fontSize: '0.65rem',
-                  padding: '0.15rem 0.4rem',
-                  borderRadius: '4px',
-                  fontWeight: '700'
-                }}>
-                  -20%
-                </span>
-              </Link>
-            </div>
-          </div>
 
           <PricingCards />
 
           <div style={{
-            background: 'linear-gradient(135deg, #FFD700 0%, #4ade80 100%)',
+            background: '#FFD700',
             borderRadius: '16px',
             padding: '3rem',
             textAlign: 'center',
