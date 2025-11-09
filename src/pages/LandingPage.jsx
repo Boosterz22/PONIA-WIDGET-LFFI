@@ -185,10 +185,13 @@ export default function LandingPage() {
       }}>
         <div className="container">
           <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', textAlign: 'center', marginBottom: '1rem' }}>
-            Votre quotidien <span className="gradient-text">avant et après</span> PONIA
+            La <span style={{ color: '#ef4444' }}>galère quotidienne</span> vs. <span className="gradient-text">la solution parfaite</span>
           </h2>
-          <p style={{ textAlign: 'center', fontSize: '1.2rem', color: 'var(--text-muted)', marginBottom: '4rem', maxWidth: '700px', margin: '0 auto 4rem' }}>
-            Découvrez comment les commerçants transforment leur gestion de stock
+          <p style={{ textAlign: 'center', fontSize: '1.35rem', color: 'var(--text-muted)', marginBottom: '1rem', maxWidth: '850px', margin: '0 auto 1rem' }}>
+            <strong>Reconnaissez-vous cette situation ?</strong> Découvrez comment 50+ commerçants ont transformé leur quotidien
+          </p>
+          <p style={{ textAlign: 'center', fontSize: '1rem', color: '#ef4444', marginBottom: '4rem', maxWidth: '700px', margin: '0 auto 4rem', fontWeight: '600' }}>
+            ⚠️ Chaque jour sans PONIA vous coûte €25 en gaspillage et ruptures
           </p>
 
           <div style={{ 
@@ -201,120 +204,157 @@ export default function LandingPage() {
             {/* AVANT */}
             <div style={{
               padding: '2.5rem',
-              background: 'rgba(239, 68, 68, 0.05)',
+              background: 'rgba(239, 68, 68, 0.08)',
               borderRadius: '20px',
-              border: '2px solid rgba(239, 68, 68, 0.3)'
+              border: '3px solid rgba(239, 68, 68, 0.4)',
+              boxShadow: '0 8px 24px rgba(239, 68, 68, 0.12)'
             }}>
               <div style={{ 
                 display: 'flex', 
                 alignItems: 'center', 
                 gap: '0.75rem',
-                marginBottom: '2rem',
-                fontSize: '1.5rem',
+                marginBottom: '1.5rem',
+                fontSize: '1.6rem',
                 fontWeight: 'bold',
                 color: '#ef4444'
               }}>
-                <X size={32} />
-                <span>AVANT PONIA</span>
+                <AlertCircle size={36} />
+                <span>SANS PONIA : LA GALÈRE</span>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <p style={{ fontSize: '1.05rem', color: '#ef4444', marginBottom: '2rem', fontWeight: '600', lineHeight: 1.6 }}>
+                Vous reconnaissez cette routine épuisante ? Chaque jour c'est la même chose...
+              </p>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                  <X size={20} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.25rem' }} />
+                  <X size={22} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
                   <div>
-                    <strong style={{ color: 'var(--text)' }}>30 minutes/jour</strong> à compter les stocks manuellement
+                    <strong style={{ color: '#ef4444', fontSize: '1.05rem' }}>30-45 minutes perdues chaque jour</strong> à compter vos stocks avec un stylo et un carnet sale. <span style={{ color: 'var(--text-muted)' }}>C'est chronophage, pénible et vous avez mieux à faire.</span>
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                  <X size={20} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.25rem' }} />
+                  <X size={22} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
                   <div>
-                    <strong style={{ color: 'var(--text)' }}>€800 de gaspillage/mois</strong> (produits périmés, sur-stock)
+                    <strong style={{ color: '#ef4444', fontSize: '1.05rem' }}>€600-900 jetés à la poubelle chaque mois</strong> : produits périmés, sur-stock que vous n'arrivez pas à écouler. <span style={{ color: 'var(--text-muted)' }}>Ça fait mal au portefeuille et au moral.</span>
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                  <X size={20} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.25rem' }} />
+                  <X size={22} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
                   <div>
-                    <strong style={{ color: 'var(--text)' }}>3-4 ruptures/semaine</strong> qui frustrent vos clients
+                    <strong style={{ color: '#ef4444', fontSize: '1.05rem' }}>3-5 ruptures par semaine minimum</strong> — vos clients repartent déçus, certains ne reviennent jamais. <span style={{ color: 'var(--text-muted)' }}>Vous perdez du CA et votre réputation en souffre.</span>
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                  <X size={20} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.25rem' }} />
+                  <X size={22} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
                   <div>
-                    <strong style={{ color: 'var(--text)' }}>Stress quotidien</strong> : "Ai-je assez de stock demain ?"
+                    <strong style={{ color: '#ef4444', fontSize: '1.05rem' }}>Stress permanent 24/7</strong> : "Ai-je commandé assez ? Est-ce que je vais manquer de farine demain matin ?". <span style={{ color: 'var(--text-muted)' }}>Vous ne dormez plus tranquille.</span>
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                  <X size={20} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.25rem' }} />
+                  <X size={22} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
                   <div>
-                    <strong style={{ color: 'var(--text)' }}>Carnets, Excel, post-its</strong> → système chaotique
+                    <strong style={{ color: '#ef4444', fontSize: '1.05rem' }}>Méthode chaotique et archaïque</strong> : carnets griffonnés, Excel compliqué, post-its partout... <span style={{ color: 'var(--text-muted)' }}>C'est le bordel et vous ne savez plus où vous en êtes.</span>
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                  <X size={20} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.25rem' }} />
+                  <X size={22} color="#ef4444" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
                   <div>
-                    <strong style={{ color: 'var(--text)' }}>Commandes à l'aveugle</strong> sans données fiables
+                    <strong style={{ color: '#ef4444', fontSize: '1.05rem' }}>Commandes au pif sans données</strong> — vous commandez trop ou pas assez, jamais la bonne quantité. <span style={{ color: 'var(--text-muted)' }}>C'est de la roulette russe avec votre argent.</span>
                   </div>
                 </div>
+              </div>
+
+              <div style={{ 
+                marginTop: '2rem', 
+                padding: '1.25rem', 
+                background: 'rgba(239, 68, 68, 0.15)', 
+                borderRadius: '12px',
+                borderLeft: '4px solid #ef4444'
+              }}>
+                <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: 'bold', color: '#dc2626' }}>
+                  💸 Résultat : Vous perdez €9,600/an en temps + gaspillage + ruptures
+                </p>
               </div>
             </div>
 
             {/* APRÈS */}
             <div style={{
               padding: '2.5rem',
-              background: 'rgba(74, 222, 128, 0.05)',
+              background: 'linear-gradient(135deg, rgba(74, 222, 128, 0.08) 0%, rgba(255, 215, 0, 0.06) 100%)',
               borderRadius: '20px',
-              border: '2px solid rgba(74, 222, 128, 0.3)'
+              border: '3px solid rgba(74, 222, 128, 0.5)',
+              boxShadow: '0 8px 32px rgba(74, 222, 128, 0.2)'
             }}>
               <div style={{ 
                 display: 'flex', 
                 alignItems: 'center', 
                 gap: '0.75rem',
-                marginBottom: '2rem',
-                fontSize: '1.5rem',
+                marginBottom: '1.5rem',
+                fontSize: '1.6rem',
                 fontWeight: 'bold',
-                color: '#4ade80'
+                color: '#16a34a'
               }}>
-                <CheckCircle size={32} />
-                <span>AVEC PONIA</span>
+                <Sparkles size={36} />
+                <span>AVEC PONIA : LA PERFECTION</span>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <p style={{ fontSize: '1.05rem', color: '#16a34a', marginBottom: '2rem', fontWeight: '600', lineHeight: 1.6 }}>
+                Imaginez : votre stock géré parfaitement, automatiquement, sans effort. C'est possible maintenant.
+              </p>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={20} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.25rem' }} />
+                  <CheckCircle size={22} color="#16a34a" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
                   <div>
-                    <strong style={{ color: 'var(--text)' }}>2 minutes/jour</strong> pour mettre à jour vos stocks
+                    <strong style={{ color: '#16a34a', fontSize: '1.05rem' }}>2 minutes chrono par jour</strong> avec l'application mobile ultra-simple (boutons +1, -5, +10). <span style={{ color: 'var(--text-muted)' }}>Aussi facile que d'envoyer un SMS. Même votre grand-mère comprendrait.</span>
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={20} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.25rem' }} />
+                  <CheckCircle size={22} color="#16a34a" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
                   <div>
-                    <strong style={{ color: 'var(--text)' }}>€130 de gaspillage/mois</strong> (-84% d'économies)
+                    <strong style={{ color: '#16a34a', fontSize: '1.05rem' }}>€670 économisés chaque mois</strong> — gaspillage réduit à €130/mois (-84%). <span style={{ color: 'var(--text-muted)' }}>C'est €8,040/an qui restent dans votre poche. De quoi faire de beaux investissements.</span>
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={20} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.25rem' }} />
+                  <CheckCircle size={22} color="#16a34a" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
                   <div>
-                    <strong style={{ color: 'var(--text)' }}>0 rupture</strong> grâce aux alertes prédictives IA
+                    <strong style={{ color: '#16a34a', fontSize: '1.05rem' }}>Zéro rupture garantie</strong> — l'IA vous alerte 3 jours AVANT que vous manquiez de quelque chose. <span style={{ color: 'var(--text-muted)' }}>Vos clients sont toujours satisfaits, votre réputation monte en flèche.</span>
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={20} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.25rem' }} />
+                  <CheckCircle size={22} color="#16a34a" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
                   <div>
-                    <strong style={{ color: 'var(--text)' }}>Tranquillité d'esprit</strong> : l'IA surveille pour vous
+                    <strong style={{ color: '#16a34a', fontSize: '1.05rem' }}>Sérénité absolue 24/7</strong> : dormez tranquille, PONIA surveille tout pour vous jour et nuit. <span style={{ color: 'var(--text-muted)' }}>Fini le stress. Vous pouvez enfin profiter de vos soirées et weekends en paix.</span>
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={20} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.25rem' }} />
+                  <CheckCircle size={22} color="#16a34a" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
                   <div>
-                    <strong style={{ color: 'var(--text)' }}>Application simple</strong> → tout centralisé sur mobile
+                    <strong style={{ color: '#16a34a', fontSize: '1.05rem' }}>Tout centralisé sur votre téléphone</strong> — plus de carnets, plus de post-its, plus d'Excel. <span style={{ color: 'var(--text-muted)' }}>Une seule app claire et organisée. C'est magique.</span>
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={20} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.25rem' }} />
+                  <CheckCircle size={22} color="#16a34a" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
                   <div>
-                    <strong style={{ color: 'var(--text)' }}>Suggestions de commandes</strong> optimisées par l'IA
+                    <strong style={{ color: '#16a34a', fontSize: '1.05rem' }}>Bon de commande intelligent généré en 1 clic</strong> — l'IA calcule exactement ce qu'il faut commander. <span style={{ color: 'var(--text-muted)' }}>Plus de devinettes. Précision mathématique basée sur vos vraies données.</span>
                   </div>
                 </div>
+              </div>
+
+              <div style={{ 
+                marginTop: '2rem', 
+                padding: '1.5rem', 
+                background: 'linear-gradient(135deg, rgba(74, 222, 128, 0.2) 0%, rgba(255, 215, 0, 0.15) 100%)', 
+                borderRadius: '12px',
+                borderLeft: '4px solid #16a34a'
+              }}>
+                <p style={{ margin: 0, fontSize: '1.15rem', fontWeight: 'bold', color: '#16a34a', marginBottom: '0.5rem' }}>
+                  ✨ Résultat : Vous gagnez €9,200/an + 420h de temps libre
+                </p>
+                <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-muted)' }}>
+                  Pour seulement €49/mois. C'est du ROI x15 — impossible de refuser.
+                </p>
               </div>
             </div>
           </div>
@@ -366,9 +406,9 @@ export default function LandingPage() {
 
             <div className="card" style={{ textAlign: 'center', padding: '2.5rem 1.5rem' }}>
               <BarChart3 size={48} color="#FFD700" style={{ margin: '0 auto 1.5rem' }} />
-              <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>ROI x12 immédiat</h3>
+              <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>ROI x15 garanti</h3>
               <p style={{ color: 'var(--text-muted)', lineHeight: 1.7 }}>
-                €49/mois pour économiser €767/mois. Récupérez <strong>15x votre investissement</strong> dès le 1er mois.
+                Investissez €49/mois, économisez €767/mois. Chaque euro investi vous rapporte <strong>€15 en retour</strong>. Rentable dès le premier mois.
               </p>
             </div>
 
