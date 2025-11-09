@@ -46,7 +46,7 @@ export default function PricingPage() {
         { text: 'Multi-magasins', included: false }
       ],
       cta: 'Essai gratuit 14 jours',
-      popular: true
+      popular: false
     },
     {
       name: 'Pro',
@@ -64,10 +64,10 @@ export default function PricingPage() {
         { text: 'Analytics avancées', included: true },
         { text: 'Support prioritaire 24/7', included: true },
         { text: 'Onboarding personnalisé', included: true },
-        { text: 'API développeur', included: true }
+        { text: 'Intégrations POS (Square, etc.)', included: true }
       ],
       cta: 'Essai gratuit 14 jours',
-      popular: false
+      popular: true
     }
   ]
 
@@ -346,7 +346,7 @@ function PlanCard({ plan, billingPeriod, navigate }) {
           fontWeight: '700',
           boxShadow: '0 4px 12px rgba(255, 215, 0, 0.4)'
         }}>
-          ⭐ PLUS POPULAIRE
+          ⭐ RECOMMANDÉ
         </div>
       )}
 

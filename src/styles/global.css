@@ -6,14 +6,14 @@
 
 :root {
   --primary: #FFD700;
-  --primary-dark: #FFD700;
+  --primary-dark: #FFA500;
   --secondary: #1F2937;
   --bg: #F9FAFB;
   --bg-light: #FFFFFF;
   --text: #111827;
   --text-muted: #6B7280;
-  --success: #FFD700;
-  --warning: #F59E0B;
+  --success: #10B981;
+  --warning: #FFD700;
   --danger: #EF4444;
   --border: #E5E7EB;
 }

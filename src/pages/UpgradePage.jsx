@@ -38,7 +38,7 @@ export default function UpgradePage() {
         'Multi-magasins',
         'Chat AI premium',
         'Alertes avancées',
-        'API développeur',
+        'Intégrations POS (Square, etc.)',
         'Support VIP 24/7'
       ]
     }
