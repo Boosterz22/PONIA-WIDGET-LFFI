@@ -91,14 +91,15 @@ export default function LoginPage() {
         flex: 1,
         display: 'flex',
         flexDirection: 'column',
-        padding: '0.5rem 1rem'
+        padding: '0.5rem 1rem',
+        justifyContent: 'flex-start'
       }}>
         <Link to="/" style={{ 
           display: 'inline-block',
           marginBottom: '0rem',
           alignSelf: 'flex-start'
         }}>
-          <img src="/ponia-logo.png" alt="PONIA AI" style={{ height: '200px' }} />
+          <img src="/ponia-logo.png" alt="PONIA AI" style={{ height: '120px' }} />
         </Link>
 
         <div style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}>
@@ -107,7 +108,8 @@ export default function LoginPage() {
             fontWeight: 600,
             marginBottom: '0.25rem',
             letterSpacing: '-0.03em',
-            color: '#000'
+            color: '#000',
+            marginTop: '0.5rem'
           }}>
             {isSignup ? 'Créer un compte' : 'Se connecter'}
           </h1>
@@ -229,7 +231,7 @@ export default function LoginPage() {
             )}
           </form>
 
-          <div style={{ position: 'relative', marginBottom: '1.5rem' }}>
+          <div style={{ position: 'relative', marginBottom: '1rem' }}>
             <div style={{ 
               position: 'absolute', 
               top: '50%', 
@@ -272,7 +274,7 @@ export default function LoginPage() {
               alignItems: 'center',
               justifyContent: 'center',
               gap: '0.75rem',
-              marginBottom: '2rem'
+              marginBottom: '1rem'
             }}
             onMouseEnter={(e) => {
               e.target.style.background = '#f9fafb'
@@ -298,7 +300,7 @@ export default function LoginPage() {
               background: '#f9fafb',
               borderRadius: '8px',
               border: '1px solid #e5e7eb',
-              marginBottom: '2rem'
+              marginBottom: '1rem'
             }}>
               <p style={{
                 fontSize: '0.8125rem',
@@ -313,7 +315,7 @@ export default function LoginPage() {
           )}
 
           <p style={{ 
-            marginTop: '2rem', 
+            marginTop: '1rem', 
             textAlign: 'center', 
             color: '#6b7280',
             fontSize: '0.875rem'
