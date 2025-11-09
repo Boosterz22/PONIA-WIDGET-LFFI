@@ -1059,15 +1059,18 @@ export default function LandingPage() {
             color: 'var(--text-muted)',
             fontSize: '0.85rem'
           }}>
-            <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'center', gap: '1.5rem', fontSize: '0.9rem' }}>
-              <a href="#" style={{ color: 'var(--text-muted)', textDecoration: 'none' }} onClick={(e) => { e.preventDefault(); alert('Conditions Générales de Vente - Page à venir') }}>
-                CGV
-              </a>
-              <a href="#" style={{ color: 'var(--text-muted)', textDecoration: 'none' }} onClick={(e) => { e.preventDefault(); alert('Mentions Légales - Page à venir') }}>
-                Mentions Légales
-              </a>
-              <a href="#" style={{ color: 'var(--text-muted)', textDecoration: 'none' }} onClick={(e) => { e.preventDefault(); alert('Politique de Confidentialité - Page à venir') }}>
+            <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'center', gap: '1.5rem', fontSize: '0.9rem', flexWrap: 'wrap' }}>
+              <Link to="/pricing" style={{ color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary)'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}>
+                Tarifs
+              </Link>
+              <Link to="/terms" style={{ color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary)'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}>
+                Conditions d'utilisation
+              </Link>
+              <Link to="/privacy" style={{ color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary)'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}>
                 Confidentialité
+              </Link>
+              <a href="mailto:support@myponia.fr" style={{ color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary)'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}>
+                Contact
               </a>
             </div>
             <p style={{ margin: '0 0 0.5rem', fontWeight: '500' }}>

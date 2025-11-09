@@ -13,6 +13,9 @@ import HistoryPage from './pages/HistoryPage'
 import ProfilePage from './pages/ProfilePage'
 import SettingsPage from './pages/SettingsPage'
 import ReferralPage from './pages/ReferralPage'
+import PrivacyPage from './pages/PrivacyPage'
+import TermsPage from './pages/TermsPage'
+import PricingPage from './pages/PricingPage'
 import { supabase } from './services/supabase'
 
 function App() {
@@ -100,6 +103,9 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/pricing" element={<PricingPage />} />
         <Route 
           path="/login" 
           element={session ? (needsProfile ? <Navigate to="/complete-profile" /> : <Navigate to="/dashboard" />) : <LoginPage />} 
