@@ -91,12 +91,38 @@ function estimateEventImpact(event) {
   }
 }
 
-export async function getLocalPublicEvents() {
+export async function getLocalPublicEvents(city = 'Paris', businessType = 'commerce') {
   try {
     const parisEvents = await getParisPublicEvents(10)
-    return parisEvents
+    
+    const relevantEvents = filterEventsByBusinessType(parisEvents, businessType)
+    
+    return relevantEvents
   } catch (error) {
     console.error('Paris OpenData non disponible:', error.message)
     return []
   }
+}
+
+function filterEventsByBusinessType(events, businessType) {
+  const businessKeywords = {
+    'boulangerie': ['marché', 'festival', 'salon', 'gastronomie', 'food', 'cuisine'],
+    'restaurant': ['marché', 'festival', 'concert', 'exposition', 'gastronomie', 'food', 'cuisine', 'spectacle'],
+    'bar': ['concert', 'festival', 'spectacle', 'match', 'soirée', 'musique'],
+    'cave à vin': ['salon', 'exposition', 'dégustation', 'vin', 'wine', 'gastronomie'],
+    'épicerie': ['marché', 'salon', 'festival', 'gastronomie', 'food'],
+    'traiteur': ['marché', 'salon', 'festival', 'gastronomie', 'food', 'cuisine'],
+    'brasserie': ['concert', 'festival', 'spectacle', 'match', 'gastronomie'],
+    'café': ['concert', 'festival', 'spectacle', 'exposition', 'marché'],
+    'commerce': ['marché', 'festival', 'salon', 'exposition', 'concert']
+  }
+  
+  const keywords = businessKeywords[businessType.toLowerCase()] || businessKeywords['commerce']
+  
+  const filteredEvents = events.filter(event => {
+    const eventText = `${event.name} ${event.description} ${event.tags.join(' ')}`.toLowerCase()
+    return keywords.some(keyword => eventText.includes(keyword))
+  })
+  
+  return filteredEvents.length > 0 ? filteredEvents : events.slice(0, 5)
 }

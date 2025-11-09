@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
-import { Calendar, Users, TrendingUp } from 'lucide-react'
+import { Calendar, Users, TrendingUp, ChevronDown, ChevronUp } from 'lucide-react'
+import { supabase } from '../services/supabase'
 
 export default function EventsWidget() {
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
+  const [isExpanded, setIsExpanded] = useState(false)
 
   useEffect(() => {
     loadEvents()
@@ -11,7 +13,17 @@ export default function EventsWidget() {
 
   const loadEvents = async () => {
     try {
-      const response = await fetch('/api/events?city=Paris')
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        setLoading(false)
+        return
+      }
+
+      const response = await fetch('/api/events', {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`
+        }
+      })
       const data = await response.json()
       setEvents(data.events || [])
     } catch (error) {
@@ -39,21 +51,48 @@ export default function EventsWidget() {
 
   return (
     <div className="card" style={{ padding: '1.25rem' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-        <Calendar size={20} style={{ color: '#F59E0B' }} />
-        <h3 style={{ fontSize: '1rem', fontWeight: '600', margin: 0 }}>
-          Événements à venir
-        </h3>
+      <div 
+        style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between',
+          marginBottom: isExpanded ? '1rem' : '0',
+          cursor: 'pointer'
+        }}
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <Calendar size={20} style={{ color: '#F59E0B' }} />
+          <h3 style={{ fontSize: '1rem', fontWeight: '600', margin: 0 }}>
+            Événements à venir {events.length > 0 && `(${events.length})`}
+          </h3>
+        </div>
+        <button
+          style={{
+            background: 'transparent',
+            border: 'none',
+            color: '#6B7280',
+            cursor: 'pointer',
+            padding: '0.25rem',
+            display: 'flex',
+            alignItems: 'center',
+            transition: 'color 0.2s'
+          }}
+        >
+          {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+        </button>
       </div>
 
-      {events.length === 0 && (
-        <div style={{ fontSize: '0.75rem', color: '#6B7280', marginBottom: '1rem', padding: '0.5rem', background: '#FEF3C7', borderRadius: '6px', border: '1px solid #FCD34D' }}>
-          <strong>✅ Google Calendar connecté</strong> - Aucun événement prévu dans les 14 prochains jours
-        </div>
-      )}
+      {isExpanded && (
+        <>
+          {events.length === 0 && (
+            <div style={{ fontSize: '0.75rem', color: '#6B7280', marginBottom: '1rem', padding: '0.5rem', background: '#FEF3C7', borderRadius: '6px', border: '1px solid #FCD34D' }}>
+              <strong>✅ Google Calendar connecté</strong> - Aucun événement prévu dans les 14 prochains jours
+            </div>
+          )}
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-        {events.map(event => (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            {events.map(event => (
           <div
             key={event.id}
             style={{
@@ -91,8 +130,10 @@ export default function EventsWidget() {
               </span>
             </div>
           </div>
-        ))}
-      </div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   )
 }

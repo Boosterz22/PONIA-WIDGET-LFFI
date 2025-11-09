@@ -745,12 +745,19 @@ app.put('/api/users/plan', authenticateSupabaseUser, async (req, res) => {
   }
 })
 
-// Events endpoint (Google Calendar)
-app.get('/api/events', async (req, res) => {
+// Events endpoint (Google Calendar) - secured and uses user's business context
+app.get('/api/events', authenticateSupabaseUser, async (req, res) => {
   try {
-    const { city = 'Paris' } = req.query
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
+    const businessType = user.businessType || 'commerce'
+    const city = 'Paris'
+    
     const { getLocalPublicEvents } = await import('./googleCalendar.js')
-    const events = await getLocalPublicEvents(city)
+    const events = await getLocalPublicEvents(city, businessType)
     res.json({ events })
   } catch (error) {
     console.error('Events API error:', error)
