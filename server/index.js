@@ -608,6 +608,27 @@ app.put('/api/users/business', authenticateSupabaseUser, async (req, res) => {
   }
 })
 
+// Update user plan (TEST MODE)
+app.put('/api/users/plan', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+    
+    const { plan } = req.body
+    if (!['basique', 'standard', 'pro'].includes(plan)) {
+      return res.status(400).json({ error: 'Plan invalide' })
+    }
+    
+    const updatedUser = await updateUser(user.id, { plan })
+    res.json({ user: updatedUser })
+  } catch (error) {
+    console.error('Erreur mise à jour plan:', error)
+    res.status(500).json({ error: 'Erreur serveur', message: error.message })
+  }
+})
+
 // Events endpoint (Google Calendar)
 app.get('/api/events', async (req, res) => {
   try {
