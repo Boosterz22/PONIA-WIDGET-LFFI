@@ -104,7 +104,10 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        <Route 
+          path="/" 
+          element={session ? (needsProfile ? <Navigate to="/complete-profile" /> : <Navigate to="/dashboard" />) : <LandingPage />} 
+        />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/pricing" element={<PricingPage />} />
