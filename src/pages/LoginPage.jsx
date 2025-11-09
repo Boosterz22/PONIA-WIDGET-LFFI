@@ -94,11 +94,11 @@ export default function LoginPage() {
         flex: 1,
         display: 'flex',
         flexDirection: 'column',
-        padding: '1rem 1rem'
+        padding: '0.5rem 1rem'
       }}>
         <Link to="/" style={{ 
           display: 'inline-block',
-          marginBottom: '0.25rem',
+          marginBottom: '0rem',
           alignSelf: 'flex-start'
         }}>
           <img src="/ponia-logo.png" alt="PONIA AI" style={{ height: '200px' }} />
@@ -117,14 +117,14 @@ export default function LoginPage() {
           <p style={{ 
             color: '#6b7280', 
             fontSize: '0.9375rem',
-            marginBottom: '1rem',
+            marginBottom: '0.75rem',
             lineHeight: 1.5
           }}>
             {isSignup ? 'Commencez gratuitement. Aucune carte bancaire requise.' : 'Accédez à votre compte PONIA.'}
           </p>
 
-          <form onSubmit={isSignup ? handleSignup : handleLogin} style={{ marginBottom: '1rem' }}>
-            <div style={{ marginBottom: '1rem' }}>
+          <form onSubmit={isSignup ? handleSignup : handleLogin} style={{ marginBottom: '0.75rem' }}>
+            <div style={{ marginBottom: '0.75rem' }}>
               <label style={{ 
                 display: 'block', 
                 marginBottom: '0.5rem',
