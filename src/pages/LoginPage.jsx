@@ -7,16 +7,7 @@ export default function LoginPage() {
   const [isSignup, setIsSignup] = useState(true)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [businessName, setBusinessName] = useState('')
-  const [businessType, setBusinessType] = useState('boulangerie')
   const [loading, setLoading] = useState(false)
-
-  const generateReferralCode = (businessName, businessType) => {
-    const name = businessName.split(' ')[0].toUpperCase().substring(0, 6)
-    const type = businessType.substring(0, 4).toUpperCase()
-    const random = Math.floor(Math.random() * 100).toString().padStart(2, '0')
-    return `${name}-${type}${random}`
-  }
 
   const handleSignup = async (e) => {
     e.preventDefault()
@@ -25,42 +16,13 @@ export default function LoginPage() {
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
-        password,
-        options: {
-          data: {
-            business_name: businessName,
-            business_type: businessType
-          }
-        }
+        password
       })
       
       if (error) throw error
       
-      if (data.user) {
-        const referralCode = generateReferralCode(businessName, businessType)
-        
-        await fetch('/api/users/sync', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            supabaseId: data.user.id,
-            email: data.user.email,
-            businessName,
-            businessType,
-            referralCode,
-            referredBy: null
-          })
-        })
-        
-        localStorage.setItem('ponia_business_type', businessType)
-        localStorage.setItem('ponia_user_plan', 'basique')
-        localStorage.setItem('ponia_referral_code', referralCode)
-        localStorage.setItem('ponia_referrals', JSON.stringify([]))
-        localStorage.setItem('ponia_free_months', '0')
-      }
-      
       setTimeout(() => {
-        navigate('/dashboard')
+        navigate('/complete-profile')
       }, 800)
     } catch (error) {
       alert(error.message)
@@ -122,18 +84,6 @@ export default function LoginPage() {
     }
   }
 
-  const businessTypes = [
-    { value: 'boulangerie', label: 'Boulangerie / Pâtisserie' },
-    { value: 'restaurant', label: 'Restaurant / Traiteur' },
-    { value: 'bar', label: 'Bar / Café' },
-    { value: 'cave', label: 'Cave à vin' },
-    { value: 'tabac', label: 'Tabac / Presse' },
-    { value: 'boucherie', label: 'Boucherie / Charcuterie' },
-    { value: 'fromagerie', label: 'Fromagerie' },
-    { value: 'epicerie', label: 'Épicerie / Superette' },
-    { value: 'autre', label: 'Autre commerce' }
-  ]
-
   return (
     <div style={{ 
       minHeight: '100vh', 
@@ -151,7 +101,7 @@ export default function LoginPage() {
         <div style={{ width: '100%', maxWidth: '400px' }}>
           <Link to="/" style={{ 
             display: 'inline-block',
-            marginBottom: '3rem'
+            marginBottom: '1rem'
           }}>
             <img src="/ponia-logo.png" alt="PONIA AI" style={{ height: '200px' }} />
           </Link>
@@ -168,14 +118,14 @@ export default function LoginPage() {
           <p style={{ 
             color: '#6b7280', 
             fontSize: '0.9375rem',
-            marginBottom: '2rem',
+            marginBottom: '1.5rem',
             lineHeight: 1.5
           }}>
             {isSignup ? 'Commencez gratuitement. Aucune carte bancaire requise.' : 'Accédez à votre compte PONIA.'}
           </p>
 
-          <form onSubmit={isSignup ? handleSignup : handleLogin} style={{ marginBottom: '2rem' }}>
-            <div style={{ marginBottom: '1.25rem' }}>
+          <form onSubmit={isSignup ? handleSignup : handleLogin} style={{ marginBottom: '1.5rem' }}>
+            <div style={{ marginBottom: '1rem' }}>
               <label style={{ 
                 display: 'block', 
                 marginBottom: '0.5rem',
@@ -207,41 +157,7 @@ export default function LoginPage() {
               />
             </div>
 
-            {isSignup && (
-              <div style={{ marginBottom: '1.25rem' }}>
-                <label style={{ 
-                  display: 'block', 
-                  marginBottom: '0.5rem',
-                  fontSize: '0.875rem',
-                  fontWeight: 500,
-                  color: '#374151'
-                }}>
-                  Nom du commerce
-                </label>
-                <input
-                  type="text"
-                  placeholder=""
-                  value={businessName}
-                  onChange={(e) => setBusinessName(e.target.value)}
-                  required
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem 1rem',
-                    fontSize: '0.9375rem',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '8px',
-                    background: '#fff',
-                    outline: 'none',
-                    transition: 'all 0.15s ease',
-                    boxSizing: 'border-box'
-                  }}
-                  onFocus={(e) => e.target.style.borderColor = '#FFD700'}
-                  onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
-                />
-              </div>
-            )}
-
-            <div style={{ marginBottom: '1.25rem' }}>
+            <div style={{ marginBottom: '1rem' }}>
               <label style={{ 
                 display: 'block', 
                 marginBottom: '0.5rem',
@@ -273,45 +189,6 @@ export default function LoginPage() {
                 onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
               />
             </div>
-
-            {isSignup && (
-              <div style={{ marginBottom: '1.75rem' }}>
-                <label style={{ 
-                  display: 'block', 
-                  marginBottom: '0.5rem',
-                  fontSize: '0.875rem',
-                  fontWeight: 500,
-                  color: '#374151'
-                }}>
-                  Type de commerce
-                </label>
-                <select
-                  value={businessType}
-                  onChange={(e) => setBusinessType(e.target.value)}
-                  required
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem 1rem',
-                    fontSize: '0.9375rem',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '8px',
-                    background: '#fff',
-                    outline: 'none',
-                    transition: 'all 0.15s ease',
-                    boxSizing: 'border-box',
-                    cursor: 'pointer'
-                  }}
-                  onFocus={(e) => e.target.style.borderColor = '#FFD700'}
-                  onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
-                >
-                  {businessTypes.map(type => (
-                    <option key={type.value} value={type.value}>
-                      {type.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
 
             <button 
               type="submit" 
