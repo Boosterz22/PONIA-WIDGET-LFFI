@@ -47,8 +47,8 @@ export default function LandingPage() {
           {/* LOGO RESPONSIVE */}
           <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', cursor: 'pointer' }}>
             <img src="/ponia-logo.png" alt="PONIA" style={{ 
-              height: 'clamp(80px, 15vw, 120px)',
-              maxWidth: '60vw',
+              height: 'clamp(120px, 20vw, 180px)',
+              maxWidth: '70vw',
               transition: 'transform 0.3s ease'
             }} 
                  onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
@@ -982,10 +982,18 @@ export default function LandingPage() {
                 alignItems: 'center',
                 textDecoration: 'none'
               }}
-              onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary)'}
-              onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
+              onMouseEnter={(e) => {
+                const svg = e.currentTarget.querySelector('svg')
+                if (svg) svg.style.fill = 'var(--primary)'
+              }}
+              onMouseLeave={(e) => {
+                const svg = e.currentTarget.querySelector('svg')
+                if (svg) svg.style.fill = 'var(--text-muted)'
+              }}
             >
-              <X size={24} />
+              <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" width="24" height="24" style={{ fill: 'currentColor', transition: 'fill 0.2s' }}>
+                <path d="M178.57 127.15 290.27 0h-26.46l-97.03 110.38L89.34 0H0l117.13 166.93L0 300.25h26.46l102.4-116.59 81.8 116.59h89.34M36.01 19.54H76.66l187.13 262.13h-40.66" />
+              </svg>
             </a>
             <a 
               href="https://linkedin.com/company/ponia" 

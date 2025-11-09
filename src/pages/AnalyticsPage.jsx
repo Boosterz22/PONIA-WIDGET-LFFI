@@ -82,9 +82,9 @@ export default function AnalyticsPage() {
     }
 
     stockHistory.forEach(entry => {
-      const key = entry.date?.split('T')[0]
+      const key = entry.createdAt?.split('T')[0]
       if (dateMap[key]) {
-        dateMap[key].total += entry.newQuantity || 0
+        dateMap[key].total += parseFloat(entry.quantityAfter) || 0
         dateMap[key].count += 1
       }
     })
@@ -97,21 +97,21 @@ export default function AnalyticsPage() {
 
   const getTopCriticalProducts = () => {
     return products
-      .filter(p => p.quantity <= p.alertThreshold)
-      .sort((a, b) => (a.quantity / a.alertThreshold) - (b.quantity / b.alertThreshold))
+      .filter(p => parseFloat(p.currentQuantity) <= parseFloat(p.alertThreshold))
+      .sort((a, b) => (parseFloat(a.currentQuantity) / parseFloat(a.alertThreshold)) - (parseFloat(b.currentQuantity) / parseFloat(b.alertThreshold)))
       .slice(0, 5)
       .map(p => ({
         name: p.name.length > 15 ? p.name.substring(0, 15) + '...' : p.name,
-        stock: p.quantity,
-        seuil: p.alertThreshold,
-        ratio: Math.round((p.quantity / p.alertThreshold) * 100)
+        stock: parseFloat(p.currentQuantity),
+        seuil: parseFloat(p.alertThreshold),
+        ratio: Math.round((parseFloat(p.currentQuantity) / parseFloat(p.alertThreshold)) * 100)
       }))
   }
 
   const getStockDistribution = () => {
-    const green = products.filter(p => p.quantity > p.alertThreshold * 1.5).length
-    const orange = products.filter(p => p.quantity > p.alertThreshold && p.quantity <= p.alertThreshold * 1.5).length
-    const red = products.filter(p => p.quantity <= p.alertThreshold).length
+    const green = products.filter(p => parseFloat(p.currentQuantity) > parseFloat(p.alertThreshold) * 1.5).length
+    const orange = products.filter(p => parseFloat(p.currentQuantity) > parseFloat(p.alertThreshold) && parseFloat(p.currentQuantity) <= parseFloat(p.alertThreshold) * 1.5).length
+    const red = products.filter(p => parseFloat(p.currentQuantity) <= parseFloat(p.alertThreshold)).length
 
     return [
       { name: 'Stock sain', value: green, color: '#10B981' },
@@ -122,9 +122,9 @@ export default function AnalyticsPage() {
 
   const calculateMetrics = () => {
     const totalProducts = products.length
-    const criticalProducts = products.filter(p => p.quantity <= p.alertThreshold).length
-    const totalStockValue = products.reduce((sum, p) => sum + p.quantity, 0)
-    const avgRotation = stockHistory.length > 0 ? Math.round(stockHistory.length / totalProducts) : 0
+    const criticalProducts = products.filter(p => parseFloat(p.currentQuantity) <= parseFloat(p.alertThreshold)).length
+    const totalStockValue = products.reduce((sum, p) => sum + parseFloat(p.currentQuantity), 0)
+    const avgRotation = stockHistory.length > 0 && totalProducts > 0 ? Math.round(stockHistory.length / totalProducts) : 0
 
     return {
       totalProducts,

@@ -1,6 +1,9 @@
 import express from 'express'
 import OpenAI from 'openai'
 import { createClient } from '@supabase/supabase-js'
+import { eq } from 'drizzle-orm'
+import { db } from './db.js'
+import { users } from '../shared/schema.js'
 import { 
   getUserByEmail,
   getUserBySupabaseId, 
@@ -11,7 +14,8 @@ import {
   deleteProduct,
   addStockMovement,
   getAllStockHistory,
-  updateUser
+  updateUser,
+  getProductById
 } from './storage.js'
 
 const app = express()
@@ -307,9 +311,15 @@ Tu es l'outil qui transforme les commerçants en experts de leur propre stock.`
   }
 })
 
-// Endpoint génération bon de commande intelligent
-app.post('/api/generate-order', async (req, res) => {
+// Endpoint génération bon de commande intelligent (SÉCURISÉ)
+app.post('/api/generate-order', authenticateSupabaseUser, async (req, res) => {
   try {
+    // Verify user ownership
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
     const { products, businessName, businessType } = req.body
     
     if (!businessName || typeof businessName !== 'string') {
@@ -665,6 +675,37 @@ app.get('/api/events', async (req, res) => {
   } catch (error) {
     console.error('Events API error:', error)
     res.json({ events: [], error: error.message })
+  }
+})
+
+// Referral stats endpoint (sécurisé)
+app.get('/api/referral/stats', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user || !user.referralCode) {
+      return res.json({ 
+        referredCount: 0,
+        paidReferralsCount: 0,
+        earningsTotal: 0,
+        referralCode: user?.referralCode || null
+      })
+    }
+
+    const allReferrals = await db.select()
+      .from(users)
+      .where(eq(users.referredBy, user.referralCode))
+
+    const paidReferrals = allReferrals.filter(r => r.plan === 'standard' || r.plan === 'pro')
+
+    res.json({
+      referredCount: allReferrals.length,
+      paidReferralsCount: paidReferrals.length,
+      earningsTotal: paidReferrals.length * 10,
+      referralCode: user.referralCode
+    })
+  } catch (error) {
+    console.error('Erreur stats parrainage:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
   }
 })
 

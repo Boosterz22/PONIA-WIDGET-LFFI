@@ -153,7 +153,7 @@ export default function LoginPage() {
             display: 'inline-block',
             marginBottom: '3rem'
           }}>
-            <img src="/ponia-logo.png" alt="PONIA AI" style={{ height: '50px' }} />
+            <img src="/ponia-logo.png" alt="PONIA AI" style={{ height: '200px' }} />
           </Link>
 
           <h1 style={{ 

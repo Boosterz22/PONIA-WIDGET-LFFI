@@ -66,8 +66,19 @@ export default function DashboardPage({ session }) {
   }
 
   const handleGenerateOrder = async () => {
-    const { generateOrderPDF } = await import('../services/pdfService')
-    await generateOrderPDF(products, businessName, businessType)
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        alert('⚠️ Veuillez vous reconnecter')
+        return
+      }
+
+      const { generateOrderPDF } = await import('../services/pdfService')
+      await generateOrderPDF(products, businessName, businessType, session.access_token)
+    } catch (error) {
+      console.error('Erreur génération commande:', error)
+      alert('❌ Erreur lors de la génération du bon de commande')
+    }
   }
 
   const critical = products.filter(p => p.currentQuantity <= (p.alertThreshold || 10) * 0.5)

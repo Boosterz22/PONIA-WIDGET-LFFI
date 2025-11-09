@@ -20,9 +20,8 @@ export default function Navigation() {
   const location = useLocation()
   const navigate = useNavigate()
   const [showUserMenu, setShowUserMenu] = useState(false)
+  const [businessName, setBusinessName] = useState('Mon Commerce')
   const menuRef = useRef(null)
-  const businessType = localStorage.getItem('ponia_business_type') || 'default'
-  const businessName = businessTypeLabels[businessType] || businessTypeLabels.default
   
   const navItems = [
     { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -44,6 +43,28 @@ export default function Navigation() {
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
+
+  useEffect(() => {
+    loadUserBusinessName()
+  }, [])
+
+  const loadUserBusinessName = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) return
+
+      const response = await fetch('/api/users/me', {
+        headers: { 'Authorization': `Bearer ${session.access_token}` }
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setBusinessName(data.user.businessName || 'Mon Commerce')
+      }
+    } catch (error) {
+      console.error('Erreur chargement nom commerce:', error)
+    }
+  }
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -236,7 +257,7 @@ export default function Navigation() {
                 <button
                   onClick={() => {
                     setShowUserMenu(false)
-                    window.location.href = 'mailto:contact@ponia.ai'
+                    window.location.href = 'mailto:support@myponia.fr'
                   }}
                   style={{
                     width: '100%',

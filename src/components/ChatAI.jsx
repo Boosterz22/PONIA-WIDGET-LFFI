@@ -175,7 +175,7 @@ export default function ChatAI({ products, userPlan }) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={handleKeyPress}
-          placeholder="Demandez quelque chose à PONIA AI..."
+          placeholder="Demandez quelque chose à Ponia IA..."
           style={{
             flex: 1,
             border: 'none',

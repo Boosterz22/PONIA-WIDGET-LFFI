@@ -1,13 +1,45 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Gift, Copy, Check, Users, Award, TrendingUp } from 'lucide-react'
 import Navigation from '../components/Navigation'
+import { supabase } from '../services/supabase'
 
 export default function ReferralPage({ session }) {
   const [copied, setCopied] = useState(false)
-  const referralCode = localStorage.getItem('ponia_referral_code') || 'PONIA-' + Math.random().toString(36).substr(2, 6).toUpperCase()
-  const referralLink = `https://ponia.ai/register?ref=${referralCode}`
-  const referredCount = parseInt(localStorage.getItem('ponia_referrals_count') || '0')
-  const earningsTotal = referredCount * 10
+  const [stats, setStats] = useState({
+    referredCount: 0,
+    paidReferralsCount: 0,
+    earningsTotal: 0,
+    referralCode: null
+  })
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    loadReferralStats()
+  }, [])
+
+  const loadReferralStats = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) return
+
+      const response = await fetch('/api/referral/stats', {
+        headers: { 'Authorization': `Bearer ${session.access_token}` }
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setStats(data)
+      }
+    } catch (error) {
+      console.error('Erreur chargement stats parrainage:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const referralCode = stats.referralCode || 'CHARGEMENT...'
+  const referralLink = `https://myponia.fr/login?ref=${referralCode}`
+  const { referredCount, paidReferralsCount, earningsTotal } = stats
 
   const handleCopy = () => {
     navigator.clipboard.writeText(referralLink)
@@ -32,7 +64,7 @@ export default function ReferralPage({ session }) {
             Programme de Parrainage
           </h1>
           <p style={{ fontSize: '1.125rem', color: '#374151', maxWidth: '600px', margin: '0 auto' }}>
-            Invitez vos amis commerçants et gagnez <strong>€10</strong> par filleul qui s'inscrit !
+            Invitez vos amis commerçants et gagnez <strong>€10</strong> par filleul qui souscrit à un plan payant !
           </p>
         </div>
 
@@ -45,30 +77,30 @@ export default function ReferralPage({ session }) {
           <div className="card" style={{ padding: '1.5rem', textAlign: 'center' }}>
             <Users size={40} style={{ color: '#22c55e', margin: '0 auto 1rem' }} />
             <div style={{ fontSize: '2rem', fontWeight: '700', color: '#111827', marginBottom: '0.5rem' }}>
-              {referredCount}
+              {loading ? '...' : referredCount}
             </div>
             <div style={{ fontSize: '0.875rem', color: '#6B7280' }}>
               Filleuls inscrits
             </div>
           </div>
 
-          <div className="card" style={{ padding: '1.5rem', textAlign: 'center' }}>
-            <Award size={40} style={{ color: '#FFA500', margin: '0 auto 1rem' }} />
-            <div style={{ fontSize: '2rem', fontWeight: '700', color: '#111827', marginBottom: '0.5rem' }}>
-              €{earningsTotal}
+          <div className="card" style={{ padding: '1.5rem', textAlign: 'center', background: 'linear-gradient(135deg, #FFF7ED, #FFFBEB)', border: '2px solid #FFA500' }}>
+            <Award size={40} style={{ color: '#EA580C', margin: '0 auto 1rem' }} />
+            <div style={{ fontSize: '2rem', fontWeight: '700', color: '#EA580C', marginBottom: '0.5rem' }}>
+              {loading ? '...' : paidReferralsCount}
             </div>
-            <div style={{ fontSize: '0.875rem', color: '#6B7280' }}>
-              Gains totaux
+            <div style={{ fontSize: '0.875rem', color: '#9A3412', fontWeight: '600' }}>
+              Filleuls avec plan payant
             </div>
           </div>
 
           <div className="card" style={{ padding: '1.5rem', textAlign: 'center' }}>
-            <TrendingUp size={40} style={{ color: '#a855f7', margin: '0 auto 1rem' }} />
-            <div style={{ fontSize: '2rem', fontWeight: '700', color: '#111827', marginBottom: '0.5rem' }}>
-              €10
+            <TrendingUp size={40} style={{ color: '#10B981', margin: '0 auto 1rem' }} />
+            <div style={{ fontSize: '2rem', fontWeight: '700', color: '#10B981', marginBottom: '0.5rem' }}>
+              €{loading ? '...' : earningsTotal}
             </div>
             <div style={{ fontSize: '0.875rem', color: '#6B7280' }}>
-              Par parrainage
+              Gains totaux (€10/plan payant)
             </div>
           </div>
         </div>

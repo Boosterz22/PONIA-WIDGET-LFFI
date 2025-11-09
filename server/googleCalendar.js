@@ -1,93 +1,69 @@
-import { google } from 'googleapis'
-
-let connectionSettings
-
-async function getAccessToken() {
-  if (connectionSettings && connectionSettings.settings.expires_at && new Date(connectionSettings.settings.expires_at).getTime() > Date.now()) {
-    return connectionSettings.settings.access_token
-  }
-  
-  const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME
-  const xReplitToken = process.env.REPL_IDENTITY 
-    ? 'repl ' + process.env.REPL_IDENTITY 
-    : process.env.WEB_REPL_RENEWAL 
-    ? 'depl ' + process.env.WEB_REPL_RENEWAL 
-    : null
-
-  if (!xReplitToken) {
-    throw new Error('X_REPLIT_TOKEN not found for repl/depl')
-  }
-
-  connectionSettings = await fetch(
-    'https://' + hostname + '/api/v2/connection?include_secrets=true&connector_names=google-calendar',
-    {
-      headers: {
-        'Accept': 'application/json',
-        'X_REPLIT_TOKEN': xReplitToken
-      }
-    }
-  ).then(res => res.json()).then(data => data.items?.[0])
-
-  const accessToken = connectionSettings?.settings?.access_token || connectionSettings.settings?.oauth?.credentials?.access_token
-
-  if (!connectionSettings || !accessToken) {
-    throw new Error('Google Calendar not connected')
-  }
-  return accessToken
-}
-
-export async function getGoogleCalendarClient() {
-  const accessToken = await getAccessToken()
-
-  const oauth2Client = new google.auth.OAuth2()
-  oauth2Client.setCredentials({
-    access_token: accessToken
-  })
-
-  return google.calendar({ version: 'v3', auth: oauth2Client })
-}
-
-export async function getUpcomingEvents(maxResults = 10) {
+export async function getParisPublicEvents(maxResults = 10) {
   try {
-    const calendar = await getGoogleCalendarClient()
-    
     const now = new Date()
     const twoWeeksFromNow = new Date()
     twoWeeksFromNow.setDate(now.getDate() + 14)
 
-    const response = await calendar.events.list({
-      calendarId: 'primary',
-      timeMin: now.toISOString(),
-      timeMax: twoWeeksFromNow.toISOString(),
-      maxResults: maxResults,
-      singleEvents: true,
-      orderBy: 'startTime'
+    const minDate = now.toISOString().split('T')[0]
+    const maxDate = twoWeeksFromNow.toISOString().split('T')[0]
+
+    const url = `https://opendata.paris.fr/api/records/1.0/search/?dataset=que-faire-a-paris-&q=date_start:[${minDate} TO ${maxDate}]&rows=${maxResults}&sort=date_start&facet=tags`
+
+    const response = await fetch(url)
+    const data = await response.json()
+
+    const events = (data.records || []).map(record => {
+      const fields = record.fields
+      const startDate = fields.date_start || now.toISOString()
+      const endDate = fields.date_end || startDate
+
+      const tagsArray = Array.isArray(fields.tags) ? fields.tags : (fields.tags ? [fields.tags] : [])
+
+      return {
+        id: record.recordid,
+        name: fields.title || 'Événement Paris',
+        description: fields.lead_text || fields.description || '',
+        location: fields.address_name || fields.address_street || 'Paris',
+        start: startDate,
+        end: endDate,
+        tags: tagsArray,
+        priceType: fields.price_type || 'unknown',
+        attendees: estimateAttendees(fields),
+        impact: estimateEventImpact({
+          summary: fields.title || '',
+          tags: tagsArray.join(' '),
+          priceType: fields.price_type || ''
+        })
+      }
     })
 
-    const events = response.data.items || []
-    
-    return events.map(event => ({
-      id: event.id,
-      name: event.summary || 'Événement sans titre',
-      description: event.description || '',
-      location: event.location || '',
-      start: event.start.dateTime || event.start.date,
-      end: event.end.dateTime || event.end.date,
-      attendees: event.attendees?.length || 0,
-      impact: estimateEventImpact(event)
-    }))
+    return events
   } catch (error) {
-    console.error('Erreur récupération événements Google Calendar:', error)
-    throw error
+    console.error('Erreur récupération événements Paris OpenData:', error)
+    return []
   }
 }
 
-function estimateEventImpact(event) {
-  const name = (event.summary || '').toLowerCase()
-  const attendees = event.attendees?.length || 0
+function estimateAttendees(fields) {
+  const tagsArray = Array.isArray(fields.tags) ? fields.tags : []
+  const tagsStr = tagsArray.join(' ').toLowerCase()
+  const title = (fields.title || '').toLowerCase()
   
-  const highImpactKeywords = ['festival', 'marathon', 'concert', 'match', 'salon', 'exposition']
-  const mediumImpactKeywords = ['conférence', 'réunion', 'séminaire', 'atelier', 'marché']
+  if (tagsStr.includes('festival') || title.includes('festival')) return 5000
+  if (tagsStr.includes('concert') || title.includes('concert')) return 1500
+  if (tagsStr.includes('salon') || title.includes('salon')) return 3000
+  if (tagsStr.includes('exposition') || title.includes('exposition')) return 800
+  if (tagsStr.includes('marché') || title.includes('marché')) return 2000
+  
+  return 500
+}
+
+function estimateEventImpact(event) {
+  const name = (event.summary || event.tags || '').toLowerCase()
+  const attendees = event.attendees || 0
+  
+  const highImpactKeywords = ['festival', 'marathon', 'concert', 'match', 'salon', 'exposition', 'défilé', 'grande manifestation']
+  const mediumImpactKeywords = ['conférence', 'spectacle', 'théâtre', 'séminaire', 'atelier', 'marché', 'brocante']
   
   if (attendees > 1000 || highImpactKeywords.some(kw => name.includes(kw))) {
     return { 
@@ -117,10 +93,10 @@ function estimateEventImpact(event) {
 
 export async function getLocalPublicEvents() {
   try {
-    const calendarEvents = await getUpcomingEvents(10)
-    return calendarEvents
+    const parisEvents = await getParisPublicEvents(10)
+    return parisEvents
   } catch (error) {
-    console.error('Google Calendar non disponible:', error.message)
+    console.error('Paris OpenData non disponible:', error.message)
     return []
   }
 }

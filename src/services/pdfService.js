@@ -1,4 +1,4 @@
-export async function generateOrderPDF(products, businessName, businessType = 'commerce') {
+export async function generateOrderPDF(products, businessName, businessType = 'commerce', token) {
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), 30000)
   
@@ -6,7 +6,8 @@ export async function generateOrderPDF(products, businessName, businessType = 'c
     const response = await fetch('/api/generate-order', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify({
         products,
