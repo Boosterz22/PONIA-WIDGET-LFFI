@@ -836,21 +836,30 @@ app.get('/api/weather', async (req, res) => {
 // Create Stripe checkout session for subscription upgrade
 app.post('/api/stripe/create-checkout', authenticateSupabaseUser, async (req, res) => {
   try {
-    const { plan } = req.body
+    const { plan, billingPeriod = 'monthly' } = req.body
     const user = await getUserBySupabaseId(req.supabaseUserId)
     
     if (!user) {
       return res.status(404).json({ error: 'Utilisateur non trouvé' })
     }
 
+    // Price IDs for both monthly and yearly billing
     const prices = {
-      standard: 'price_standard_49eur',
-      pro: 'price_pro_69eur'
+      standard: {
+        monthly: 'price_standard_49eur_monthly',
+        yearly: 'price_standard_470eur_yearly'
+      },
+      pro: {
+        monthly: 'price_pro_69eur_monthly',
+        yearly: 'price_pro_660eur_yearly'
+      }
     }
 
-    if (!prices[plan]) {
-      return res.status(400).json({ error: 'Plan invalide' })
+    if (!prices[plan] || !prices[plan][billingPeriod]) {
+      return res.status(400).json({ error: 'Plan ou période de facturation invalide' })
     }
+
+    const selectedPriceId = prices[plan][billingPeriod]
 
     let customerId = user.stripeCustomerId
 
@@ -870,7 +879,7 @@ app.post('/api/stripe/create-checkout', authenticateSupabaseUser, async (req, re
       customer: customerId,
       payment_method_types: ['card'],
       line_items: [{
-        price: prices[plan],
+        price: selectedPriceId,
         quantity: 1
       }],
       mode: 'subscription',
@@ -878,7 +887,8 @@ app.post('/api/stripe/create-checkout', authenticateSupabaseUser, async (req, re
       cancel_url: `${process.env.REPLIT_DEV_DOMAIN || 'http://localhost:5000'}/settings?upgrade=cancelled`,
       metadata: {
         poniaUserId: user.id.toString(),
-        plan
+        plan,
+        billingPeriod
       }
     })
 

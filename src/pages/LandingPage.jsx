@@ -831,47 +831,23 @@ export default function LandingPage() {
               <div style={{ textAlign: 'left' }}>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}><strong>Produits illimités</strong></span>
+                  <span style={{ fontSize: '0.9rem' }}><strong>50 produits maximum</strong></span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}><strong>Actions illimitées</strong></span>
+                  <span style={{ fontSize: '0.9rem' }}><strong>IA prédictive 7 jours</strong></span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}><strong>Commandes vocales illimitées</strong></span>
+                  <span style={{ fontSize: '0.9rem' }}><strong>Chat AI illimité</strong></span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}><strong>IA intermédiaire</strong> (prédictions 7j)</span>
+                  <span style={{ fontSize: '0.9rem' }}>Alertes intelligentes</span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Suggestions de commandes IA</span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Historique 30 jours</span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Export PDF/CSV</span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Notifications Email</span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Gestion fournisseurs</span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>3 utilisateurs</span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={18} color="#4ade80" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Support email rapide</span>
+                  <span style={{ fontSize: '0.9rem' }}>Support prioritaire</span>
                 </div>
               </div>
             </div>
@@ -916,44 +892,32 @@ export default function LandingPage() {
 
               <div style={{ textAlign: 'left' }}>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <CheckCircle size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}><strong>Tout du Standard +</strong></span>
+                  <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+                  <span style={{ fontSize: '0.9rem' }}><strong>Produits illimités</strong></span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}><strong>IA avancée</strong> (prédictions 30j)</span>
+                  <span style={{ fontSize: '0.9rem' }}><strong>IA prédictive 30 jours</strong></span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}><strong>Multi-sites illimité</strong></span>
+                  <span style={{ fontSize: '0.9rem' }}><strong>Multi-magasins</strong></span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}><strong>Utilisateurs illimités</strong></span>
+                  <span style={{ fontSize: '0.9rem' }}>Chat AI premium</span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Intégration météo & événements</span>
+                  <span style={{ fontSize: '0.9rem' }}>Alertes avancées</span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Historique 90 jours</span>
+                  <span style={{ fontSize: '0.9rem' }}>Intégrations POS</span>
                 </div>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
                   <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Intégrations POS (Square)</span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Commandes auto-envoyées</span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Analytics (marges, COGS)</span>
-                </div>
-                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'flex-start' }}>
-                  <Sparkles size={18} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                  <span style={{ fontSize: '0.9rem' }}>Support prioritaire ({'<'}2h)</span>
+                  <span style={{ fontSize: '0.9rem' }}>Support VIP 24/7</span>
                 </div>
               </div>
             </div>
