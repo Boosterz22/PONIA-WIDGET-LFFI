@@ -13,6 +13,31 @@ PONIA AI is an AI-powered inventory management system designed for small busines
 - Do not make changes to the folder `Z`
 - Do not make changes to the file `Y`
 
+## Recent Changes (Nov 09, 2025)
+
+### ✅ Pages de Tarifs Redesignées (Latest)
+*   **PricingPage (/pricing) aux couleurs PONIA** - Design complètement refait
+    → Logo PONIA en haut à gauche (clamp 120-180px) au lieu du texte "PONIA AI"
+    → Navigation avec gradient doré PONIA (rgba(255, 215, 0, 0.12-0.04))
+    → TOUTES les couleurs violettes (#667eea, #764ba2) remplacées par #FFD700 (doré) et #4ade80 (vert)
+    → Toggle mensuel/annuel avec gradient PONIA au lieu du violet
+    → Badge "-20%" sur annuel en vert #4ade80
+    → Section ROI avec gradient doré → vert
+    → Boutons CTA avec gradient PONIA
+    → Flèches FAQ en doré #FFD700
+*   **Section Tarifs Landing Page Remplacée** - Nouvelle structure moderne
+    → Ancien design simple remplacé par cards PricingPage (component PricingCards créé)
+    → 3 plans affichés: Basique (gratuit), Standard (€49/mois - POPULAIRE), Pro (€69/mois)
+    → Toggle mensuel/annuel qui redirige vers /pricing pour voir les prix annuels
+    → Cards avec icônes (Zap, TrendingUp, Building2), features check/X, shadows dorées
+    → Plan Standard avec badge "⭐ PLUS POPULAIRE" en doré
+    → Section ROI €9,200/an avec gradient PONIA en dessous
+    → Footer "14 jours d'essai gratuit" + RGPD
+*   **Cohérence Visuelle Parfaite** - Validé par architect
+    → LandingPage et PricingPage utilisent exactement les mêmes couleurs PONIA
+    → Aucune trace de violet restante (audit complet effectué)
+    → Design moderne, professionnel, brand-aligned
+
 ## System Architecture
 
 PONIA AI is a secure full-stack application built with an Express backend (Node.js) and a React 18 frontend (Vite 5), operating on a client-server pattern. The frontend runs on port 5000 and the backend on port 3000. Data is persisted in PostgreSQL using Drizzle ORM, and user authentication is managed by Supabase.

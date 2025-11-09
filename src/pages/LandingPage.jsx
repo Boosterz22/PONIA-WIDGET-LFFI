@@ -892,15 +892,10 @@ export default function LandingPage() {
           </p>
 
           <div style={{
-            display: 'inline-flex',
-            background: 'white',
-            borderRadius: '12px',
-            padding: '0.4rem',
-            boxShadow: '0 2px 8px rgba(255, 215, 0, 0.2)',
-            margin: '0 auto 3rem',
             display: 'flex',
             justifyContent: 'center',
-            width: '100%'
+            width: '100%',
+            marginBottom: '3rem'
           }}>
             <div style={{ display: 'inline-flex', background: 'white', borderRadius: '12px', padding: '0.4rem' }}>
               <span style={{
