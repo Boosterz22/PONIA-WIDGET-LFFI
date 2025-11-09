@@ -50,8 +50,8 @@ export default function PricingPage() {
     },
     {
       name: 'Pro',
-      price: 69.99,
-      priceYearly: 672,
+      price: 69,
+      priceYearly: 660,
       savings: 168,
       icon: Building2,
       color: '#764ba2',

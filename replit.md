@@ -2,7 +2,7 @@
 
 ## Overview
 
-PONIA AI is an AI-powered inventory management system for small businesses in France (bakeries, restaurants, bars, wine cellars, etc.). It provides a mobile-first application for real-time inventory tracking, low-stock alerts, AI-optimized order suggestions, and aims to reduce waste and prevent stockouts. The project targets €4,000-6,000 MRR post-launch by serving 51-76 clients with a three-tier pricing model: Basique (€0/month), Standard (€49/month), and Pro (€69.99/month). The core ambition is to offer a simple, fast, and mobile-first solution to a significant daily problem for small businesses.
+PONIA AI is an AI-powered inventory management system for small businesses in France (bakeries, restaurants, bars, wine cellars, etc.). It provides a mobile-first application for real-time inventory tracking, low-stock alerts, AI-optimized order suggestions, and aims to reduce waste and prevent stockouts. The project targets €4,000-6,000 MRR post-launch by serving 51-76 clients with a three-tier pricing model: Basique (€0/month), Standard (€49/month), and Pro (€69/month). The core ambition is to offer a simple, fast, and mobile-first solution to a significant daily problem for small businesses.
 
 ## User Preferences
 
@@ -67,7 +67,7 @@ The core AI functionality uses a hybrid architecture combining a local rules eng
     → Backend endpoints: `/api/stripe/create-checkout` for subscription upgrades
     → Stripe webhook handler at `/api/stripe/webhook` for subscription events (positioned BEFORE express.json() to preserve raw body)
     → Automatic customer creation and subscription tracking in database with poniaUserId metadata
-    → Two subscription tiers: Standard (€49/mois), Pro (€69.99/mois)
+    → Two subscription tiers: Standard (€49/mois), Pro (€69/mois)
 *   **14-Day Free Trial Automated** - Every new user automatically gets 14-day trial
     → `trialEndsAt` field set automatically on signup (users/sync endpoint with JWT verification)
     → TrialBanner component shows days remaining with urgency colors
@@ -79,7 +79,7 @@ The core AI functionality uses a hybrid architecture combining a local rules eng
     → Real-time stats: total users, active trials, paid users, MRR
     → Trial status tracking (days remaining, expired)
     → Export to CSV functionality for user data
-    → Revenue calculation (Standard = €49, Pro = €69.99)
+    → Revenue calculation (Standard = €49, Pro = €69)
     → **Secured via requireAdmin middleware** checking ADMIN_EMAILS environment variable
 *   **Upgrade Flow** - Seamless payment experience
     → New `/upgrade` page with plan comparison cards

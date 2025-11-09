@@ -845,7 +845,7 @@ app.post('/api/stripe/create-checkout', authenticateSupabaseUser, async (req, re
 
     const prices = {
       standard: 'price_standard_49eur',
-      pro: 'price_pro_6999eur'
+      pro: 'price_pro_69eur'
     }
 
     if (!prices[plan]) {
@@ -933,7 +933,7 @@ app.get('/api/admin/users', authenticateSupabaseUser, requireAdmin, async (req, 
 
     const totalRevenue = allUsers.reduce((sum, u) => {
       if (u.plan === 'standard') return sum + 49
-      if (u.plan === 'pro') return sum + 69.99
+      if (u.plan === 'pro') return sum + 69
       return sum
     }, 0)
 

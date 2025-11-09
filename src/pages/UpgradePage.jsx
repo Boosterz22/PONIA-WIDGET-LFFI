@@ -27,7 +27,7 @@ export default function UpgradePage() {
     },
     pro: {
       name: 'Pro',
-      price: '€69.99',
+      price: '€69',
       period: '/mois',
       color: '#a855f7',
       features: [

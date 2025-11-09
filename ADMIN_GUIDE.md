@@ -115,7 +115,7 @@ WHERE email = 'email@exemple.com';
 
 ### Tarifs actuels
 - **Standard:** €49/mois (`price_standard_49eur`)
-- **Pro:** €69.99/mois (`price_pro_6999eur`)
+- **Pro:** €69/mois (`price_pro_69eur`)
 
 ⚠️ **Important:** Vous devez créer ces produits dans votre dashboard Stripe et mettre à jour les price IDs dans `server/index.js` ligne 775-778.
 
