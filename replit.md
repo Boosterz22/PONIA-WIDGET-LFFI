@@ -54,7 +54,20 @@ PONIA AI is a secure full-stack application with an Express backend (Node.js) an
 
 ## Recent Changes (Nov 10, 2025)
 
-### ✅ Branding PONIA dans Bons de Commande (Latest)
+### ✅ Mode Production Activé (Latest)
+*   **Protection Stripe en production** - Sécurité paiements activée
+    → Endpoint `/api/users/plan` protégé : changements de plan UNIQUEMENT via Stripe
+    → Impossible de bypass le paywall sans paiement
+    → ENABLE_TEST_MODE requis pour tests (développement seulement)
+    → Production-ready : système de paiement sécurisé
+*   **⚠️ Configuration Stripe requise avant lancement :**
+    1. Créer les produits/prix dans Stripe Dashboard (Standard €49/€470, Pro €69/€660)
+    2. Copier les 4 Price IDs dans Secrets Replit
+    3. Configurer le webhook Stripe et ajouter STRIPE_WEBHOOK_SECRET
+    4. Vérifier que STRIPE_SECRET_KEY et VITE_STRIPE_PUBLIC_KEY sont en mode LIVE (pas test)
+    → Documentation complète : voir `STRIPE_CONFIGURATION.md`
+
+### ✅ Branding PONIA dans Bons de Commande
 *   **Simplification nom de marque** - "PONIA AI" → "PONIA"
     → Modification dans pdfService.js : 3 occurrences mises à jour
     → En-tête PDF : "PONIA" (ligne 24)
