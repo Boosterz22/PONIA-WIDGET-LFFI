@@ -2,7 +2,7 @@
 
 ## Overview
 
-PONIA AI is an AI-powered inventory management system designed for small businesses in France (e.g., bakeries, restaurants, bars, wine cellars). Its primary purpose is to provide a mobile-first application for real-time inventory tracking, low-stock alerts, and AI-optimized order suggestions. The system aims to significantly reduce waste and prevent stockouts, offering a simple, fast, and mobile-centric solution to a common daily challenge for small business owners. The project targets a monthly recurring revenue (MRR) of €4,000-€6,000 by serving 51-76 clients with a tiered pricing model: Basique (€0/month), Standard (€49/month), and Pro (€69/month).
+PONIA AI is an AI-powered inventory management system for small businesses in France (e.g., bakeries, restaurants, bars, wine cellars). It provides a mobile-first application for real-time inventory tracking, low-stock alerts, and AI-optimized order suggestions to reduce waste and prevent stockouts. The project aims for a monthly recurring revenue (MRR) of €4,000-€6,000 by serving 51-76 clients with tiered pricing (Basique, Standard, Pro).
 
 ## User Preferences
 
@@ -13,166 +13,40 @@ PONIA AI is an AI-powered inventory management system designed for small busines
 - Do not make changes to the folder `Z`
 - Do not make changes to the file `Y`
 
-## Recent Changes (Nov 10, 2025)
-
-### ✅ Améliorations Calendrier & Fix Stripe (Latest)
-*   **Erreur Stripe corrigée** - URLs invalides résolues
-    → Helper getBaseUrl() créé pour ajouter `https://` devant REPLIT_DEV_DOMAIN
-    → success_url et cancel_url maintenant avec schéma explicite
-    → Résout l'erreur "Invalid URL: An explicit scheme must be provided"
-*   **Calendrier dépliable amélioré** - Meilleure UX
-    → Affiche maintenant le prochain événement même quand replié
-    → Aperçu compact : nom, date, visiteurs, conseil stock
-    → Message "Aucun événement à venir" si vide
-    → Cliquable pour déplier et voir tous les événements
-*   **Filtrage géographique des événements** - Personnalisation locale
-    → Récupération de la ville du store principal de l'utilisateur
-    → Affichage des événements de Paris/Région parisienne uniquement
-    → Liste des villes supportées : Paris, Neuilly, Levallois, Saint-Denis, etc.
-    → Fallback à Paris si pas de ville configurée
-    → Retourne [] pour les villes non supportées (avec log)
-*   **Sécurité renforcée** - Protection des données
-    → Correction de la requête stores avec `and()` pour éviter l'exposition cross-user
-    → Import sécurisé de stores depuis schema.js
-
-### ✅ Système de Vérification par Code OTP
-*   **Nouvelle page VerifyCodePage** - Remplacement du lien email par code à 6 chiffres
-    → Page professionnelle `/verify-code` avec input numérique optimisé mobile
-    → Validation en temps réel (6 chiffres requis)
-    → Bouton "Renvoyer le code" avec feedback utilisateur
-    → Messages d'erreur clairs (code expiré, incorrect, etc.)
-    → Timer d'1 heure visible
-    → Design cohérent avec branding PONIA (#FFD700)
-*   **Flow d'inscription modernisé** - Plus simple et plus sûr
-    → Utilisateur entre email + mot de passe
-    → Supabase envoie automatiquement un code à 6 chiffres
-    → Redirection vers /verify-code (plus de lien cliquable)
-    → Utilisateur entre le code reçu
-    → Vérification avec `verifyOtp({type: 'signup'})`
-    → Redirection automatique vers /complete-profile
-*   **Avantages pour les commerçants** - UX optimisée
-    → Plus de problème de redirection entre email et app
-    → Code facile à copier-coller (6 chiffres seulement)
-    → Expérience moderne similaire à Google, Instagram
-    → Fonctionne parfaitement sur mobile
-*   **Documentation complète créée** - SUPABASE_OTP_CONFIGURATION.md
-    → Instructions étape par étape pour configurer Supabase
-    → Template d'email personnalisé avec branding PONIA
-    → Guide de troubleshooting complet
-    → Exemples de test
-
-### ✅ Page d'Upgrade Professionnelle & Correction Paiement Stripe
-*   **Design de la page d'upgrade refait complètement** - Identique à la page tarifs
-    → Fond neutre #fafafa au lieu du gradient jaune
-    → Affiche uniquement les plans Standard et Pro (pas de plan Basique)
-    → Design cohérent et professionnel avec toggle Mensuel/Annuel
-    → Badge "⭐ RECOMMANDÉ" sur le plan Pro
-    → Navigation améliorée avec retour au Dashboard
-*   **Système de paiement Stripe corrigé** - Configuration via variables d'environnement
-    → Price IDs hardcodés remplacés par variables d'environnement
-    → Variables requises: STRIPE_PRICE_STANDARD_MONTHLY, STRIPE_PRICE_STANDARD_YEARLY, STRIPE_PRICE_PRO_MONTHLY, STRIPE_PRICE_PRO_YEARLY
-    → Validation des Price IDs avant création de session Stripe
-    → Messages d'erreur clairs si configuration manquante
-    → Documentation complète créée: STRIPE_CONFIGURATION.md
-*   **Gestion des erreurs améliorée** - UX professionnelle
-    → Loader pendant la redirection Stripe
-    → Messages d'erreur explicites pour l'utilisateur
-    → Logs serveur pour debugging
-
-### ✅ Parcours d'Inscription Professionnel
-*   **Validation du mot de passe améliorée** - Expérience utilisateur professionnelle
-    → Champ "Confirmez votre mot de passe" ajouté sur le formulaire d'inscription
-    → Validation côté client : les mots de passe doivent correspondre
-    → Message d'erreur clair en rouge si les mots de passe ne correspondent pas
-    → Minimum 8 caractères requis et vérifié
-*   **Page de vérification d'email dédiée** - Communication claire avec l'utilisateur
-    → Nouvelle page `/verify-email` avec design professionnel et rassurant
-    → Logo PONIA, icônes lucide-react, couleurs dorées cohérentes
-    → Instructions étape par étape : 1. Ouvrir email, 2. Cliquer lien, 3. Auto-redirection
-    → Bouton "Renvoyer l'email de confirmation" avec feedback utilisateur
-    → Avertissement sur le délai (jusqu'à 5 minutes) et vérification des spams
-    → Contact support visible (support@ponia.ai)
-    → Lien "Retour à l'inscription" si mauvaise adresse email
-*   **Flow d'inscription optimisé** - Expérience fluide et professionnelle
-    → Signup : validation → redirection vers /verify-email avec email en state
-    → Email stocké dans localStorage pour récupération si fermeture navigateur
-    → Après confirmation email : Supabase authentifie → session créée
-    → App.jsx détecte session → redirige vers /complete-profile (si needsProfile)
-    → Configuration du profil (nom commerce, type business) → Dashboard
-    → Nettoyage automatique de pending_verification_email après login réussi
-
-## Recent Changes (Nov 09, 2025)
-
-### ✅ Plan Pro RECOMMANDÉ - Corrections Finales
-*   **Couleur PONIA #FFD700 restaurée** - Correction branding
-    → #FFD700 (doré PONIA) remis partout après correction temporaire erronée
-    → CSS variables: --primary: #FFD700, --primary-dark: #FFA500
-    → Toutes les pages (PricingPage, LandingPage, UpgradePage) corrigées
-*   **Plan Pro en vedette** - Stratégie commerciale
-    → popular: true pour Pro (au lieu de Standard)
-    → Badge "⭐ RECOMMANDÉ" sur plan Pro
-    → Plan Basique: gris neutre (#6B7280)
-    → Plans Standard et Pro: doré PONIA (#FFD700)
-*   **Intégrations POS restaurées** - Features réalistes
-    → "Intégrations POS (Square, etc.)" remis dans plan Pro
-    → Texte erroné "API développeur" supprimé
-*   **Toggle annuel fonctionnel** - Pricing UX
-    → Toggle Mensuel/Annuel sur /pricing
-    → Badge "-20%" sur bouton Annuel
-    → Prix annuels: Standard €470, Pro €660
-    → Économies affichées: Standard -€118, Pro -€168
-
 ## System Architecture
 
-PONIA AI is a secure full-stack application built with an Express backend (Node.js) and a React 18 frontend (Vite 5), operating on a client-server pattern. The frontend runs on port 5000 and the backend on port 3000. Data is persisted in PostgreSQL using Drizzle ORM, and user authentication is managed by Supabase.
+PONIA AI is a secure full-stack application with an Express backend (Node.js) and a React 18 frontend (Vite 5), running on a client-server pattern. Data is persisted in PostgreSQL using Drizzle ORM, and user authentication is managed by Supabase.
 
 **Key Architectural Decisions and Features:**
 
-*   **Security:** All OpenAI API calls are routed server-side through the Express backend to protect API keys. The frontend proxies `/api/*` requests to the backend. JWT authentication secures all protected endpoints, with server-side validation.
+*   **Security:** OpenAI API calls are routed server-side through the Express backend to protect API keys. JWT authentication secures protected endpoints.
 *   **AI Functionality:** A hybrid AI architecture combines a local rules engine for instant predictions (stockout, overstock, health score) with OpenAI's GPT-4o-mini (via Replit AI Integrations) for tiered predictions (7-day for Standard, 30-day for Pro) and advanced features like expiry tracking and order generation.
-*   **User Interface (UI/UX):** The application prioritizes a mobile-first, simple, and fast user experience. Key UI elements include:
-    *   **Landing Page:** Marketing-focused with problem/solution, ROI, testimonials, and CTAs.
-    *   **Dashboard:** Modern layout with KPI grid, AI Insights, and an Active Alerts sidebar.
-    *   **Stock Management:** Visual, color-coded product display with quick adjustment buttons and AI-driven predictive insights.
-    *   **Chat AI:** A floating conversational AI for natural language queries about inventory.
-    *   **Product Management:** Simplified forms for adding products with essential details and supplier information.
-    *   **Navigation:** Professional horizontal navigation displaying business type, with a comprehensive dropdown menu for user-specific actions.
-    *   **Settings Page:** Centralized management for user profiles, plan upgrades, and business information.
-    *   **Referral Page:** Dedicated section for the referral program with statistics and a unique shareable link.
+*   **User Interface (UI/UX):** Prioritizes a mobile-first, simple, and fast user experience with a focus on ease of use for non-tech-savvy merchants. Key UI elements include:
+    *   **Landing Page:** Marketing-focused with testimonials and CTAs.
+    *   **Dashboard:** Modern layout with KPI grid, AI Insights, and Active Alerts.
+    *   **Stock Management:** Visual, color-coded product display with quick adjustment and AI insights.
+    *   **Chat AI:** Floating conversational AI for inventory queries.
+    *   **Product Management:** Simplified forms for adding products and supplier info.
+    *   **Navigation:** Professional horizontal navigation and comprehensive dropdown menu.
+    *   **Settings Page:** Centralized management for user profiles, plan upgrades, and business info.
+    *   **Referral Page:** Dedicated section for the referral program.
 *   **Core Technical Implementations:**
     *   **Authentication & Plans:** Email-based registration with Supabase, supporting a three-tier pricing model and a 14-day free trial enforced server-side. Includes Stripe integration for subscription management.
-    *   **AI-Powered Order Generation:** Automated intelligent purchase order generation (.txt format) using GPT-4o-mini, including smart calculations and supplier grouping.
+    *   **AI-Powered Order Generation:** Automated intelligent purchase order generation (.txt format) using GPT-4o-mini.
     *   **Expiry Alerts:** Tracks product expiration dates and provides AI-generated suggestions.
     *   **Multi-store Support:** Database schema includes support for multiple stores per user.
-    *   **Admin Dashboard:** Provides an interface for user management, real-time statistics (total users, active trials, paid users, MRR), and CSV export, secured via an admin email whitelist.
+    *   **Admin Dashboard:** Interface for user management, real-time statistics, and CSV export, secured via an admin email whitelist.
 *   **System Design:**
-    *   **Backend (`server/`):** Express server providing REST API endpoints for chat, order generation, products, users, stock history, weather, and health.
-    *   **Database (`shared/`):** `schema.js` defines Drizzle ORM schema for users, products, stock history, and notifications, including fields for Stripe integration and multi-store support.
+    *   **Backend (`server/`):** Express server providing REST API endpoints.
+    *   **Database (`shared/`):** `schema.js` defines Drizzle ORM schema for users, products, stock history, and notifications, including Stripe integration and multi-store support.
     *   **Frontend Services:** Dedicated services for AI utilities, expiry tracking, rules engine, and integrations.
-    *   **Configuration:** Uses `vite.config.js` for frontend proxying, `start.sh` for deployment, and `drizzle.config.js` for database migrations.
 
 ## External Dependencies
 
 *   **Backend:** Express, OpenAI SDK (GPT-4o-mini)
 *   **Frontend:** React, Vite, React Router DOM, Recharts, Lucide React
-*   **Speech Recognition:** Web Speech API (for future considerations, currently removed from primary features)
 *   **Database:** PostgreSQL, Drizzle ORM, Supabase client
-*   **Weather:** OpenWeatherMap API (configured)
-*   **Calendar:** Google Calendar API (integrated)
-*   **Payments:** Stripe (integrated for subscription billing)
+*   **Weather:** OpenWeatherMap API
+*   **Calendar:** Google Calendar API
+*   **Payments:** Stripe
 *   **POS Integrations:** Square API, Lightspeed (planned)
-
-## Configuration Requise - Supabase
-
-**IMPORTANT:** Pour que l'inscription fonctionne immédiatement (sans confirmation email), vous devez configurer Supabase :
-
-1. **Allez sur votre dashboard Supabase :** https://supabase.com/dashboard
-2. **Sélectionnez votre projet PONIA AI**
-3. **Allez dans Authentication → Providers**
-4. **Cliquez sur "Email"**
-5. **Désactivez l'option "Confirm email"**
-6. **Sauvegardez**
-
-**Pourquoi ?** Par défaut, Supabase exige que les utilisateurs confirment leur email. Cela crée une friction pour vos commerçants qui veulent tester immédiatement. En désactivant cette option, les utilisateurs peuvent s'inscrire et être redirigés directement vers la page de configuration de profil.
-
-**Note de sécurité :** Pour un environnement de production, vous pouvez réactiver la confirmation d'email. Pour les tests et le MVP, la désactiver permet un onboarding plus rapide.
