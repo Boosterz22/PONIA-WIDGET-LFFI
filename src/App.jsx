@@ -4,6 +4,7 @@ import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
+import VerifyEmailPage from './pages/VerifyEmailPage'
 import CompleteProfilePage from './pages/CompleteProfilePage'
 import DashboardPage from './pages/DashboardPage'
 import StockPage from './pages/StockPage'
@@ -117,6 +118,7 @@ function App() {
         />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/verify-email" element={<VerifyEmailPage />} />
         <Route 
           path="/complete-profile" 
           element={session && needsProfile ? <CompleteProfilePage session={session} /> : <Navigate to="/dashboard" />} 

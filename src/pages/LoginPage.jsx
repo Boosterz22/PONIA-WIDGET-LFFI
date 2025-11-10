@@ -7,10 +7,24 @@ export default function LoginPage() {
   const [isSignup, setIsSignup] = useState(true)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const [passwordError, setPasswordError] = useState('')
 
   const handleSignup = async (e) => {
     e.preventDefault()
+    setPasswordError('')
+    
+    if (password !== confirmPassword) {
+      setPasswordError('Les mots de passe ne correspondent pas')
+      return
+    }
+    
+    if (password.length < 8) {
+      setPasswordError('Le mot de passe doit contenir au moins 8 caractères')
+      return
+    }
+    
     setLoading(true)
     
     try {
@@ -21,15 +35,8 @@ export default function LoginPage() {
       
       if (error) throw error
       
-      if (data.session) {
-        setTimeout(() => {
-          navigate('/complete-profile')
-        }, 800)
-      } else if (data.user && !data.session) {
-        alert('✅ Compte créé ! Vérifiez vos emails pour confirmer votre compte, puis reconnectez-vous.')
-        setLoading(false)
-        setIsSignup(false)
-      }
+      localStorage.setItem('pending_verification_email', email)
+      navigate('/verify-email', { state: { email } })
     } catch (error) {
       alert(error.message)
       setLoading(false)
@@ -62,6 +69,7 @@ export default function LoginPage() {
             localStorage.setItem('ponia_business_type', user.businessType || 'default')
             localStorage.setItem('ponia_user_plan', user.plan || 'basique')
             localStorage.setItem('ponia_referral_code', user.referralCode || '')
+            localStorage.removeItem('pending_verification_email')
           }
         }
       }
@@ -161,7 +169,7 @@ export default function LoginPage() {
               />
             </div>
 
-            <div style={{ marginBottom: '1rem' }}>
+            <div style={{ marginBottom: isSignup ? '0.75rem' : '1rem' }}>
               <label style={{ 
                 display: 'block', 
                 marginBottom: '0.5rem',
@@ -193,6 +201,54 @@ export default function LoginPage() {
                 onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
               />
             </div>
+
+            {isSignup && (
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ 
+                  display: 'block', 
+                  marginBottom: '0.5rem',
+                  fontSize: '0.875rem',
+                  fontWeight: 500,
+                  color: '#374151'
+                }}>
+                  Confirmez votre mot de passe
+                </label>
+                <input
+                  type="password"
+                  placeholder=""
+                  value={confirmPassword}
+                  onChange={(e) => {
+                    setConfirmPassword(e.target.value)
+                    setPasswordError('')
+                  }}
+                  required
+                  minLength={8}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem 1rem',
+                    fontSize: '0.9375rem',
+                    border: `1px solid ${passwordError ? '#EF4444' : '#e5e7eb'}`,
+                    borderRadius: '8px',
+                    background: '#fff',
+                    outline: 'none',
+                    transition: 'all 0.15s ease',
+                    boxSizing: 'border-box'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = passwordError ? '#EF4444' : '#FFD700'}
+                  onBlur={(e) => e.target.style.borderColor = passwordError ? '#EF4444' : '#e5e7eb'}
+                />
+                {passwordError && (
+                  <p style={{
+                    color: '#EF4444',
+                    fontSize: '0.8125rem',
+                    marginTop: '0.375rem',
+                    marginBottom: 0
+                  }}>
+                    {passwordError}
+                  </p>
+                )}
+              </div>
+            )}
 
             <button 
               type="submit" 
