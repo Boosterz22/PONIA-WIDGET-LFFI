@@ -54,7 +54,20 @@ PONIA AI is a secure full-stack application with an Express backend (Node.js) an
 
 ## Recent Changes (Nov 10, 2025)
 
-### ✅ Corrections Performance + Bug Génération Bon de Commande + Chat IA (Latest)
+### ✅ Génération Bon de Commande PDF Professionnel (Latest)
+*   **Migration .txt → PDF structuré** - Format professionnel production-ready
+    → Problème : Fichier .txt avec encoding corrompu, non professionnel
+    → Solution : Génération PDF complète avec pdfkit côté serveur
+    → Architecture IA : OpenAI retourne JSON structuré (urgentProducts, weeklyProducts, recommendations)
+    → Service PDF : En-tête PONIA AI, tableaux urgents/hebdo, totaux, recommandations
+    → Design : Branding gold #FFD700, typography claire, sections color-coded (rouge urgent, orange hebdo)
+    → Streaming : `pdfDoc.pipe(res)` → `pdfDoc.end()` (ordre PDFKit correct)
+    → Frontend : Téléchargement blob PDF (.pdf) avec stats via headers HTTP custom
+    → Validation robuste : JSON parsing, fallback arrays vides, gestion cas edge (noProducts)
+    → Prix IA : Estimations marché français contextuelles selon businessType
+    → Production-ready : Validé par architecte, prêt pour clients réels
+
+### ✅ Corrections Performance + Bug Génération Bon de Commande + Chat IA
 *   **Interface stock ultra-fluide** - Optimistic updates pour réactivité instantanée
     → handleUpdateQuantity : update UI immédiat avec functional setters, requête en arrière-plan
     → handleDeleteProduct : suppression UI immédiate avec functional setters, requête en arrière-plan
