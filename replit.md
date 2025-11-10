@@ -54,13 +54,27 @@ PONIA AI is a secure full-stack application with an Express backend (Node.js) an
 
 ## Recent Changes (Nov 10, 2025)
 
-### ✅ Autocomplete d'Adresse Intelligent (Latest)
+### ✅ Filtrage Géographique Intelligent des Événements (Latest)
+*   **Événements proches du commerce (rayon 5km)** - Pertinence maximale
+    → Migration vers Paris OpenData API v2 avec support GPS
+    → Récupération automatique des coordonnées latitude/longitude de chaque événement
+    → Calcul de distance haversine (formule standard, R=6371 km)
+    → Filtrage intelligent : seuls les événements à moins de 5km s'affichent
+    → Tri par distance : les événements les plus proches en premier
+    → Logs backend pour debug : "✅ Filtrage géographique : X événements dans un rayon de 5km"
+*   **Stockage des coordonnées GPS du commerce** - Infrastructure géolocalisation
+    → Schema stores : ajout latitude (decimal 10,7) et longitude (decimal 10,7)
+    → CompleteProfilePage : capture des coordonnées depuis autocomplete API
+    → Sauvegarde automatique lors de la création du store principal
+    → Conversion en float côté backend pour calculs de distance
+
+### ✅ Autocomplete d'Adresse Intelligent
 *   **Autocomplete d'adresse avec API gouvernementale** - UX moderne et fluide
     → Intégration de l'API Adresse du gouvernement français (gratuite, sans clé API)
     → Endpoint : https://api-adresse.data.gouv.fr/search/
     → Suggestions instantanées dès 3 caractères tapés
     → Debounce de 300ms pour éviter les appels excessifs à l'API
-    → Auto-remplissage automatique : adresse complète, ville, code postal
+    → Auto-remplissage automatique : adresse, ville, code postal + coordonnées GPS
     → Dropdown élégant avec nom de rue + code postal + ville
     → Fermeture au clic extérieur (UX native)
     → Expérience similaire à Google Maps, Uber, Airbnb
