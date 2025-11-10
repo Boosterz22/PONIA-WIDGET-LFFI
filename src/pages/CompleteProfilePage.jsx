@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../services/supabase'
 
@@ -11,6 +11,68 @@ export default function CompleteProfilePage({ session }) {
   const [postalCode, setPostalCode] = useState('')
   const [referredByCode, setReferredByCode] = useState('')
   const [loading, setLoading] = useState(false)
+  const [suggestions, setSuggestions] = useState([])
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const suggestionsRef = useRef(null)
+  const debounceTimerRef = useRef(null)
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (suggestionsRef.current && !suggestionsRef.current.contains(event.target)) {
+        setShowSuggestions(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const searchAddress = async (query) => {
+    if (query.length < 3) {
+      setSuggestions([])
+      setShowSuggestions(false)
+      return
+    }
+
+    try {
+      const response = await fetch(
+        `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(query)}&limit=5&autocomplete=1`
+      )
+      const data = await response.json()
+      
+      if (data.features && data.features.length > 0) {
+        setSuggestions(data.features)
+        setShowSuggestions(true)
+      } else {
+        setSuggestions([])
+        setShowSuggestions(false)
+      }
+    } catch (error) {
+      console.error('Erreur autocomplete adresse:', error)
+      setSuggestions([])
+      setShowSuggestions(false)
+    }
+  }
+
+  const handleAddressChange = (value) => {
+    setAddress(value)
+    
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current)
+    }
+    
+    debounceTimerRef.current = setTimeout(() => {
+      searchAddress(value)
+    }, 300)
+  }
+
+  const selectSuggestion = (suggestion) => {
+    const props = suggestion.properties
+    setAddress(props.name || props.label)
+    setCity(props.city || '')
+    setPostalCode(props.postcode || '')
+    setSuggestions([])
+    setShowSuggestions(false)
+  }
 
   const generateReferralCode = (businessName, businessType) => {
     const name = businessName.split(' ')[0].toUpperCase().substring(0, 6)
@@ -91,7 +153,7 @@ export default function CompleteProfilePage({ session }) {
           display: 'inline-block',
           marginBottom: '3rem'
         }}>
-          <img src="/ponia-icon-black.png" alt="PONIA" style={{ height: '210px', width: 'auto' }} />
+          <img src="/ponia-icon-black.png" alt="PONIA" style={{ height: '70px', width: 'auto' }} />
         </Link>
 
         <h1 style={{ 
@@ -168,7 +230,7 @@ export default function CompleteProfilePage({ session }) {
             </select>
           </div>
 
-          <div style={{ marginBottom: '1.25rem' }}>
+          <div style={{ marginBottom: '1.25rem', position: 'relative' }} ref={suggestionsRef}>
             <label style={{ 
               display: 'block', 
               marginBottom: '0.5rem',
@@ -180,9 +242,9 @@ export default function CompleteProfilePage({ session }) {
             </label>
             <input
               type="text"
-              placeholder="Ex: 12 Rue de la Paix"
+              placeholder="Ex: 12 Rue de la Paix, Paris"
               value={address}
-              onChange={(e) => setAddress(e.target.value)}
+              onChange={(e) => handleAddressChange(e.target.value)}
               required
               className="input"
               style={{
@@ -191,6 +253,44 @@ export default function CompleteProfilePage({ session }) {
                 fontSize: '0.9375rem'
               }}
             />
+            {showSuggestions && suggestions.length > 0 && (
+              <div style={{
+                position: 'absolute',
+                top: '100%',
+                left: 0,
+                right: 0,
+                background: 'white',
+                border: '1px solid #e5e7eb',
+                borderRadius: '8px',
+                marginTop: '4px',
+                maxHeight: '200px',
+                overflowY: 'auto',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                zIndex: 1000
+              }}>
+                {suggestions.map((suggestion, index) => (
+                  <div
+                    key={index}
+                    onClick={() => selectSuggestion(suggestion)}
+                    style={{
+                      padding: '0.75rem 1rem',
+                      cursor: 'pointer',
+                      borderBottom: index < suggestions.length - 1 ? '1px solid #f3f4f6' : 'none',
+                      transition: 'background-color 0.15s'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
+                  >
+                    <div style={{ fontSize: '0.9375rem', fontWeight: 500, color: '#111827' }}>
+                      {suggestion.properties.name}
+                    </div>
+                    <div style={{ fontSize: '0.8125rem', color: '#6b7280', marginTop: '2px' }}>
+                      {suggestion.properties.postcode} {suggestion.properties.city}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
