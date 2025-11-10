@@ -850,15 +850,15 @@ app.post('/api/stripe/create-checkout', authenticateSupabaseUser, async (req, re
       return res.status(404).json({ error: 'Utilisateur non trouvé' })
     }
 
-    // Price IDs for both monthly and yearly billing
+    // Price IDs from environment variables
     const prices = {
       standard: {
-        monthly: 'price_standard_49eur_monthly',
-        yearly: 'price_standard_470eur_yearly'
+        monthly: process.env.STRIPE_PRICE_STANDARD_MONTHLY,
+        yearly: process.env.STRIPE_PRICE_STANDARD_YEARLY
       },
       pro: {
-        monthly: 'price_pro_69eur_monthly',
-        yearly: 'price_pro_660eur_yearly'
+        monthly: process.env.STRIPE_PRICE_PRO_MONTHLY,
+        yearly: process.env.STRIPE_PRICE_PRO_YEARLY
       }
     }
 
@@ -867,6 +867,14 @@ app.post('/api/stripe/create-checkout', authenticateSupabaseUser, async (req, re
     }
 
     const selectedPriceId = prices[plan][billingPeriod]
+
+    // Validate that price ID exists
+    if (!selectedPriceId) {
+      console.error(`Missing Stripe Price ID for plan=${plan}, period=${billingPeriod}`)
+      return res.status(500).json({ 
+        error: 'Configuration Stripe manquante. Les Price IDs ne sont pas configurés. Veuillez contacter le support.' 
+      })
+    }
 
     let customerId = user.stripeCustomerId
 
