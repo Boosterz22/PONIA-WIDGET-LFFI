@@ -36,7 +36,7 @@ export default function LoginPage() {
       if (error) throw error
       
       localStorage.setItem('pending_verification_email', email)
-      navigate('/verify-email', { state: { email } })
+      navigate('/verify-code', { state: { email } })
     } catch (error) {
       alert(error.message)
       setLoading(false)
