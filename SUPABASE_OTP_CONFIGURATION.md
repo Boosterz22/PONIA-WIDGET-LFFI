@@ -52,7 +52,7 @@
 
 <p style="color: #666; font-size: 12px;">
   L'équipe PONIA AI<br>
-  Questions ? Contactez-nous à support@ponia.ai
+  Questions ? Contactez-nous à support@myponia.fr
 </p>
 ```
 
@@ -64,7 +64,7 @@
 2. **Sender name** : `PONIA AI`
 3. **Sender email** : Utilisez votre propre domaine si possible
    - Par défaut : `noreply@mail.app.supabase.io`
-   - Recommandé : `noreply@ponia.ai` (nécessite configuration DNS)
+   - Recommandé : `noreply@myponia.fr` (nécessite configuration DNS)
 
 ## 🎯 Comment ça fonctionne côté utilisateur
 

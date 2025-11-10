@@ -337,7 +337,7 @@ export default function VerifyCodePage() {
             </Link>
           </p>
           <p style={{ fontSize: '0.8125rem', color: '#9ca3af', marginTop: '1rem' }}>
-            Besoin d'aide ? <a href="mailto:support@ponia.ai" style={{ color: '#FFD700', textDecoration: 'none' }}>support@ponia.ai</a>
+            Besoin d'aide ? <a href="mailto:support@myponia.fr" style={{ color: '#FFD700', textDecoration: 'none' }}>support@myponia.fr</a>
           </p>
         </div>
       </div>

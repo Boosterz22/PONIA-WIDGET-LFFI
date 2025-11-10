@@ -171,7 +171,7 @@ Le dashboard admin est **sécurisé** et réservé aux emails autorisés.
 1. Allez dans les Secrets Replit
 2. Ajoutez une nouvelle variable: `ADMIN_EMAILS`
 3. Valeur: `votre-email@exemple.com` (ou plusieurs emails séparés par des virgules)
-4. Exemple: `admin@ponia.fr,contact@ponia.fr,vous@exemple.com`
+4. Exemple: `support@myponia.fr,vous@exemple.com`
 
 **Comment ça marche:**
 - Seuls les utilisateurs avec emails listés dans `ADMIN_EMAILS` peuvent accéder à `/admin`

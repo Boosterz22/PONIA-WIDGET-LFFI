@@ -274,7 +274,7 @@ export default function VerifyEmailPage() {
               lineHeight: 1.5,
               textAlign: 'left'
             }}>
-              <strong>Problème technique ?</strong> Contactez-nous à support@ponia.ai et nous vous aiderons à activer votre compte.
+              <strong>Problème technique ?</strong> Contactez-nous à support@myponia.fr et nous vous aiderons à activer votre compte.
             </p>
           </div>
         </div>
