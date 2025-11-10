@@ -102,14 +102,31 @@ export default function StockPage({ session }) {
   }
 
   const handleUpdateQuantity = async (id, change) => {
-    const product = products.find(p => p.id === id)
-    if (!product) return
+    let previousQuantity = null
+    let newQuantity = null
 
-    const newQuantity = Math.max(0, parseFloat(product.currentQuantity) + change)
+    // ⚡ OPTIMISTIC UPDATE - Interface instantanée avec functional setter
+    setProducts(prev => {
+      const product = prev.find(p => p.id === id)
+      if (!product) return prev
 
+      previousQuantity = parseFloat(product.currentQuantity)
+      newQuantity = Math.max(0, previousQuantity + change)
+
+      return prev.map(p => 
+        p.id === id ? { ...p, currentQuantity: newQuantity.toString() } : p
+      )
+    })
+
+    if (previousQuantity === null) return
+
+    // Requête en arrière-plan
     try {
       const { data: { session } } = await supabase.auth.getSession()
-      if (!session) return
+      if (!session) {
+        await loadProducts()
+        return
+      }
 
       const response = await fetch(`/api/products/${id}`, {
         method: 'PUT',
@@ -119,30 +136,42 @@ export default function StockPage({ session }) {
         },
         body: JSON.stringify({
           currentQuantity: newQuantity,
-          previousQuantity: parseFloat(product.currentQuantity),
+          previousQuantity: previousQuantity,
           notes: `Ajustement manuel: ${change > 0 ? '+' : ''}${change}`
         })
       })
 
-      if (response.ok) {
-        setProducts(products.map(p => 
-          p.id === id ? { ...p, currentQuantity: newQuantity.toString() } : p
-        ))
-      } else {
-        alert('Erreur lors de la mise à jour')
+      if (!response.ok) {
+        await loadProducts()
+        console.error('Erreur lors de la mise à jour')
       }
     } catch (error) {
+      await loadProducts()
       console.error('Erreur update quantité:', error)
-      alert('Erreur lors de la mise à jour')
     }
   }
 
   const handleDeleteProduct = async (id) => {
     if (!confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) return
 
+    let deletedProduct = null
+
+    // ⚡ OPTIMISTIC DELETE - Interface instantanée avec functional setter
+    setProducts(prev => {
+      deletedProduct = prev.find(p => p.id === id)
+      if (!deletedProduct) return prev
+      return prev.filter(p => p.id !== id)
+    })
+
+    if (!deletedProduct) return
+
+    // Requête en arrière-plan
     try {
       const { data: { session } } = await supabase.auth.getSession()
-      if (!session) return
+      if (!session) {
+        await loadProducts()
+        return
+      }
 
       const response = await fetch(`/api/products/${id}`, {
         method: 'DELETE',
@@ -151,12 +180,12 @@ export default function StockPage({ session }) {
         }
       })
 
-      if (response.ok) {
-        setProducts(products.filter(p => p.id !== id))
-      } else {
+      if (!response.ok) {
+        await loadProducts()
         alert('Erreur lors de la suppression')
       }
     } catch (error) {
+      await loadProducts()
       console.error('Erreur suppression produit:', error)
       alert('Erreur lors de la suppression')
     }
