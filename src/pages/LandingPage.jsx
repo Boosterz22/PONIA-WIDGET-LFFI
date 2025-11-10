@@ -197,17 +197,16 @@ export default function LandingPage() {
       minHeight: '100vh',
       background: 'white'
     }}>
-      {/* HEADER OPAQUE MOBILE-FIRST */}
+      {/* HEADER TRANSPARENT STICKY */}
       <nav style={{
         padding: 'clamp(1.5rem, 3vw, 2rem) 0',
-        background: '#FFFFFF',
-        borderBottom: '1px solid rgba(255, 215, 0, 0.2)',
+        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.92) 50%, rgba(255, 255, 255, 0.88) 100%)',
         position: 'sticky',
         top: 0,
         left: 0,
         right: 0,
         zIndex: 1000,
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)'
+        boxShadow: '0 2px 12px rgba(255, 215, 0, 0.15)'
       }}>
         <div className="container" style={{ 
           display: 'flex', 
