@@ -21,6 +21,11 @@ import {
   getMainStore
 } from './storage.js'
 import { generateOrderPDF } from './pdfService.js'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // Stripe configuration
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
@@ -28,7 +33,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 })
 
 const app = express()
-const PORT = 3000
+const PORT = process.env.PORT || 3000
 
 // Supabase client for JWT verification
 const supabase = createClient(
@@ -1084,6 +1089,18 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', service: 'PONIA AI Backend' })
 })
 
-app.listen(PORT, () => {
+// Serve static files from dist in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../dist')))
+  
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../dist/index.html'))
+  })
+}
+
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Backend PONIA AI démarré sur port ${PORT}`)
+  if (process.env.NODE_ENV === 'production') {
+    console.log(`📦 Serving static files from dist/`)
+  }
 })
