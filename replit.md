@@ -60,11 +60,17 @@ PONIA AI is a secure full-stack application with an Express backend (Node.js) an
     → Impossible de bypass le paywall sans paiement
     → ENABLE_TEST_MODE requis pour tests (développement seulement)
     → Production-ready : système de paiement sécurisé
-*   **⚠️ Configuration Stripe requise avant lancement :**
-    1. Créer les produits/prix dans Stripe Dashboard (Standard €49/€470, Pro €69/€660)
-    2. Copier les 4 Price IDs dans Secrets Replit
-    3. Configurer le webhook Stripe et ajouter STRIPE_WEBHOOK_SECRET
-    4. Vérifier que STRIPE_SECRET_KEY et VITE_STRIPE_PUBLIC_KEY sont en mode LIVE (pas test)
+*   **Interface mode test supprimée**
+    → Section "Mode Test - Changement de Plan" retirée de SettingsPage
+    → N'apparaîtra plus dans l'interface utilisateur
+    → Backend reste protégé (retourne 403 si ENABLE_TEST_MODE pas activé)
+    → Interface production propre et professionnelle
+*   **Configuration Stripe LIVE complétée :**
+    → Produits créés en mode LIVE (Standard €49/€470, Pro €69/€660)
+    → 4 Price IDs configurés dans Secrets Replit
+    → Webhook Stripe configuré avec STRIPE_WEBHOOK_SECRET
+    → STRIPE_SECRET_KEY et VITE_STRIPE_PUBLIC_KEY en mode LIVE
+    → Paiements réels opérationnels
     → Documentation complète : voir `STRIPE_CONFIGURATION.md`
 
 ### ✅ Branding PONIA dans Bons de Commande
