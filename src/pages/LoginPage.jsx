@@ -21,9 +21,15 @@ export default function LoginPage() {
       
       if (error) throw error
       
-      setTimeout(() => {
-        navigate('/complete-profile')
-      }, 800)
+      if (data.session) {
+        setTimeout(() => {
+          navigate('/complete-profile')
+        }, 800)
+      } else if (data.user && !data.session) {
+        alert('✅ Compte créé ! Vérifiez vos emails pour confirmer votre compte, puis reconnectez-vous.')
+        setLoading(false)
+        setIsSignup(false)
+      }
     } catch (error) {
       alert(error.message)
       setLoading(false)
