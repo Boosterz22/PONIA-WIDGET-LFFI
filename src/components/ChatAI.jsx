@@ -1,12 +1,19 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Send, Loader, Sparkles, ChevronDown, ChevronUp } from 'lucide-react'
+import { supabase } from '../services/supabase'
 
 async function getChatResponse(userMessage, products, conversationHistory, insights) {
   try {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) {
+      return "⚠️ Veuillez vous reconnecter pour utiliser le chat IA."
+    }
+
     const response = await fetch('/api/chat', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.access_token}`
       },
       body: JSON.stringify({
         userMessage,
