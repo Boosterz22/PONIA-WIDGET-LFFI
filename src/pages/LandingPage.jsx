@@ -197,11 +197,13 @@ export default function LandingPage() {
       minHeight: '100vh',
       background: 'white'
     }}>
-      {/* HEADER TRANSPARENT */}
+      {/* HEADER - Transparent mobile, doré desktop */}
       <nav style={{
         padding: 'clamp(1.5rem, 3vw, 2rem) 0',
-        background: 'linear-gradient(180deg, rgba(255, 215, 0, 0.12) 0%, rgba(255, 215, 0, 0.08) 50%, rgba(255, 215, 0, 0.04) 100%)',
-        backdropFilter: 'blur(10px)',
+        background: window.innerWidth > 768 
+          ? 'linear-gradient(180deg, rgba(255, 215, 0, 0.12) 0%, rgba(255, 215, 0, 0.08) 50%, rgba(255, 215, 0, 0.04) 100%)'
+          : 'transparent',
+        backdropFilter: window.innerWidth > 768 ? 'blur(10px)' : 'none',
         position: 'sticky',
         top: 0,
         left: 0,
