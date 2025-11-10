@@ -9,6 +9,8 @@ export default function CompleteProfilePage({ session }) {
   const [address, setAddress] = useState('')
   const [city, setCity] = useState('')
   const [postalCode, setPostalCode] = useState('')
+  const [latitude, setLatitude] = useState(null)
+  const [longitude, setLongitude] = useState(null)
   const [referredByCode, setReferredByCode] = useState('')
   const [loading, setLoading] = useState(false)
   const [suggestions, setSuggestions] = useState([])
@@ -67,9 +69,12 @@ export default function CompleteProfilePage({ session }) {
 
   const selectSuggestion = (suggestion) => {
     const props = suggestion.properties
+    const coords = suggestion.geometry?.coordinates || []
     setAddress(props.name || props.label)
     setCity(props.city || '')
     setPostalCode(props.postcode || '')
+    setLongitude(coords[0] || null)
+    setLatitude(coords[1] || null)
     setSuggestions([])
     setShowSuggestions(false)
   }
@@ -102,6 +107,8 @@ export default function CompleteProfilePage({ session }) {
           address: address.trim() || null,
           city: city.trim() || null,
           postalCode: postalCode.trim() || null,
+          latitude: latitude,
+          longitude: longitude,
           referralCode,
           referredBy: referredByCode.trim() || null
         })

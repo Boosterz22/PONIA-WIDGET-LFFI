@@ -157,7 +157,7 @@ async function enforceTrialStatus(req, res, next) {
 // Créer ou synchroniser utilisateur après inscription Supabase (SECURED)
 app.post('/api/users/sync', authenticateSupabaseUser, async (req, res) => {
   try {
-    const { supabaseId, email, businessName, businessType, address, city, postalCode, referralCode, referredBy } = req.body
+    const { supabaseId, email, businessName, businessType, address, city, postalCode, latitude, longitude, referralCode, referredBy } = req.body
     
     if (!supabaseId || !email) {
       return res.status(400).json({ error: 'supabaseId et email requis' })
@@ -191,6 +191,8 @@ app.post('/api/users/sync', authenticateSupabaseUser, async (req, res) => {
           address: address || null,
           city: city || null,
           postalCode: postalCode || null,
+          latitude: latitude || null,
+          longitude: longitude || null,
           isMain: true
         })
       }
@@ -770,6 +772,9 @@ app.get('/api/events', authenticateSupabaseUser, async (req, res) => {
     
     let city = 'Paris'
     let postalCode = '75001'
+    let latitude = null
+    let longitude = null
+    
     try {
       const mainStore = await db.select()
         .from(stores)
@@ -786,14 +791,25 @@ app.get('/api/events', authenticateSupabaseUser, async (req, res) => {
         if (mainStore[0].postalCode) {
           postalCode = mainStore[0].postalCode
         }
+        if (mainStore[0].latitude) {
+          latitude = parseFloat(mainStore[0].latitude)
+        }
+        if (mainStore[0].longitude) {
+          longitude = parseFloat(mainStore[0].longitude)
+        }
       }
     } catch (storeError) {
       console.log('Impossible de récupérer le store principal, utilisation de Paris par défaut')
     }
     
     const { getLocalPublicEvents } = await import('./googleCalendar.js')
-    const events = await getLocalPublicEvents(city, businessType, postalCode)
-    res.json({ events, userCity: city, userPostalCode: postalCode })
+    const events = await getLocalPublicEvents(city, businessType, postalCode, latitude, longitude)
+    res.json({ 
+      events, 
+      userCity: city, 
+      userPostalCode: postalCode,
+      userLocation: latitude && longitude ? { lat: latitude, lon: longitude } : null
+    })
   } catch (error) {
     console.error('Events API error:', error)
     res.json({ events: [], error: error.message })

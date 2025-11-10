@@ -44,6 +44,8 @@ export async function createStore(storeData) {
     address: storeData.address || null,
     city: storeData.city || null,
     postalCode: storeData.postalCode || null,
+    latitude: storeData.latitude || null,
+    longitude: storeData.longitude || null,
     country: storeData.country || 'FR',
     isMain: storeData.isMain !== undefined ? storeData.isMain : true
   }).returning()

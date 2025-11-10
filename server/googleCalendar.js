@@ -1,4 +1,15 @@
-export async function getParisPublicEvents(maxResults = 10) {
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371
+  const dLat = (lat2 - lat1) * Math.PI / 180
+  const dLon = (lon2 - lon1) * Math.PI / 180
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon/2) * Math.sin(dLon/2)
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+  return R * c
+}
+
+export async function getParisPublicEvents(maxResults = 50, userLat = null, userLon = null, radiusKm = 5) {
   try {
     const now = new Date()
     const twoWeeksFromNow = new Date()
@@ -7,20 +18,28 @@ export async function getParisPublicEvents(maxResults = 10) {
     const minDate = now.toISOString().split('T')[0]
     const maxDate = twoWeeksFromNow.toISOString().split('T')[0]
 
-    const url = `https://opendata.paris.fr/api/records/1.0/search/?dataset=que-faire-a-paris-&q=date_start:[${minDate} TO ${maxDate}]&rows=${maxResults}&sort=date_start&facet=tags`
+    const url = `https://opendata.paris.fr/api/v2/catalog/datasets/que-faire-a-paris-/records?limit=${maxResults}&select=title,lat_lon,date_start,date_end,address_name,address_street,address_zipcode,tags,price_type,lead_text,description&where=date_start>="${minDate}" AND date_start<="${maxDate}"&order_by=date_start`
 
     const response = await fetch(url)
     const data = await response.json()
 
-    const events = (data.records || []).map(record => {
-      const fields = record.fields
+    const allEvents = (data.records || []).map(record => {
+      const fields = record.record?.fields || record.fields || {}
       const startDate = fields.date_start || now.toISOString()
       const endDate = fields.date_end || startDate
+      const latLon = fields.lat_lon || {}
+      const eventLat = latLon.lat
+      const eventLon = latLon.lon
 
       const tagsArray = Array.isArray(fields.tags) ? fields.tags : (fields.tags ? [fields.tags] : [])
 
+      let distance = null
+      if (userLat && userLon && eventLat && eventLon) {
+        distance = calculateDistance(userLat, userLon, eventLat, eventLon)
+      }
+
       return {
-        id: record.recordid,
+        id: record.id || record.recordid,
         name: fields.title || 'Événement Paris',
         description: fields.lead_text || fields.description || '',
         location: fields.address_name || fields.address_street || 'Paris',
@@ -29,6 +48,9 @@ export async function getParisPublicEvents(maxResults = 10) {
         tags: tagsArray,
         priceType: fields.price_type || 'unknown',
         attendees: estimateAttendees(fields),
+        latitude: eventLat,
+        longitude: eventLon,
+        distance: distance,
         impact: estimateEventImpact({
           summary: fields.title || '',
           tags: tagsArray.join(' '),
@@ -37,7 +59,14 @@ export async function getParisPublicEvents(maxResults = 10) {
       }
     })
 
-    return events
+    if (userLat && userLon) {
+      const nearbyEvents = allEvents.filter(event => 
+        event.distance !== null && event.distance <= radiusKm
+      )
+      return nearbyEvents.sort((a, b) => a.distance - b.distance).slice(0, maxResults)
+    }
+
+    return allEvents.slice(0, maxResults)
   } catch (error) {
     console.error('Erreur récupération événements Paris OpenData:', error)
     return []
@@ -97,18 +126,23 @@ function isParisRegionPostalCode(postalCode) {
   return ['75', '77', '78', '91', '92', '93', '94', '95'].includes(prefix)
 }
 
-export async function getLocalPublicEvents(city = 'Paris', businessType = 'commerce', postalCode = '75001') {
+export async function getLocalPublicEvents(city = 'Paris', businessType = 'commerce', postalCode = '75001', userLat = null, userLon = null) {
   try {
     if (!isParisRegionPostalCode(postalCode)) {
       console.log(`Événements non disponibles pour le code postal ${postalCode} (seulement Paris/Île-de-France)`)
       return []
     }
     
-    const parisEvents = await getParisPublicEvents(10)
+    const radiusKm = 5
+    const parisEvents = await getParisPublicEvents(50, userLat, userLon, radiusKm)
     
     const relevantEvents = filterEventsByBusinessType(parisEvents, businessType)
     
-    return relevantEvents
+    if (userLat && userLon && relevantEvents.length > 0) {
+      console.log(`✅ Filtrage géographique : ${relevantEvents.length} événements dans un rayon de ${radiusKm}km de [${userLat}, ${userLon}]`)
+    }
+    
+    return relevantEvents.slice(0, 10)
   } catch (error) {
     console.error('Paris OpenData non disponible:', error.message)
     return []
