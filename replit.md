@@ -54,7 +54,16 @@ PONIA AI is a secure full-stack application with an Express backend (Node.js) an
 
 ## Recent Changes (Nov 10, 2025)
 
-### ✅ Génération Bon de Commande PDF Professionnel (Latest)
+### ✅ Chat IA - Texte Propre Sans Markdown (Latest)
+*   **Suppression formatage markdown brouillon** - Interface claire et lisible
+    → Problème : Astérisques (** et ***) rendaient le chat brouillon et difficile à lire
+    → Solution backend : Prompt système modifié avec règle stricte "NE JAMAIS utiliser markdown"
+    → Solution frontend : Fonction cleanMarkdown() nettoie automatiquement ** *** __ _ avant affichage
+    → Format cible : Texte simple + emojis structurants (🔴 ⚠️ ✅ 📊 💡) + sauts de ligne
+    → Résultat : Réponses IA fluides, claires, professionnelles sans symboles parasites
+    → Double sécurité : Prompt + regex cleanup garantissent texte propre même si IA ignore instructions
+
+### ✅ Génération Bon de Commande PDF Professionnel
 *   **Migration .txt → PDF structuré** - Format professionnel production-ready
     → Problème : Fichier .txt avec encoding corrompu, non professionnel
     → Solution : Génération PDF complète avec pdfkit côté serveur

@@ -2,6 +2,15 @@ import React, { useState, useRef, useEffect } from 'react'
 import { Send, Loader, Sparkles, ChevronDown, ChevronUp } from 'lucide-react'
 import { supabase } from '../services/supabase'
 
+function cleanMarkdown(text) {
+  if (!text) return text
+  return text
+    .replace(/\*\*\*(.+?)\*\*\*/g, '$1')
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/__(.+?)__/g, '$1')
+    .replace(/_(.+?)_/g, '$1')
+}
+
 async function getChatResponse(userMessage, products, conversationHistory, insights) {
   try {
     const { data: { session } } = await supabase.auth.getSession()
@@ -28,7 +37,7 @@ async function getChatResponse(userMessage, products, conversationHistory, insig
     }
 
     const data = await response.json()
-    return data.response
+    return cleanMarkdown(data.response)
   } catch (error) {
     console.error('Error calling chat API:', error)
     return "Désolé, j'ai un souci technique 😅 Réessaie dans quelques secondes !"
