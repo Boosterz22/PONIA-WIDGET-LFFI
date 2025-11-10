@@ -6,8 +6,7 @@ channel = "stable-24_11"
 packages = ["static-web-server"]
 
 [deployment]
-publicDir = "/"
-deploymentTarget = "autoscale"
+deploymentTarget = "gce"
 run = ["node", "server/index.js"]
 build = ["npm", "run", "build"]
 
