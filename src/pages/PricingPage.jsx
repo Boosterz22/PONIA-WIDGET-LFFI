@@ -358,7 +358,7 @@ function PlanCard({ plan, billingPeriod, navigate }) {
         <p style={{ fontSize: '0.95rem', color: '#666', marginBottom: '1.5rem' }}>
           {plan.description}
         </p>
-        <div style={{ marginBottom: '0.5rem' }}>
+        <div style={{ marginBottom: '1.5rem' }}>
           {displayPrice === 0 ? (
             <div style={{ fontSize: '3rem', fontWeight: '700', color: plan.color }}>
               Gratuit
@@ -373,38 +373,16 @@ function PlanCard({ plan, billingPeriod, navigate }) {
           )}
         </div>
         {billingPeriod === 'yearly' && displaySavings && (
-          <div style={{ fontSize: '0.9rem', color: '#10b981', fontWeight: '600' }}>
+          <div style={{ fontSize: '0.9rem', color: '#10b981', fontWeight: '600', marginBottom: '0.25rem' }}>
             Économisez {displaySavings}€/an
           </div>
         )}
         {billingPeriod === 'yearly' && displayPrice > 0 && (
-          <div style={{ fontSize: '0.85rem', color: '#999', marginTop: '0.25rem' }}>
+          <div style={{ fontSize: '0.85rem', color: '#999', marginBottom: '1.5rem' }}>
             Soit {displayPrice}€ facturés annuellement
           </div>
         )}
       </div>
-
-      <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 2rem 0' }}>
-        {plan.features.map((feature, idx) => (
-          <li key={idx} style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.75rem',
-            marginBottom: '0.9rem',
-            fontSize: '0.95rem',
-            color: feature.included ? '#1a1a1a' : '#999'
-          }}>
-            {feature.included ? (
-              <Check size={20} color={plan.color} style={{ flexShrink: 0 }} />
-            ) : (
-              <X size={20} color="#cbd5e1" style={{ flexShrink: 0 }} />
-            )}
-            <span style={{ textDecoration: feature.included ? 'none' : 'line-through' }}>
-              {feature.text}
-            </span>
-          </li>
-        ))}
-      </ul>
 
       <button
         onClick={() => navigate('/login')}
@@ -418,7 +396,8 @@ function PlanCard({ plan, billingPeriod, navigate }) {
           fontSize: '1.05rem',
           fontWeight: '700',
           cursor: 'pointer',
-          transition: 'all 0.2s'
+          transition: 'all 0.2s',
+          marginBottom: '2rem'
         }}
         onMouseEnter={(e) => {
           if (!plan.popular) {
@@ -439,6 +418,28 @@ function PlanCard({ plan, billingPeriod, navigate }) {
       >
         {plan.cta}
       </button>
+
+      <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+        {plan.features.map((feature, idx) => (
+          <li key={idx} style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.75rem',
+            marginBottom: '0.9rem',
+            fontSize: '0.95rem',
+            color: feature.included ? '#1a1a1a' : '#999'
+          }}>
+            {feature.included ? (
+              <Check size={20} color={plan.color} style={{ flexShrink: 0 }} />
+            ) : (
+              <X size={20} color="#cbd5e1" style={{ flexShrink: 0 }} />
+            )}
+            <span style={{ textDecoration: feature.included ? 'none' : 'line-through' }}>
+              {feature.text}
+            </span>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }

@@ -157,7 +157,7 @@ async function enforceTrialStatus(req, res, next) {
 // Créer ou synchroniser utilisateur après inscription Supabase (SECURED)
 app.post('/api/users/sync', authenticateSupabaseUser, async (req, res) => {
   try {
-    const { supabaseId, email, businessName, businessType, address, city, postalCode, latitude, longitude, referralCode, referredBy } = req.body
+    const { supabaseId, email, businessName, businessType, posSystem, address, city, postalCode, latitude, longitude, referralCode, referredBy } = req.body
     
     if (!supabaseId || !email) {
       return res.status(400).json({ error: 'supabaseId et email requis' })
@@ -178,6 +178,7 @@ app.post('/api/users/sync', authenticateSupabaseUser, async (req, res) => {
         email,
         businessName,
         businessType,
+        posSystem,
         plan: 'basique',
         referralCode,
         referredBy,
@@ -722,6 +723,7 @@ app.put('/api/users/business', authenticateSupabaseUser, async (req, res) => {
     const updates = {}
     if (req.body.businessName) updates.businessName = req.body.businessName
     if (req.body.businessType) updates.businessType = req.body.businessType
+    if (req.body.posSystem !== undefined) updates.posSystem = req.body.posSystem || null
     
     const updatedUser = await updateUser(user.id, updates)
     res.json({ user: updatedUser })

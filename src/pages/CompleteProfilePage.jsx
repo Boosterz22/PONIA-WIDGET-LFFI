@@ -6,6 +6,7 @@ export default function CompleteProfilePage({ session }) {
   const navigate = useNavigate()
   const [businessName, setBusinessName] = useState('')
   const [businessType, setBusinessType] = useState('boulangerie')
+  const [posSystem, setPosSystem] = useState('non')
   const [address, setAddress] = useState('')
   const [city, setCity] = useState('')
   const [postalCode, setPostalCode] = useState('')
@@ -104,6 +105,7 @@ export default function CompleteProfilePage({ session }) {
           email: session.user.email,
           businessName,
           businessType,
+          posSystem,
           address: address.trim() || null,
           city: city.trim() || null,
           postalCode: postalCode.trim() || null,
@@ -235,6 +237,48 @@ export default function CompleteProfilePage({ session }) {
                 </option>
               ))}
             </select>
+          </div>
+
+          <div style={{ marginBottom: '1.25rem' }}>
+            <label style={{ 
+              display: 'block', 
+              marginBottom: '0.5rem',
+              fontSize: '0.875rem',
+              fontWeight: 500,
+              color: '#374151'
+            }}>
+              Système de caisse (optionnel)
+            </label>
+            <select
+              value={posSystem}
+              onChange={(e) => setPosSystem(e.target.value)}
+              className="input"
+              style={{
+                width: '100%',
+                padding: '0.75rem 1rem',
+                fontSize: '0.9375rem',
+                cursor: 'pointer'
+              }}
+            >
+              <option value="non">Je n'utilise pas de caisse digitale</option>
+              <option value="zelty">Zelty</option>
+              <option value="tiller">Tiller</option>
+              <option value="cashpad">Cashpad</option>
+              <option value="lightspeed">Lightspeed</option>
+              <option value="square">Square</option>
+              <option value="innovorder">Innovorder</option>
+              <option value="sunday">Sunday</option>
+              <option value="sumup">SumUp</option>
+              <option value="autre">Autre système</option>
+            </select>
+            <p style={{
+              fontSize: '0.75rem',
+              color: '#6b7280',
+              marginTop: '0.5rem',
+              lineHeight: 1.5
+            }}>
+              Cette information nous aide à prioriser les futures intégrations
+            </p>
           </div>
 
           <div style={{ marginBottom: '1.25rem', position: 'relative' }} ref={suggestionsRef}>

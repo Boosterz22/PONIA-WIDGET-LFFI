@@ -108,7 +108,7 @@ function PricingCards() {
               <p style={{ fontSize: '0.95rem', color: '#666', marginBottom: '1.5rem' }}>
                 {plan.description}
               </p>
-              <div style={{ marginBottom: '0.5rem' }}>
+              <div style={{ marginBottom: '1.5rem' }}>
                 {plan.price === 0 ? (
                   <div style={{ fontSize: '3rem', fontWeight: '700', color: plan.color }}>
                     Gratuit
@@ -124,7 +124,28 @@ function PricingCards() {
               </div>
             </div>
 
-            <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 2rem 0' }}>
+            <Link
+              to="/login"
+              style={{
+                width: '100%',
+                display: 'block',
+                textAlign: 'center',
+                background: plan.popular ? plan.color : 'white',
+                color: plan.popular ? '#1a1a1a' : plan.color,
+                border: `2px solid ${plan.color}`,
+                padding: '1rem',
+                borderRadius: '10px',
+                fontSize: '1.05rem',
+                fontWeight: '700',
+                textDecoration: 'none',
+                transition: 'all 0.2s',
+                marginBottom: '2rem'
+              }}
+            >
+              {plan.cta}
+            </Link>
+
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
               {plan.features.map((feature, idx) => (
                 <li key={idx} style={{
                   display: 'flex',
@@ -145,26 +166,6 @@ function PricingCards() {
                 </li>
               ))}
             </ul>
-
-            <Link
-              to="/login"
-              style={{
-                width: '100%',
-                display: 'block',
-                textAlign: 'center',
-                background: plan.popular ? plan.color : 'white',
-                color: plan.popular ? '#1a1a1a' : plan.color,
-                border: `2px solid ${plan.color}`,
-                padding: '1rem',
-                borderRadius: '10px',
-                fontSize: '1.05rem',
-                fontWeight: '700',
-                textDecoration: 'none',
-                transition: 'all 0.2s'
-              }}
-            >
-              {plan.cta}
-            </Link>
           </div>
         )
       })}

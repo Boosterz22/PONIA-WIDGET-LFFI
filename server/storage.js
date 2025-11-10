@@ -17,6 +17,7 @@ export async function createUser(userData) {
     email: userData.email,
     businessName: userData.businessName,
     businessType: userData.businessType,
+    posSystem: userData.posSystem || null,
     plan: userData.plan || 'basique',
     referralCode: userData.referralCode,
     referredBy: userData.referredBy,

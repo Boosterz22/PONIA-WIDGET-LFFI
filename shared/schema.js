@@ -6,6 +6,7 @@ export const users = pgTable('users', {
   email: varchar('email', { length: 255 }).notNull(),
   businessName: varchar('business_name', { length: 255 }),
   businessType: varchar('business_type', { length: 100 }),
+  posSystem: varchar('pos_system', { length: 100 }),
   plan: varchar('plan', { length: 50 }).default('basique'),
   referralCode: varchar('referral_code', { length: 20 }),
   referredBy: varchar('referred_by', { length: 20 }),

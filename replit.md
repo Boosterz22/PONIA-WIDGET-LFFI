@@ -54,7 +54,20 @@ PONIA AI is a secure full-stack application with an Express backend (Node.js) an
 
 ## Recent Changes (Nov 10, 2025)
 
-### ✅ Filtrage Géographique Intelligent des Événements (Latest)
+### ✅ Sondage Système de Caisse + UX Tarifs (Latest)
+*   **Question POS dans l'onboarding** - Analytics et préparation intégrations futures
+    → Nouveau champ `posSystem` dans schema users (nullable varchar 100)
+    → CompleteProfilePage : dropdown optionnel avec 9 options (Non, Zelty, Tiller, Cashpad, Lightspeed, Square, Innovorder, Sunday, SumUp, Autre)
+    → Backend : sauvegarde posSystem lors création utilisateur + endpoint `/api/users/business` mis à jour
+    → Migration DB : `npm run db:push` effectuée
+    → Aide texte explicative : "Cette information nous aide à prioriser les futures intégrations"
+*   **Repositionnement boutons CTA dans tarifs** - UX cohérente et conversion optimisée
+    → LandingPage, PricingPage, UpgradePage : boutons "Passer à..." déplacés entre prix et features
+    → Structure harmonisée : Prix (marginBottom 1.5rem) → Bouton CTA (marginBottom 2rem) → Features (margin 0)
+    → Amélioration visuelle : bouton plus visible, CTA claire avant détails techniques
+    → UpgradeModal et TrialExpiredBlocker : non modifiés (layouts différents appropriés)
+
+### ✅ Filtrage Géographique Intelligent des Événements
 *   **Événements proches du commerce (rayon 5km)** - Pertinence maximale
     → Migration vers Paris OpenData API v2 avec support GPS
     → Récupération automatique des coordonnées latitude/longitude de chaque événement
