@@ -15,7 +15,33 @@ PONIA AI is an AI-powered inventory management system designed for small busines
 
 ## Recent Changes (Nov 10, 2025)
 
-### ✅ Page d'Upgrade Professionnelle & Correction Paiement Stripe (Latest)
+### ✅ Système de Vérification par Code OTP (Latest)
+*   **Nouvelle page VerifyCodePage** - Remplacement du lien email par code à 6 chiffres
+    → Page professionnelle `/verify-code` avec input numérique optimisé mobile
+    → Validation en temps réel (6 chiffres requis)
+    → Bouton "Renvoyer le code" avec feedback utilisateur
+    → Messages d'erreur clairs (code expiré, incorrect, etc.)
+    → Timer d'1 heure visible
+    → Design cohérent avec branding PONIA (#FFD700)
+*   **Flow d'inscription modernisé** - Plus simple et plus sûr
+    → Utilisateur entre email + mot de passe
+    → Supabase envoie automatiquement un code à 6 chiffres
+    → Redirection vers /verify-code (plus de lien cliquable)
+    → Utilisateur entre le code reçu
+    → Vérification avec `verifyOtp({type: 'signup'})`
+    → Redirection automatique vers /complete-profile
+*   **Avantages pour les commerçants** - UX optimisée
+    → Plus de problème de redirection entre email et app
+    → Code facile à copier-coller (6 chiffres seulement)
+    → Expérience moderne similaire à Google, Instagram
+    → Fonctionne parfaitement sur mobile
+*   **Documentation complète créée** - SUPABASE_OTP_CONFIGURATION.md
+    → Instructions étape par étape pour configurer Supabase
+    → Template d'email personnalisé avec branding PONIA
+    → Guide de troubleshooting complet
+    → Exemples de test
+
+### ✅ Page d'Upgrade Professionnelle & Correction Paiement Stripe
 *   **Design de la page d'upgrade refait complètement** - Identique à la page tarifs
     → Fond neutre #fafafa au lieu du gradient jaune
     → Affiche uniquement les plans Standard et Pro (pas de plan Basique)

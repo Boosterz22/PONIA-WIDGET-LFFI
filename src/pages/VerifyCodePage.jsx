@@ -41,7 +41,7 @@ export default function VerifyCodePage() {
       const { data, error: verifyError } = await supabase.auth.verifyOtp({
         email,
         token: code,
-        type: 'email'
+        type: 'signup'
       })
 
       if (verifyError) {
