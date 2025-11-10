@@ -50,3 +50,42 @@ PONIA AI is a secure full-stack application with an Express backend (Node.js) an
 *   **Calendar:** Google Calendar API
 *   **Payments:** Stripe
 *   **POS Integrations:** Square API, Lightspeed (planned)
+*   **Address API:** API Adresse (Base Adresse Nationale - BAN, gouvernement français)
+
+## Recent Changes (Nov 10, 2025)
+
+### ✅ Autocomplete d'Adresse Intelligent (Latest)
+*   **Autocomplete d'adresse avec API gouvernementale** - UX moderne et fluide
+    → Intégration de l'API Adresse du gouvernement français (gratuite, sans clé API)
+    → Endpoint : https://api-adresse.data.gouv.fr/search/
+    → Suggestions instantanées dès 3 caractères tapés
+    → Debounce de 300ms pour éviter les appels excessifs à l'API
+    → Auto-remplissage automatique : adresse complète, ville, code postal
+    → Dropdown élégant avec nom de rue + code postal + ville
+    → Fermeture au clic extérieur (UX native)
+    → Expérience similaire à Google Maps, Uber, Airbnb
+*   **Logo remis à taille normale** - CompleteProfilePage
+    → 210px → 70px pour un meilleur équilibre visuel
+    → Taille cohérente avec le reste de l'application
+
+### ✅ Témoignages Ultra-Convaincants & Filtrage Postal
+*   **Témoignages réécrits avec émotions fortes** - Conversion maximisée
+    → Sophie Martinet (Boulangerie) : "23 baguettes jetées, €287/mois de gaspillage → €340/samedi de plus"
+    → Marc Dubois (Restaurant) : "7kg légumes pourris, €520→€75/mois → €1335 économisés en 3 mois"
+    → Élise Renault (Cave) : "340 références, 2h→8min d'inventaire, clients récupérés"
+    → Détails visuels précis, chiffres concrets, before/after émotionnels
+    → Noms complets, villes réelles, émotions authentiques ("j'ai pleuré de soulagement")
+*   **Logo agrandi 3x** - VerifyCodePage (branding renforcé)
+    → 70px → 210px pour une présence visuelle forte
+*   **Collecte adresse complète** - Préparation features proximité
+    → CompleteProfilePage : nouveaux champs address, city, postalCode
+    → Validation code postal (5 chiffres max)
+    → Store principal créé automatiquement avec location
+    → Schema stores : ajout colonne postalCode
+*   **Filtrage événements par code postal** - Personnalisation locale
+    → googleCalendar.js : fonction isParisRegionPostalCode()
+    → Codes Île-de-France acceptés : 75, 77, 78, 91, 92, 93, 94, 95
+    → Événements affichés uniquement si store dans région parisienne
+*   **Mode test pour changement de plan** - Facilite QA
+    → Instructions claires en commentaire dans server/index.js
+    → Protection production commentée (décommenter pour activer)
