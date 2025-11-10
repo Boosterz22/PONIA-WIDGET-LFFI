@@ -23,6 +23,7 @@ import {
 import { generateOrderPDF } from './pdfService.js'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import fs from 'fs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -1089,18 +1090,20 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', service: 'PONIA AI Backend' })
 })
 
-// Serve static files from dist in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../dist')))
+// Serve static files from dist (production mode)
+const distPath = path.join(__dirname, '../dist')
+if (fs.existsSync(distPath)) {
+  console.log('📦 Production mode: serving static files from dist/')
+  app.use(express.static(distPath))
   
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../dist/index.html'))
+  // Catch-all: serve index.html for all non-API routes (React Router)
+  app.use((req, res) => {
+    res.sendFile(path.join(distPath, 'index.html'))
   })
+} else {
+  console.log('🔧 Development mode: dist/ not found')
 }
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Backend PONIA AI démarré sur port ${PORT}`)
-  if (process.env.NODE_ENV === 'production') {
-    console.log(`📦 Serving static files from dist/`)
-  }
 })
