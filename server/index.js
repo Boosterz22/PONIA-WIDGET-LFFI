@@ -990,9 +990,15 @@ app.post('/api/stripe/create-checkout', authenticateSupabaseUser, async (req, re
     }
 
     const getBaseUrl = () => {
+      // Production: myponia.fr
+      if (process.env.REPLIT_DEPLOYMENT === '1') {
+        return 'https://myponia.fr'
+      }
+      // Dev: Replit preview
       if (process.env.REPLIT_DEV_DOMAIN) {
         return `https://${process.env.REPLIT_DEV_DOMAIN}`
       }
+      // Local dev
       return 'http://localhost:5000'
     }
 
