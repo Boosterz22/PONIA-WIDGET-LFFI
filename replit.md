@@ -54,7 +54,16 @@ PONIA AI is a secure full-stack application with an Express backend (Node.js) an
 
 ## Recent Changes (Nov 10, 2025)
 
-### ✅ Chat IA - Texte Propre Sans Markdown (Latest)
+### ✅ Branding PONIA dans Bons de Commande (Latest)
+*   **Simplification nom de marque** - "PONIA AI" → "PONIA"
+    → Modification dans pdfService.js : 3 occurrences mises à jour
+    → En-tête PDF : "PONIA" (ligne 24)
+    → Métadonnée : "Généré par : PONIA" (ligne 44)
+    → Footer : "...généré automatiquement par PONIA..." (ligne 166)
+    → Cohérence marque : Nom court, mémorable, professionnel
+    → Production-ready : PDFs avec branding final pour clients
+
+### ✅ Chat IA - Texte Propre Sans Markdown
 *   **Suppression formatage markdown brouillon** - Interface claire et lisible
     → Problème : Astérisques (** et ***) rendaient le chat brouillon et difficile à lire
     → Solution backend : Prompt système modifié avec règle stricte "NE JAMAIS utiliser markdown"

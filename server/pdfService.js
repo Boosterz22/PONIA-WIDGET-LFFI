@@ -18,7 +18,7 @@ export function generateOrderPDF(orderData) {
 
   doc.fontSize(24)
      .fillColor(GOLD)
-     .text('PONIA AI', 50, 45)
+     .text('PONIA', 50, 45)
   
   doc.fontSize(9)
      .fillColor(GRAY)
@@ -38,7 +38,7 @@ export function generateOrderPDF(orderData) {
 
   const dateY = storeAddress ? 161 : 148
   doc.text(`Date : ${date}`, 50, dateY)
-  doc.text(`Généré par : PONIA AI`, 50, dateY + 13)
+  doc.text(`Généré par : PONIA`, 50, dateY + 13)
 
   let yPosition = dateY + 40
 
@@ -160,7 +160,7 @@ export function generateOrderPDF(orderData) {
   doc.fontSize(7)
      .fillColor(GRAY)
      .font('Helvetica')
-     .text('Ce bon de commande a été généré automatiquement par PONIA AI avec estimations de prix marché français.', 50, yPosition, { align: 'center', width: tableWidth })
+     .text('Ce bon de commande a été généré automatiquement par PONIA avec estimations de prix marché français.', 50, yPosition, { align: 'center', width: tableWidth })
   
   yPosition += 10
   doc.text('Veuillez vérifier les quantités et confirmer les prix avec vos fournisseurs avant de valider votre commande.', 50, yPosition, { align: 'center', width: tableWidth })
