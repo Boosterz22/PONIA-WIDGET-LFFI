@@ -73,3 +73,18 @@ PONIA AI is a secure full-stack application built with an Express backend (Node.
 *   **Calendar:** Google Calendar API (integrated)
 *   **Payments:** Stripe (integrated for subscription billing)
 *   **POS Integrations:** Square API, Lightspeed (planned)
+
+## Configuration Requise - Supabase
+
+**IMPORTANT:** Pour que l'inscription fonctionne immédiatement (sans confirmation email), vous devez configurer Supabase :
+
+1. **Allez sur votre dashboard Supabase :** https://supabase.com/dashboard
+2. **Sélectionnez votre projet PONIA AI**
+3. **Allez dans Authentication → Providers**
+4. **Cliquez sur "Email"**
+5. **Désactivez l'option "Confirm email"**
+6. **Sauvegardez**
+
+**Pourquoi ?** Par défaut, Supabase exige que les utilisateurs confirment leur email. Cela crée une friction pour vos commerçants qui veulent tester immédiatement. En désactivant cette option, les utilisateurs peuvent s'inscrire et être redirigés directement vers la page de configuration de profil.
+
+**Note de sécurité :** Pour un environnement de production, vous pouvez réactiver la confirmation d'email. Pour les tests et le MVP, la désactiver permet un onboarding plus rapide.
