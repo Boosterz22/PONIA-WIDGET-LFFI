@@ -6,6 +6,9 @@ export default function CompleteProfilePage({ session }) {
   const navigate = useNavigate()
   const [businessName, setBusinessName] = useState('')
   const [businessType, setBusinessType] = useState('boulangerie')
+  const [address, setAddress] = useState('')
+  const [city, setCity] = useState('')
+  const [postalCode, setPostalCode] = useState('')
   const [referredByCode, setReferredByCode] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -34,6 +37,9 @@ export default function CompleteProfilePage({ session }) {
           email: session.user.email,
           businessName,
           businessType,
+          address: address.trim() || null,
+          city: city.trim() || null,
+          postalCode: postalCode.trim() || null,
           referralCode,
           referredBy: referredByCode.trim() || null
         })
@@ -85,7 +91,7 @@ export default function CompleteProfilePage({ session }) {
           display: 'inline-block',
           marginBottom: '3rem'
         }}>
-          <img src="/ponia-icon-black.png" alt="PONIA" style={{ height: '70px', width: 'auto' }} />
+          <img src="/ponia-icon-black.png" alt="PONIA" style={{ height: '210px', width: 'auto' }} />
         </Link>
 
         <h1 style={{ 
@@ -160,6 +166,83 @@ export default function CompleteProfilePage({ session }) {
                 </option>
               ))}
             </select>
+          </div>
+
+          <div style={{ marginBottom: '1.25rem' }}>
+            <label style={{ 
+              display: 'block', 
+              marginBottom: '0.5rem',
+              fontSize: '0.875rem',
+              fontWeight: 500,
+              color: '#374151'
+            }}>
+              Adresse du commerce
+            </label>
+            <input
+              type="text"
+              placeholder="Ex: 12 Rue de la Paix"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              required
+              className="input"
+              style={{
+                width: '100%',
+                padding: '0.75rem 1rem',
+                fontSize: '0.9375rem'
+              }}
+            />
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
+            <div>
+              <label style={{ 
+                display: 'block', 
+                marginBottom: '0.5rem',
+                fontSize: '0.875rem',
+                fontWeight: 500,
+                color: '#374151'
+              }}>
+                Ville
+              </label>
+              <input
+                type="text"
+                placeholder="Ex: Paris"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                required
+                className="input"
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem',
+                  fontSize: '0.9375rem'
+                }}
+              />
+            </div>
+            <div>
+              <label style={{ 
+                display: 'block', 
+                marginBottom: '0.5rem',
+                fontSize: '0.875rem',
+                fontWeight: 500,
+                color: '#374151'
+              }}>
+                Code postal
+              </label>
+              <input
+                type="text"
+                placeholder="75001"
+                value={postalCode}
+                onChange={(e) => setPostalCode(e.target.value.replace(/\D/g, '').slice(0, 5))}
+                required
+                maxLength={5}
+                className="input"
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem',
+                  fontSize: '0.9375rem'
+                }}
+              />
+            </div>
           </div>
 
           <div style={{ marginBottom: '2rem' }}>

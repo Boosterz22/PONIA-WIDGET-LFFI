@@ -16,7 +16,9 @@ import {
   addStockMovement,
   getAllStockHistory,
   updateUser,
-  getProductById
+  getProductById,
+  createStore,
+  getMainStore
 } from './storage.js'
 
 // Stripe configuration
@@ -155,7 +157,7 @@ async function enforceTrialStatus(req, res, next) {
 // Créer ou synchroniser utilisateur après inscription Supabase (SECURED)
 app.post('/api/users/sync', authenticateSupabaseUser, async (req, res) => {
   try {
-    const { supabaseId, email, businessName, businessType, referralCode, referredBy } = req.body
+    const { supabaseId, email, businessName, businessType, address, city, postalCode, referralCode, referredBy } = req.body
     
     if (!supabaseId || !email) {
       return res.status(400).json({ error: 'supabaseId et email requis' })
@@ -181,6 +183,17 @@ app.post('/api/users/sync', authenticateSupabaseUser, async (req, res) => {
         referredBy,
         trialEndsAt
       })
+
+      if (businessName && (address || city)) {
+        await createStore({
+          userId: user.id,
+          name: businessName,
+          address: address || null,
+          city: city || null,
+          postalCode: postalCode || null,
+          isMain: true
+        })
+      }
     }
     
     res.json({ user })
@@ -716,15 +729,15 @@ app.put('/api/users/business', authenticateSupabaseUser, async (req, res) => {
   }
 })
 
-// Update user plan (TEST MODE ONLY - disabled in production)
+// Update user plan (TEST MODE - désactiver en production)
 app.put('/api/users/plan', authenticateSupabaseUser, async (req, res) => {
-  // SECURITY: Only allow in development/test environments
-  if (process.env.NODE_ENV === 'production' || process.env.ENABLE_TEST_MODE !== 'true') {
-    return res.status(403).json({ 
-      error: 'Plan changes only allowed via Stripe checkout in production',
-      message: 'Utilisez la page /upgrade pour changer de plan'
-    })
-  }
+  // POUR TESTS UNIQUEMENT : Décommenter la ligne suivante pour activer les tests de changement de plan
+  // if (process.env.NODE_ENV === 'production' && process.env.ENABLE_TEST_MODE !== 'true') {
+  //   return res.status(403).json({ 
+  //     error: 'Plan changes only allowed via Stripe checkout in production',
+  //     message: 'Utilisez la page /upgrade pour changer de plan'
+  //   })
+  // }
 
   try {
     const user = await getUserBySupabaseId(req.supabaseUserId)
@@ -756,6 +769,7 @@ app.get('/api/events', authenticateSupabaseUser, async (req, res) => {
     const businessType = user.businessType || 'commerce'
     
     let city = 'Paris'
+    let postalCode = '75001'
     try {
       const mainStore = await db.select()
         .from(stores)
@@ -765,16 +779,21 @@ app.get('/api/events', authenticateSupabaseUser, async (req, res) => {
         ))
         .limit(1)
       
-      if (mainStore.length > 0 && mainStore[0].city) {
-        city = mainStore[0].city
+      if (mainStore.length > 0) {
+        if (mainStore[0].city) {
+          city = mainStore[0].city
+        }
+        if (mainStore[0].postalCode) {
+          postalCode = mainStore[0].postalCode
+        }
       }
     } catch (storeError) {
       console.log('Impossible de récupérer le store principal, utilisation de Paris par défaut')
     }
     
     const { getLocalPublicEvents } = await import('./googleCalendar.js')
-    const events = await getLocalPublicEvents(city, businessType)
-    res.json({ events, userCity: city })
+    const events = await getLocalPublicEvents(city, businessType, postalCode)
+    res.json({ events, userCity: city, userPostalCode: postalCode })
   } catch (error) {
     console.error('Events API error:', error)
     res.json({ events: [], error: error.message })

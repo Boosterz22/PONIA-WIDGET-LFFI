@@ -91,19 +91,16 @@ function estimateEventImpact(event) {
   }
 }
 
-export async function getLocalPublicEvents(city = 'Paris', businessType = 'commerce') {
+function isParisRegionPostalCode(postalCode) {
+  if (!postalCode) return false
+  const prefix = postalCode.substring(0, 2)
+  return ['75', '77', '78', '91', '92', '93', '94', '95'].includes(prefix)
+}
+
+export async function getLocalPublicEvents(city = 'Paris', businessType = 'commerce', postalCode = '75001') {
   try {
-    const normalizedCity = city.toLowerCase().trim()
-    const parisRegionCities = [
-      'paris', 'boulogne', 'neuilly', 'levallois', 'clichy', 'saint-denis', 
-      'montreuil', 'vincennes', 'ivry', 'charenton', 'malakoff', 'vanves',
-      'issy', 'montrouge', 'gentilly', 'kremlin', 'pantin', 'aubervilliers'
-    ]
-    
-    const isParisRegion = parisRegionCities.some(pCity => normalizedCity.includes(pCity))
-    
-    if (!isParisRegion) {
-      console.log(`Événements non disponibles pour ${city} (seulement Paris/Région parisienne pour le moment)`)
+    if (!isParisRegionPostalCode(postalCode)) {
+      console.log(`Événements non disponibles pour le code postal ${postalCode} (seulement Paris/Île-de-France)`)
       return []
     }
     

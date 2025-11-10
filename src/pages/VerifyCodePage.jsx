@@ -118,7 +118,7 @@ export default function VerifyCodePage() {
             src="/ponia-logo.png" 
             alt="PONIA" 
             style={{ 
-              height: '60px',
+              height: '210px',
               width: 'auto'
             }} 
           />

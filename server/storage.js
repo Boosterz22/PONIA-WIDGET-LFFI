@@ -1,5 +1,5 @@
 import { db } from './db.js'
-import { users, products, stockHistory, notifications } from '../shared/schema.js'
+import { users, products, stockHistory, notifications, stores } from '../shared/schema.js'
 import { eq, and, desc } from 'drizzle-orm'
 
 export async function getUserByEmail(email) {
@@ -35,6 +35,30 @@ export async function updateUser(userId, updates) {
     .where(eq(users.id, userId))
     .returning()
   return result[0]
+}
+
+export async function createStore(storeData) {
+  const result = await db.insert(stores).values({
+    userId: storeData.userId,
+    name: storeData.name,
+    address: storeData.address || null,
+    city: storeData.city || null,
+    postalCode: storeData.postalCode || null,
+    country: storeData.country || 'FR',
+    isMain: storeData.isMain !== undefined ? storeData.isMain : true
+  }).returning()
+  return result[0]
+}
+
+export async function getMainStore(userId) {
+  const store = await db.select()
+    .from(stores)
+    .where(and(
+      eq(stores.userId, userId),
+      eq(stores.isMain, true)
+    ))
+    .limit(1)
+  return store[0] || null
 }
 
 export async function getProductsByUserId(userId) {

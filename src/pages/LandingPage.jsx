@@ -646,8 +646,8 @@ export default function LandingPage() {
                   🥖
                 </div>
                 <div>
-                  <div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Karim B.</div>
-                  <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Boulangerie artisanale, Paris 13e</div>
+                  <div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Sophie Martinet</div>
+                  <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Boulangerie Le Levain d'Or, Paris 11e</div>
                 </div>
               </div>
 
@@ -658,9 +658,9 @@ export default function LandingPage() {
                 marginBottom: '1rem',
                 borderLeft: '3px solid #ef4444'
               }}>
-                <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#ef4444', marginBottom: '0.5rem' }}>❌ AVANT</div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#ef4444', marginBottom: '0.5rem' }}>❌ AVANT PONIA</div>
                 <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.6 }}>
-                  "Je manquais de baguettes 2-3 fois par semaine. Ça me faisait perdre <strong>€150 de ventes</strong>. Le weekend, c'était le stress total."
+                  "Tous les samedis, je jetais <strong>23 baguettes et 12 croissants</strong>. €287 de gaspillage par mois. La nuit, j'avais des insomnies en calculant combien enfourner le lendemain. J'avais honte de devoir refuser des clients à 18h parce que j'étais à court..."
                 </p>
               </div>
 
@@ -670,9 +670,9 @@ export default function LandingPage() {
                 borderRadius: '10px',
                 borderLeft: '3px solid #FFD700'
               }}>
-                <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#FFD700', marginBottom: '0.5rem' }}>✅ APRÈS 1 MOIS</div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#FFD700', marginBottom: '0.5rem' }}>✅ APRÈS 5 SEMAINES</div>
                 <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.6 }}>
-                  "<strong>Zéro rupture depuis 4 semaines.</strong> Mon CA weekend a augmenté de 18%. PONIA m'alerte 2 jours avant, je commande pile ce qu'il faut."
+                  "<strong>Plus une seule baguette jetée. Zéro rupture.</strong> Le samedi, je vends €340 de plus qu'avant. PONIA me dit jeudi soir : 'Commande 18kg de farine en plus, il y a un match au Parc'. Et c'est pile juste. J'ai pleuré de soulagement la première fois. Mon mari n'y croyait pas."
                 </p>
               </div>
 
@@ -697,8 +697,8 @@ export default function LandingPage() {
                   🍕
                 </div>
                 <div>
-                  <div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Lina M.</div>
-                  <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Pizzeria napolitaine, Lyon</div>
+                  <div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Marc Dubois</div>
+                  <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Bistrot Les Canailles, Lyon 6e</div>
                 </div>
               </div>
 
@@ -709,9 +709,9 @@ export default function LandingPage() {
                 marginBottom: '1rem',
                 borderLeft: '3px solid #ef4444'
               }}>
-                <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#ef4444', marginBottom: '0.5rem' }}>❌ AVANT</div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#ef4444', marginBottom: '0.5rem' }}>❌ AVANT PONIA</div>
                 <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.6 }}>
-                  "Je jetais <strong>€400 de produits périmés/mois</strong> (tomates, mozzarella). J'achetais trop par peur de manquer."
+                  "Chaque lundi matin, je vidais mon frigo : <strong>7 kg de légumes pourris, 4 kg de viande périmée</strong>. €520 à la poubelle tous les mois. Je commandais trop 'au cas où'. Mon chef me suppliait d'arrêter ce massacre, mais je ne savais pas comment faire autrement."
                 </p>
               </div>
 
@@ -721,9 +721,9 @@ export default function LandingPage() {
                 borderRadius: '10px',
                 borderLeft: '3px solid #FFD700'
               }}>
-                <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#FFD700', marginBottom: '0.5rem' }}>✅ APRÈS 6 SEMAINES</div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#FFD700', marginBottom: '0.5rem' }}>✅ APRÈS 3 SEMAINES</div>
                 <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.6 }}>
-                  "Gaspillage réduit à <strong>€80/mois (-80%)</strong>. L'IA me dit exactement combien commander. J'ai récupéré mon investissement en 4 jours."
+                  "<strong>Gaspillage tombé à €75/mois. -86%.</strong> Là, je commande exactement ce qu'il faut. Hier, PONIA m'a dit 'Pas de magret aujourd'hui, il reste 3kg de bœuf'. J'ai créé un plat du jour avec, tout s'est vendu. Mon chef me dit que je suis un génie. Non, c'est PONIA qui calcule pour moi. J'ai économisé €1 335 en 3 mois."
                 </p>
               </div>
 
@@ -748,8 +748,8 @@ export default function LandingPage() {
                   🍷
                 </div>
                 <div>
-                  <div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Julien R.</div>
-                  <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Caviste indépendant, Bordeaux</div>
+                  <div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Élise Renault</div>
+                  <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Cave La Vigne Libre, Marseille</div>
                 </div>
               </div>
 
@@ -760,9 +760,9 @@ export default function LandingPage() {
                 marginBottom: '1rem',
                 borderLeft: '3px solid #ef4444'
               }}>
-                <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#ef4444', marginBottom: '0.5rem' }}>❌ AVANT</div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#ef4444', marginBottom: '0.5rem' }}>❌ AVANT PONIA</div>
                 <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.6 }}>
-                  "Je passais <strong>1h30/semaine</strong> à inventorier 200+ références. Erreurs fréquentes, clients déçus quand un vin n'était plus dispo."
+                  "Gérer <strong>340 références de vin</strong>, c'était un cauchemar. Le samedi soir à 21h, je comptais les bouteilles une par une pendant 2h. Je ratais des ventes : un client voulait 12 Châteauneuf, je pensais en avoir 8, j'en avais 3. Il est parti chez le concurrent."
                 </p>
               </div>
 
@@ -772,9 +772,9 @@ export default function LandingPage() {
                 borderRadius: '10px',
                 borderLeft: '3px solid #FFD700'
               }}>
-                <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#FFD700', marginBottom: '0.5rem' }}>✅ APRÈS 3 SEMAINES</div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#FFD700', marginBottom: '0.5rem' }}>✅ APRÈS 4 SEMAINES</div>
                 <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.6 }}>
-                  "<strong>10 minutes/semaine maximum.</strong> L'app est tellement rapide. Alertes automatiques quand un Bordeaux populaire descend. Mes clients adorent."
+                  "<strong>Je fais mon inventaire en 8 minutes chrono.</strong> Scan rapide sur mon téléphone, c'est fini. PONIA m'alerte : 'Plus que 5 bouteilles de Sancerre, c'est ton bestseller'. Je commande le lendemain. Zéro rupture. Zéro client perdu. J'ai retrouvé mes samedis soirs. Ma fille me dit que je souris plus."
                 </p>
               </div>
 

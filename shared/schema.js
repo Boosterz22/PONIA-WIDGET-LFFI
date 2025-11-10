@@ -24,6 +24,7 @@ export const stores = pgTable('stores', {
   name: varchar('name', { length: 255 }).notNull(),
   address: varchar('address', { length: 500 }),
   city: varchar('city', { length: 100 }),
+  postalCode: varchar('postal_code', { length: 10 }),
   country: varchar('country', { length: 50 }).default('FR'),
   isMain: boolean('is_main').default(false),
   createdAt: timestamp('created_at').defaultNow()
