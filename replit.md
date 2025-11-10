@@ -13,9 +13,33 @@ PONIA AI is an AI-powered inventory management system designed for small busines
 - Do not make changes to the folder `Z`
 - Do not make changes to the file `Y`
 
+## Recent Changes (Nov 10, 2025)
+
+### ✅ Parcours d'Inscription Professionnel (Latest)
+*   **Validation du mot de passe améliorée** - Expérience utilisateur professionnelle
+    → Champ "Confirmez votre mot de passe" ajouté sur le formulaire d'inscription
+    → Validation côté client : les mots de passe doivent correspondre
+    → Message d'erreur clair en rouge si les mots de passe ne correspondent pas
+    → Minimum 8 caractères requis et vérifié
+*   **Page de vérification d'email dédiée** - Communication claire avec l'utilisateur
+    → Nouvelle page `/verify-email` avec design professionnel et rassurant
+    → Logo PONIA, icônes lucide-react, couleurs dorées cohérentes
+    → Instructions étape par étape : 1. Ouvrir email, 2. Cliquer lien, 3. Auto-redirection
+    → Bouton "Renvoyer l'email de confirmation" avec feedback utilisateur
+    → Avertissement sur le délai (jusqu'à 5 minutes) et vérification des spams
+    → Contact support visible (support@ponia.ai)
+    → Lien "Retour à l'inscription" si mauvaise adresse email
+*   **Flow d'inscription optimisé** - Expérience fluide et professionnelle
+    → Signup : validation → redirection vers /verify-email avec email en state
+    → Email stocké dans localStorage pour récupération si fermeture navigateur
+    → Après confirmation email : Supabase authentifie → session créée
+    → App.jsx détecte session → redirige vers /complete-profile (si needsProfile)
+    → Configuration du profil (nom commerce, type business) → Dashboard
+    → Nettoyage automatique de pending_verification_email après login réussi
+
 ## Recent Changes (Nov 09, 2025)
 
-### ✅ Plan Pro RECOMMANDÉ - Corrections Finales (Latest)
+### ✅ Plan Pro RECOMMANDÉ - Corrections Finales
 *   **Couleur PONIA #FFD700 restaurée** - Correction branding
     → #FFD700 (doré PONIA) remis partout après correction temporaire erronée
     → CSS variables: --primary: #FFD700, --primary-dark: #FFA500
