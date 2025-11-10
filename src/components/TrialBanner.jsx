@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { Clock, X, Crown } from 'lucide-react'
+import { Clock, Crown } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../services/supabase'
 
 export default function TrialBanner() {
   const navigate = useNavigate()
   const [trialInfo, setTrialInfo] = useState(null)
-  const [visible, setVisible] = useState(true)
 
   useEffect(() => {
     loadTrialInfo()
@@ -44,7 +43,7 @@ export default function TrialBanner() {
     }
   }
 
-  if (!trialInfo || !visible) return null
+  if (!trialInfo) return null
 
   const { expired, daysLeft } = trialInfo
 
@@ -104,19 +103,6 @@ export default function TrialBanner() {
         }}
       >
         {expired ? 'Passer à un plan payant' : 'Upgrader maintenant'}
-      </button>
-
-      <button
-        onClick={() => setVisible(false)}
-        style={{
-          background: 'transparent',
-          border: 'none',
-          cursor: 'pointer',
-          padding: '0.25rem',
-          color: '#6B7280'
-        }}
-      >
-        <X size={18} />
       </button>
     </div>
   )
