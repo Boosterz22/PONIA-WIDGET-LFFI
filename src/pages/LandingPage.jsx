@@ -661,7 +661,7 @@ export default function LandingPage() {
               }}>
                 <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#ef4444', marginBottom: '0.5rem' }}>❌ AVANT PONIA</div>
                 <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.6 }}>
-                  "Tous les samedis, je jetais <strong>23 baguettes et 12 croissants</strong>. €287 de gaspillage par mois. La nuit, j'avais des insomnies en calculant combien enfourner le lendemain. J'avais honte de devoir refuser des clients à 18h parce que j'étais à court..."
+                  "Tous les weekends, je jetais des baguettes et des croissants. Beaucoup trop. J'avais honte de gâcher autant, et en même temps je refusais des clients à 18h parce que j'étais en rupture..."
                 </p>
               </div>
 
@@ -671,9 +671,9 @@ export default function LandingPage() {
                 borderRadius: '10px',
                 borderLeft: '3px solid #FFD700'
               }}>
-                <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#FFD700', marginBottom: '0.5rem' }}>✅ APRÈS 5 SEMAINES</div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#FFD700', marginBottom: '0.5rem' }}>✅ AVEC PONIA</div>
                 <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.6 }}>
-                  "<strong>Plus une seule baguette jetée. Zéro rupture.</strong> Le samedi, je vends €340 de plus qu'avant. PONIA me dit jeudi soir : 'Commande 18kg de farine en plus, il y a un match au Parc'. Et c'est pile juste. J'ai pleuré de soulagement la première fois. Mon mari n'y croyait pas."
+                  "Maintenant je ne jette presque plus rien et j'ai toujours ce qu'il faut. PONIA m'alerte avant les ruptures et me dit quoi commander. Mes samedis sont beaucoup plus sereins."
                 </p>
               </div>
 
@@ -712,7 +712,7 @@ export default function LandingPage() {
               }}>
                 <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#ef4444', marginBottom: '0.5rem' }}>❌ AVANT PONIA</div>
                 <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.6 }}>
-                  "Chaque lundi matin, je vidais mon frigo : <strong>7 kg de légumes pourris, 4 kg de viande périmée</strong>. €520 à la poubelle tous les mois. Je commandais trop 'au cas où'. Mon chef me suppliait d'arrêter ce massacre, mais je ne savais pas comment faire autrement."
+                  "Tous les lundis, je vidais mon frigo plein de légumes pourris et de viande périmée. Je commandais trop par peur de manquer. Le gaspillage me rendait malade mais je ne savais pas comment faire mieux."
                 </p>
               </div>
 
@@ -722,9 +722,9 @@ export default function LandingPage() {
                 borderRadius: '10px',
                 borderLeft: '3px solid #FFD700'
               }}>
-                <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#FFD700', marginBottom: '0.5rem' }}>✅ APRÈS 3 SEMAINES</div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#FFD700', marginBottom: '0.5rem' }}>✅ AVEC PONIA</div>
                 <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.6 }}>
-                  "<strong>Gaspillage tombé à €75/mois. -86%.</strong> Là, je commande exactement ce qu'il faut. Hier, PONIA m'a dit 'Pas de magret aujourd'hui, il reste 3kg de bœuf'. J'ai créé un plat du jour avec, tout s'est vendu. Mon chef me dit que je suis un génie. Non, c'est PONIA qui calcule pour moi. J'ai économisé €1 335 en 3 mois."
+                  "Le gaspillage a vraiment baissé. PONIA me dit exactement quoi commander et quand. Hier il m'a suggéré d'utiliser mon stock de bœuf pour un plat du jour. Tout s'est vendu. Je commande juste ce qu'il faut maintenant."
                 </p>
               </div>
 
@@ -763,7 +763,7 @@ export default function LandingPage() {
               }}>
                 <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#ef4444', marginBottom: '0.5rem' }}>❌ AVANT PONIA</div>
                 <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.6 }}>
-                  "Gérer <strong>340 références de vin</strong>, c'était un cauchemar. Le samedi soir à 21h, je comptais les bouteilles une par une pendant 2h. Je ratais des ventes : un client voulait 12 Châteauneuf, je pensais en avoir 8, j'en avais 3. Il est parti chez le concurrent."
+                  "Avec toutes mes références de vin, c'était ingérable. Je passais des heures à compter mes bouteilles chaque weekend. Des clients repartaient chez le concurrent parce que je pensais avoir du stock mais en fait non."
                 </p>
               </div>
 
@@ -773,9 +773,9 @@ export default function LandingPage() {
                 borderRadius: '10px',
                 borderLeft: '3px solid #FFD700'
               }}>
-                <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#FFD700', marginBottom: '0.5rem' }}>✅ APRÈS 4 SEMAINES</div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#FFD700', marginBottom: '0.5rem' }}>✅ AVEC PONIA</div>
                 <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: 1.6 }}>
-                  "<strong>Je fais mon inventaire en 8 minutes chrono.</strong> Scan rapide sur mon téléphone, c'est fini. PONIA m'alerte : 'Plus que 5 bouteilles de Sancerre, c'est ton bestseller'. Je commande le lendemain. Zéro rupture. Zéro client perdu. J'ai retrouvé mes samedis soirs. Ma fille me dit que je souris plus."
+                  "Mon inventaire prend moins de 10 minutes maintenant. PONIA m'alerte quand mes bestsellers baissent et je commande à temps. Plus de rupture, plus de client perdu. Mes weekends sont beaucoup plus calmes."
                 </p>
               </div>
 
