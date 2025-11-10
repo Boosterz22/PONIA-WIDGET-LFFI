@@ -54,7 +54,21 @@ PONIA AI is a secure full-stack application with an Express backend (Node.js) an
 
 ## Recent Changes (Nov 10, 2025)
 
-### ✅ Sondage Système de Caisse + UX Tarifs (Latest)
+### ✅ Corrections Performance + Bug Génération Bon de Commande (Latest)
+*   **Interface stock ultra-fluide** - Optimistic updates pour réactivité instantanée
+    → handleUpdateQuantity : update UI immédiat avec functional setters, requête en arrière-plan
+    → handleDeleteProduct : suppression UI immédiate avec functional setters, requête en arrière-plan
+    → En cas d'erreur réseau : rechargement automatique depuis serveur pour état authoritative
+    → Boutons +/- réagissent instantanément, même avec clics rapides multiples
+    → Plus aucune latence visible pour l'utilisateur
+*   **Bug fix : Génération bon de commande** - Résolution incompatibilité types PostgreSQL
+    → Problème : PostgreSQL retourne decimal comme strings ("25.50"), validation Number.isFinite() échouait
+    → Solution : Normalisation produits avec parseFloat() avant validation (lignes 452-477 server/index.js)
+    → Validation en 3 phases : (1) shape validation, (2) normalisation, (3) validation numérique
+    → Gestion robuste données malformées : retourne 400 au lieu de crash 500
+    → Endpoint `/api/generate-order` fonctionnel pour tous les plans Standard/Pro
+
+### ✅ Sondage Système de Caisse + UX Tarifs
 *   **Question POS dans l'onboarding** - Analytics et préparation intégrations futures
     → Nouveau champ `posSystem` dans schema users (nullable varchar 100)
     → CompleteProfilePage : dropdown optionnel avec 9 options (Non, Zelty, Tiller, Cashpad, Lightspeed, Square, Innovorder, Sunday, SumUp, Autre)

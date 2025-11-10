@@ -446,6 +446,7 @@ app.post('/api/generate-order', authenticateSupabaseUser, enforceTrialStatus, as
       return res.status(400).json({ error: 'Produits requis (tableau non vide)' })
     }
 
+    // Validation de base AVANT normalisation (évite crashes)
     for (const p of products) {
       if (!p || typeof p !== 'object') {
         return res.status(400).json({ error: 'Produits invalides (objets requis)' })
@@ -453,6 +454,17 @@ app.post('/api/generate-order', authenticateSupabaseUser, enforceTrialStatus, as
       if (!p.name || typeof p.name !== 'string' || !p.unit || typeof p.unit !== 'string') {
         return res.status(400).json({ error: 'Produits invalides (name et unit string requis)' })
       }
+    }
+
+    // Normaliser les produits : convertir strings en nombres (PostgreSQL decimal → string)
+    const normalizedProducts = products.map(p => ({
+      ...p,
+      currentQuantity: parseFloat(p.currentQuantity),
+      alertThreshold: p.alertThreshold !== undefined ? parseFloat(p.alertThreshold) : undefined
+    }))
+
+    // Validation numérique après normalisation
+    for (const p of normalizedProducts) {
       if (!Number.isFinite(p.currentQuantity) || p.currentQuantity < 0) {
         return res.status(400).json({ error: 'Produits invalides (currentQuantity nombre positif requis)' })
       }
@@ -461,12 +473,12 @@ app.post('/api/generate-order', authenticateSupabaseUser, enforceTrialStatus, as
       }
     }
 
-    const critical = products.filter(p => {
+    const critical = normalizedProducts.filter(p => {
       const threshold = Number.isFinite(p.alertThreshold) && p.alertThreshold > 0 ? p.alertThreshold : 10
       return p.currentQuantity <= threshold * 0.5
     })
     
-    const low = products.filter(p => {
+    const low = normalizedProducts.filter(p => {
       const threshold = Number.isFinite(p.alertThreshold) && p.alertThreshold > 0 ? p.alertThreshold : 10
       return p.currentQuantity > threshold * 0.5 && p.currentQuantity <= threshold
     })
