@@ -49,6 +49,8 @@ export default function EventsWidget() {
     )
   }
 
+  const nextEvent = events.length > 0 ? events[0] : null
+
   return (
     <div className="card" style={{ padding: '1.25rem' }}>
       <div 
@@ -56,7 +58,7 @@ export default function EventsWidget() {
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'space-between',
-          marginBottom: isExpanded ? '1rem' : '0',
+          marginBottom: isExpanded ? '1rem' : (nextEvent ? '0.75rem' : '0'),
           cursor: 'pointer'
         }}
         onClick={() => setIsExpanded(!isExpanded)}
@@ -82,6 +84,47 @@ export default function EventsWidget() {
           {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
         </button>
       </div>
+
+      {!isExpanded && nextEvent && (
+        <div
+          style={{
+            padding: '0.75rem',
+            background: '#F9FAFB',
+            borderRadius: '8px',
+            borderLeft: `3px solid ${nextEvent.impact.level === 'high' ? '#EF4444' : nextEvent.impact.level === 'medium' ? '#F59E0B' : '#10B981'}`,
+            cursor: 'pointer'
+          }}
+          onClick={() => setIsExpanded(true)}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+            <p style={{ fontWeight: '600', fontSize: '0.9rem', margin: 0, flex: 1 }}>
+              {nextEvent.name}
+            </p>
+            <span style={{
+              background: nextEvent.impact.level === 'high' ? '#FEE2E2' : nextEvent.impact.level === 'medium' ? '#FEF3C7' : '#D1FAE5',
+              color: nextEvent.impact.level === 'high' ? '#DC2626' : nextEvent.impact.level === 'medium' ? '#D97706' : '#059669',
+              padding: '0.25rem 0.5rem',
+              borderRadius: '4px',
+              fontSize: '0.7rem',
+              fontWeight: '600',
+              whiteSpace: 'nowrap',
+              marginLeft: '0.5rem'
+            }}>
+              {formatDate(nextEvent.start)}
+            </span>
+          </div>
+          <div style={{ fontSize: '0.75rem', color: '#6B7280' }}>
+            <Users size={12} style={{ display: 'inline', marginRight: '0.25rem' }} />
+            {nextEvent.impact.expectedVisitors} • {nextEvent.impact.stockAdvice}
+          </div>
+        </div>
+      )}
+
+      {!isExpanded && events.length === 0 && (
+        <div style={{ fontSize: '0.75rem', color: '#6B7280', padding: '0.5rem', background: '#F9FAFB', borderRadius: '6px', marginTop: '0.75rem' }}>
+          Aucun événement à venir
+        </div>
+      )}
 
       {isExpanded && (
         <>

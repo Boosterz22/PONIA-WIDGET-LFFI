@@ -93,6 +93,20 @@ function estimateEventImpact(event) {
 
 export async function getLocalPublicEvents(city = 'Paris', businessType = 'commerce') {
   try {
+    const normalizedCity = city.toLowerCase().trim()
+    const parisRegionCities = [
+      'paris', 'boulogne', 'neuilly', 'levallois', 'clichy', 'saint-denis', 
+      'montreuil', 'vincennes', 'ivry', 'charenton', 'malakoff', 'vanves',
+      'issy', 'montrouge', 'gentilly', 'kremlin', 'pantin', 'aubervilliers'
+    ]
+    
+    const isParisRegion = parisRegionCities.some(pCity => normalizedCity.includes(pCity))
+    
+    if (!isParisRegion) {
+      console.log(`Événements non disponibles pour ${city} (seulement Paris/Région parisienne pour le moment)`)
+      return []
+    }
+    
     const parisEvents = await getParisPublicEvents(10)
     
     const relevantEvents = filterEventsByBusinessType(parisEvents, businessType)

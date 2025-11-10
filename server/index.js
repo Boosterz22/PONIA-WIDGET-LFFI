@@ -2,9 +2,9 @@ import express from 'express'
 import OpenAI from 'openai'
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
-import { eq } from 'drizzle-orm'
+import { eq, and } from 'drizzle-orm'
 import { db } from './db.js'
-import { users } from '../shared/schema.js'
+import { users, stores } from '../shared/schema.js'
 import { 
   getUserByEmail,
   getUserBySupabaseId, 
@@ -754,11 +754,27 @@ app.get('/api/events', authenticateSupabaseUser, async (req, res) => {
     }
 
     const businessType = user.businessType || 'commerce'
-    const city = 'Paris'
+    
+    let city = 'Paris'
+    try {
+      const mainStore = await db.select()
+        .from(stores)
+        .where(and(
+          eq(stores.userId, user.id),
+          eq(stores.isMain, true)
+        ))
+        .limit(1)
+      
+      if (mainStore.length > 0 && mainStore[0].city) {
+        city = mainStore[0].city
+      }
+    } catch (storeError) {
+      console.log('Impossible de récupérer le store principal, utilisation de Paris par défaut')
+    }
     
     const { getLocalPublicEvents } = await import('./googleCalendar.js')
     const events = await getLocalPublicEvents(city, businessType)
-    res.json({ events })
+    res.json({ events, userCity: city })
   } catch (error) {
     console.error('Events API error:', error)
     res.json({ events: [], error: error.message })
@@ -890,6 +906,15 @@ app.post('/api/stripe/create-checkout', authenticateSupabaseUser, async (req, re
       await updateUser(user.id, { stripeCustomerId: customerId })
     }
 
+    const getBaseUrl = () => {
+      if (process.env.REPLIT_DEV_DOMAIN) {
+        return `https://${process.env.REPLIT_DEV_DOMAIN}`
+      }
+      return 'http://localhost:5000'
+    }
+
+    const baseUrl = getBaseUrl()
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       payment_method_types: ['card'],
@@ -898,8 +923,8 @@ app.post('/api/stripe/create-checkout', authenticateSupabaseUser, async (req, re
         quantity: 1
       }],
       mode: 'subscription',
-      success_url: `${process.env.REPLIT_DEV_DOMAIN || 'http://localhost:5000'}/dashboard?upgrade=success`,
-      cancel_url: `${process.env.REPLIT_DEV_DOMAIN || 'http://localhost:5000'}/settings?upgrade=cancelled`,
+      success_url: `${baseUrl}/dashboard?upgrade=success`,
+      cancel_url: `${baseUrl}/settings?upgrade=cancelled`,
       metadata: {
         poniaUserId: user.id.toString(),
         plan,
