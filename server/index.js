@@ -20,6 +20,7 @@ import {
   createStore,
   getMainStore
 } from './storage.js'
+import { generateOrderPDF } from './pdfService.js'
 
 // Stripe configuration
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
@@ -427,10 +428,9 @@ Tu es l'outil qui transforme les commerçants en experts de leur propre stock.`
   }
 })
 
-// Endpoint génération bon de commande intelligent (SÉCURISÉ)
+// Endpoint génération bon de commande intelligent (SÉCURISÉ) - PDF
 app.post('/api/generate-order', authenticateSupabaseUser, enforceTrialStatus, async (req, res) => {
   try {
-    // Verify user ownership
     const user = await getUserBySupabaseId(req.supabaseUserId)
     if (!user) {
       return res.status(404).json({ error: 'Utilisateur non trouvé' })
@@ -446,7 +446,6 @@ app.post('/api/generate-order', authenticateSupabaseUser, enforceTrialStatus, as
       return res.status(400).json({ error: 'Produits requis (tableau non vide)' })
     }
 
-    // Validation de base AVANT normalisation (évite crashes)
     for (const p of products) {
       if (!p || typeof p !== 'object') {
         return res.status(400).json({ error: 'Produits invalides (objets requis)' })
@@ -456,14 +455,12 @@ app.post('/api/generate-order', authenticateSupabaseUser, enforceTrialStatus, as
       }
     }
 
-    // Normaliser les produits : convertir strings en nombres (PostgreSQL decimal → string)
     const normalizedProducts = products.map(p => ({
       ...p,
       currentQuantity: parseFloat(p.currentQuantity),
       alertThreshold: p.alertThreshold !== undefined ? parseFloat(p.alertThreshold) : undefined
     }))
 
-    // Validation numérique après normalisation
     for (const p of normalizedProducts) {
       if (!Number.isFinite(p.currentQuantity) || p.currentQuantity < 0) {
         return res.status(400).json({ error: 'Produits invalides (currentQuantity nombre positif requis)' })
@@ -486,8 +483,8 @@ app.post('/api/generate-order', authenticateSupabaseUser, enforceTrialStatus, as
     const orderProducts = [...critical, ...low]
     
     if (orderProducts.length === 0) {
-      return res.json({ 
-        content: null,
+      return res.status(200).json({ 
+        noProducts: true,
         message: 'Aucun produit à commander pour le moment !'
       })
     }
@@ -496,95 +493,117 @@ app.post('/api/generate-order', authenticateSupabaseUser, enforceTrialStatus, as
       const threshold = Number.isFinite(p.alertThreshold) && p.alertThreshold > 0 ? p.alertThreshold : 10
       const dailyConsumption = threshold / 7
       const coverageDays = dailyConsumption > 0 ? (p.currentQuantity / dailyConsumption).toFixed(1) : '0.0'
-      return `- ${p.name}: ${p.currentQuantity} ${p.unit} (seuil: ${threshold} ${p.unit}, couverture: ~${coverageDays}j, fournisseur: ${p.supplier || 'À définir'})`
-    }).join('\n')
+      return {
+        name: p.name,
+        currentQuantity: p.currentQuantity,
+        unit: p.unit,
+        threshold: threshold,
+        coverageDays: parseFloat(coverageDays),
+        supplier: p.supplier || 'À définir',
+        isCritical: p.currentQuantity <= threshold * 0.5
+      }
+    })
 
-    const prompt = `Tu es un expert en gestion de stock pour ${businessType || 'commerce'}. 
-
-MISSION : Génère un bon de commande professionnel pour "${businessName}".
+    const prompt = `Tu es un expert en gestion de stock. Génère les recommandations pour un bon de commande de "${businessName}" (${businessType || 'commerce'}).
 
 PRODUITS À COMMANDER :
-${productsContext}
+${productsContext.map(p => `- ${p.name}: ${p.currentQuantity} ${p.unit} (seuil: ${p.threshold} ${p.unit}, couverture: ~${p.coverageDays}j, urgence: ${p.isCritical ? 'CRITIQUE' : 'semaine'})`).join('\n')}
 
-INSTRUCTIONS CRITIQUES :
-1. **Quantités suggérées** : Propose quantités pour atteindre 7-14 jours de couverture
-   - Base-toi sur les seuils fournis (consommation hebdomadaire = seuil)
-   - Produits critiques (<2j couverture) → 14 jours minimum
-   - Produits faibles (3-7j) → 10 jours standard
-   - IMPORTANT : Ne fabrique PAS de formules EOQ complexes, suggère des quantités RONDES et pratiques
+RETOURNE un objet JSON STRICTEMENT avec cette structure :
+{
+  "urgentProducts": [
+    {"name": "...", "suggestedQuantity": <nombre>, "unit": "...", "unitPrice": <prix estimé marché FR>}
+  ],
+  "weeklyProducts": [
+    {"name": "...", "suggestedQuantity": <nombre>, "unit": "...", "unitPrice": <prix estimé marché FR>}
+  ],
+  "recommendations": [
+    "Recommandation actionnable 1",
+    "Recommandation actionnable 2"
+  ]
+}
 
-2. **Priorisation** :
-   - 🔴 URGENT (couverture <2j) : commande aujourd'hui
-   - 🟠 CETTE SEMAINE (couverture 3-7j) : planifier sous 3-5j
-   - Regroupe par fournisseur pour optimiser livraison
-
-3. **Tarifs** :
-   - Indique clairement : "Prix indicatifs marché français ${new Date().getFullYear()}"
-   - Estime selon standards secteur ${businessType || 'commerce'}
-   - Précise que ce sont des ESTIMATIONS, pas des prix contractuels
-
-4. **Recommandations** :
-   - 2-3 conseils actionnables (ajuster seuils, négocier volumes, diversifier fournisseurs)
-   - Base-toi sur les données fournies, ne suppose rien
-
-FORMAT REQUIS :
-═══════════════════════════════════════════════════════
-              BON DE COMMANDE - ${businessName.toUpperCase()}
-═══════════════════════════════════════════════════════
-Date : ${new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}
-Généré par : PONIA AI
-
-───────────────────────────────────────────────────────
-🔴 COMMANDES URGENTES (livraison <48h)
-───────────────────────────────────────────────────────
-[Si produits critiques : liste avec nom, quantité suggérée, prix unitaire indicatif, total]
-[Sinon : "Aucune urgence détectée"]
-
-───────────────────────────────────────────────────────
-🟠 COMMANDES SEMAINE (livraison 3-5j)
-───────────────────────────────────────────────────────
-[Si produits faibles : liste avec nom, quantité suggérée, prix unitaire indicatif, total]
-[Sinon : "Aucune commande planifiée"]
-
-───────────────────────────────────────────────────────
-📦 RÉCAPITULATIF PAR FOURNISSEUR
-───────────────────────────────────────────────────────
-[Fournisseur] : X produits → Total indicatif: XXX€
-
-───────────────────────────────────────────────────────
-💡 RECOMMANDATIONS
-───────────────────────────────────────────────────────
-1. [Recommandation actionnable 1]
-2. [Recommandation actionnable 2]
-
-═══════════════════════════════════════════════════════
-TOTAL INDICATIF : XXX€ (prix marché ${new Date().getFullYear()}, à confirmer)
-═══════════════════════════════════════════════════════`
+RÈGLES :
+- urgentProducts = produits avec couverture <2j (quantité pour 14j minimum)
+- weeklyProducts = produits avec couverture 3-7j (quantité pour 10j)
+- suggestedQuantity = nombres ENTIERS pratiques
+- unitPrice = estimation réaliste marché français ${new Date().getFullYear()} pour ${businessType || 'commerce'}
+- 2-3 recommendations max, concrètes et actionnables
+- Retourne SEULEMENT le JSON, rien d'autre`
 
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [
+        { 
+          role: 'system', 
+          content: 'Tu retournes UNIQUEMENT du JSON valide, sans texte supplémentaire. Pas de markdown, pas d\'explication.' 
+        },
         { role: 'user', content: prompt }
       ],
-      temperature: 0.3,
-      max_tokens: 1500
+      temperature: 0.2,
+      max_tokens: 1500,
+      response_format: { type: 'json_object' }
     })
 
-    const orderContent = completion.choices[0].message.content
-    
-    res.json({ 
-      content: orderContent,
-      productsCount: orderProducts.length,
-      criticalCount: critical.length,
-      lowCount: low.length
-    })
+    let aiData
+    try {
+      aiData = JSON.parse(completion.choices[0].message.content)
+    } catch (parseError) {
+      console.error('JSON parsing error:', completion.choices[0].message.content)
+      return res.status(500).json({ error: 'Erreur de formatage IA' })
+    }
+
+    if (!aiData.urgentProducts || !Array.isArray(aiData.urgentProducts)) {
+      aiData.urgentProducts = []
+    }
+    if (!aiData.weeklyProducts || !Array.isArray(aiData.weeklyProducts)) {
+      aiData.weeklyProducts = []
+    }
+    if (!aiData.recommendations || !Array.isArray(aiData.recommendations)) {
+      aiData.recommendations = []
+    }
+
+    const allProducts = [...aiData.urgentProducts, ...aiData.weeklyProducts]
+    const totalAmount = allProducts.reduce((sum, p) => {
+      const qty = parseFloat(p.suggestedQuantity) || 0
+      const price = parseFloat(p.unitPrice) || 0
+      return sum + (qty * price)
+    }, 0)
+
+    const mainStore = await getMainStore(user.id)
+    const storeAddress = mainStore?.address ? 
+      `${mainStore.address}${mainStore.postalCode ? ', ' + mainStore.postalCode : ''}${mainStore.city ? ' ' + mainStore.city : ''}` : 
+      null
+
+    const pdfData = {
+      storeName: businessName,
+      storeAddress: storeAddress,
+      date: new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }),
+      urgentProducts: aiData.urgentProducts,
+      weeklyProducts: aiData.weeklyProducts,
+      recommendations: aiData.recommendations,
+      totalAmount: totalAmount
+    }
+
+    const pdfDoc = generateOrderPDF(pdfData)
+
+    res.setHeader('Content-Type', 'application/pdf')
+    res.setHeader('Content-Disposition', `attachment; filename=bon-de-commande-${businessName.replace(/\s+/g, '-')}-${Date.now()}.pdf`)
+    res.setHeader('X-Products-Count', orderProducts.length.toString())
+    res.setHeader('X-Critical-Count', critical.length.toString())
+    res.setHeader('X-Low-Count', low.length.toString())
+
+    pdfDoc.pipe(res)
+    pdfDoc.end()
 
   } catch (error) {
     console.error('Erreur génération bon de commande:', error.message)
-    res.status(500).json({ 
-      error: 'Erreur serveur',
-      message: 'Impossible de générer le bon de commande.'
-    })
+    if (!res.headersSent) {
+      res.status(500).json({ 
+        error: 'Erreur serveur',
+        message: 'Impossible de générer le bon de commande.'
+      })
+    }
   }
 })
 
