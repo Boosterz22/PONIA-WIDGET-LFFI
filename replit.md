@@ -15,7 +15,25 @@ PONIA AI is an AI-powered inventory management system designed for small busines
 
 ## Recent Changes (Nov 10, 2025)
 
-### ✅ Parcours d'Inscription Professionnel (Latest)
+### ✅ Page d'Upgrade Professionnelle & Correction Paiement Stripe (Latest)
+*   **Design de la page d'upgrade refait complètement** - Identique à la page tarifs
+    → Fond neutre #fafafa au lieu du gradient jaune
+    → Affiche uniquement les plans Standard et Pro (pas de plan Basique)
+    → Design cohérent et professionnel avec toggle Mensuel/Annuel
+    → Badge "⭐ RECOMMANDÉ" sur le plan Pro
+    → Navigation améliorée avec retour au Dashboard
+*   **Système de paiement Stripe corrigé** - Configuration via variables d'environnement
+    → Price IDs hardcodés remplacés par variables d'environnement
+    → Variables requises: STRIPE_PRICE_STANDARD_MONTHLY, STRIPE_PRICE_STANDARD_YEARLY, STRIPE_PRICE_PRO_MONTHLY, STRIPE_PRICE_PRO_YEARLY
+    → Validation des Price IDs avant création de session Stripe
+    → Messages d'erreur clairs si configuration manquante
+    → Documentation complète créée: STRIPE_CONFIGURATION.md
+*   **Gestion des erreurs améliorée** - UX professionnelle
+    → Loader pendant la redirection Stripe
+    → Messages d'erreur explicites pour l'utilisateur
+    → Logs serveur pour debugging
+
+### ✅ Parcours d'Inscription Professionnel
 *   **Validation du mot de passe améliorée** - Expérience utilisateur professionnelle
     → Champ "Confirmez votre mot de passe" ajouté sur le formulaire d'inscription
     → Validation côté client : les mots de passe doivent correspondre
