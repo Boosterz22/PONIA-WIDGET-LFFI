@@ -15,7 +15,27 @@ PONIA AI is an AI-powered inventory management system designed for small busines
 
 ## Recent Changes (Nov 10, 2025)
 
-### ✅ Système de Vérification par Code OTP (Latest)
+### ✅ Améliorations Calendrier & Fix Stripe (Latest)
+*   **Erreur Stripe corrigée** - URLs invalides résolues
+    → Helper getBaseUrl() créé pour ajouter `https://` devant REPLIT_DEV_DOMAIN
+    → success_url et cancel_url maintenant avec schéma explicite
+    → Résout l'erreur "Invalid URL: An explicit scheme must be provided"
+*   **Calendrier dépliable amélioré** - Meilleure UX
+    → Affiche maintenant le prochain événement même quand replié
+    → Aperçu compact : nom, date, visiteurs, conseil stock
+    → Message "Aucun événement à venir" si vide
+    → Cliquable pour déplier et voir tous les événements
+*   **Filtrage géographique des événements** - Personnalisation locale
+    → Récupération de la ville du store principal de l'utilisateur
+    → Affichage des événements de Paris/Région parisienne uniquement
+    → Liste des villes supportées : Paris, Neuilly, Levallois, Saint-Denis, etc.
+    → Fallback à Paris si pas de ville configurée
+    → Retourne [] pour les villes non supportées (avec log)
+*   **Sécurité renforcée** - Protection des données
+    → Correction de la requête stores avec `and()` pour éviter l'exposition cross-user
+    → Import sécurisé de stores depuis schema.js
+
+### ✅ Système de Vérification par Code OTP
 *   **Nouvelle page VerifyCodePage** - Remplacement du lien email par code à 6 chiffres
     → Page professionnelle `/verify-code` avec input numérique optimisé mobile
     → Validation en temps réel (6 chiffres requis)
