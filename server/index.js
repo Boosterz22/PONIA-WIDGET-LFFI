@@ -773,15 +773,15 @@ app.put('/api/users/business', authenticateSupabaseUser, async (req, res) => {
   }
 })
 
-// Update user plan (TEST MODE - désactiver en production)
+// Update user plan (PRODUCTION MODE - protection active)
 app.put('/api/users/plan', authenticateSupabaseUser, async (req, res) => {
-  // POUR TESTS UNIQUEMENT : Décommenter la ligne suivante pour activer les tests de changement de plan
-  // if (process.env.NODE_ENV === 'production' && process.env.ENABLE_TEST_MODE !== 'true') {
-  //   return res.status(403).json({ 
-  //     error: 'Plan changes only allowed via Stripe checkout in production',
-  //     message: 'Utilisez la page /upgrade pour changer de plan'
-  //   })
-  // }
+  // Protection production : changements de plan UNIQUEMENT via Stripe
+  if (process.env.ENABLE_TEST_MODE !== 'true') {
+    return res.status(403).json({ 
+      error: 'Plan changes only allowed via Stripe checkout in production',
+      message: 'Utilisez la page /upgrade pour changer de plan'
+    })
+  }
 
   try {
     const user = await getUserBySupabaseId(req.supabaseUserId)
