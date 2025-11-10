@@ -57,23 +57,17 @@ export default function VerifyEmailPage() {
         textAlign: 'center'
       }}>
         <Link to="/" style={{ 
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '0.5rem',
-          textDecoration: 'none',
+          display: 'inline-block',
           marginBottom: '2rem'
         }}>
-          <span style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: '700' }}>⚡</span>
-          <span style={{ 
-            fontSize: 'clamp(1.5rem, 4vw, 2rem)', 
-            fontWeight: '700',
-            background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text'
-          }}>
-            PONIA
-          </span>
+          <img 
+            src="/ponia-logo.png" 
+            alt="PONIA" 
+            style={{ 
+              height: '60px',
+              width: 'auto'
+            }} 
+          />
         </Link>
 
         <div style={{
