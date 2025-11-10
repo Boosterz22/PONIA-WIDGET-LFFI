@@ -23,9 +23,12 @@ export default function CompleteProfilePage({ session }) {
     try {
       const referralCode = generateReferralCode(businessName, businessType)
 
-      await fetch('/api/users/sync', {
+      const response = await fetch('/api/users/sync', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
         body: JSON.stringify({
           supabaseId: session.user.id,
           email: session.user.email,
@@ -36,6 +39,12 @@ export default function CompleteProfilePage({ session }) {
         })
       })
 
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Erreur lors de la création du profil')
+      }
+
       localStorage.setItem('ponia_business_type', businessType)
       localStorage.setItem('ponia_user_plan', 'basique')
       localStorage.setItem('ponia_referral_code', referralCode)
@@ -44,7 +53,8 @@ export default function CompleteProfilePage({ session }) {
 
       window.location.href = '/dashboard'
     } catch (error) {
-      alert(error.message)
+      console.error('Erreur configuration profil:', error)
+      alert(error.message || 'Erreur lors de la configuration du profil. Veuillez réessayer.')
       setLoading(false)
     }
   }
@@ -75,7 +85,7 @@ export default function CompleteProfilePage({ session }) {
           display: 'inline-block',
           marginBottom: '3rem'
         }}>
-          <img src="/ponia-logo.png" alt="PONIA AI" style={{ height: '50px' }} />
+          <img src="/ponia-icon-black.png" alt="PONIA" style={{ height: '70px', width: 'auto' }} />
         </Link>
 
         <h1 style={{ 
