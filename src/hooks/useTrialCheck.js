@@ -24,7 +24,8 @@ export function useTrialCheck() {
       if (response.ok) {
         const { user } = await response.json()
         
-        if (user.plan !== 'basique' || !user.trialEndsAt) {
+        // Vérifier si l'utilisateur a un essai expiré
+        if (!user.trialEndsAt) {
           setTrialExpired(false)
         } else {
           const trialEnd = new Date(user.trialEndsAt)

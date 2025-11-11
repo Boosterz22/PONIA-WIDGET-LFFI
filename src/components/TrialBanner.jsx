@@ -23,7 +23,8 @@ export default function TrialBanner() {
       if (response.ok) {
         const { user } = await response.json()
         
-        if (user.plan !== 'basique' || !user.trialEndsAt) {
+        // Afficher la bannière uniquement si l'utilisateur a un essai gratuit en cours
+        if (!user.trialEndsAt) {
           setTrialInfo(null)
           return
         }

@@ -126,7 +126,7 @@ async function authenticateSupabaseUser(req, res, next) {
   }
 }
 
-// Trial enforcement middleware - block expired trials from premium endpoints
+// Trial enforcement middleware - block expired trials and free users from premium endpoints
 async function enforceTrialStatus(req, res, next) {
   try {
     const user = await getUserBySupabaseId(req.supabaseUserId)
@@ -135,18 +135,39 @@ async function enforceTrialStatus(req, res, next) {
       return res.status(404).json({ error: 'Utilisateur non trouvé' })
     }
 
-    if (user.plan !== 'basique' || !user.trialEndsAt) {
+    // Si l'utilisateur a un plan payant (standard ou pro) ET pas de trial en cours, laisser passer
+    if ((user.plan === 'standard' || user.plan === 'pro') && !user.trialEndsAt) {
       return next()
     }
 
-    const trialEnd = new Date(user.trialEndsAt)
-    const now = new Date()
+    // Si l'utilisateur a un trial en cours
+    if (user.trialEndsAt) {
+      const trialEnd = new Date(user.trialEndsAt)
+      const now = new Date()
 
-    if (trialEnd <= now) {
+      // Si trial encore valide, laisser passer
+      if (trialEnd > now) {
+        return next()
+      }
+
+      // Si trial expiré, downgrader vers basique et bloquer immédiatement
+      if (user.plan === 'pro' || user.plan === 'standard') {
+        await updateUser(user.id, { plan: 'basique' })
+      }
+      
       return res.status(403).json({ 
         error: 'Essai gratuit expiré',
         trialExpired: true,
-        message: 'Passez à un plan payant pour continuer'
+        message: 'Votre essai de 14 jours est terminé. Passez à un plan payant pour continuer à utiliser PONIA.'
+      })
+    }
+
+    // Bloquer tous les utilisateurs basique sans trial
+    if (user.plan === 'basique') {
+      return res.status(403).json({ 
+        error: 'Accès premium requis',
+        trialExpired: true,
+        message: 'Passez à un plan payant pour accéder à cette fonctionnalité.'
       })
     }
 
@@ -186,7 +207,7 @@ app.post('/api/users/sync', authenticateSupabaseUser, async (req, res) => {
         businessName,
         businessType,
         posSystem,
-        plan: 'basique',
+        plan: 'pro',
         referralCode,
         referredBy,
         trialEndsAt
@@ -1065,10 +1086,12 @@ app.get('/api/admin/users', authenticateSupabaseUser, requireAdmin, async (req, 
 
     const now = new Date()
     const activeTrials = allUsers.filter(u => 
-      u.trialEndsAt && new Date(u.trialEndsAt) > now && u.plan === 'basique'
+      u.trialEndsAt && new Date(u.trialEndsAt) > now
     ).length
 
-    const paidUsers = allUsers.filter(u => u.plan === 'standard' || u.plan === 'pro').length
+    const paidUsers = allUsers.filter(u => 
+      (u.plan === 'standard' || u.plan === 'pro') && (!u.trialEndsAt || new Date(u.trialEndsAt) <= now)
+    ).length
 
     const totalRevenue = allUsers.reduce((sum, u) => {
       if (u.plan === 'standard') return sum + 49
