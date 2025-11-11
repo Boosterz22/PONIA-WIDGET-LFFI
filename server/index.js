@@ -42,6 +42,12 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY
 )
 
+// Supabase admin client (service role - for admin operations only)
+const supabaseAdmin = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+)
+
 // Stripe webhook handler MUST be BEFORE express.json() to preserve raw body
 app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
   const sig = req.headers['stripe-signature']
@@ -1052,6 +1058,91 @@ app.post('/api/stripe/create-checkout', authenticateSupabaseUser, async (req, re
 // ============================================
 // ADMIN ENDPOINTS
 // ============================================
+
+// Admin login endpoint (no JWT required)
+app.post('/api/admin/auth', async (req, res) => {
+  try {
+    const { code } = req.body
+
+    if (!code || typeof code !== 'string') {
+      return res.status(400).json({ message: 'Code admin requis' })
+    }
+
+    const adminEmails = (process.env.ADMIN_EMAILS || '').split(',').map(e => e.trim().toLowerCase())
+    const adminEmail = (code.trim() + '@myponia.fr').toLowerCase()
+
+    if (!adminEmails.includes(adminEmail)) {
+      return res.status(401).json({ message: 'Code admin invalide' })
+    }
+
+    const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers()
+    
+    if (listError) {
+      console.error('Erreur listUsers:', listError)
+      return res.status(500).json({ message: 'Erreur serveur' })
+    }
+
+    const existingUser = users.find(u => u.email && u.email.toLowerCase() === adminEmail)
+
+    if (!existingUser) {
+      const { data: newUserData, error: signUpError } = await supabaseAdmin.auth.admin.createUser({
+        email: adminEmail,
+        email_confirm: true,
+        user_metadata: { role: 'admin' }
+      })
+
+      if (signUpError) {
+        console.error('Erreur création admin:', signUpError)
+        return res.status(500).json({ message: 'Erreur création compte admin' })
+      }
+
+      const poniaUser = await getUserByEmail(adminEmail)
+      if (!poniaUser) {
+        await createUser({
+          supabaseId: newUserData.user.id,
+          email: adminEmail,
+          businessName: 'PONIA Admin',
+          businessType: 'admin',
+          plan: 'pro',
+          trialEndsAt: null
+        })
+      }
+    } else if (!existingUser.email_confirmed_at) {
+      await supabaseAdmin.auth.admin.updateUserById(existingUser.id, {
+        email_confirm: true
+      })
+    }
+
+    const { data: magicLink, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
+      type: 'magiclink',
+      email: adminEmail
+    })
+
+    if (linkError) {
+      console.error('Erreur génération magic link:', linkError)
+      return res.status(500).json({ message: 'Erreur serveur' })
+    }
+
+    const { data: verified, error: verifyError } = await supabase.auth.verifyOtp({
+      token_hash: magicLink.properties.hashed_token,
+      type: 'email'
+    })
+
+    if (verifyError) {
+      console.error('Erreur vérification OTP:', verifyError)
+      return res.status(500).json({ message: 'Erreur de connexion' })
+    }
+
+    res.json({
+      access_token: verified.session.access_token,
+      refresh_token: verified.session.refresh_token,
+      user: verified.user
+    })
+  } catch (error) {
+    console.error('Erreur admin auth:', error)
+    res.status(500).json({ message: 'Erreur serveur' })
+  }
+})
 
 // Admin check middleware
 async function requireAdmin(req, res, next) {

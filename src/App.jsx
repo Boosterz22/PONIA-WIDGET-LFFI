@@ -17,6 +17,7 @@ import SettingsPage from './pages/SettingsPage'
 import ReferralPage from './pages/ReferralPage'
 import UpgradePage from './pages/UpgradePage'
 import AdminPage from './pages/AdminPage'
+import AdminLoginPage from './pages/AdminLoginPage'
 import PrivacyPage from './pages/PrivacyPage'
 import TermsPage from './pages/TermsPage'
 import PricingPage from './pages/PricingPage'
@@ -162,8 +163,12 @@ function App() {
           element={session ? <UpgradePage /> : <Navigate to="/login" />} 
         />
         <Route 
+          path="/admin-login" 
+          element={<AdminLoginPage />} 
+        />
+        <Route 
           path="/admin" 
-          element={session ? <AdminPage /> : <Navigate to="/login" />} 
+          element={session ? <AdminPage /> : <Navigate to="/admin-login" />} 
         />
       </Routes>
     </BrowserRouter>
