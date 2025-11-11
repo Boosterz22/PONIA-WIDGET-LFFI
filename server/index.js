@@ -1059,21 +1059,51 @@ app.post('/api/stripe/create-checkout', authenticateSupabaseUser, async (req, re
 // ADMIN ENDPOINTS
 // ============================================
 
+// Rate limiting for admin login (in-memory - simple but effective)
+const adminLoginAttempts = new Map()
+
+function checkAdminRateLimit(ip) {
+  const now = Date.now()
+  const attempts = adminLoginAttempts.get(ip) || []
+  
+  const recentAttempts = attempts.filter(time => now - time < 3600000)
+  
+  if (recentAttempts.length >= 5) {
+    return false
+  }
+  
+  recentAttempts.push(now)
+  adminLoginAttempts.set(ip, recentAttempts)
+  return true
+}
+
 // Admin login endpoint (no JWT required)
 app.post('/api/admin/auth', async (req, res) => {
+  const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown'
+  
   try {
     const { code } = req.body
 
     if (!code || typeof code !== 'string') {
+      console.warn(`[ADMIN AUTH] Code manquant depuis IP: ${clientIp}`)
       return res.status(400).json({ message: 'Code admin requis' })
+    }
+
+    if (!checkAdminRateLimit(clientIp)) {
+      console.warn(`[ADMIN AUTH] Rate limit dépassé pour IP: ${clientIp}`)
+      return res.status(429).json({ message: 'Trop de tentatives. Réessayez dans 1 heure.' })
     }
 
     const adminEmails = (process.env.ADMIN_EMAILS || '').split(',').map(e => e.trim().toLowerCase())
     const adminEmail = (code.trim() + '@myponia.fr').toLowerCase()
 
     if (!adminEmails.includes(adminEmail)) {
+      console.warn(`[ADMIN AUTH] Code invalide depuis IP: ${clientIp}, code: ${code}`)
+      await new Promise(resolve => setTimeout(resolve, 2000))
       return res.status(401).json({ message: 'Code admin invalide' })
     }
+
+    console.log(`[ADMIN AUTH] Tentative de connexion valide pour: ${adminEmail} depuis IP: ${clientIp}`)
 
     const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers()
     
@@ -1132,6 +1162,8 @@ app.post('/api/admin/auth', async (req, res) => {
       console.error('Erreur vérification OTP:', verifyError)
       return res.status(500).json({ message: 'Erreur de connexion' })
     }
+
+    console.log(`[ADMIN AUTH] ✅ Connexion réussie pour ${adminEmail} depuis IP: ${clientIp}`)
 
     res.json({
       access_token: verified.session.access_token,
