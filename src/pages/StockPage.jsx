@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Package, Plus } from 'lucide-react'
+import { Package, Plus, Search } from 'lucide-react'
 import { supabase } from '../services/supabase'
 import Navigation from '../components/Navigation'
 import TrialBanner from '../components/TrialBanner'
@@ -15,6 +15,7 @@ export default function StockPage({ session }) {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [showAddModal, setShowAddModal] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const businessType = localStorage.getItem('ponia_business_type') || 'default'
   const userPlan = localStorage.getItem('ponia_user_plan') || 'basique'
   const { trialExpired, loading: trialLoading } = useTrialCheck()
@@ -203,19 +204,30 @@ export default function StockPage({ session }) {
     )
   }
 
-  const critical = products.filter(p => {
+  // Filtrage par recherche
+  const filteredProducts = products.filter(p => {
+    if (!searchQuery.trim()) return true
+    const query = searchQuery.toLowerCase()
+    return (
+      p.name?.toLowerCase().includes(query) ||
+      p.supplier?.toLowerCase().includes(query) ||
+      p.unit?.toLowerCase().includes(query)
+    )
+  })
+
+  const critical = filteredProducts.filter(p => {
     const threshold = parseFloat(p.alertThreshold) || 10
     const qty = parseFloat(p.currentQuantity) || 0
     return qty <= threshold * 0.5
   })
 
-  const lowStock = products.filter(p => {
+  const lowStock = filteredProducts.filter(p => {
     const threshold = parseFloat(p.alertThreshold) || 10
     const qty = parseFloat(p.currentQuantity) || 0
     return qty <= threshold && qty > threshold * 0.5
   })
 
-  const healthyProducts = products.filter(p => {
+  const healthyProducts = filteredProducts.filter(p => {
     const threshold = parseFloat(p.alertThreshold) || 10
     const qty = parseFloat(p.currentQuantity) || 0
     return qty > threshold
@@ -281,7 +293,55 @@ export default function StockPage({ session }) {
           </div>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1.5rem' }}>
+        <div style={{ 
+          display: 'flex', 
+          gap: '1rem', 
+          alignItems: 'center',
+          marginBottom: '1.5rem',
+          flexWrap: 'wrap'
+        }}>
+          <div style={{ 
+            position: 'relative', 
+            flex: '1 1 300px',
+            minWidth: '250px'
+          }}>
+            <Search 
+              size={20} 
+              style={{ 
+                position: 'absolute', 
+                left: '1rem', 
+                top: '50%', 
+                transform: 'translateY(-50%)',
+                color: '#9CA3AF',
+                pointerEvents: 'none'
+              }} 
+            />
+            <input
+              type="text"
+              placeholder="Rechercher un produit, fournisseur..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '0.75rem 1rem 0.75rem 3rem',
+                border: '2px solid #E5E7EB',
+                borderRadius: '12px',
+                fontSize: '0.95rem',
+                outline: 'none',
+                transition: 'all 0.2s',
+                background: 'white'
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#FFD700'
+                e.target.style.boxShadow = '0 0 0 3px rgba(255, 215, 0, 0.1)'
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = '#E5E7EB'
+                e.target.style.boxShadow = 'none'
+              }}
+            />
+          </div>
+          
           <button
             onClick={() => setShowAddModal(true)}
             className="btn btn-primary"
@@ -310,9 +370,26 @@ export default function StockPage({ session }) {
               Ajouter mon premier produit
             </button>
           </div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="card" style={{ textAlign: 'center', padding: '3rem 1rem' }}>
+            <Search size={48} style={{ color: '#D1D5DB', margin: '0 auto 1rem' }} />
+            <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
+              Aucun produit trouvé
+            </h2>
+            <p style={{ color: '#6B7280', marginBottom: '1rem' }}>
+              Aucun produit ne correspond à "{searchQuery}"
+            </p>
+            <button
+              onClick={() => setSearchQuery('')}
+              className="btn"
+              style={{ background: '#F3F4F6', color: '#374151', border: 'none' }}
+            >
+              Effacer la recherche
+            </button>
+          </div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
-            {products.map(product => (
+            {filteredProducts.map(product => (
               <ProductCard
                 key={product.id}
                 product={{
