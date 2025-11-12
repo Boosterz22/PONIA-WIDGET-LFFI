@@ -16,13 +16,32 @@ export function generateOrderPDF(orderData) {
   const RED = '#DC2626'
   const ORANGE = '#F59E0B'
 
-  doc.fontSize(24)
-     .fillColor(GOLD)
-     .text('PONIA', 50, 45)
+  // Logo PONIA stylisé (cercle doré + texte)
+  const logoSize = 35
+  const logoX = 50
+  const logoY = 45
+  
+  // Cercle doré avec gradient effect
+  doc.circle(logoX + logoSize/2, logoY + logoSize/2, logoSize/2)
+     .fillAndStroke(GOLD, DARK)
+     .lineWidth(2)
+  
+  // Lettre P en blanc au centre
+  doc.fontSize(20)
+     .fillColor('white')
+     .font('Helvetica-Bold')
+     .text('P', logoX + logoSize/2 - 6, logoY + logoSize/2 - 10)
+  
+  // Nom PONIA à côté du logo
+  doc.fontSize(22)
+     .fillColor(DARK)
+     .font('Helvetica-Bold')
+     .text('PONIA', logoX + logoSize + 15, logoY + 5)
   
   doc.fontSize(9)
      .fillColor(GRAY)
-     .text('Gestion Intelligente de Stock', 50, 72)
+     .font('Helvetica')
+     .text('Gestion Intelligente de Stock', logoX + logoSize + 15, logoY + 27)
 
   doc.fontSize(18)
      .fillColor(DARK)
