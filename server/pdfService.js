@@ -16,32 +16,24 @@ export function generateOrderPDF(orderData) {
   const RED = '#DC2626'
   const ORANGE = '#F59E0B'
 
-  // Logo PONIA stylisé (cercle doré + texte)
-  const logoSize = 35
-  const logoX = 50
-  const logoY = 45
-  
-  // Cercle doré avec gradient effect
-  doc.circle(logoX + logoSize/2, logoY + logoSize/2, logoSize/2)
-     .fillAndStroke(GOLD, DARK)
-     .lineWidth(2)
-  
-  // Lettre P en blanc au centre
-  doc.fontSize(20)
-     .fillColor('white')
-     .font('Helvetica-Bold')
-     .text('P', logoX + logoSize/2 - 6, logoY + logoSize/2 - 10)
-  
-  // Nom PONIA à côté du logo
-  doc.fontSize(22)
-     .fillColor(DARK)
-     .font('Helvetica-Bold')
-     .text('PONIA', logoX + logoSize + 15, logoY + 5)
-  
-  doc.fontSize(9)
-     .fillColor(GRAY)
-     .font('Helvetica')
-     .text('Gestion Intelligente de Stock', logoX + logoSize + 15, logoY + 27)
+  // Logo PONIA (image PNG)
+  try {
+    doc.image('public/ponia-logo.png', 50, 35, { 
+      width: 180,
+      height: 50
+    })
+  } catch (error) {
+    // Fallback au texte si l'image n'est pas trouvée
+    doc.fontSize(24)
+       .fillColor(GOLD)
+       .font('Helvetica-Bold')
+       .text('PONIA', 50, 45)
+    
+    doc.fontSize(9)
+       .fillColor(GRAY)
+       .font('Helvetica')
+       .text('Gestion Intelligente de Stock', 50, 72)
+  }
 
   doc.fontSize(18)
      .fillColor(DARK)

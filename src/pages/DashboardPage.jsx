@@ -14,6 +14,7 @@ export default function DashboardPage({ session }) {
   const navigate = useNavigate()
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
+  const [generatingPDF, setGeneratingPDF] = useState(false)
   const [businessName, setBusinessName] = useState('')
   const businessType = localStorage.getItem('ponia_business_type') || 'default'
   const userPlan = localStorage.getItem('ponia_user_plan') || 'basique'
@@ -71,6 +72,7 @@ export default function DashboardPage({ session }) {
 
   const handleGenerateOrder = async () => {
     try {
+      setGeneratingPDF(true)
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) {
         alert('⚠️ Veuillez vous reconnecter')
@@ -82,6 +84,8 @@ export default function DashboardPage({ session }) {
     } catch (error) {
       console.error('Erreur génération commande:', error)
       alert('❌ Erreur lors de la génération du bon de commande')
+    } finally {
+      setGeneratingPDF(false)
     }
   }
 
@@ -177,6 +181,7 @@ export default function DashboardPage({ session }) {
             businessType={businessType} 
             plan={userPlan}
             onGenerateOrder={handleGenerateOrder}
+            isGeneratingPDF={generatingPDF}
           />
 
           {(critical.length > 0 || lowStock.length > 0 || expiryAlerts.length > 0) && (
