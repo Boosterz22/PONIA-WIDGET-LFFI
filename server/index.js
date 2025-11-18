@@ -18,7 +18,11 @@ import {
   updateUser,
   getProductById,
   createStore,
-  getMainStore
+  getMainStore,
+  addSaleRecord,
+  getSalesHistory,
+  getSalesByPeriod,
+  getSalesForProduct
 } from './storage.js'
 import { generateOrderPDF } from './pdfService.js'
 import path from 'path'
@@ -722,13 +726,25 @@ app.put('/api/products/:id', authenticateSupabaseUser, enforceTrialStatus, async
     if (updates.currentQuantity !== undefined && previousQuantity !== undefined) {
       const quantityChange = parseFloat(updates.currentQuantity) - parseFloat(previousQuantity)
       if (quantityChange !== 0) {
+        const changeType = quantityChange > 0 ? 'increase' : 'decrease'
         await addStockMovement(
           productId,
           quantityChange,
           parseFloat(updates.currentQuantity),
-          quantityChange > 0 ? 'increase' : 'decrease',
+          changeType,
           req.body.notes || null
         )
+        
+        // Si c'est une diminution (vente), enregistrer dans salesHistory
+        if (changeType === 'decrease') {
+          await addSaleRecord(
+            productId,
+            user.id,
+            productToUpdate.storeId || null,
+            Math.abs(quantityChange),
+            null // salePrice non fourni pour l'instant
+          )
+        }
       }
     }
     

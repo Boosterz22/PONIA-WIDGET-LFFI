@@ -1,6 +1,6 @@
 import { db } from './db.js'
-import { users, products, stockHistory, notifications, stores } from '../shared/schema.js'
-import { eq, and, desc } from 'drizzle-orm'
+import { users, products, stockHistory, salesHistory, notifications, stores } from '../shared/schema.js'
+import { eq, and, desc, gte, sql } from 'drizzle-orm'
 
 export async function getUserByEmail(email) {
   const user = await db.select().from(users).where(eq(users.email, email)).limit(1)
@@ -182,4 +182,63 @@ export async function markNotificationAsSent(notificationId) {
     .where(eq(notifications.id, notificationId))
     .returning()
   return result[0]
+}
+
+export async function addSaleRecord(productId, userId, storeId, quantitySold, salePrice = null) {
+  const saleDate = new Date()
+  const dayOfWeek = saleDate.getDay()
+  
+  const result = await db.insert(salesHistory).values({
+    productId,
+    userId,
+    storeId,
+    quantitySold: Math.abs(quantitySold).toString(),
+    salePrice: salePrice ? salePrice.toString() : null,
+    saleDate,
+    dayOfWeek
+  }).returning()
+  return result[0]
+}
+
+export async function getSalesHistory(productId, limit = 100) {
+  return await db.select()
+    .from(salesHistory)
+    .where(eq(salesHistory.productId, productId))
+    .orderBy(desc(salesHistory.saleDate))
+    .limit(limit)
+}
+
+export async function getSalesByPeriod(userId, daysBack = 30) {
+  const startDate = new Date()
+  startDate.setDate(startDate.getDate() - daysBack)
+  
+  return await db.select({
+    id: salesHistory.id,
+    productId: salesHistory.productId,
+    productName: products.name,
+    quantitySold: salesHistory.quantitySold,
+    salePrice: salesHistory.salePrice,
+    saleDate: salesHistory.saleDate,
+    dayOfWeek: salesHistory.dayOfWeek
+  })
+    .from(salesHistory)
+    .leftJoin(products, eq(salesHistory.productId, products.id))
+    .where(and(
+      eq(salesHistory.userId, userId),
+      gte(salesHistory.saleDate, startDate)
+    ))
+    .orderBy(desc(salesHistory.saleDate))
+}
+
+export async function getSalesForProduct(productId, daysBack = 30) {
+  const startDate = new Date()
+  startDate.setDate(startDate.getDate() - daysBack)
+  
+  return await db.select()
+    .from(salesHistory)
+    .where(and(
+      eq(salesHistory.productId, productId),
+      gte(salesHistory.saleDate, startDate)
+    ))
+    .orderBy(desc(salesHistory.saleDate))
 }
