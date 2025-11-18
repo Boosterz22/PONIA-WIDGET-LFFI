@@ -7,7 +7,6 @@ import TrialBanner from '../components/TrialBanner'
 import TrialExpiredBlocker from '../components/TrialExpiredBlocker'
 import AIInsights from '../components/AIInsights'
 import ChatAI from '../components/ChatAI'
-import ChatAICentral from '../components/ChatAICentral'
 import TimeSavedWidget from '../components/TimeSavedWidget'
 import { useTrialCheck } from '../hooks/useTrialCheck'
 import { checkExpiryAlerts } from '../services/expiryService'
@@ -110,11 +109,6 @@ export default function DashboardPage({ session }) {
       <Navigation />
       
       <div className="container" style={{ padding: '2rem 1rem', maxWidth: '1400px', margin: '0 auto', paddingBottom: '100px' }}>
-        {/* Chat AI Central - Interface principale */}
-        <div style={{ marginBottom: '2rem' }}>
-          <ChatAICentral products={products} userName={businessName} />
-        </div>
-
         {/* Time Saved Widget */}
         <div style={{ marginBottom: '2rem' }}>
           <TimeSavedWidget 

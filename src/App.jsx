@@ -7,6 +7,7 @@ import ResetPasswordPage from './pages/ResetPasswordPage'
 import VerifyEmailPage from './pages/VerifyEmailPage'
 import VerifyCodePage from './pages/VerifyCodePage'
 import CompleteProfilePage from './pages/CompleteProfilePage'
+import ChatPage from './pages/ChatPage'
 import DashboardPage from './pages/DashboardPage'
 import StockPage from './pages/StockPage'
 import InsightsPage from './pages/InsightsPage'
@@ -111,14 +112,14 @@ function App() {
         <Routes>
         <Route 
           path="/" 
-          element={session ? (needsProfile ? <Navigate to="/complete-profile" /> : <Navigate to="/dashboard" />) : <LandingPage />} 
+          element={session ? (needsProfile ? <Navigate to="/complete-profile" /> : <Navigate to="/chat" />) : <LandingPage />} 
         />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route 
           path="/login" 
-          element={session ? (needsProfile ? <Navigate to="/complete-profile" /> : <Navigate to="/dashboard" />) : <LoginPage />} 
+          element={session ? (needsProfile ? <Navigate to="/complete-profile" /> : <Navigate to="/chat" />) : <LoginPage />} 
         />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
@@ -126,7 +127,11 @@ function App() {
         <Route path="/verify-code" element={<VerifyCodePage />} />
         <Route 
           path="/complete-profile" 
-          element={session && needsProfile ? <CompleteProfilePage session={session} /> : <Navigate to="/dashboard" />} 
+          element={session && needsProfile ? <CompleteProfilePage session={session} /> : <Navigate to="/chat" />} 
+        />
+        <Route 
+          path="/chat" 
+          element={session ? (needsProfile ? <Navigate to="/complete-profile" /> : <ChatPage session={session} />) : <Navigate to="/login" />} 
         />
         <Route 
           path="/dashboard" 
