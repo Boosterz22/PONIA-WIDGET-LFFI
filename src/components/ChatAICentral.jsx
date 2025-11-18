@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { Send, Loader, Sparkles, Mic } from 'lucide-react'
+import { Send, Loader } from 'lucide-react'
 import { supabase } from '../services/supabase'
+import poniaLogo from '../assets/ponia-logo.png'
 
 function cleanMarkdown(text) {
   if (!text) return text
@@ -15,7 +16,7 @@ async function getChatResponse(userMessage, products, conversationHistory, insig
   try {
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) {
-      return "⚠️ Veuillez vous reconnecter pour utiliser le chat IA."
+      return "Veuillez vous reconnecter pour utiliser le chat IA."
     }
 
     const response = await fetch('/api/chat', {
@@ -40,7 +41,7 @@ async function getChatResponse(userMessage, products, conversationHistory, insig
     return cleanMarkdown(data.response)
   } catch (error) {
     console.error('Error calling chat API:', error)
-    return "Désolé, j'ai un souci technique 😅 Réessaie dans quelques secondes !"
+    return "Désolé, j'ai un souci technique. Réessayez dans quelques secondes."
   }
 }
 
@@ -48,7 +49,7 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: `👋 Bonjour ${userName} ! Comment puis-je vous aider aujourd'hui ?`
+      content: `Bonjour ${userName}, comment puis-je vous aider aujourd'hui ?`
     }
   ])
   const [input, setInput] = useState('')
@@ -79,7 +80,7 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
     } catch (error) {
       setMessages(prev => [...prev, { 
         role: 'assistant', 
-        content: 'Désolé, j\'ai un souci technique 😅 Réessaie dans quelques secondes !' 
+        content: 'Désolé, j\'ai un souci technique. Réessayez dans quelques secondes.' 
       }])
     } finally {
       setLoading(false)
@@ -95,74 +96,62 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
 
   const handleSuggestionClick = (suggestion) => {
     setInput(suggestion)
-    setTimeout(() => handleSend(), 100)
+    setTimeout(() => {
+      handleSend()
+    }, 100)
   }
 
   const suggestedQuestions = [
-    "📊 Quelles sont mes ventes d'hier ?",
-    "⚠️ Qu'est-ce qui manque en stock ?",
-    "📦 Génère ma commande cette semaine",
-    "⏰ Qu'est-ce qui expire bientôt ?"
+    "Quelles sont mes ventes d'hier ?",
+    "Qu'est-ce qui manque en stock ?",
+    "Génère ma commande cette semaine",
+    "Qu'est-ce qui expire bientôt ?"
   ]
 
   return (
-    <div className="card" style={{ padding: 0, background: 'white', borderRadius: '12px', overflow: 'hidden' }}>
-      {/* Header */}
+    <div className="card" style={{ 
+      padding: 0, 
+      background: 'white', 
+      borderRadius: '12px', 
+      overflow: 'hidden',
+      border: '1px solid #E5E7EB'
+    }}>
+      {/* Header avec logo */}
       <div style={{
-        background: 'linear-gradient(135deg, #FFD700, #FFA500)',
         padding: '1.5rem',
-        borderBottom: '2px solid rgba(255,255,255,0.3)'
+        borderBottom: '1px solid #E5E7EB',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        gap: '0.5rem'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-          <Sparkles size={24} color="#1F2937" />
-          <h2 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#1F2937', margin: 0 }}>
-            💬 PONIA IA
-          </h2>
-        </div>
-        <p style={{ fontSize: '0.875rem', color: '#1F2937', margin: 0, opacity: 0.8 }}>
-          Votre assistant intelligent de gestion de stock
-        </p>
+        <img 
+          src={poniaLogo} 
+          alt="PONIA" 
+          style={{ 
+            width: '60px', 
+            height: '60px',
+            objectFit: 'contain'
+          }} 
+        />
+        <h2 style={{ 
+          fontSize: '1.25rem', 
+          fontWeight: '600', 
+          color: '#111827', 
+          margin: 0 
+        }}>
+          Assistant IA de stock
+        </h2>
       </div>
-
-      {/* Suggested Questions */}
-      {messages.length <= 1 && (
-        <div style={{ padding: '1.5rem', background: '#FAFAFA', borderBottom: '1px solid #E5E7EB' }}>
-          <p style={{ fontSize: '0.875rem', fontWeight: '600', color: '#6B7280', marginBottom: '1rem' }}>
-            💡 Questions suggérées :
-          </p>
-          <div style={{ display: 'grid', gap: '0.5rem' }}>
-            {suggestedQuestions.map((question, idx) => (
-              <button
-                key={idx}
-                onClick={() => handleSuggestionClick(question)}
-                style={{
-                  padding: '0.75rem 1rem',
-                  background: 'white',
-                  border: '1px solid #E5E7EB',
-                  borderRadius: '8px',
-                  fontSize: '0.875rem',
-                  color: '#374151',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  textAlign: 'left',
-                  fontWeight: '500'
-                }}
-                className="hover-lift"
-              >
-                {question}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Messages */}
       <div style={{
-        maxHeight: '400px',
+        maxHeight: '350px',
         minHeight: '200px',
         overflowY: 'auto',
         padding: '1.5rem',
-        background: '#FAFAFA'
+        background: '#F9FAFB'
       }}>
         {messages.map((msg, idx) => (
           <div
@@ -175,16 +164,14 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
           >
             <div style={{
               maxWidth: '80%',
-              padding: '1rem 1.25rem',
+              padding: '0.875rem 1.125rem',
               borderRadius: msg.role === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
-              background: msg.role === 'user' 
-                ? 'linear-gradient(135deg, #FFD700, #FFA500)' 
-                : 'white',
+              background: msg.role === 'user' ? '#FFD700' : 'white',
               color: msg.role === 'user' ? '#1F2937' : '#111827',
               fontSize: '0.9375rem',
               lineHeight: '1.6',
               boxShadow: msg.role === 'user' 
-                ? '0 2px 8px rgba(255, 215, 0, 0.3)' 
+                ? '0 2px 8px rgba(255, 215, 0, 0.25)' 
                 : '0 1px 3px rgba(0,0,0,0.1)',
               fontWeight: msg.role === 'user' ? '500' : '400',
               whiteSpace: 'pre-wrap'
@@ -198,7 +185,7 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
             display: 'flex',
             alignItems: 'center',
             gap: '0.75rem',
-            padding: '1rem 1.25rem',
+            padding: '0.875rem 1.125rem',
             background: 'white',
             borderRadius: '16px',
             maxWidth: '80%',
@@ -211,11 +198,61 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Questions suggérées */}
+      {messages.length <= 1 && (
+        <div style={{ 
+          padding: '1rem 1.5rem', 
+          background: 'white',
+          borderTop: '1px solid #E5E7EB',
+          borderBottom: '1px solid #E5E7EB'
+        }}>
+          <p style={{ 
+            fontSize: '0.8125rem', 
+            fontWeight: '600', 
+            color: '#6B7280', 
+            marginBottom: '0.75rem',
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px'
+          }}>
+            Questions suggérées
+          </p>
+          <div style={{ display: 'grid', gap: '0.5rem' }}>
+            {suggestedQuestions.map((question, idx) => (
+              <button
+                key={idx}
+                onClick={() => handleSuggestionClick(question)}
+                style={{
+                  padding: '0.625rem 0.875rem',
+                  background: '#F9FAFB',
+                  border: '1px solid #E5E7EB',
+                  borderRadius: '8px',
+                  fontSize: '0.875rem',
+                  color: '#374151',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  textAlign: 'left',
+                  fontWeight: '400'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = '#FEF3C7'
+                  e.target.style.borderColor = '#FFD700'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = '#F9FAFB'
+                  e.target.style.borderColor = '#E5E7EB'
+                }}
+              >
+                {question}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Input */}
       <div style={{
         padding: '1rem 1.5rem',
         background: 'white',
-        borderTop: '1px solid #E5E7EB',
         display: 'flex',
         gap: '0.75rem',
         alignItems: 'center'
@@ -244,7 +281,7 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
           disabled={loading || !input.trim()}
           style={{
             padding: '0.875rem',
-            background: input.trim() && !loading ? 'linear-gradient(135deg, #FFD700, #FFA500)' : '#E5E7EB',
+            background: input.trim() && !loading ? '#FFD700' : '#E5E7EB',
             border: 'none',
             borderRadius: '50%',
             cursor: input.trim() && !loading ? 'pointer' : 'not-allowed',
@@ -257,30 +294,9 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
         >
           <Send size={20} color={input.trim() && !loading ? '#1F2937' : '#9CA3AF'} />
         </button>
-        <button
-          style={{
-            padding: '0.875rem',
-            background: '#F3F4F6',
-            border: 'none',
-            borderRadius: '50%',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            transition: 'all 0.2s'
-          }}
-          title="Assistant vocal (bientôt disponible)"
-        >
-          <Mic size={20} color="#6B7280" />
-        </button>
       </div>
 
       <style>{`
-        .hover-lift:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-          border-color: #FFD700;
-        }
         @keyframes spin {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
