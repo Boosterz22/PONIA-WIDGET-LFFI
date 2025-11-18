@@ -22,6 +22,7 @@ import PrivacyPage from './pages/PrivacyPage'
 import TermsPage from './pages/TermsPage'
 import PricingPage from './pages/PricingPage'
 import { supabase } from './services/supabase'
+import { LanguageProvider } from './contexts/LanguageContext'
 
 function App() {
   const [session, setSession] = useState(null)
@@ -105,8 +106,9 @@ function App() {
   }
 
   return (
-    <BrowserRouter>
-      <Routes>
+    <LanguageProvider>
+      <BrowserRouter>
+        <Routes>
         <Route 
           path="/" 
           element={session ? (needsProfile ? <Navigate to="/complete-profile" /> : <Navigate to="/dashboard" />) : <LandingPage />} 
@@ -171,7 +173,8 @@ function App() {
           element={session ? <AdminPage /> : <Navigate to="/admin-login" />} 
         />
       </Routes>
-    </BrowserRouter>
+      </BrowserRouter>
+    </LanguageProvider>
   )
 }
 

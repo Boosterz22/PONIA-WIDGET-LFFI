@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { LayoutDashboard, Package, Brain, Activity, History, Settings, User, LogOut, Gift, Mail } from 'lucide-react'
 import { supabase } from '../services/supabase'
+import LanguageSelector from './LanguageSelector'
 
 const businessTypeLabels = {
   'bakery': 'Boulangerie / Pâtisserie',
@@ -144,24 +145,27 @@ export default function Navigation() {
             </div>
           </div>
 
-          <div ref={menuRef} style={{ position: 'relative' }}>
-            <button 
-              onClick={() => setShowUserMenu(!showUserMenu)}
-              style={{ 
-                background: showUserMenu ? '#F3F4F6' : 'white',
-                border: '1px solid #E5E7EB',
-                borderRadius: '50%',
-                width: '40px',
-                height: '40px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                transition: 'all 0.2s'
-              }}
-            >
-              <User size={20} color="#111827" />
-            </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <LanguageSelector />
+            
+            <div ref={menuRef} style={{ position: 'relative' }}>
+              <button 
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                style={{ 
+                  background: showUserMenu ? '#F3F4F6' : 'white',
+                  border: '1px solid #E5E7EB',
+                  borderRadius: '50%',
+                  width: '40px',
+                  height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <User size={20} color="#111827" />
+              </button>
 
             {showUserMenu && (
               <div style={{
@@ -310,6 +314,7 @@ export default function Navigation() {
                 </button>
               </div>
             )}
+            </div>
           </div>
         </div>
       </nav>
