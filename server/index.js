@@ -795,6 +795,50 @@ app.get('/api/stock-history', authenticateSupabaseUser, enforceTrialStatus, asyn
   }
 })
 
+// Get sales history for a specific product
+app.get('/api/sales-history/:productId', authenticateSupabaseUser, enforceTrialStatus, async (req, res) => {
+  try {
+    const productId = parseInt(req.params.productId)
+    const product = await getProductById(productId)
+    
+    if (!product) {
+      return res.status(404).json({ error: 'Produit non trouvé' })
+    }
+    
+    // Verify ownership
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user || product.userId !== user.id) {
+      return res.status(403).json({ error: 'Accès refusé' })
+    }
+    
+    const daysBack = parseInt(req.query.days) || 30
+    const salesHistory = await getSalesForProduct(productId, daysBack)
+    
+    res.json({ salesHistory })
+  } catch (error) {
+    console.error('Erreur récupération ventes:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// Get sales statistics for all products of a user
+app.get('/api/sales-stats', authenticateSupabaseUser, enforceTrialStatus, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+    
+    const daysBack = parseInt(req.query.days) || 30
+    const sales = await getSalesByPeriod(user.id, daysBack)
+    
+    res.json({ sales })
+  } catch (error) {
+    console.error('Erreur récupération stats ventes:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
 // REMOVED: Insecure legacy endpoints that allowed user impersonation and data exfiltration
 // - POST /api/users (unauthenticated user creation)
 // - GET /api/users/email/:email (email enumeration + data leak)
