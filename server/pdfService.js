@@ -1,4 +1,5 @@
 import PDFDocument from 'pdfkit'
+import path from 'path'
 
 export function generateOrderPDF(orderData) {
   const doc = new PDFDocument({ 
@@ -16,14 +17,16 @@ export function generateOrderPDF(orderData) {
   const RED = '#DC2626'
   const ORANGE = '#F59E0B'
 
-  // Logo PONIA (image PNG)
+  // Logo PONIA (image PNG) - corrigé pour préserver les proportions
   try {
-    doc.image('public/ponia-logo.png', 50, 35, { 
-      width: 180,
-      height: 50
+    const logoPath = path.join(process.cwd(), 'public', 'ponia-logo.png')
+    doc.image(logoPath, 50, 35, { 
+      fit: [180, 60],
+      align: 'left'
     })
   } catch (error) {
     // Fallback au texte si l'image n'est pas trouvée
+    console.warn('Logo PONIA introuvable, utilisation du texte:', error.message)
     doc.fontSize(24)
        .fillColor(GOLD)
        .font('Helvetica-Bold')
