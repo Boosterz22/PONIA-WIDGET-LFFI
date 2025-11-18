@@ -49,7 +49,7 @@ export default function TimeSavedWidget({ timeSavedMinutes = 0, moneyValue = 0, 
           </div>
           <div>
             <h3 style={{ fontSize: '1rem', fontWeight: '600', margin: 0, marginBottom: '0.25rem' }}>
-              ⚡ CETTE SEMAINE, PONIA VOUS A FAIT GAGNER :
+              CETTE SEMAINE, PONIA VOUS A FAIT GAGNER :
             </h3>
           </div>
         </div>
@@ -141,7 +141,6 @@ export default function TimeSavedWidget({ timeSavedMinutes = 0, moneyValue = 0, 
         }}>
           <span style={{ opacity: 0.7 }}>Ce mois : </span>
           <strong>{Math.floor(timeSavedMinutes * 4 / 60)}h{Math.floor((timeSavedMinutes * 4) % 60)}min = {moneyValue * 4}€</strong>
-          <span style={{ marginLeft: '0.5rem' }}>💰</span>
         </div>
       </div>
     </div>
