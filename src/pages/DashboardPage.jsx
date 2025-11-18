@@ -7,6 +7,8 @@ import TrialBanner from '../components/TrialBanner'
 import TrialExpiredBlocker from '../components/TrialExpiredBlocker'
 import AIInsights from '../components/AIInsights'
 import ChatAI from '../components/ChatAI'
+import ChatAICentral from '../components/ChatAICentral'
+import TimeSavedWidget from '../components/TimeSavedWidget'
 import { useTrialCheck } from '../hooks/useTrialCheck'
 import { checkExpiryAlerts } from '../services/expiryService'
 
@@ -108,15 +110,25 @@ export default function DashboardPage({ session }) {
       <Navigation />
       
       <div className="container" style={{ padding: '2rem 1rem', maxWidth: '1400px', margin: '0 auto', paddingBottom: '100px' }}>
+        {/* Chat AI Central - Interface principale */}
         <div style={{ marginBottom: '2rem' }}>
-          <h1 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '0.5rem' }}>
-            Tableau de bord
-          </h1>
-          <p style={{ color: '#6B7280', fontSize: '0.95rem' }}>
-            Vue d'ensemble de votre activité
-          </p>
+          <ChatAICentral products={products} userName={businessName} />
         </div>
 
+        {/* Time Saved Widget */}
+        <div style={{ marginBottom: '2rem' }}>
+          <TimeSavedWidget 
+            timeSavedMinutes={157}
+            moneyValue={87}
+            stats={{
+              caOptimized: 12,
+              rupturesAvoided: 0,
+              wasteSaved: 23
+            }}
+          />
+        </div>
+
+        {/* Stats rapides */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
