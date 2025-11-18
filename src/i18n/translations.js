@@ -13,11 +13,11 @@ const translations = {
       subtitle: 'Votre assistant intelligent de gestion de stock',
       placeholder: 'Posez votre question...',
       greeting: 'Bonjour',
-      suggestedQuestions: 'Questions suggérées :',
-      q1: '📊 Quelles sont mes ventes d\'hier ?',
-      q2: '⚠️ Qu\'est-ce qui manque en stock ?',
-      q3: '📦 Génère ma commande cette semaine',
-      q4: '⏰ Qu\'est-ce qui expire bientôt ?'
+      suggestedQuestions: 'Questions suggérées',
+      q1: 'Quelles sont mes ventes d\'hier ?',
+      q2: 'Qu\'est-ce qui manque en stock ?',
+      q3: 'Génère ma commande cette semaine',
+      q4: 'Qu\'est-ce qui expire bientôt ?'
     },
     timeSaved: {
       title: 'CETTE SEMAINE, PONIA VOUS A FAIT GAGNER :',
@@ -54,11 +54,11 @@ const translations = {
       subtitle: 'Your intelligent inventory assistant',
       placeholder: 'Ask your question...',
       greeting: 'Hello',
-      suggestedQuestions: 'Suggested questions:',
-      q1: '📊 What were my sales yesterday?',
-      q2: '⚠️ What is out of stock?',
-      q3: '📦 Generate my order this week',
-      q4: '⏰ What expires soon?'
+      suggestedQuestions: 'Suggested questions',
+      q1: 'What were my sales yesterday?',
+      q2: 'What is out of stock?',
+      q3: 'Generate my order this week',
+      q4: 'What expires soon?'
     },
     timeSaved: {
       title: 'THIS WEEK, PONIA SAVED YOU:',
@@ -95,11 +95,11 @@ const translations = {
       subtitle: 'Tu asistente inteligente de inventario',
       placeholder: 'Haz tu pregunta...',
       greeting: 'Hola',
-      suggestedQuestions: 'Preguntas sugeridas:',
-      q1: '📊 ¿Cuáles fueron mis ventas de ayer?',
-      q2: '⚠️ ¿Qué falta en stock?',
-      q3: '📦 Generar mi pedido esta semana',
-      q4: '⏰ ¿Qué caduca pronto?'
+      suggestedQuestions: 'Preguntas sugeridas',
+      q1: '¿Cuáles fueron mis ventas de ayer?',
+      q2: '¿Qué falta en stock?',
+      q3: 'Generar mi pedido esta semana',
+      q4: '¿Qué caduca pronto?'
     },
     timeSaved: {
       title: 'ESTA SEMANA, PONIA TE AHORRÓ:',
@@ -136,11 +136,11 @@ const translations = {
       subtitle: 'مساعدك الذكي للمخزون',
       placeholder: 'اطرح سؤالك...',
       greeting: 'مرحبا',
-      suggestedQuestions: 'أسئلة مقترحة:',
-      q1: '📊 ما هي مبيعات الأمس؟',
-      q2: '⚠️ ما الذي نفد من المخزون؟',
-      q3: '📦 توليد طلبي هذا الأسبوع',
-      q4: '⏰ ما الذي ينتهي قريباً؟'
+      suggestedQuestions: 'أسئلة مقترحة',
+      q1: 'ما هي مبيعات الأمس؟',
+      q2: 'ما الذي نفد من المخزون؟',
+      q3: 'توليد طلبي هذا الأسبوع',
+      q4: 'ما الذي ينتهي قريباً؟'
     },
     timeSaved: {
       title: 'هذا الأسبوع، وفر لك PONIA:',
@@ -177,11 +177,11 @@ const translations = {
       subtitle: 'Ihr intelligenter Inventarassistent',
       placeholder: 'Stellen Sie Ihre Frage...',
       greeting: 'Hallo',
-      suggestedQuestions: 'Vorgeschlagene Fragen:',
-      q1: '📊 Was waren meine Verkäufe gestern?',
-      q2: '⚠️ Was ist nicht vorrätig?',
-      q3: '📦 Generiere meine Bestellung diese Woche',
-      q4: '⏰ Was läuft bald ab?'
+      suggestedQuestions: 'Vorgeschlagene Fragen',
+      q1: 'Was waren meine Verkäufe gestern?',
+      q2: 'Was ist nicht vorrätig?',
+      q3: 'Generiere meine Bestellung diese Woche',
+      q4: 'Was läuft bald ab?'
     },
     timeSaved: {
       title: 'DIESE WOCHE HAT PONIA IHNEN GESPART:',
@@ -218,11 +218,11 @@ const translations = {
       subtitle: '您的智能库存助手',
       placeholder: '提出您的问题...',
       greeting: '您好',
-      suggestedQuestions: '建议的问题：',
-      q1: '📊 昨天的销售情况如何？',
-      q2: '⚠️ 什么缺货了？',
-      q3: '📦 生成本周订单',
-      q4: '⏰ 什么即将过期？'
+      suggestedQuestions: '建议的问题',
+      q1: '昨天的销售情况如何？',
+      q2: '什么缺货了？',
+      q3: '生成本周订单',
+      q4: '什么即将过期？'
     },
     timeSaved: {
       title: '本周，PONIA为您节省了：',

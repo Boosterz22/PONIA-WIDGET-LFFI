@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Send, Loader } from 'lucide-react'
 import { supabase } from '../services/supabase'
+import { useLanguage } from '../contexts/LanguageContext'
 import poniaLogo from '../assets/ponia-logo.png'
 
 function cleanMarkdown(text) {
@@ -46,10 +47,11 @@ async function getChatResponse(userMessage, products, conversationHistory, insig
 }
 
 export default function ChatAICentral({ products, userName = "Enock" }) {
+  const { t } = useLanguage()
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: `Bonjour ${userName}, comment puis-je vous aider aujourd'hui ?`
+      content: `${t('chat.greeting')} ${userName}, comment puis-je vous aider aujourd'hui ?`
     }
   ])
   const [input, setInput] = useState('')
@@ -102,10 +104,10 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
   }
 
   const suggestedQuestions = [
-    "Quelles sont mes ventes d'hier ?",
-    "Qu'est-ce qui manque en stock ?",
-    "Génère ma commande cette semaine",
-    "Qu'est-ce qui expire bientôt ?"
+    t('chat.q1'),
+    t('chat.q2'),
+    t('chat.q3'),
+    t('chat.q4')
   ]
 
   return (
@@ -141,7 +143,7 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
           color: '#111827', 
           margin: 0 
         }}>
-          Assistant IA de stock
+          {t('chat.subtitle')}
         </h2>
       </div>
 
@@ -214,7 +216,7 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
             textTransform: 'uppercase',
             letterSpacing: '0.5px'
           }}>
-            Questions suggérées
+            {t('chat.suggestedQuestions')}
           </p>
           <div style={{ display: 'grid', gap: '0.5rem' }}>
             {suggestedQuestions.map((question, idx) => (
@@ -262,7 +264,7 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={handleKeyPress}
-          placeholder="Posez votre question..."
+          placeholder={t('chat.placeholder')}
           disabled={loading}
           style={{
             flex: 1,
