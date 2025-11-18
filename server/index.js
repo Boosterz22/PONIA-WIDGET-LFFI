@@ -25,6 +25,7 @@ import {
   getSalesForProduct
 } from './storage.js'
 import { generateOrderPDF } from './pdfService.js'
+import { weatherService } from './weatherService.js'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import fs from 'fs'
@@ -835,6 +836,62 @@ app.get('/api/sales-stats', authenticateSupabaseUser, enforceTrialStatus, async 
     res.json({ sales })
   } catch (error) {
     console.error('Erreur récupération stats ventes:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// Get current weather for store location
+app.get('/api/weather/current', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+    
+    const mainStore = await getMainStore(user.id)
+    const city = mainStore?.city || req.query.city || 'Paris'
+    const country = req.query.country || 'FR'
+    
+    const weather = await weatherService.getCurrentWeather(city, country)
+    
+    if (!weather) {
+      return res.status(503).json({ 
+        error: 'Service météo temporairement indisponible',
+        fallback: { temp: 20, condition: 'clear', description: 'Conditions normales' }
+      })
+    }
+    
+    res.json({ weather })
+  } catch (error) {
+    console.error('Erreur récupération météo:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// Get weather forecast for next days
+app.get('/api/weather/forecast', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+    
+    const mainStore = await getMainStore(user.id)
+    const city = mainStore?.city || req.query.city || 'Paris'
+    const country = req.query.country || 'FR'
+    const days = parseInt(req.query.days) || 7
+    
+    const forecast = await weatherService.getForecast(city, country, days)
+    
+    if (!forecast) {
+      return res.status(503).json({ 
+        error: 'Service météo temporairement indisponible'
+      })
+    }
+    
+    res.json({ forecast })
+  } catch (error) {
+    console.error('Erreur récupération prévisions météo:', error)
     res.status(500).json({ error: 'Erreur serveur' })
   }
 })
