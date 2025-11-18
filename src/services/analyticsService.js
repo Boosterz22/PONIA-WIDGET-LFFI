@@ -22,18 +22,45 @@ export class AnalyticsService {
       }
     }
 
+    // 🔧 FIX: Agréger les ventes par jour d'abord (un seul total par jour)
+    const dailyAggregates = {}
+    salesHistory.forEach(sale => {
+      const date = new Date(sale.saleDate).toISOString().split('T')[0]
+      if (!dailyAggregates[date]) {
+        dailyAggregates[date] = {
+          date,
+          total: 0,
+          dayOfWeek: sale.dayOfWeek
+        }
+      }
+      dailyAggregates[date].total += parseFloat(sale.quantitySold)
+    })
+
+    const dailySales = Object.values(dailyAggregates).sort((a, b) => 
+      new Date(b.date) - new Date(a.date)
+    )
+
+    if (dailySales.length === 0) {
+      return {
+        totalSales: 0,
+        averageDaily: 0,
+        averageWeekly: 0,
+        byDayOfWeek: {},
+        trend: 'insufficient_data',
+        hasData: false
+      }
+    }
+
     // Total des ventes
-    const totalSales = salesHistory.reduce((sum, sale) => {
-      return sum + parseFloat(sale.quantitySold)
-    }, 0)
+    const totalSales = dailySales.reduce((sum, day) => sum + day.total, 0)
 
     // Nombre de jours dans l'historique
-    const oldestSale = new Date(salesHistory[salesHistory.length - 1].saleDate)
-    const newestSale = new Date(salesHistory[0].saleDate)
-    const daysInHistory = Math.max(1, Math.ceil((newestSale - oldestSale) / (1000 * 60 * 60 * 24)))
+    const oldestDate = new Date(dailySales[dailySales.length - 1].date)
+    const newestDate = new Date(dailySales[0].date)
+    const daysInHistory = Math.max(1, Math.ceil((newestDate - oldestDate) / (1000 * 60 * 60 * 24)) + 1)
 
     // Moyennes
-    const averageDaily = totalSales / daysInHistory
+    const averageDaily = totalSales / dailySales.length // Moyenne des jours avec ventes
     const averageWeekly = averageDaily * 7
 
     // Ventes par jour de la semaine (0=Dimanche, 6=Samedi)
@@ -42,21 +69,21 @@ export class AnalyticsService {
       byDayOfWeek[i] = { total: 0, count: 0, average: 0 }
     }
 
-    salesHistory.forEach(sale => {
-      const day = sale.dayOfWeek
-      byDayOfWeek[day].total += parseFloat(sale.quantitySold)
-      byDayOfWeek[day].count += 1
+    dailySales.forEach(day => {
+      const dow = day.dayOfWeek
+      byDayOfWeek[dow].total += day.total
+      byDayOfWeek[dow].count += 1
     })
 
-    // Calculer les moyennes par jour
+    // Calculer les moyennes par jour de semaine
     for (let i = 0; i < 7; i++) {
       byDayOfWeek[i].average = byDayOfWeek[i].count > 0 
         ? byDayOfWeek[i].total / byDayOfWeek[i].count 
         : 0
     }
 
-    // Détection de tendance (comparaison première moitié vs deuxième moitié)
-    const trend = this.detectTrend(salesHistory)
+    // Détection de tendance (comparaison première moitié vs deuxième moitié des jours)
+    const trend = this.detectTrend(dailySales)
 
     return {
       totalSales,
@@ -64,27 +91,27 @@ export class AnalyticsService {
       averageWeekly,
       byDayOfWeek,
       trend,
-      daysInHistory,
+      daysInHistory: dailySales.length,
       hasData: true
     }
   }
 
   /**
    * Détecte la tendance de croissance/décroissance
-   * @param {Array} salesHistory - Historique des ventes triées par date (plus récent d'abord)
+   * @param {Array} dailySales - Ventes agrégées par jour triées par date (plus récent d'abord)
    * @returns {Object} Informations sur la tendance
    */
-  static detectTrend(salesHistory) {
-    if (salesHistory.length < 7) {
+  static detectTrend(dailySales) {
+    if (dailySales.length < 7) {
       return { direction: 'insufficient_data', percentage: 0 }
     }
 
-    const midPoint = Math.floor(salesHistory.length / 2)
-    const recentHalf = salesHistory.slice(0, midPoint)
-    const olderHalf = salesHistory.slice(midPoint)
+    const midPoint = Math.floor(dailySales.length / 2)
+    const recentHalf = dailySales.slice(0, midPoint)
+    const olderHalf = dailySales.slice(midPoint)
 
-    const recentAvg = recentHalf.reduce((sum, s) => sum + parseFloat(s.quantitySold), 0) / recentHalf.length
-    const olderAvg = olderHalf.reduce((sum, s) => sum + parseFloat(s.quantitySold), 0) / olderHalf.length
+    const recentAvg = recentHalf.reduce((sum, day) => sum + day.total, 0) / recentHalf.length
+    const olderAvg = olderHalf.reduce((sum, day) => sum + day.total, 0) / olderHalf.length
 
     if (olderAvg === 0) {
       return { direction: 'stable', percentage: 0, recentAvg, olderAvg }
