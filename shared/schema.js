@@ -57,6 +57,18 @@ export const stockHistory = pgTable('stock_history', {
   createdAt: timestamp('created_at').defaultNow()
 })
 
+export const salesHistory = pgTable('sales_history', {
+  id: serial('id').primaryKey(),
+  productId: integer('product_id').references(() => products.id, { onDelete: 'cascade' }),
+  userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }),
+  storeId: integer('store_id').references(() => stores.id, { onDelete: 'cascade' }),
+  quantitySold: decimal('quantity_sold', { precision: 10, scale: 2 }).notNull(),
+  salePrice: decimal('sale_price', { precision: 10, scale: 2 }),
+  saleDate: timestamp('sale_date').notNull().defaultNow(),
+  dayOfWeek: integer('day_of_week').notNull(),
+  createdAt: timestamp('created_at').defaultNow()
+})
+
 export const notifications = pgTable('notifications', {
   id: serial('id').primaryKey(),
   userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
