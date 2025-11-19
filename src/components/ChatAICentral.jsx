@@ -122,7 +122,21 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
     }
   }
 
-  const handleNewChat = () => {
+  const handleNewChat = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
+        await fetch('/api/chat/messages/clear', {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`
+          }
+        })
+      }
+    } catch (error) {
+      console.error('Erreur suppression historique:', error)
+    }
+    
     setMessages([{
       role: 'assistant',
       content: `${t('chat.greeting')} ${userName}, comment puis-je vous aider aujourd'hui ?`

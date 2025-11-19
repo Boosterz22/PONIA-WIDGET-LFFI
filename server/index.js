@@ -4,7 +4,7 @@ import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
 import { eq, and } from 'drizzle-orm'
 import { db } from './db.js'
-import { users, stores } from '../shared/schema.js'
+import { users, stores, chatMessages } from '../shared/schema.js'
 import { 
   getUserByEmail,
   getUserBySupabaseId, 
@@ -522,6 +522,23 @@ app.get('/api/chat/messages', authenticateSupabaseUser, async (req, res) => {
     res.json({ messages: messages.reverse() })
   } catch (error) {
     console.error('Erreur récupération messages:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// Clear chat history
+app.delete('/api/chat/messages/clear', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
+    await db.delete(chatMessages).where(eq(chatMessages.userId, user.id))
+    
+    res.json({ success: true })
+  } catch (error) {
+    console.error('Erreur suppression messages:', error)
     res.status(500).json({ error: 'Erreur serveur' })
   }
 })

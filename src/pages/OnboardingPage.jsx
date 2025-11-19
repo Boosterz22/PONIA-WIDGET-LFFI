@@ -61,6 +61,10 @@ export default function OnboardingPage() {
           setTimeout(() => {
             setShowScanner(true)
           }, 1500)
+        } else {
+          // Server rejected the product
+          alert(t('onboarding.scanError'))
+          setShowScanner(true)
         }
       } else {
         // Product not found in Open Food Facts
