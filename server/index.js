@@ -22,7 +22,9 @@ import {
   addSaleRecord,
   getSalesHistory,
   getSalesByPeriod,
-  getSalesForProduct
+  getSalesForProduct,
+  createChatMessage,
+  getChatMessages
 } from './storage.js'
 import { generateOrderPDF } from './pdfService.js'
 import { weatherService } from './weatherService.js'
@@ -472,6 +474,55 @@ Tu es l'outil qui transforme les commerçants en experts de leur propre stock.`
       error: 'Erreur serveur', 
       message: 'Une erreur est survenue lors du traitement de votre demande.'
     })
+  }
+})
+
+// Endpoint pour sauvegarder un message de chat
+app.post('/api/chat/messages', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
+    const { role, content } = req.body
+    
+    if (!role || !content) {
+      return res.status(400).json({ error: 'Role et content requis' })
+    }
+
+    if (role !== 'user' && role !== 'assistant') {
+      return res.status(400).json({ error: 'Role doit être "user" ou "assistant"' })
+    }
+
+    const message = await createChatMessage({
+      userId: user.id,
+      role,
+      content
+    })
+
+    res.json({ message })
+  } catch (error) {
+    console.error('Erreur sauvegarde message:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// Endpoint pour récupérer l'historique des messages
+app.get('/api/chat/messages', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
+    const limit = parseInt(req.query.limit) || 100
+    const messages = await getChatMessages(user.id, limit)
+    
+    res.json({ messages: messages.reverse() })
+  } catch (error) {
+    console.error('Erreur récupération messages:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
   }
 })
 
