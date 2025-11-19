@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Package, Brain, Activity, History, Settings, User, LogOut, Gift, Mail } from 'lucide-react'
+import { LayoutDashboard, Package, Brain, Activity, History, Settings, User, LogOut, Gift, Mail, MessageSquare } from 'lucide-react'
 import { supabase } from '../services/supabase'
 import LanguageSelector from './LanguageSelector'
+import { useLanguage } from '../contexts/LanguageContext'
 
 const businessTypeLabels = {
   'bakery': 'Boulangerie / Pâtisserie',
@@ -20,11 +21,13 @@ const businessTypeLabels = {
 export default function Navigation() {
   const location = useLocation()
   const navigate = useNavigate()
+  const { t } = useLanguage()
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [businessName, setBusinessName] = useState('Mon Commerce')
   const menuRef = useRef(null)
   
   const navItems = [
+    { path: '/chat', icon: MessageSquare, label: t('nav.poniaAI') },
     { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { path: '/stock', icon: Package, label: 'Stocks' },
     { path: '/insights', icon: Brain, label: 'Insights IA' },
