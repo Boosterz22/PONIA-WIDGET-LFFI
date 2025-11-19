@@ -48,14 +48,10 @@ async function getChatResponse(userMessage, products, conversationHistory, insig
 
 export default function ChatAICentral({ products, userName = "Enock" }) {
   const { t } = useLanguage()
-  const [messages, setMessages] = useState([
-    {
-      role: 'assistant',
-      content: `${t('chat.greeting')} ${userName}, comment puis-je vous aider aujourd'hui ?`
-    }
-  ])
+  const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
+  const [historyLoaded, setHistoryLoaded] = useState(false)
   const messagesEndRef = useRef(null)
 
   const scrollToBottom = () => {
@@ -65,6 +61,66 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  useEffect(() => {
+    loadChatHistory()
+  }, [])
+
+  const loadChatHistory = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) return
+
+      const response = await fetch('/api/chat/messages', {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`
+        }
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data.messages && data.messages.length > 0) {
+          setMessages(data.messages)
+        } else {
+          setMessages([{
+            role: 'assistant',
+            content: `${t('chat.greeting')} ${userName}, comment puis-je vous aider aujourd'hui ?`
+          }])
+        }
+      } else {
+        setMessages([{
+          role: 'assistant',
+          content: `${t('chat.greeting')} ${userName}, comment puis-je vous aider aujourd'hui ?`
+        }])
+      }
+    } catch (error) {
+      console.error('Erreur chargement historique:', error)
+      setMessages([{
+        role: 'assistant',
+        content: `${t('chat.greeting')} ${userName}, comment puis-je vous aider aujourd'hui ?`
+      }])
+    } finally {
+      setHistoryLoaded(true)
+    }
+  }
+
+  const saveMessage = async (role, content) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) return
+
+      await fetch('/api/chat/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify({ role, content })
+      })
+    } catch (error) {
+      console.error('Erreur sauvegarde message:', error)
+    }
+  }
 
   const handleSend = async () => {
     if (!input.trim() || loading) return
@@ -76,14 +132,19 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
     setMessages(newMessages)
     setLoading(true)
 
+    await saveMessage('user', userMessage)
+
     try {
       const response = await getChatResponse(userMessage, products, messages, null)
       setMessages(prev => [...prev, { role: 'assistant', content: response }])
+      await saveMessage('assistant', response)
     } catch (error) {
+      const errorMessage = 'Désolé, j\'ai un souci technique. Réessayez dans quelques secondes.'
       setMessages(prev => [...prev, { 
         role: 'assistant', 
-        content: 'Désolé, j\'ai un souci technique. Réessayez dans quelques secondes.' 
+        content: errorMessage
       }])
+      await saveMessage('assistant', errorMessage)
     } finally {
       setLoading(false)
     }
