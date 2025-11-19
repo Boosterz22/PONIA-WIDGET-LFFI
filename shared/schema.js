@@ -79,3 +79,11 @@ export const notifications = pgTable('notifications', {
   sentAt: timestamp('sent_at'),
   createdAt: timestamp('created_at').notNull().defaultNow()
 })
+
+export const chatMessages = pgTable('chat_messages', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  role: varchar('role', { length: 20 }).notNull(),
+  content: text('content').notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow()
+})
