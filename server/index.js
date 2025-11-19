@@ -750,6 +750,34 @@ app.post('/api/products', authenticateSupabaseUser, enforceTrialStatus, async (r
   }
 })
 
+// Scan barcode and add product
+app.post('/api/products/scan', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+    
+    const productData = {
+      name: req.body.name,
+      currentQuantity: req.body.quantity || 1,
+      unit: req.body.unit || 'unité',
+      alertThreshold: req.body.minStock || 5,
+      supplier: null,
+      expiryDate: null,
+      userId: user.id,
+      category: req.body.category || 'Autre',
+      barcode: req.body.barcode
+    }
+    
+    const product = await createProduct(productData)
+    res.json({ success: true, product })
+  } catch (error) {
+    console.error('Erreur scan produit:', error)
+    res.status(500).json({ error: 'Erreur serveur', message: error.message })
+  }
+})
+
 app.put('/api/products/:id', authenticateSupabaseUser, enforceTrialStatus, async (req, res) => {
   try {
     const productId = parseInt(req.params.id)

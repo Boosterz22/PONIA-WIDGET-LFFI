@@ -23,6 +23,19 @@ const translations = {
       q3: 'Génère ma commande cette semaine',
       q4: 'Qu\'est-ce qui expire bientôt ?'
     },
+    onboarding: {
+      welcome: 'Bienvenue sur PONIA',
+      description: 'Scannez vos premiers produits pour commencer',
+      scanTitle: 'Scanner un code-barres',
+      scanInstructions: 'Pointez votre caméra vers un code-barres EAN-13',
+      skipStep: 'Passer cette étape',
+      scanAnother: 'Scanner un autre produit',
+      continueToApp: 'Continuer vers l\'application',
+      productsAdded: 'produits ajoutés',
+      productNotFound: 'Produit non trouvé dans la base de données',
+      scanError: 'Erreur lors du scan',
+      processing: 'Traitement en cours...'
+    },
     timeSaved: {
       title: 'CETTE SEMAINE, PONIA VOUS A FAIT GAGNER :',
       recovered: 'de temps récupéré',
@@ -67,6 +80,19 @@ const translations = {
       q2: 'What is out of stock?',
       q3: 'Generate my order this week',
       q4: 'What expires soon?'
+    },
+    onboarding: {
+      welcome: 'Welcome to PONIA',
+      description: 'Scan your first products to get started',
+      scanTitle: 'Scan a barcode',
+      scanInstructions: 'Point your camera at an EAN-13 barcode',
+      skipStep: 'Skip this step',
+      scanAnother: 'Scan another product',
+      continueToApp: 'Continue to app',
+      productsAdded: 'products added',
+      productNotFound: 'Product not found in database',
+      scanError: 'Error during scan',
+      processing: 'Processing...'
     },
     timeSaved: {
       title: 'THIS WEEK, PONIA SAVED YOU:',
@@ -113,6 +139,19 @@ const translations = {
       q3: 'Generar mi pedido esta semana',
       q4: '¿Qué caduca pronto?'
     },
+    onboarding: {
+      welcome: 'Bienvenido a PONIA',
+      description: 'Escanea tus primeros productos para comenzar',
+      scanTitle: 'Escanear código de barras',
+      scanInstructions: 'Apunta tu cámara hacia un código de barras EAN-13',
+      skipStep: 'Saltar este paso',
+      scanAnother: 'Escanear otro producto',
+      continueToApp: 'Continuar a la aplicación',
+      productsAdded: 'productos agregados',
+      productNotFound: 'Producto no encontrado en la base de datos',
+      scanError: 'Error durante el escaneo',
+      processing: 'Procesando...'
+    },
     timeSaved: {
       title: 'ESTA SEMANA, PONIA TE AHORRÓ:',
       recovered: 'de tiempo recuperado',
@@ -157,6 +196,19 @@ const translations = {
       q2: 'ما الذي نفد من المخزون؟',
       q3: 'توليد طلبي هذا الأسبوع',
       q4: 'ما الذي ينتهي قريباً؟'
+    },
+    onboarding: {
+      welcome: 'مرحبا بك في PONIA',
+      description: 'امسح منتجاتك الأولى للبدء',
+      scanTitle: 'مسح الباركود',
+      scanInstructions: 'وجه الكاميرا نحو باركود EAN-13',
+      skipStep: 'تخطي هذه الخطوة',
+      scanAnother: 'مسح منتج آخر',
+      continueToApp: 'متابعة إلى التطبيق',
+      productsAdded: 'منتجات مضافة',
+      productNotFound: 'المنتج غير موجود في قاعدة البيانات',
+      scanError: 'خطأ أثناء المسح',
+      processing: 'جاري المعالجة...'
     },
     timeSaved: {
       title: 'هذا الأسبوع، وفر لك PONIA:',
@@ -203,6 +255,19 @@ const translations = {
       q3: 'Generiere meine Bestellung diese Woche',
       q4: 'Was läuft bald ab?'
     },
+    onboarding: {
+      welcome: 'Willkommen bei PONIA',
+      description: 'Scannen Sie Ihre ersten Produkte, um zu beginnen',
+      scanTitle: 'Barcode scannen',
+      scanInstructions: 'Richten Sie Ihre Kamera auf einen EAN-13-Barcode',
+      skipStep: 'Diesen Schritt überspringen',
+      scanAnother: 'Ein weiteres Produkt scannen',
+      continueToApp: 'Zur App fortfahren',
+      productsAdded: 'Produkte hinzugefügt',
+      productNotFound: 'Produkt in der Datenbank nicht gefunden',
+      scanError: 'Fehler beim Scannen',
+      processing: 'Verarbeitung...'
+    },
     timeSaved: {
       title: 'DIESE WOCHE HAT PONIA IHNEN GESPART:',
       recovered: 'zurückgewonnene Zeit',
@@ -247,6 +312,19 @@ const translations = {
       q2: '什么缺货了？',
       q3: '生成本周订单',
       q4: '什么即将过期？'
+    },
+    onboarding: {
+      welcome: '欢迎使用 PONIA',
+      description: '扫描您的第一批产品以开始使用',
+      scanTitle: '扫描条形码',
+      scanInstructions: '将相机对准 EAN-13 条形码',
+      skipStep: '跳过此步骤',
+      scanAnother: '扫描另一个产品',
+      continueToApp: '继续使用应用',
+      productsAdded: '产品已添加',
+      productNotFound: '数据库中未找到产品',
+      scanError: '扫描时出错',
+      processing: '处理中...'
     },
     timeSaved: {
       title: '本周，PONIA为您节省了：',
