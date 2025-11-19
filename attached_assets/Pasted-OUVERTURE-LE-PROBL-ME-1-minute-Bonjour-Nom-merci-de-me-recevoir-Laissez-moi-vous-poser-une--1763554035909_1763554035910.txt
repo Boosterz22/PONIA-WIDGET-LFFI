@@ -1,0 +1,168 @@
+OUVERTURE - LE PROBLÈME (1 minute)
+"Bonjour [Nom], merci de me recevoir. Laissez-moi vous poser une question simple : combien de temps vous passez par jour à gérer votre stock de fromages ?"
+
+[Attendre la réponse - généralement 1h à 2h/jour]
+
+"Exactement. Entre le comptage manuel, les notes sur papier, les calculs de ce qu'il faut commander, vérifier les DLC... c'est 7 à 10 heures par semaine. Et même avec tout ce temps, vous avez probablement déjà vécu ça :
+
+Un samedi après-midi, vous êtes à court de Comté alors que c'est la ruée
+Un mercredi matin, vous découvrez 3 Bries qui expirent demain et que vous aviez oubliés
+Chaque semaine, vous hésitez : commander trop (gaspillage) ou pas assez (rupture) ?
+Le vrai problème, c'est pas que vous manquez d'expérience. C'est que vous gérez 40 fromages avec des DLC différentes, des rotations variables, et que votre cerveau ne peut pas tout anticiper. Et là, je ne parle même pas de la météo qui impacte vos ventes, des événements locaux, des tendances saisonnières..."
+
+→ Le fromager acquiesce → vous avez créé l'empathie.
+
+SOLUTION - L'IA PONIA (3 minutes)
+"C'est exactement pour ça que j'ai créé PONIA AI. PONIA, c'est le premier assistant intelligent spécialisé pour les commerçants alimentaires comme vous. Laissez-moi vous montrer comment ça marche vraiment."
+
+1. LE MATIN - SCAN INTELLIGENT (2 minutes au lieu de 1 heure)
+"Chaque matin, vous prenez votre téléphone, vous ouvrez PONIA, et vous scannez vos fromages. 2 minutes chrono. C'est tout."
+
+[Montrer l'écran de ton téléphone - LIVE DEMO si possible]
+
+"Regardez : je scan un Comté → PONIA enregistre la quantité instantanément. Je scan un Roquefort → pareil. En 2 minutes, tous vos fromages sont mis à jour."
+
+→ Différence avec concurrent :
+"SumUp ou un logiciel classique vous demanderait de taper manuellement chaque produit. Ici, c'est instantané."
+
+2. L'IA TRAVAILLE POUR VOUS (Pendant que vous servez vos clients)
+"Maintenant, voici la magie. Pendant que vous servez vos clients, l'Intelligence Artificielle de PONIA analyse vos données en temps réel :"
+
+📊 Ce que l'IA fait :
+
+Elle apprend vos ventes
+"L'IA détecte que votre Comté se vend 2x plus le samedi que le mardi. Que votre Chèvre frais part mieux en été. Que les pluies font baisser vos ventes de fromages à pâte molle."
+Elle prédit l'avenir
+"L'IA vous dit : 'Attention, à ce rythme, rupture de Comté dans 2 jours. Commandez 3kg supplémentaires.' Elle anticipe avant que vous soyez à sec."
+Elle optimise les DLC
+"L'IA détecte que 3 Bries expirent dans 48h. Elle vous suggère automatiquement : 'Promo -20% aujourd'hui = 35€ récupérés au lieu de 0€ de perte.'"
+Elle génère vos commandes
+"Tous les lundis, l'IA calcule les quantités exactes à commander pour la semaine. Elle génère le bon de commande en PDF ou WhatsApp. Vous validez en 30 secondes."
+→ Insister :
+"C'est pas un tableur Excel où vous tapez des formules. C'est une vraie Intelligence Artificielle qui apprend de vos ventes, de la météo, des événements locaux, et qui optimise votre stock mieux qu'un expert supply-chain à 5000€/mois."
+
+3. LES ALERTES INTELLIGENTES (Zéro effort mental)
+"Vous n'avez plus besoin de penser à votre stock. PONIA pense pour vous :"
+
+Exemples d'alertes :
+
+🔴 "Comté AOP : rupture dans 2 jours → commandez maintenant"
+⚠️ "Brie : expire dans 3 jours → promo -20% recommandée"
+✅ "Stock optimal cette semaine : vous pouvez souffler"
+🌤️ "Météo pluvieuse samedi → réduire commande fromages frais de 15%"
+"Imaginez : vous arrivez le matin, vous ouvrez PONIA, et l'IA vous dit exactement quoi faire. Zéro stress, zéro oubli, zéro gaspillage."
+
+GAINS DE TEMPS - LE CHIFFRAGE (2 minutes)
+"Maintenant, parlons concret. Combien vous gagnez vraiment avec PONIA ?"
+
+AVANT PONIA (Gestion manuelle) :
+Tâche	Temps/jour
+Inventaire papier/Excel	45 min
+Vérifier les DLC	15 min
+Calculer les commandes	20 min
+Passer la commande (téléphone/email)	10 min
+Gérer les erreurs de stock	10 min
+TOTAL	1h40/jour = 11h30/semaine
+AVEC PONIA :
+Tâche	Temps/jour
+Scan des fromages	2 min
+Valider commande IA	30 sec
+TOTAL	2min30/jour = 17min/semaine
+GAIN DE TEMPS :
+11h30/semaine → 17min/semaine = VOUS RÉCUPÉREZ 11h13/SEMAINE
+
+"Qu'est-ce que vous pouvez faire avec 11 heures en plus par semaine ?"
+
+Servir plus de clients (augmenter CA)
+Développer votre offre (ateliers dégustation, etc.)
+Simplement vivre (rentrer plus tôt chez vous)
+Valeur du temps : Si votre temps vaut 25€/h (salaire moyen fromager) → 11h × 25€ = 275€/semaine = 1 100€/mois de temps récupéré.
+
+ÉCONOMIES RÉALISÉES - LE ROI (2 minutes)
+"Maintenant, parlons argent. PONIA ne vous fait pas juste gagner du temps, elle vous fait économiser de l'argent sonnant et trébuchant."
+
+1. RÉDUCTION DU GASPILLAGE (-40%)
+"Une fromagerie moyenne jette 500€/mois de fromages périmés. Pourquoi ? Parce qu'on oublie un Brie au fond, parce qu'on a commandé trop de Chèvre frais avant un week-end pluvieux..."
+
+Avec PONIA :
+
+Alertes DLC automatiques → vous n'oubliez plus rien
+IA prédit les ventes → vous commandez juste ce qu'il faut
+Suggestions promos → vous vendez au lieu de jeter
+→ Gaspillage réduit de 40% = 200€/mois économisé
+
+2. ÉVITER LES RUPTURES (+15% CA week-end)
+"Combien de fois un client est venu chercher du Comté un samedi et vous n'en aviez plus ? Il part acheter chez le concurrent. Rupture = vente perdue."
+
+Avec PONIA :
+
+IA anticipe les pics de vente (week-end, événements)
+Alertes prédictives → vous commandez avant la rupture
+→ Ruptures divisées par 3 = +750€/mois de ventes supplémentaires
+
+3. OPTIMISATION TRÉSORERIE (Commandes justes)
+"Sans IA, vous commandez souvent trop (peur de manquer) → argent bloqué en stock. Ou pas assez → rupture. PONIA calcule la quantité optimale :"
+
+Ni trop (gaspillage)
+Ni trop peu (rupture)
+Juste ce qu'il faut
+→ Trésorerie optimisée = 300€/mois de cash-flow amélioré
+
+TOTAL GAINS MENSUELS :
+Gain	Montant
+Temps récupéré (11h/sem × 25€/h)	1 100€/mois
+Gaspillage réduit (-40%)	200€/mois
+Ruptures évitées (+15% CA WE)	750€/mois
+Trésorerie optimisée	300€/mois
+TOTAL	2 350€/mois
+PRIX PONIA PRO : 69€/mois
+
+→ ROI = 2 350€ / 69€ = x34 (3400% de retour sur investissement)
+
+"Pour chaque euro investi dans PONIA, vous en gagnez 34. C'est l'investissement le plus rentable de votre fromagerie."
+
+DIFFÉRENCIATION - POURQUOI PONIA ET PAS UN AUTRE ?
+"Vous vous demandez peut-être : pourquoi pas Excel ? Ou SumUp ? Ou un logiciel classique ?"
+
+Solution	Limite	PONIA
+Excel	Manuel, lent, erreurs	✅ IA automatique
+SumUp	Juste une caisse, stats basiques	✅ IA prédictive + alertes
+Inpulse	299€/mois (inabordable TPE)	✅ 69€/mois
+Logiciels ERP	Complexes, formation 2 semaines	✅ 2 min d'installation
+PONIA est le SEUL outil IA pour fromagers à moins de 100€/mois.
+
+CLOSING - ESSAI GRATUIT
+"Écoutez, je pourrais vous parler pendant 2 heures des bénéfices de PONIA. Mais le mieux, c'est que vous testiez par vous-même. 14 jours gratuits, sans carte bancaire, sans engagement."
+
+Proposition concrète :
+
+Maintenant → On installe PONIA sur votre téléphone (2 min)
+Vous scannez 5 fromages → Vous voyez comment ça marche
+Demain matin → Vous recevez votre première alerte IA
+Dans 7 jours → PONIA génère votre première commande automatique
+Dans 14 jours → Vous décidez si ça vaut 69€/mois
+"Franchement, après 14 jours, soit vous avez économisé 100€ et gagné 3h de temps → vous continuez. Soit ça ne marche pas pour vous → vous annulez en 1 clic. Vous ne risquez rien."
+
+OBJECTION HANDLING
+❓ "C'est trop cher 69€/mois"
+→ "Vous jetez combien de fromages par mois ? 200€ ? PONIA vous en fait économiser 200€. Donc c'est gratuit + 131€ de bénéfice net."
+
+❓ "Je n'ai pas le temps d'apprendre"
+→ "2 minutes d'installation. Ensuite, vous scannez vos fromages en 2 minutes/jour. C'est plus rapide que votre méthode actuelle."
+
+❓ "L'IA, c'est compliqué"
+→ "Pour vous, zéro complexité. Vous scannez, l'IA fait le travail, vous recevez des alertes simples en français. Aussi simple qu'un SMS."
+
+CALL TO ACTION FINAL
+"On fait l'essai maintenant ? Je vous installe PONIA, on scanne 5 fromages ensemble, et demain matin vous voyez votre première alerte IA. Ça vous va ?"
+
+[Sortir ton téléphone, ouvrir PONIA, montrer LIVE]
+
+🎯 RÉCAP DES MESSAGES CLÉS
+IA = DIFFÉRENCIATION → Seul outil IA pour fromagers à 69€/mois
+GAIN DE TEMPS MASSIF → 11h/semaine récupérées (1 100€/mois)
+ÉCONOMIES RÉELLES → 2 350€/mois de gains vs 69€/mois d'abonnement
+ROI IMBATTABLE → x34 retour sur investissement
+ZÉRO RISQUE → 14 jours gratuits sans engagement
+Ton secret : MONTRER PONIA EN LIVE, scanner 2 fromages devant le client, générer une alerte. Le visuel convertit 10x mieux que les mots. 🚀
+1 minute of work

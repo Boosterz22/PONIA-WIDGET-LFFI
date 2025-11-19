@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { Send, Loader, RefreshCw } from 'lucide-react'
+import { Send, Loader } from 'lucide-react'
 import { supabase } from '../services/supabase'
 import { useLanguage } from '../contexts/LanguageContext'
-import poniaLogo from '../assets/ponia-logo.png'
 
 function cleanMarkdown(text) {
   if (!text) return text
@@ -51,7 +50,6 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
-  const [historyLoaded, setHistoryLoaded] = useState(false)
   const messagesEndRef = useRef(null)
 
   const scrollToBottom = () => {
@@ -99,8 +97,6 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
         role: 'assistant',
         content: `${t('chat.greeting')} ${userName}, comment puis-je vous aider aujourd'hui ?`
       }])
-    } finally {
-      setHistoryLoaded(true)
     }
   }
 
@@ -120,28 +116,6 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
     } catch (error) {
       console.error('Erreur sauvegarde message:', error)
     }
-  }
-
-  const handleNewChat = async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session) {
-        await fetch('/api/chat/messages/clear', {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${session.access_token}`
-          }
-        })
-      }
-    } catch (error) {
-      console.error('Erreur suppression historique:', error)
-    }
-    
-    setMessages([{
-      role: 'assistant',
-      content: `${t('chat.greeting')} ${userName}, comment puis-je vous aider aujourd'hui ?`
-    }])
-    setInput('')
   }
 
   const handleSend = async () => {
@@ -181,9 +155,7 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
 
   const handleSuggestionClick = (suggestion) => {
     setInput(suggestion)
-    setTimeout(() => {
-      handleSend()
-    }, 100)
+    setTimeout(() => handleSend(), 100)
   }
 
   const suggestedQuestions = [
@@ -199,69 +171,23 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
     <div style={{ 
       display: 'flex',
       flexDirection: 'column',
-      height: '100vh',
-      background: 'white'
+      height: '100%',
+      background: 'white',
+      padding: '1.5rem',
+      paddingBottom: '0'
     }}>
-      {/* Header avec logo et bouton Nouveau Chat */}
-      <div style={{
-        padding: '1rem 1.5rem',
-        borderBottom: '1px solid #E5E7EB',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        background: 'white',
-        position: 'sticky',
-        top: 0,
-        zIndex: 10
-      }}>
-        <img 
-          src={poniaLogo} 
-          alt="PONIA" 
-          style={{ 
-            width: '50px', 
-            height: '50px',
-            objectFit: 'contain'
-          }} 
-        />
-        
-        <button
-          onClick={handleNewChat}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            padding: '0.5rem 1rem',
-            background: 'white',
-            border: '1px solid #E5E7EB',
-            borderRadius: '8px',
-            color: '#111827',
-            fontSize: '0.875rem',
-            fontWeight: '500',
-            cursor: 'pointer',
-            transition: 'all 0.2s'
-          }}
-          onMouseEnter={(e) => e.target.style.background = '#F9FAFB'}
-          onMouseLeave={(e) => e.target.style.background = 'white'}
-        >
-          <RefreshCw size={16} />
-          {t('chat.newChat')}
-        </button>
-      </div>
-
-      {/* Messages container */}
+      {/* Messages container - scrollable */}
       <div style={{
         flex: 1,
         overflowY: 'auto',
-        padding: '2rem 1rem',
-        maxWidth: '800px',
-        width: '100%',
-        margin: '0 auto'
+        marginBottom: '1rem',
+        paddingRight: '0.5rem'
       }}>
         {messages.map((msg, idx) => (
           <div
             key={idx}
             style={{
-              marginBottom: '1.5rem',
+              marginBottom: '1rem',
               display: 'flex',
               flexDirection: 'column',
               alignItems: msg.role === 'user' ? 'flex-end' : 'flex-start'
@@ -269,15 +195,16 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
           >
             <div
               style={{
-                maxWidth: '70%',
+                maxWidth: '75%',
                 padding: '0.875rem 1.125rem',
                 borderRadius: msg.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
-                background: msg.role === 'user' ? '#000000' : '#F3F4F6',
-                color: msg.role === 'user' ? '#FFFFFF' : '#111827',
+                background: msg.role === 'user' ? '#FFD700' : '#F3F4F6',
+                color: msg.role === 'user' ? '#000000' : '#111827',
                 fontSize: '0.9375rem',
                 lineHeight: '1.5',
                 whiteSpace: 'pre-wrap',
-                wordBreak: 'break-word'
+                wordBreak: 'break-word',
+                fontWeight: msg.role === 'user' ? '500' : '400'
               }}
             >
               {msg.content}
@@ -291,7 +218,8 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
             alignItems: 'center',
             gap: '0.5rem',
             color: '#6B7280',
-            fontSize: '0.875rem'
+            fontSize: '0.875rem',
+            marginBottom: '1rem'
           }}>
             <Loader size={16} className="spin" />
             <span>PONIA réfléchit...</span>
@@ -303,14 +231,9 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
 
       {/* Questions suggérées (seulement si conversation vide) */}
       {showSuggestions && (
-        <div style={{
-          padding: '1rem',
-          maxWidth: '800px',
-          width: '100%',
-          margin: '0 auto'
-        }}>
+        <div style={{ marginBottom: '1rem' }}>
           <p style={{
-            fontSize: '0.8125rem',
+            fontSize: '0.75rem',
             fontWeight: '600',
             color: '#6B7280',
             marginBottom: '0.75rem',
@@ -353,15 +276,10 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
 
       {/* Barre de chat fixe en bas */}
       <div style={{
-        padding: '1rem 1.5rem',
-        borderTop: '1px solid #E5E7EB',
-        background: 'white',
-        position: 'sticky',
-        bottom: 0
+        padding: '1rem 0',
+        paddingBottom: '1.5rem'
       }}>
         <div style={{
-          maxWidth: '800px',
-          margin: '0 auto',
           display: 'flex',
           gap: '0.75rem',
           alignItems: 'center'
