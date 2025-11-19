@@ -1,5 +1,5 @@
 import { db } from './db.js'
-import { users, products, stockHistory, salesHistory, notifications, stores } from '../shared/schema.js'
+import { users, products, stockHistory, salesHistory, notifications, stores, chatMessages } from '../shared/schema.js'
 import { eq, and, desc, gte, sql } from 'drizzle-orm'
 
 export async function getUserByEmail(email) {
@@ -241,4 +241,21 @@ export async function getSalesForProduct(productId, daysBack = 30) {
       gte(salesHistory.saleDate, startDate)
     ))
     .orderBy(desc(salesHistory.saleDate))
+}
+
+export async function createChatMessage(messageData) {
+  const result = await db.insert(chatMessages).values({
+    userId: messageData.userId,
+    role: messageData.role,
+    content: messageData.content
+  }).returning()
+  return result[0]
+}
+
+export async function getChatMessages(userId, limit = 100) {
+  return await db.select()
+    .from(chatMessages)
+    .where(eq(chatMessages.userId, userId))
+    .orderBy(desc(chatMessages.createdAt))
+    .limit(limit)
 }
