@@ -7,6 +7,7 @@ import ResetPasswordPage from './pages/ResetPasswordPage'
 import VerifyEmailPage from './pages/VerifyEmailPage'
 import VerifyCodePage from './pages/VerifyCodePage'
 import CompleteProfilePage from './pages/CompleteProfilePage'
+import OnboardingPage from './pages/OnboardingPage'
 import ChatPage from './pages/ChatPage'
 import DashboardPage from './pages/DashboardPage'
 import StockPage from './pages/StockPage'
@@ -128,6 +129,10 @@ function App() {
         <Route 
           path="/complete-profile" 
           element={session && needsProfile ? <CompleteProfilePage session={session} /> : <Navigate to="/chat" />} 
+        />
+        <Route 
+          path="/onboarding" 
+          element={session ? <OnboardingPage /> : <Navigate to="/login" />} 
         />
         <Route 
           path="/chat" 

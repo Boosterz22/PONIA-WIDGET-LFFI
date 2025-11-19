@@ -128,7 +128,7 @@ export default function CompleteProfilePage({ session }) {
       localStorage.setItem('ponia_referrals', JSON.stringify([]))
       localStorage.setItem('ponia_free_months', '0')
 
-      window.location.href = '/dashboard'
+      window.location.href = '/onboarding'
     } catch (error) {
       console.error('Erreur configuration profil:', error)
       alert(error.message || 'Erreur lors de la configuration du profil. Veuillez réessayer.')
