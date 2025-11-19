@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { Send, Loader } from 'lucide-react'
+import { Send, Loader, RefreshCw } from 'lucide-react'
 import { supabase } from '../services/supabase'
 import { useLanguage } from '../contexts/LanguageContext'
 import poniaLogo from '../assets/ponia-logo.png'
@@ -122,6 +122,14 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
     }
   }
 
+  const handleNewChat = () => {
+    setMessages([{
+      role: 'assistant',
+      content: `${t('chat.greeting')} ${userName}, comment puis-je vous aider aujourd'hui ?`
+    }])
+    setInput('')
+  }
+
   const handleSend = async () => {
     if (!input.trim() || loading) return
 
@@ -171,108 +179,126 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
     t('chat.q4')
   ]
 
+  const showSuggestions = messages.length <= 1
+
   return (
-    <div className="card" style={{ 
-      padding: 0, 
-      background: 'white', 
-      borderRadius: '12px', 
-      overflow: 'hidden',
-      border: '1px solid #E5E7EB'
+    <div style={{ 
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100vh',
+      background: 'white'
     }}>
-      {/* Header avec logo */}
+      {/* Header avec logo et bouton Nouveau Chat */}
       <div style={{
-        padding: '1.5rem',
+        padding: '1rem 1.5rem',
         borderBottom: '1px solid #E5E7EB',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'column',
-        gap: '0.5rem'
+        justifyContent: 'space-between',
+        background: 'white',
+        position: 'sticky',
+        top: 0,
+        zIndex: 10
       }}>
         <img 
           src={poniaLogo} 
           alt="PONIA" 
           style={{ 
-            width: '60px', 
-            height: '60px',
+            width: '50px', 
+            height: '50px',
             objectFit: 'contain'
           }} 
         />
-        <h2 style={{ 
-          fontSize: '1.25rem', 
-          fontWeight: '600', 
-          color: '#111827', 
-          margin: 0 
-        }}>
-          {t('chat.subtitle')}
-        </h2>
+        
+        <button
+          onClick={handleNewChat}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            padding: '0.5rem 1rem',
+            background: 'white',
+            border: '1px solid #E5E7EB',
+            borderRadius: '8px',
+            color: '#111827',
+            fontSize: '0.875rem',
+            fontWeight: '500',
+            cursor: 'pointer',
+            transition: 'all 0.2s'
+          }}
+          onMouseEnter={(e) => e.target.style.background = '#F9FAFB'}
+          onMouseLeave={(e) => e.target.style.background = 'white'}
+        >
+          <RefreshCw size={16} />
+          {t('chat.newChat')}
+        </button>
       </div>
 
-      {/* Messages */}
+      {/* Messages container */}
       <div style={{
-        maxHeight: '350px',
-        minHeight: '200px',
+        flex: 1,
         overflowY: 'auto',
-        padding: '1.5rem',
-        background: '#F9FAFB'
+        padding: '2rem 1rem',
+        maxWidth: '800px',
+        width: '100%',
+        margin: '0 auto'
       }}>
         {messages.map((msg, idx) => (
           <div
             key={idx}
             style={{
-              marginBottom: '1rem',
+              marginBottom: '1.5rem',
               display: 'flex',
-              justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start'
+              flexDirection: 'column',
+              alignItems: msg.role === 'user' ? 'flex-end' : 'flex-start'
             }}
           >
-            <div style={{
-              maxWidth: '80%',
-              padding: '0.875rem 1.125rem',
-              borderRadius: msg.role === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
-              background: msg.role === 'user' ? '#FFD700' : 'white',
-              color: msg.role === 'user' ? '#1F2937' : '#111827',
-              fontSize: '0.9375rem',
-              lineHeight: '1.6',
-              boxShadow: msg.role === 'user' 
-                ? '0 2px 8px rgba(255, 215, 0, 0.25)' 
-                : '0 1px 3px rgba(0,0,0,0.1)',
-              fontWeight: msg.role === 'user' ? '500' : '400',
-              whiteSpace: 'pre-wrap'
-            }}>
+            <div
+              style={{
+                maxWidth: '70%',
+                padding: '0.875rem 1.125rem',
+                borderRadius: msg.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
+                background: msg.role === 'user' ? '#000000' : '#F3F4F6',
+                color: msg.role === 'user' ? '#FFFFFF' : '#111827',
+                fontSize: '0.9375rem',
+                lineHeight: '1.5',
+                whiteSpace: 'pre-wrap',
+                wordBreak: 'break-word'
+              }}
+            >
               {msg.content}
             </div>
           </div>
         ))}
+        
         {loading && (
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '0.75rem',
-            padding: '0.875rem 1.125rem',
-            background: 'white',
-            borderRadius: '16px',
-            maxWidth: '80%',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+            gap: '0.5rem',
+            color: '#6B7280',
+            fontSize: '0.875rem'
           }}>
-            <Loader size={18} style={{ animation: 'spin 1s linear infinite', color: '#FFD700' }} />
-            <span style={{ fontSize: '0.9375rem', color: '#6B7280' }}>PONIA réfléchit...</span>
+            <Loader size={16} className="spin" />
+            <span>PONIA réfléchit...</span>
           </div>
         )}
+        
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Questions suggérées */}
-      {messages.length <= 1 && (
-        <div style={{ 
-          padding: '1rem 1.5rem', 
-          background: 'white',
-          borderTop: '1px solid #E5E7EB',
-          borderBottom: '1px solid #E5E7EB'
+      {/* Questions suggérées (seulement si conversation vide) */}
+      {showSuggestions && (
+        <div style={{
+          padding: '1rem',
+          maxWidth: '800px',
+          width: '100%',
+          margin: '0 auto'
         }}>
-          <p style={{ 
-            fontSize: '0.8125rem', 
-            fontWeight: '600', 
-            color: '#6B7280', 
+          <p style={{
+            fontSize: '0.8125rem',
+            fontWeight: '600',
+            color: '#6B7280',
             marginBottom: '0.75rem',
             textTransform: 'uppercase',
             letterSpacing: '0.5px'
@@ -285,23 +311,22 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
                 key={idx}
                 onClick={() => handleSuggestionClick(question)}
                 style={{
-                  padding: '0.625rem 0.875rem',
-                  background: '#F9FAFB',
+                  padding: '0.75rem 1rem',
+                  background: 'white',
                   border: '1px solid #E5E7EB',
                   borderRadius: '8px',
-                  fontSize: '0.875rem',
                   color: '#374151',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
+                  fontSize: '0.875rem',
                   textAlign: 'left',
-                  fontWeight: '400'
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.background = '#FEF3C7'
-                  e.target.style.borderColor = '#FFD700'
+                  e.target.style.background = '#F9FAFB'
+                  e.target.style.borderColor = '#D1D5DB'
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.background = '#F9FAFB'
+                  e.target.style.background = 'white'
                   e.target.style.borderColor = '#E5E7EB'
                 }}
               >
@@ -312,59 +337,62 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
         </div>
       )}
 
-      {/* Input */}
+      {/* Barre de chat fixe en bas */}
       <div style={{
         padding: '1rem 1.5rem',
+        borderTop: '1px solid #E5E7EB',
         background: 'white',
-        display: 'flex',
-        gap: '0.75rem',
-        alignItems: 'center'
+        position: 'sticky',
+        bottom: 0
       }}>
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyPress={handleKeyPress}
-          placeholder={t('chat.placeholder')}
-          disabled={loading}
-          style={{
-            flex: 1,
-            padding: '0.875rem 1.25rem',
-            fontSize: '0.9375rem',
-            border: '1px solid #D1D5DB',
-            borderRadius: '24px',
-            outline: 'none',
-            transition: 'all 0.2s'
-          }}
-          onFocus={(e) => e.target.style.borderColor = '#FFD700'}
-          onBlur={(e) => e.target.style.borderColor = '#D1D5DB'}
-        />
-        <button
-          onClick={handleSend}
-          disabled={loading || !input.trim()}
-          style={{
-            padding: '0.875rem',
-            background: input.trim() && !loading ? '#FFD700' : '#E5E7EB',
-            border: 'none',
-            borderRadius: '50%',
-            cursor: input.trim() && !loading ? 'pointer' : 'not-allowed',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            transition: 'all 0.2s',
-            boxShadow: input.trim() && !loading ? '0 2px 8px rgba(255, 215, 0, 0.4)' : 'none'
-          }}
-        >
-          <Send size={20} color={input.trim() && !loading ? '#1F2937' : '#9CA3AF'} />
-        </button>
+        <div style={{
+          maxWidth: '800px',
+          margin: '0 auto',
+          display: 'flex',
+          gap: '0.75rem',
+          alignItems: 'center'
+        }}>
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder={t('chat.placeholder')}
+            disabled={loading}
+            style={{
+              flex: 1,
+              padding: '0.875rem 1.25rem',
+              fontSize: '0.9375rem',
+              border: '1px solid #E5E7EB',
+              borderRadius: '24px',
+              outline: 'none',
+              transition: 'all 0.2s'
+            }}
+            onFocus={(e) => e.target.style.borderColor = '#9CA3AF'}
+            onBlur={(e) => e.target.style.borderColor = '#E5E7EB'}
+          />
+          <button
+            onClick={handleSend}
+            disabled={loading || !input.trim()}
+            style={{
+              padding: '0.875rem',
+              background: (loading || !input.trim()) ? '#E5E7EB' : '#000000',
+              border: 'none',
+              borderRadius: '50%',
+              color: 'white',
+              cursor: (loading || !input.trim()) ? 'not-allowed' : 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.2s',
+              width: '44px',
+              height: '44px'
+            }}
+          >
+            {loading ? <Loader size={20} className="spin" /> : <Send size={20} />}
+          </button>
+        </div>
       </div>
-
-      <style>{`
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
     </div>
   )
 }

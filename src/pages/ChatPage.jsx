@@ -73,17 +73,12 @@ export default function ChatPage({ session }) {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#F9FAFB' }}>
+    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: 'white' }}>
       {trialExpired && <TrialExpiredBlocker />}
       <TrialBanner />
       <Navigation />
       
-      <div className="container" style={{ 
-        padding: '2rem 1rem', 
-        maxWidth: '1200px', 
-        margin: '0 auto', 
-        paddingBottom: '100px' 
-      }}>
+      <div style={{ flex: 1, overflow: 'hidden' }}>
         <ChatAICentral products={products} userName={businessName} />
       </div>
     </div>
