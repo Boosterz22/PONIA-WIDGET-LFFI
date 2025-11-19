@@ -1,5 +1,8 @@
 const translations = {
   fr: {
+    nav: {
+      poniaAI: 'PONIA AI'
+    },
     dashboard: {
       title: 'Tableau de bord',
       subtitle: 'Vue d\'ensemble de votre activité',
@@ -41,6 +44,9 @@ const translations = {
     }
   },
   en: {
+    nav: {
+      poniaAI: 'PONIA AI'
+    },
     dashboard: {
       title: 'Dashboard',
       subtitle: 'Overview of your activity',
@@ -82,6 +88,9 @@ const translations = {
     }
   },
   es: {
+    nav: {
+      poniaAI: 'PONIA IA'
+    },
     dashboard: {
       title: 'Panel de control',
       subtitle: 'Resumen de tu actividad',
@@ -123,6 +132,9 @@ const translations = {
     }
   },
   ar: {
+    nav: {
+      poniaAI: 'PONIA AI'
+    },
     dashboard: {
       title: 'لوحة التحكم',
       subtitle: 'نظرة عامة على نشاطك',
@@ -164,6 +176,9 @@ const translations = {
     }
   },
   de: {
+    nav: {
+      poniaAI: 'PONIA KI'
+    },
     dashboard: {
       title: 'Dashboard',
       subtitle: 'Überblick über Ihre Aktivität',
@@ -205,6 +220,9 @@ const translations = {
     }
   },
   zh: {
+    nav: {
+      poniaAI: 'PONIA AI'
+    },
     dashboard: {
       title: '仪表板',
       subtitle: '活动概览',
