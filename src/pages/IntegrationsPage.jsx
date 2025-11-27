@@ -6,31 +6,66 @@ import { supabase } from '../services/supabase'
 import { useLanguage } from '../contexts/LanguageContext'
 
 const POS_PROVIDERS = [
-  { id: 'tiller', name: 'Tiller (SumUp)', logo: '💳', country: '🇫🇷🇪🇸', popular: true, category: 'all' },
-  { id: 'zettle', name: 'Zettle (PayPal)', logo: '💰', country: '🌍', popular: true, category: 'all' },
-  { id: 'square', name: 'Square', logo: '⬛', country: '🌍', popular: true, category: 'all' },
-  { id: 'zelty', name: 'Zelty', logo: '🍽️', country: '🇫🇷', popular: true, category: 'restaurant' },
-  { id: 'laddition', name: "L'Addition", logo: '📝', country: '🇫🇷', popular: true, category: 'restaurant' },
-  { id: 'lightspeed', name: 'Lightspeed', logo: '⚡', country: '🇫🇷', popular: true, category: 'all' },
-  { id: 'innovorder', name: 'Innovorder', logo: '🍔', country: '🇫🇷', popular: false, category: 'restaurant' },
-  { id: 'hiboutik', name: 'Hiboutik', logo: '🦉', country: '🇫🇷', popular: false, category: 'retail' },
-  { id: 'cashmag', name: 'Cashmag', logo: '🧲', country: '🇫🇷', popular: false, category: 'bakery' },
-  { id: 'cashpad', name: 'Cashpad', logo: '📱', country: '🇫🇷', popular: false, category: 'restaurant' },
-  { id: 'clyo', name: 'Clyo Systems', logo: '🔷', country: '🇫🇷', popular: false, category: 'all' },
-  { id: 'synapsy', name: 'Synapsy', logo: '🥖', country: '🇫🇷', popular: false, category: 'bakery' },
-  { id: 'popina', name: 'Popina', logo: '🍕', country: '🇫🇷', popular: false, category: 'restaurant' },
-  { id: 'jalia', name: 'Jalia JDC', logo: '🏪', country: '🇫🇷', popular: false, category: 'retail' },
-  { id: 'apitic', name: 'Apitic', logo: '📊', country: '🇫🇷', popular: false, category: 'all' },
-  { id: 'trivec', name: 'Trivec', logo: '🇪🇺', country: '🇪🇺', popular: false, category: 'restaurant' },
-  { id: 'odoo', name: 'Odoo POS', logo: '🟣', country: '🇫🇷🇧🇪', popular: false, category: 'all' },
-  { id: 'restomax', name: 'Restomax', logo: '🍴', country: '🇫🇷🇧🇪', popular: false, category: 'restaurant' },
-  { id: 'hellocash', name: 'HelloCash', logo: '👋', country: '🇫🇷', popular: false, category: 'all' },
-  { id: 'connectill', name: 'Connectill', logo: '🔗', country: '🇫🇷', popular: false, category: 'all' },
-  { id: 'fulleapps', name: 'Fülleapps', logo: '📲', country: '🇫🇷', popular: false, category: 'all' },
-  { id: 'addictill', name: 'Addictill', logo: '➕', country: '🇫🇷', popular: false, category: 'all' },
-  { id: 'abill', name: 'Abill', logo: '🧾', country: '🇫🇷', popular: false, category: 'all' },
-  { id: 'planity', name: 'Planity', logo: '💇', country: '🇫🇷', popular: false, category: 'beauty' },
-  { id: 'lastapp', name: 'LastApp', logo: '🇪🇸', country: '🇪🇸', popular: false, category: 'restaurant' },
+  { 
+    id: 'square', 
+    name: 'Square', 
+    logo: '🟦', 
+    country: '🌍', 
+    popular: true, 
+    category: 'all',
+    description: 'Caisse tout-en-un très populaire',
+    authType: 'oauth'
+  },
+  { 
+    id: 'zettle', 
+    name: 'Zettle (PayPal)', 
+    logo: '💰', 
+    country: '🌍', 
+    popular: true, 
+    category: 'all',
+    description: 'Solution PayPal pour commerces',
+    authType: 'oauth'
+  },
+  { 
+    id: 'hiboutik', 
+    name: 'Hiboutik', 
+    logo: '🛒', 
+    country: '🇫🇷', 
+    popular: true, 
+    category: 'retail',
+    description: 'Caisse française pour commerce de détail',
+    authType: 'apikey'
+  },
+  { 
+    id: 'sumup', 
+    name: 'SumUp / Tiller', 
+    logo: '📱', 
+    country: '🇫🇷🇪🇺', 
+    popular: true, 
+    category: 'restaurant',
+    description: 'Leader restauration en France',
+    authType: 'oauth'
+  },
+  { 
+    id: 'lightspeed-x', 
+    name: 'Lightspeed X-Series', 
+    logo: '⚡', 
+    country: '🌍', 
+    popular: false, 
+    category: 'retail',
+    description: 'Solution retail internationale',
+    authType: 'oauth'
+  },
+  { 
+    id: 'lightspeed-k', 
+    name: 'Lightspeed K-Series', 
+    logo: '🍽️', 
+    country: '🌍', 
+    popular: false, 
+    category: 'restaurant',
+    description: 'Solution restaurant internationale',
+    authType: 'oauth'
+  }
 ]
 
 export default function IntegrationsPage({ session }) {
