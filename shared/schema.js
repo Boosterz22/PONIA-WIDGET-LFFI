@@ -87,3 +87,66 @@ export const chatMessages = pgTable('chat_messages', {
   content: text('content').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow()
 })
+
+export const posConnections = pgTable('pos_connections', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  storeId: integer('store_id').references(() => stores.id, { onDelete: 'cascade' }),
+  provider: varchar('provider', { length: 50 }).notNull(),
+  providerName: varchar('provider_name', { length: 100 }).notNull(),
+  connectionId: varchar('connection_id', { length: 255 }),
+  accessToken: text('access_token'),
+  refreshToken: text('refresh_token'),
+  tokenExpiresAt: timestamp('token_expires_at'),
+  status: varchar('status', { length: 50 }).default('pending'),
+  lastSyncAt: timestamp('last_sync_at'),
+  syncEnabled: boolean('sync_enabled').default(true),
+  metadata: text('metadata'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+})
+
+export const posProductMappings = pgTable('pos_product_mappings', {
+  id: serial('id').primaryKey(),
+  posConnectionId: integer('pos_connection_id').notNull().references(() => posConnections.id, { onDelete: 'cascade' }),
+  poniaProductId: integer('ponia_product_id').references(() => products.id, { onDelete: 'cascade' }),
+  posProductId: varchar('pos_product_id', { length: 255 }).notNull(),
+  posProductName: varchar('pos_product_name', { length: 255 }).notNull(),
+  posProductSku: varchar('pos_product_sku', { length: 100 }),
+  posProductPrice: decimal('pos_product_price', { precision: 10, scale: 2 }),
+  posProductCategory: varchar('pos_product_category', { length: 255 }),
+  isMapped: boolean('is_mapped').default(false),
+  autoSync: boolean('auto_sync').default(true),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+})
+
+export const posSales = pgTable('pos_sales', {
+  id: serial('id').primaryKey(),
+  posConnectionId: integer('pos_connection_id').notNull().references(() => posConnections.id, { onDelete: 'cascade' }),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  storeId: integer('store_id').references(() => stores.id, { onDelete: 'cascade' }),
+  posTransactionId: varchar('pos_transaction_id', { length: 255 }).notNull(),
+  posProductId: varchar('pos_product_id', { length: 255 }),
+  poniaProductId: integer('ponia_product_id').references(() => products.id, { onDelete: 'set null' }),
+  quantity: decimal('quantity', { precision: 10, scale: 2 }).notNull(),
+  unitPrice: decimal('unit_price', { precision: 10, scale: 2 }),
+  totalPrice: decimal('total_price', { precision: 10, scale: 2 }),
+  saleDate: timestamp('sale_date').notNull(),
+  paymentMethod: varchar('payment_method', { length: 50 }),
+  processed: boolean('processed').default(false),
+  processedAt: timestamp('processed_at'),
+  createdAt: timestamp('created_at').notNull().defaultNow()
+})
+
+export const posSyncLogs = pgTable('pos_sync_logs', {
+  id: serial('id').primaryKey(),
+  posConnectionId: integer('pos_connection_id').notNull().references(() => posConnections.id, { onDelete: 'cascade' }),
+  syncType: varchar('sync_type', { length: 50 }).notNull(),
+  status: varchar('status', { length: 50 }).notNull(),
+  itemsProcessed: integer('items_processed').default(0),
+  itemsFailed: integer('items_failed').default(0),
+  errorMessage: text('error_message'),
+  startedAt: timestamp('started_at').notNull().defaultNow(),
+  completedAt: timestamp('completed_at')
+})

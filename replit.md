@@ -15,9 +15,48 @@ PONIA AI is an AI-powered inventory management system designed for small busines
 - Do not make changes to the folder `Z`
 - Do not make changes to the file `Y`
 
-## Recent Changes (November 18, 2025)
+## Recent Changes (November 27, 2025)
 
-### Phase 1: AI Omnipresence & Time Savings Implementation
+### Phase 2: POS Integration with Chift Unified API
+
+1. **Database Schema Updates** (`shared/schema.js`)
+   - Added `posConnections` table for storing POS connection details (tokens, status, provider info)
+   - Added `posProductMappings` table for linking POS products to PONIA products
+   - Added `posSales` table for tracking sales from connected POS systems
+   - Added `posSyncLogs` table for monitoring synchronization status
+
+2. **Chift Service** (`server/chiftService.js`)
+   - OAuth 2.0 flow implementation for POS authentication
+   - Token management (access, refresh, expiration)
+   - Product sync, sales retrieval, Z-tickets, and transactions APIs
+   - Webhook setup for real-time sales updates
+   - Supports 27 French POS systems via single integration
+
+3. **IntegrationsPage** (`src/pages/IntegrationsPage.jsx`)
+   - Premium UI displaying all 27 supported POS systems
+   - Filtering by category (restaurant, bakery, retail, popular)
+   - Connection status display with sync and mapping buttons
+   - Demo mode for testing without real Chift credentials
+
+4. **ProductMappingPage** (`src/pages/ProductMappingPage.jsx`)
+   - Interface to link POS products to PONIA products
+   - Real-time search and filtering
+   - Progress indicators (mapped vs unmapped)
+   - Manual sync trigger
+
+5. **API Endpoints** (`server/index.js`)
+   - `GET /api/integrations/connections` - List user's POS connections
+   - `POST /api/integrations/connect` - Initiate OAuth flow
+   - `GET /api/integrations/callback` - OAuth callback handler
+   - `DELETE /api/integrations/connections/:id` - Disconnect POS
+   - `POST /api/integrations/sync/:id` - Sync products
+   - `GET/PUT /api/integrations/mappings/:id` - Product mapping CRUD
+   - `POST /api/integrations/webhook` - Real-time sales webhook
+
+6. **Navigation Update**
+   - Added "Intégrations Caisse" link in user dropdown menu
+
+### Phase 1: AI Omnipresence & Time Savings Implementation (November 18, 2025)
 
 1. **ChatAICentral Component** (`src/components/ChatAICentral.jsx`)
    - Primary dashboard interface replacing traditional KPI-first layout
@@ -90,5 +129,25 @@ PONIA AI is a secure full-stack application utilizing a client-server architectu
 *   **Weather:** OpenWeatherMap API
 *   **Calendar:** Google Calendar API
 *   **Payments:** Stripe
-*   **POS Integrations:** Square API, Lightspeed (planned)
+*   **POS Integrations:** Chift Unified API (supports 27 POS systems including Tiller, Zettle, Square, Zelty, L'Addition, Lightspeed, Innovorder, etc.)
 *   **Address API:** API Adresse (Base Adresse Nationale - BAN, gouvernement français)
+
+## POS Integration Architecture
+
+PONIA uses Chift's unified API to connect to 27+ French POS systems with a single integration:
+
+**Supported POS Systems:**
+- Restaurant/Bar: Zelty, L'Addition, Innovorder, Popina, Cashpad, Restomax, Trivec, LastApp
+- Bakery: Cashmag, Synapsy
+- Retail: Hiboutik, Jalia JDC
+- Universal: Tiller (SumUp), Zettle (PayPal), Square, Lightspeed, Odoo POS, HelloCash, Connectill, etc.
+
+**Integration Flow:**
+1. User selects their POS from the Integrations page
+2. OAuth 2.0 authentication with the POS provider via Chift
+3. Products are synced from POS to PONIA
+4. User maps POS products to PONIA products
+5. Real-time webhook updates stock when sales occur
+
+**Demo Mode:**
+When Chift credentials are not configured, the system runs in demo mode, simulating connections and sync operations for testing purposes.

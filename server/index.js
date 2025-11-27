@@ -24,8 +24,24 @@ import {
   getSalesByPeriod,
   getSalesForProduct,
   createChatMessage,
-  getChatMessages
+  getChatMessages,
+  createPosConnection,
+  getPosConnectionsByUser,
+  getPosConnectionById,
+  getPosConnectionByProvider,
+  updatePosConnection,
+  deletePosConnection,
+  createPosProductMapping,
+  getPosProductMappings,
+  updatePosProductMapping,
+  createPosSale,
+  getUnprocessedPosSales,
+  markPosSaleProcessed,
+  createPosSyncLog,
+  updatePosSyncLog,
+  getPosSyncLogs
 } from './storage.js'
+import { chiftService } from './chiftService.js'
 import { generateOrderPDF } from './pdfService.js'
 import { weatherService } from './weatherService.js'
 import path from 'path'
@@ -1447,6 +1463,438 @@ app.get('/api/admin/users', authenticateSupabaseUser, requireAdmin, async (req, 
   } catch (error) {
     console.error('Erreur admin users:', error)
     res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// ==========================================
+// POS INTEGRATIONS (Chift API)
+// ==========================================
+
+// Demo product generator based on POS provider type
+function generateDemoProducts(provider) {
+  const bakeryProducts = [
+    { id: 'bak001', name: 'Baguette tradition', sku: 'BAG-001', price: 1.30, category: 'Pains' },
+    { id: 'bak002', name: 'Pain de campagne', sku: 'BAG-002', price: 3.50, category: 'Pains' },
+    { id: 'bak003', name: 'Croissant pur beurre', sku: 'VIE-001', price: 1.40, category: 'Viennoiseries' },
+    { id: 'bak004', name: 'Pain au chocolat', sku: 'VIE-002', price: 1.50, category: 'Viennoiseries' },
+    { id: 'bak005', name: 'Tarte aux pommes', sku: 'PAT-001', price: 3.80, category: 'Pâtisseries' },
+    { id: 'bak006', name: 'Éclair chocolat', sku: 'PAT-002', price: 4.20, category: 'Pâtisseries' },
+    { id: 'bak007', name: 'Farine T65 (kg)', sku: 'ING-001', price: 1.20, category: 'Ingrédients' },
+    { id: 'bak008', name: 'Beurre AOP (250g)', sku: 'ING-002', price: 3.50, category: 'Ingrédients' },
+    { id: 'bak009', name: 'Levure fraîche', sku: 'ING-003', price: 0.80, category: 'Ingrédients' },
+    { id: 'bak010', name: 'Sandwich jambon-beurre', sku: 'SAN-001', price: 4.50, category: 'Sandwichs' }
+  ]
+
+  const restaurantProducts = [
+    { id: 'rest001', name: 'Entrecôte 300g', sku: 'VIA-001', price: 24.00, category: 'Viandes' },
+    { id: 'rest002', name: 'Filet de bar', sku: 'POI-001', price: 22.00, category: 'Poissons' },
+    { id: 'rest003', name: 'Salade César', sku: 'ENT-001', price: 14.00, category: 'Entrées' },
+    { id: 'rest004', name: 'Burger maison', sku: 'PLA-001', price: 16.50, category: 'Plats' },
+    { id: 'rest005', name: 'Frites fraîches', sku: 'ACC-001', price: 4.50, category: 'Accompagnements' },
+    { id: 'rest006', name: 'Tiramisu', sku: 'DES-001', price: 8.00, category: 'Desserts' },
+    { id: 'rest007', name: 'Café expresso', sku: 'BOI-001', price: 2.50, category: 'Boissons' },
+    { id: 'rest008', name: 'Vin rouge (verre)', sku: 'VIN-001', price: 6.00, category: 'Vins' },
+    { id: 'rest009', name: 'Huile d\'olive (L)', sku: 'ING-001', price: 12.00, category: 'Ingrédients' },
+    { id: 'rest010', name: 'Parmesan (kg)', sku: 'ING-002', price: 28.00, category: 'Ingrédients' }
+  ]
+
+  const retailProducts = [
+    { id: 'ret001', name: 'Confiture artisanale', sku: 'CON-001', price: 6.50, category: 'Épicerie' },
+    { id: 'ret002', name: 'Huile d\'olive bio', sku: 'HUI-001', price: 14.00, category: 'Épicerie' },
+    { id: 'ret003', name: 'Miel local (500g)', sku: 'MIE-001', price: 9.50, category: 'Épicerie' },
+    { id: 'ret004', name: 'Vin rouge AOC', sku: 'VIN-001', price: 12.00, category: 'Vins' },
+    { id: 'ret005', name: 'Fromage de chèvre', sku: 'FRO-001', price: 8.00, category: 'Fromages' },
+    { id: 'ret006', name: 'Saucisson sec', sku: 'CHA-001', price: 7.50, category: 'Charcuterie' },
+    { id: 'ret007', name: 'Biscuits bretons', sku: 'BIS-001', price: 4.80, category: 'Biscuits' },
+    { id: 'ret008', name: 'Chocolat noir 70%', sku: 'CHO-001', price: 5.50, category: 'Chocolat' }
+  ]
+
+  const barProducts = [
+    { id: 'bar001', name: 'Pression 25cl', sku: 'BIE-001', price: 4.00, category: 'Bières' },
+    { id: 'bar002', name: 'Pression 50cl', sku: 'BIE-002', price: 7.00, category: 'Bières' },
+    { id: 'bar003', name: 'Café expresso', sku: 'CAF-001', price: 2.00, category: 'Cafés' },
+    { id: 'bar004', name: 'Coca-Cola', sku: 'SOF-001', price: 3.50, category: 'Soft' },
+    { id: 'bar005', name: 'Verre de vin', sku: 'VIN-001', price: 5.00, category: 'Vins' },
+    { id: 'bar006', name: 'Mojito', sku: 'COC-001', price: 9.00, category: 'Cocktails' },
+    { id: 'bar007', name: 'Whisky JB', sku: 'SPI-001', price: 7.00, category: 'Spiritueux' },
+    { id: 'bar008', name: 'Plancha tapas', sku: 'FOO-001', price: 14.00, category: 'Food' }
+  ]
+
+  // Select products based on provider type
+  if (['cashmag', 'synapsy'].includes(provider)) {
+    return bakeryProducts
+  } else if (['zelty', 'laddition', 'innovorder', 'popina', 'cashpad', 'restomax', 'trivec', 'lastapp'].includes(provider)) {
+    return restaurantProducts
+  } else if (['hiboutik', 'jalia'].includes(provider)) {
+    return retailProducts
+  } else {
+    // For universal POS systems, return a mix
+    return [...bakeryProducts.slice(0, 4), ...restaurantProducts.slice(0, 3), ...barProducts.slice(0, 3)]
+  }
+}
+
+// Get all POS connections for user
+app.get('/api/integrations/connections', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
+    const connections = await getPosConnectionsByUser(user.id)
+    res.json({ connections })
+  } catch (error) {
+    console.error('Error fetching POS connections:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// Initiate POS connection (get OAuth URL)
+app.post('/api/integrations/connect', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
+    // Check plan - only Standard and Pro can connect POS
+    if (user.plan === 'basique') {
+      return res.status(403).json({ 
+        error: 'Abonnement requis',
+        message: 'L\'intégration caisse est disponible à partir du plan Standard.'
+      })
+    }
+
+    const { provider, providerName } = req.body
+    if (!provider) {
+      return res.status(400).json({ error: 'Provider requis' })
+    }
+
+    // Check if already connected
+    const existingConnection = await getPosConnectionByProvider(user.id, provider)
+    if (existingConnection && existingConnection.status === 'active') {
+      return res.status(400).json({ 
+        error: 'Déjà connecté',
+        message: `Vous êtes déjà connecté à ${providerName}`
+      })
+    }
+
+    // Get main store
+    const store = await getMainStore(user.id)
+
+    // Create pending connection
+    const connection = await createPosConnection({
+      userId: user.id,
+      storeId: store?.id,
+      provider,
+      providerName: providerName || provider,
+      status: 'pending'
+    })
+
+    // Check if Chift is configured
+    if (!process.env.CHIFT_CLIENT_ID || !process.env.CHIFT_CLIENT_SECRET) {
+      // Demo mode - simulate connection without real Chift
+      await updatePosConnection(connection.id, {
+        status: 'active',
+        connectionId: `demo_${connection.id}`,
+        lastSyncAt: new Date()
+      })
+
+      return res.json({
+        success: true,
+        connection: await getPosConnectionById(connection.id),
+        message: `Mode démo: ${providerName} simulé comme connecté`
+      })
+    }
+
+    // Get authorization URL from Chift
+    const authUrl = await chiftService.getAuthorizationUrl(
+      provider, 
+      user.id, 
+      store?.id
+    )
+
+    res.json({ authUrl, connectionId: connection.id })
+  } catch (error) {
+    console.error('Error initiating POS connection:', error)
+    res.status(500).json({ error: 'Erreur de connexion' })
+  }
+})
+
+// OAuth callback from Chift
+app.get('/api/integrations/callback', async (req, res) => {
+  try {
+    const { code, state, error: oauthError } = req.query
+
+    if (oauthError) {
+      console.error('OAuth error:', oauthError)
+      return res.redirect('/integrations?error=' + encodeURIComponent(oauthError))
+    }
+
+    if (!code || !state) {
+      return res.redirect('/integrations?error=missing_params')
+    }
+
+    // Decode state
+    let stateData
+    try {
+      stateData = JSON.parse(Buffer.from(state, 'base64').toString())
+    } catch (e) {
+      return res.redirect('/integrations?error=invalid_state')
+    }
+
+    const { userId, storeId, provider } = stateData
+
+    // Exchange code for tokens
+    const tokenData = await chiftService.exchangeCodeForToken(code)
+
+    // Update connection with tokens
+    const existingConnection = await getPosConnectionByProvider(userId, provider)
+    
+    if (existingConnection) {
+      await updatePosConnection(existingConnection.id, {
+        connectionId: tokenData.connection_id || existingConnection.connectionId,
+        accessToken: tokenData.access_token,
+        refreshToken: tokenData.refresh_token,
+        tokenExpiresAt: tokenData.expires_in 
+          ? new Date(Date.now() + tokenData.expires_in * 1000) 
+          : null,
+        status: 'active',
+        lastSyncAt: new Date()
+      })
+    }
+
+    // Create sync log
+    await createPosSyncLog({
+      posConnectionId: existingConnection.id,
+      syncType: 'oauth_complete',
+      status: 'success'
+    })
+
+    res.redirect('/integrations?success=true&provider=' + provider)
+  } catch (error) {
+    console.error('OAuth callback error:', error)
+    res.redirect('/integrations?error=callback_failed')
+  }
+})
+
+// Disconnect POS
+app.delete('/api/integrations/connections/:id', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
+    const connection = await getPosConnectionById(parseInt(req.params.id))
+    if (!connection || connection.userId !== user.id) {
+      return res.status(404).json({ error: 'Connexion non trouvée' })
+    }
+
+    await deletePosConnection(connection.id)
+    res.json({ success: true })
+  } catch (error) {
+    console.error('Error disconnecting POS:', error)
+    res.status(500).json({ error: 'Erreur de déconnexion' })
+  }
+})
+
+// Sync products from POS
+app.post('/api/integrations/sync/:id', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
+    const connection = await getPosConnectionById(parseInt(req.params.id))
+    if (!connection || connection.userId !== user.id) {
+      return res.status(404).json({ error: 'Connexion non trouvée' })
+    }
+
+    // Create sync log
+    const syncLog = await createPosSyncLog({
+      posConnectionId: connection.id,
+      syncType: 'manual_sync',
+      status: 'in_progress'
+    })
+
+    // In demo mode, generate realistic demo products
+    if (!process.env.CHIFT_CLIENT_ID || connection.connectionId?.startsWith('demo_')) {
+      const demoProducts = generateDemoProducts(connection.provider)
+      
+      let itemsProcessed = 0
+      for (const product of demoProducts) {
+        try {
+          await createPosProductMapping({
+            posConnectionId: connection.id,
+            posProductId: product.id,
+            posProductName: product.name,
+            posProductSku: product.sku,
+            posProductPrice: product.price,
+            posProductCategory: product.category
+          })
+          itemsProcessed++
+        } catch (err) {
+          console.log('Product already exists, skipping:', product.name)
+        }
+      }
+
+      await updatePosSyncLog(syncLog.id, {
+        status: 'success',
+        itemsProcessed,
+        completedAt: new Date()
+      })
+
+      await updatePosConnection(connection.id, {
+        lastSyncAt: new Date()
+      })
+
+      return res.json({
+        success: true,
+        message: `Mode démo: ${itemsProcessed} produits synchronisés`,
+        itemsProcessed
+      })
+    }
+
+    // Real sync with Chift
+    try {
+      const products = await chiftService.getProducts(
+        connection.connectionId,
+        connection.accessToken
+      )
+
+      let itemsProcessed = 0
+      for (const product of products) {
+        await createPosProductMapping({
+          posConnectionId: connection.id,
+          posProductId: product.id,
+          posProductName: product.name,
+          posProductSku: product.sku,
+          posProductPrice: product.price,
+          posProductCategory: product.category
+        })
+        itemsProcessed++
+      }
+
+      await updatePosSyncLog(syncLog.id, {
+        status: 'success',
+        itemsProcessed,
+        completedAt: new Date()
+      })
+
+      await updatePosConnection(connection.id, {
+        lastSyncAt: new Date()
+      })
+
+      res.json({ success: true, itemsProcessed })
+    } catch (syncError) {
+      await updatePosSyncLog(syncLog.id, {
+        status: 'error',
+        errorMessage: syncError.message,
+        completedAt: new Date()
+      })
+      throw syncError
+    }
+  } catch (error) {
+    console.error('Error syncing POS:', error)
+    res.status(500).json({ error: 'Erreur de synchronisation' })
+  }
+})
+
+// Get product mappings for a connection
+app.get('/api/integrations/mappings/:connectionId', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
+    const connection = await getPosConnectionById(parseInt(req.params.connectionId))
+    if (!connection || connection.userId !== user.id) {
+      return res.status(404).json({ error: 'Connexion non trouvée' })
+    }
+
+    const mappings = await getPosProductMappings(connection.id)
+    const poniaProducts = await getProductsByUserId(user.id)
+
+    res.json({ 
+      mappings,
+      poniaProducts 
+    })
+  } catch (error) {
+    console.error('Error fetching mappings:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// Update product mapping (link POS product to PONIA product)
+app.put('/api/integrations/mappings/:mappingId', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
+    const { poniaProductId, autoSync } = req.body
+    
+    const updated = await updatePosProductMapping(parseInt(req.params.mappingId), {
+      poniaProductId: poniaProductId || null,
+      isMapped: !!poniaProductId,
+      autoSync: autoSync !== false
+    })
+
+    res.json({ mapping: updated })
+  } catch (error) {
+    console.error('Error updating mapping:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// Get sync logs for a connection
+app.get('/api/integrations/logs/:connectionId', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
+    const connection = await getPosConnectionById(parseInt(req.params.connectionId))
+    if (!connection || connection.userId !== user.id) {
+      return res.status(404).json({ error: 'Connexion non trouvée' })
+    }
+
+    const logs = await getPosSyncLogs(connection.id)
+    res.json({ logs })
+  } catch (error) {
+    console.error('Error fetching sync logs:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// Webhook endpoint for real-time POS updates
+app.post('/api/integrations/webhook', express.json(), async (req, res) => {
+  try {
+    const { event_type, connection_id, data } = req.body
+
+    console.log('[POS Webhook] Received:', event_type, 'for connection:', connection_id)
+
+    // Find connection by Chift connection ID
+    // Note: In production, you'd verify the webhook signature
+    
+    if (event_type === 'sale.created') {
+      // Process new sale
+      const { transaction_id, items, total, payment_method, timestamp } = data
+      
+      // Find connection and process each item
+      // This would update stock based on mapped products
+      console.log('[POS Webhook] Sale processed:', transaction_id)
+    }
+
+    res.json({ received: true })
+  } catch (error) {
+    console.error('Webhook error:', error)
+    res.status(500).json({ error: 'Webhook processing failed' })
   }
 })
 

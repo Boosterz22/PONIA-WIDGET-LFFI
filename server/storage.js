@@ -1,5 +1,5 @@
 import { db } from './db.js'
-import { users, products, stockHistory, salesHistory, notifications, stores, chatMessages } from '../shared/schema.js'
+import { users, products, stockHistory, salesHistory, notifications, stores, chatMessages, posConnections, posProductMappings, posSales, posSyncLogs } from '../shared/schema.js'
 import { eq, and, desc, gte, sql } from 'drizzle-orm'
 
 export async function getUserByEmail(email) {
@@ -257,5 +257,161 @@ export async function getChatMessages(userId, limit = 100) {
     .from(chatMessages)
     .where(eq(chatMessages.userId, userId))
     .orderBy(desc(chatMessages.createdAt))
+    .limit(limit)
+}
+
+export async function createPosConnection(connectionData) {
+  const result = await db.insert(posConnections).values({
+    userId: connectionData.userId,
+    storeId: connectionData.storeId || null,
+    provider: connectionData.provider,
+    providerName: connectionData.providerName,
+    connectionId: connectionData.connectionId || null,
+    accessToken: connectionData.accessToken || null,
+    refreshToken: connectionData.refreshToken || null,
+    tokenExpiresAt: connectionData.tokenExpiresAt || null,
+    status: connectionData.status || 'pending',
+    syncEnabled: connectionData.syncEnabled !== false,
+    metadata: connectionData.metadata ? JSON.stringify(connectionData.metadata) : null
+  }).returning()
+  return result[0]
+}
+
+export async function getPosConnectionsByUser(userId) {
+  return await db.select()
+    .from(posConnections)
+    .where(eq(posConnections.userId, userId))
+    .orderBy(desc(posConnections.createdAt))
+}
+
+export async function getPosConnectionById(connectionId) {
+  const connection = await db.select()
+    .from(posConnections)
+    .where(eq(posConnections.id, connectionId))
+    .limit(1)
+  return connection[0] || null
+}
+
+export async function getPosConnectionByProvider(userId, provider) {
+  const connection = await db.select()
+    .from(posConnections)
+    .where(and(
+      eq(posConnections.userId, userId),
+      eq(posConnections.provider, provider)
+    ))
+    .limit(1)
+  return connection[0] || null
+}
+
+export async function updatePosConnection(connectionId, updates) {
+  const updateData = { ...updates, updatedAt: new Date() }
+  if (updateData.metadata && typeof updateData.metadata === 'object') {
+    updateData.metadata = JSON.stringify(updateData.metadata)
+  }
+  
+  const result = await db.update(posConnections)
+    .set(updateData)
+    .where(eq(posConnections.id, connectionId))
+    .returning()
+  return result[0]
+}
+
+export async function deletePosConnection(connectionId) {
+  await db.delete(posConnections).where(eq(posConnections.id, connectionId))
+}
+
+export async function createPosProductMapping(mappingData) {
+  const result = await db.insert(posProductMappings).values({
+    posConnectionId: mappingData.posConnectionId,
+    poniaProductId: mappingData.poniaProductId || null,
+    posProductId: mappingData.posProductId,
+    posProductName: mappingData.posProductName,
+    posProductSku: mappingData.posProductSku || null,
+    posProductPrice: mappingData.posProductPrice ? mappingData.posProductPrice.toString() : null,
+    posProductCategory: mappingData.posProductCategory || null,
+    isMapped: mappingData.isMapped || false,
+    autoSync: mappingData.autoSync !== false
+  }).returning()
+  return result[0]
+}
+
+export async function getPosProductMappings(connectionId) {
+  return await db.select()
+    .from(posProductMappings)
+    .where(eq(posProductMappings.posConnectionId, connectionId))
+    .orderBy(posProductMappings.posProductName)
+}
+
+export async function updatePosProductMapping(mappingId, updates) {
+  const updateData = { ...updates, updatedAt: new Date() }
+  
+  const result = await db.update(posProductMappings)
+    .set(updateData)
+    .where(eq(posProductMappings.id, mappingId))
+    .returning()
+  return result[0]
+}
+
+export async function createPosSale(saleData) {
+  const result = await db.insert(posSales).values({
+    posConnectionId: saleData.posConnectionId,
+    userId: saleData.userId,
+    storeId: saleData.storeId || null,
+    posTransactionId: saleData.posTransactionId,
+    posProductId: saleData.posProductId || null,
+    poniaProductId: saleData.poniaProductId || null,
+    quantity: saleData.quantity.toString(),
+    unitPrice: saleData.unitPrice ? saleData.unitPrice.toString() : null,
+    totalPrice: saleData.totalPrice ? saleData.totalPrice.toString() : null,
+    saleDate: saleData.saleDate || new Date(),
+    paymentMethod: saleData.paymentMethod || null,
+    processed: saleData.processed || false
+  }).returning()
+  return result[0]
+}
+
+export async function getUnprocessedPosSales(connectionId) {
+  return await db.select()
+    .from(posSales)
+    .where(and(
+      eq(posSales.posConnectionId, connectionId),
+      eq(posSales.processed, false)
+    ))
+    .orderBy(posSales.saleDate)
+}
+
+export async function markPosSaleProcessed(saleId) {
+  const result = await db.update(posSales)
+    .set({ processed: true, processedAt: new Date() })
+    .where(eq(posSales.id, saleId))
+    .returning()
+  return result[0]
+}
+
+export async function createPosSyncLog(logData) {
+  const result = await db.insert(posSyncLogs).values({
+    posConnectionId: logData.posConnectionId,
+    syncType: logData.syncType,
+    status: logData.status,
+    itemsProcessed: logData.itemsProcessed || 0,
+    itemsFailed: logData.itemsFailed || 0,
+    errorMessage: logData.errorMessage || null
+  }).returning()
+  return result[0]
+}
+
+export async function updatePosSyncLog(logId, updates) {
+  const result = await db.update(posSyncLogs)
+    .set(updates)
+    .where(eq(posSyncLogs.id, logId))
+    .returning()
+  return result[0]
+}
+
+export async function getPosSyncLogs(connectionId, limit = 20) {
+  return await db.select()
+    .from(posSyncLogs)
+    .where(eq(posSyncLogs.posConnectionId, connectionId))
+    .orderBy(desc(posSyncLogs.startedAt))
     .limit(limit)
 }

@@ -23,6 +23,8 @@ import AdminLoginPage from './pages/AdminLoginPage'
 import PrivacyPage from './pages/PrivacyPage'
 import TermsPage from './pages/TermsPage'
 import PricingPage from './pages/PricingPage'
+import IntegrationsPage from './pages/IntegrationsPage'
+import ProductMappingPage from './pages/ProductMappingPage'
 import { supabase } from './services/supabase'
 import { LanguageProvider } from './contexts/LanguageContext'
 
@@ -173,6 +175,14 @@ function App() {
         <Route 
           path="/upgrade" 
           element={session ? <UpgradePage /> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="/integrations" 
+          element={session ? <IntegrationsPage session={session} /> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="/integrations/mapping/:connectionId" 
+          element={session ? <ProductMappingPage session={session} /> : <Navigate to="/login" />} 
         />
         <Route 
           path="/admin-login" 

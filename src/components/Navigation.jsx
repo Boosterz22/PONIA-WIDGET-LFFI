@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Package, Brain, Activity, History, Settings, User, LogOut, Gift, Mail, MessageSquare } from 'lucide-react'
+import { LayoutDashboard, Package, Brain, Activity, History, Settings, User, LogOut, Gift, Mail, MessageSquare, Link2 } from 'lucide-react'
 import { supabase } from '../services/supabase'
 import LanguageSelector from './LanguageSelector'
 import { useLanguage } from '../contexts/LanguageContext'
@@ -259,6 +259,32 @@ export default function Navigation() {
                 >
                   <Settings size={16} />
                   <span>Paramètres</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setShowUserMenu(false)
+                    navigate('/integrations')
+                  }}
+                  style={{
+                    width: '100%',
+                    textAlign: 'left',
+                    padding: '0.75rem 1rem',
+                    background: 'transparent',
+                    border: 'none',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    fontSize: '0.875rem',
+                    color: '#374151',
+                    transition: 'background 0.15s'
+                  }}
+                  onMouseEnter={(e) => e.target.style.background = '#F3F4F6'}
+                  onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                >
+                  <Link2 size={16} />
+                  <span>Intégrations Caisse</span>
                 </button>
 
                 <button
