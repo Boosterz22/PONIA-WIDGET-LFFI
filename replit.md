@@ -17,44 +17,46 @@ PONIA AI is an AI-powered inventory management system designed for small busines
 
 ## Recent Changes (November 27, 2025)
 
-### Phase 2: POS Integration with Chift Unified API
+### Phase 2B: Direct POS Integrations (Self-Service)
 
-1. **Database Schema Updates** (`shared/schema.js`)
-   - Added `posConnections` table for storing POS connection details (tokens, status, provider info)
-   - Added `posProductMappings` table for linking POS products to PONIA products
-   - Added `posSales` table for tracking sales from connected POS systems
-   - Added `posSyncLogs` table for monitoring synchronization status
+**STRATEGIC PIVOT**: Abandoned Chift unified API (required commercial meetings/partnerships incompatible with bootstrapped MVP launch) in favor of direct self-service POS integrations.
 
-2. **Chift Service** (`server/chiftService.js`)
-   - OAuth 2.0 flow implementation for POS authentication
-   - Token management (access, refresh, expiration)
-   - Product sync, sales retrieval, Z-tickets, and transactions APIs
-   - Webhook setup for real-time sales updates
-   - Supports 27 French POS systems via single integration
+1. **Modular Adapter Architecture** (`server/pos-adapters/`)
+   - `base.js` - Abstract base class defining interface: authenticate, getProducts, getSales, setupWebhook, getDemoProducts
+   - `index.js` - Factory pattern with getAdapter(), isDemoMode(), getSupportedProviders(), isProviderSupported()
+   - Each adapter implements OAuth or API key authentication with demo mode fallback
 
-3. **IntegrationsPage** (`src/pages/IntegrationsPage.jsx`)
-   - Premium UI displaying all 27 supported POS systems
-   - Filtering by category (restaurant, bakery, retail, popular)
-   - Connection status display with sync and mapping buttons
-   - Demo mode for testing without real Chift credentials
+2. **6 Operational POS Adapters** (covering ~80% French TPE market)
+   - `square.js` - Square (OAuth, catalog, orders, webhooks) - All business types
+   - `zettle.js` - Zettle/PayPal (OAuth, products, inventory) - Mobile/PopUp
+   - `hiboutik.js` - Hiboutik (API Key auth, products, sales) - French retail specialty
+   - `sumup.js` - SumUp/Tiller (OAuth, POS Pro V3 API) - Restaurants/Bars
+   - `lightspeed-x.js` - Lightspeed X-Series (OAuth/Vend API) - Retail
+   - `lightspeed-k.js` - Lightspeed K-Series (OAuth) - Restaurants
 
-4. **ProductMappingPage** (`src/pages/ProductMappingPage.jsx`)
-   - Interface to link POS products to PONIA products
-   - Real-time search and filtering
-   - Progress indicators (mapped vs unmapped)
-   - Manual sync trigger
+3. **Updated IntegrationsPage** (`src/pages/IntegrationsPage.jsx`)
+   - Premium UI displaying only 6 operational POS systems
+   - No category filter (all 6 systems visible)
+   - Setup instructions with links to developer consoles
+   - Demo mode with realistic products per POS type
 
-5. **API Endpoints** (`server/index.js`)
-   - `GET /api/integrations/connections` - List user's POS connections
-   - `POST /api/integrations/connect` - Initiate OAuth flow
-   - `GET /api/integrations/callback` - OAuth callback handler
+4. **API Endpoints** (`server/index.js`)
+   - `GET /api/integrations/providers` - List supported POS systems
+   - `GET /api/integrations/connections` - User's POS connections
+   - `POST /api/integrations/connect` - Initiate OAuth or API key auth
+   - `GET /api/pos/callback/:provider` - Provider-specific OAuth callback
    - `DELETE /api/integrations/connections/:id` - Disconnect POS
-   - `POST /api/integrations/sync/:id` - Sync products
-   - `GET/PUT /api/integrations/mappings/:id` - Product mapping CRUD
-   - `POST /api/integrations/webhook` - Real-time sales webhook
+   - `POST /api/integrations/sync/:id` - Sync products (demo or real)
 
-6. **Navigation Update**
-   - Added "Intégrations Caisse" link in user dropdown menu
+5. **Key Design Decisions**
+   - All 6 POS systems have self-service developer signup (no sales meetings required)
+   - Demo mode auto-activates when env vars not configured
+   - Each adapter generates realistic demo products for its business type
+   - Modular pattern allows easy addition of new POS systems
+
+### Previous: Phase 2A (Deprecated)
+
+*Chift unified API integration was abandoned due to requirement for commercial partnerships.*
 
 ### Phase 1: AI Omnipresence & Time Savings Implementation (November 18, 2025)
 
@@ -129,25 +131,33 @@ PONIA AI is a secure full-stack application utilizing a client-server architectu
 *   **Weather:** OpenWeatherMap API
 *   **Calendar:** Google Calendar API
 *   **Payments:** Stripe
-*   **POS Integrations:** Chift Unified API (supports 27 POS systems including Tiller, Zettle, Square, Zelty, L'Addition, Lightspeed, Innovorder, etc.)
+*   **POS Integrations:** Direct adapters for 6 self-service POS systems (Square, Zettle, Hiboutik, SumUp, Lightspeed X-Series, Lightspeed K-Series)
 *   **Address API:** API Adresse (Base Adresse Nationale - BAN, gouvernement français)
 
 ## POS Integration Architecture
 
-PONIA uses Chift's unified API to connect to 27+ French POS systems with a single integration:
+PONIA uses a modular adapter pattern with direct self-service POS integrations (no commercial partnerships required):
 
-**Supported POS Systems:**
-- Restaurant/Bar: Zelty, L'Addition, Innovorder, Popina, Cashpad, Restomax, Trivec, LastApp
-- Bakery: Cashmag, Synapsy
-- Retail: Hiboutik, Jalia JDC
-- Universal: Tiller (SumUp), Zettle (PayPal), Square, Lightspeed, Odoo POS, HelloCash, Connectill, etc.
+**Supported POS Systems (6 operational - covering ~80% French TPE market):**
+- **Square** - All business types (OAuth, catalog API, orders API, webhooks)
+- **Zettle (PayPal)** - Mobile/PopUp (OAuth, products, inventory)
+- **Hiboutik** - French retail specialty (API Key auth, products, sales)
+- **SumUp/Tiller** - Restaurants/Bars (OAuth, POS Pro V3 API)
+- **Lightspeed X-Series** - Retail (OAuth via Vend API)
+- **Lightspeed K-Series** - Restaurants (OAuth)
+
+**Adapter Architecture:**
+- Base abstract class (`server/pos-adapters/base.js`) defines interface
+- Each POS has dedicated adapter with OAuth/API key auth
+- Factory pattern (`getAdapter()`) returns correct adapter by provider name
+- Demo mode auto-activates when env vars not configured
 
 **Integration Flow:**
-1. User selects their POS from the Integrations page
-2. OAuth 2.0 authentication with the POS provider via Chift
-3. Products are synced from POS to PONIA
+1. User selects their POS from the Integrations page (only 6 shown)
+2. OAuth 2.0 or API key authentication directly with POS provider
+3. Products are synced from POS to PONIA via adapter
 4. User maps POS products to PONIA products
 5. Real-time webhook updates stock when sales occur
 
 **Demo Mode:**
-When Chift credentials are not configured, the system runs in demo mode, simulating connections and sync operations for testing purposes.
+When provider-specific env vars are not configured, each adapter returns realistic demo products matching that POS type (bakery, restaurant, retail, bar products).

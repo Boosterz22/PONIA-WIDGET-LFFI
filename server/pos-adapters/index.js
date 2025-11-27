@@ -108,7 +108,10 @@ export function isDemoMode(provider) {
   }
 
   const keys = envKeys[provider] || []
-  return keys.length === 0 || keys.some(key => !process.env[key])
+  if (keys.length === 0) {
+    return false
+  }
+  return keys.some(key => !process.env[key])
 }
 
 export {
