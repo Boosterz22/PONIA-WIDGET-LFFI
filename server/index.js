@@ -46,8 +46,17 @@ import {
   markPosSaleProcessed,
   createPosSyncLog,
   updatePosSyncLog,
-  getPosSyncLogs
+  getPosSyncLogs,
+  getAlertPreferences,
+  updateAlertPreferences,
+  getUsersForAlerts,
+  getLowStockProducts,
+  getExpiringProducts,
+  createEmailLog,
+  getEmailLogs,
+  getAllUsers
 } from './storage.js'
+import { sendLowStockAlert, sendExpiryAlert, sendTestEmail, sendWelcomeEmail } from './email-service.js'
 import { getAdapter, isDemoMode, getSupportedProviders, isProviderSupported } from './pos-adapters/index.js'
 import { generateOrderPDF } from './pdfService.js'
 import { weatherService } from './weatherService.js'
@@ -346,6 +355,264 @@ app.get('/api/stats/time-saved', authenticateSupabaseUser, async (req, res) => {
     })
   } catch (error) {
     console.error('Erreur stats temps économisé:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// ============================================
+// ALERTES EMAIL
+// ============================================
+
+app.get('/api/alerts/preferences', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
+    let prefs = await getAlertPreferences(user.id)
+    
+    if (!prefs) {
+      prefs = await updateAlertPreferences(user.id, {
+        emailAlertsEnabled: false,
+        lowStockAlerts: true,
+        expiryAlerts: true,
+        expiryDaysThreshold: 3,
+        alertFrequency: 'daily',
+        alertTime: '08:00'
+      })
+    }
+
+    res.json({ preferences: prefs })
+  } catch (error) {
+    console.error('Erreur get alert preferences:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+app.put('/api/alerts/preferences', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
+    const { emailAlertsEnabled, lowStockAlerts, expiryAlerts, expiryDaysThreshold, alertFrequency, alertTime } = req.body
+
+    const updates = {}
+    if (emailAlertsEnabled !== undefined) updates.emailAlertsEnabled = emailAlertsEnabled
+    if (lowStockAlerts !== undefined) updates.lowStockAlerts = lowStockAlerts
+    if (expiryAlerts !== undefined) updates.expiryAlerts = expiryAlerts
+    if (expiryDaysThreshold !== undefined) updates.expiryDaysThreshold = expiryDaysThreshold
+    if (alertFrequency !== undefined) updates.alertFrequency = alertFrequency
+    if (alertTime !== undefined) updates.alertTime = alertTime
+
+    const prefs = await updateAlertPreferences(user.id, updates)
+    res.json({ preferences: prefs })
+  } catch (error) {
+    console.error('Erreur update alert preferences:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+app.post('/api/alerts/test', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
+    const result = await sendTestEmail(user.email)
+    
+    if (result.success) {
+      await createEmailLog({
+        userId: user.id,
+        emailType: 'test',
+        recipientEmail: user.email,
+        subject: 'Test alertes PONIA AI',
+        status: 'sent',
+        messageId: result.messageId
+      })
+      res.json({ success: true, message: 'Email de test envoyé avec succès' })
+    } else {
+      res.status(500).json({ success: false, error: result.error })
+    }
+  } catch (error) {
+    console.error('Erreur envoi test email:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+app.post('/api/alerts/send-now', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
+    const prefs = await getAlertPreferences(user.id)
+    const results = { lowStock: null, expiry: null }
+
+    if (!prefs || prefs.lowStockAlerts !== false) {
+      const lowStockProducts = await getLowStockProducts(user.id)
+      if (lowStockProducts.length > 0) {
+        const emailResult = await sendLowStockAlert(user.email, user.businessName || 'Mon commerce', lowStockProducts)
+        results.lowStock = {
+          sent: emailResult.success,
+          productCount: lowStockProducts.length,
+          error: emailResult.error
+        }
+        
+        if (emailResult.success) {
+          await createEmailLog({
+            userId: user.id,
+            emailType: 'low_stock',
+            recipientEmail: user.email,
+            subject: `Alerte Stock Bas - ${lowStockProducts.length} produit(s)`,
+            status: 'sent',
+            messageId: emailResult.messageId,
+            productIds: lowStockProducts.map(p => p.id)
+          })
+          await updateAlertPreferences(user.id, { lastLowStockAlertAt: new Date() })
+        }
+      } else {
+        results.lowStock = { sent: false, productCount: 0, message: 'Aucun produit en stock bas' }
+      }
+    }
+
+    const daysThreshold = prefs?.expiryDaysThreshold || 3
+    if (!prefs || prefs.expiryAlerts !== false) {
+      const expiringProducts = await getExpiringProducts(user.id, daysThreshold)
+      if (expiringProducts.length > 0) {
+        const emailResult = await sendExpiryAlert(user.email, user.businessName || 'Mon commerce', expiringProducts)
+        results.expiry = {
+          sent: emailResult.success,
+          productCount: expiringProducts.length,
+          error: emailResult.error
+        }
+        
+        if (emailResult.success) {
+          await createEmailLog({
+            userId: user.id,
+            emailType: 'expiry',
+            recipientEmail: user.email,
+            subject: `Alerte DLC - ${expiringProducts.length} produit(s)`,
+            status: 'sent',
+            messageId: emailResult.messageId,
+            productIds: expiringProducts.map(p => p.id)
+          })
+          await updateAlertPreferences(user.id, { lastExpiryAlertAt: new Date() })
+        }
+      } else {
+        results.expiry = { sent: false, productCount: 0, message: 'Aucun produit proche de péremption' }
+      }
+    }
+
+    res.json({ success: true, results })
+  } catch (error) {
+    console.error('Erreur envoi alertes:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+app.get('/api/alerts/logs', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
+    const logs = await getEmailLogs(user.id, 50)
+    res.json({ logs })
+  } catch (error) {
+    console.error('Erreur get email logs:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+app.post('/api/cron/send-alerts', async (req, res) => {
+  const cronSecret = req.headers['x-cron-secret']
+  const expectedSecret = process.env.CRON_SECRET || 'ponia-cron-dev-secret-2024'
+  
+  if (cronSecret !== expectedSecret) {
+    console.log('[CRON] Tentative non autorisée - secret invalide')
+    return res.status(401).json({ error: 'Non autorisé' })
+  }
+
+  try {
+    console.log('[CRON] Démarrage envoi alertes automatiques...')
+    const usersWithAlerts = await getUsersForAlerts()
+    let totalSent = 0
+    let errors = []
+
+    for (const { user, prefs } of usersWithAlerts) {
+      try {
+        if (!prefs || prefs.emailAlertsEnabled === false) {
+          continue
+        }
+        
+        const now = new Date()
+        const shouldSendLowStock = prefs.lowStockAlerts !== false
+        const shouldSendExpiry = prefs.expiryAlerts !== false
+        
+        const lastLowStockAlert = prefs?.lastLowStockAlertAt ? new Date(prefs.lastLowStockAlertAt) : null
+        const lastExpiryAlert = prefs?.lastExpiryAlertAt ? new Date(prefs.lastExpiryAlertAt) : null
+        const frequency = prefs?.alertFrequency || 'daily'
+        
+        const hoursSinceLastLowStock = lastLowStockAlert ? (now - lastLowStockAlert) / (1000 * 60 * 60) : 999
+        const hoursSinceLastExpiry = lastExpiryAlert ? (now - lastExpiryAlert) / (1000 * 60 * 60) : 999
+        const minHours = frequency === 'daily' ? 20 : frequency === 'weekly' ? 144 : 20
+
+        if (shouldSendLowStock && hoursSinceLastLowStock >= minHours) {
+          const lowStockProducts = await getLowStockProducts(user.id)
+          if (lowStockProducts.length > 0) {
+            const result = await sendLowStockAlert(user.email, user.businessName || 'Mon commerce', lowStockProducts)
+            if (result.success) {
+              await createEmailLog({
+                userId: user.id,
+                emailType: 'low_stock',
+                recipientEmail: user.email,
+                subject: `Alerte Stock Bas - ${lowStockProducts.length} produit(s)`,
+                status: 'sent',
+                messageId: result.messageId,
+                productIds: lowStockProducts.map(p => p.id)
+              })
+              await updateAlertPreferences(user.id, { lastLowStockAlertAt: now })
+              totalSent++
+            }
+          }
+        }
+
+        if (shouldSendExpiry && hoursSinceLastExpiry >= minHours) {
+          const daysThreshold = prefs?.expiryDaysThreshold || 3
+          const expiringProducts = await getExpiringProducts(user.id, daysThreshold)
+          if (expiringProducts.length > 0) {
+            const result = await sendExpiryAlert(user.email, user.businessName || 'Mon commerce', expiringProducts)
+            if (result.success) {
+              await createEmailLog({
+                userId: user.id,
+                emailType: 'expiry',
+                recipientEmail: user.email,
+                subject: `Alerte DLC - ${expiringProducts.length} produit(s)`,
+                status: 'sent',
+                messageId: result.messageId,
+                productIds: expiringProducts.map(p => p.id)
+              })
+              await updateAlertPreferences(user.id, { lastExpiryAlertAt: now })
+              totalSent++
+            }
+          }
+        }
+      } catch (userError) {
+        console.error(`[CRON] Erreur pour user ${user.id}:`, userError)
+        errors.push({ userId: user.id, error: userError.message })
+      }
+    }
+
+    console.log(`[CRON] ✅ Alertes envoyées: ${totalSent}, Erreurs: ${errors.length}`)
+    res.json({ success: true, sent: totalSent, errors })
+  } catch (error) {
+    console.error('[CRON] Erreur globale:', error)
     res.status(500).json({ error: 'Erreur serveur' })
   }
 })

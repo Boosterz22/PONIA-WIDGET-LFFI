@@ -1,6 +1,6 @@
 import { db } from './db.js'
-import { users, products, stockHistory, salesHistory, notifications, stores, chatMessages, chatConversations, posConnections, posProductMappings, posSales, posSyncLogs } from '../shared/schema.js'
-import { eq, and, desc, gte, sql } from 'drizzle-orm'
+import { users, products, stockHistory, salesHistory, notifications, stores, chatMessages, chatConversations, posConnections, posProductMappings, posSales, posSyncLogs, alertPreferences, emailLogs } from '../shared/schema.js'
+import { eq, and, desc, gte, lte, sql } from 'drizzle-orm'
 
 export async function getUserByEmail(email) {
   const user = await db.select().from(users).where(eq(users.email, email)).limit(1)
@@ -472,4 +472,106 @@ export async function getPosSyncLogs(connectionId, limit = 20) {
     .where(eq(posSyncLogs.posConnectionId, connectionId))
     .orderBy(desc(posSyncLogs.startedAt))
     .limit(limit)
+}
+
+export async function getAlertPreferences(userId) {
+  const prefs = await db.select()
+    .from(alertPreferences)
+    .where(eq(alertPreferences.userId, userId))
+    .limit(1)
+  return prefs[0] || null
+}
+
+export async function createAlertPreferences(userId) {
+  const result = await db.insert(alertPreferences).values({
+    userId: userId
+  }).returning()
+  return result[0]
+}
+
+export async function updateAlertPreferences(userId, updates) {
+  const existing = await getAlertPreferences(userId)
+  
+  if (!existing) {
+    const result = await db.insert(alertPreferences).values({
+      userId: userId,
+      ...updates,
+      updatedAt: new Date()
+    }).returning()
+    return result[0]
+  }
+  
+  const result = await db.update(alertPreferences)
+    .set({ ...updates, updatedAt: new Date() })
+    .where(eq(alertPreferences.userId, userId))
+    .returning()
+  return result[0]
+}
+
+export async function getUsersForAlerts() {
+  const allUsers = await db.select({
+    user: users,
+    prefs: alertPreferences
+  })
+    .from(users)
+    .leftJoin(alertPreferences, eq(users.id, alertPreferences.userId))
+  
+  return allUsers.filter(u => {
+    if (!u.prefs) return true
+    return u.prefs.emailAlertsEnabled !== false
+  })
+}
+
+export async function getLowStockProducts(userId) {
+  const allProducts = await db.select()
+    .from(products)
+    .where(eq(products.userId, userId))
+  
+  return allProducts.filter(p => {
+    const current = parseFloat(p.currentQuantity) || 0
+    const threshold = parseFloat(p.alertThreshold) || 10
+    return current <= threshold
+  })
+}
+
+export async function getExpiringProducts(userId, daysThreshold = 3) {
+  const today = new Date()
+  const futureDate = new Date()
+  futureDate.setDate(today.getDate() + daysThreshold)
+  
+  const allProducts = await db.select()
+    .from(products)
+    .where(eq(products.userId, userId))
+  
+  return allProducts.filter(p => {
+    if (!p.expiryDate) return false
+    const expiryDate = new Date(p.expiryDate)
+    return expiryDate <= futureDate && expiryDate >= today
+  })
+}
+
+export async function createEmailLog(logData) {
+  const result = await db.insert(emailLogs).values({
+    userId: logData.userId,
+    emailType: logData.emailType,
+    recipientEmail: logData.recipientEmail,
+    subject: logData.subject,
+    status: logData.status || 'sent',
+    messageId: logData.messageId,
+    errorMessage: logData.errorMessage,
+    productIds: logData.productIds ? JSON.stringify(logData.productIds) : null
+  }).returning()
+  return result[0]
+}
+
+export async function getEmailLogs(userId, limit = 50) {
+  return await db.select()
+    .from(emailLogs)
+    .where(eq(emailLogs.userId, userId))
+    .orderBy(desc(emailLogs.sentAt))
+    .limit(limit)
+}
+
+export async function getAllUsers() {
+  return await db.select().from(users)
 }

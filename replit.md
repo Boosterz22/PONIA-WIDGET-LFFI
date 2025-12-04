@@ -15,7 +15,55 @@ PONIA AI is an AI-powered inventory management system designed for small busines
 - Do not make changes to the folder `Z`
 - Do not make changes to the file `Y`
 
-## Recent Changes (November 27, 2025)
+## Recent Changes (December 4, 2025)
+
+### Phase 3: Email Alerts & User Experience Improvements
+
+1. **Automatic Email Alerts System** (`server/email-service.js`)
+   - Resend API integration for transactional emails (support@myponia.fr)
+   - Low stock alerts with product list and direct action links
+   - Expiry date alerts (DLC) with urgency indicators and tips
+   - Welcome email for new users
+   - Test email functionality for verifying configuration
+   - Professional HTML templates with PONIA branding
+
+2. **Alert Preferences Management** (`src/pages/AlertSettingsPage.jsx`)
+   - Toggle email alerts on/off
+   - Configure low stock and expiry alerts separately
+   - Set expiry threshold (1-7 days before)
+   - Choose frequency (daily/weekly)
+   - Send test email button
+   - Manual "send alerts now" trigger
+   - Email history log display
+
+3. **Database Schema Additions** (`shared/schema.js`)
+   - `alertPreferences` table: user alert settings, last sent timestamps
+   - `emailLogs` table: email history with status tracking
+
+4. **API Endpoints** (`server/index.js`)
+   - `GET /api/alerts/preferences` - Get user's alert settings
+   - `PUT /api/alerts/preferences` - Update alert settings
+   - `POST /api/alerts/test` - Send test email
+   - `POST /api/alerts/send-now` - Trigger manual alerts
+   - `GET /api/alerts/logs` - Get email history
+   - `POST /api/cron/send-alerts` - Automated daily alert dispatch
+
+5. **Customer Numbering System**
+   - Auto-generated PONIA-XXXX format on user creation
+   - Displayed prominently on Profile page with gold gradient styling
+   - Used for referral program identification
+
+6. **Time-Saved Widget Connected to Real Data**
+   - API endpoint `/api/stats/time-saved` calculates actual savings
+   - Based on product count, stock movements, and active alerts
+   - Shows monetary value (€) saved per week
+
+7. **Settings Page Enhancement** (`src/pages/SettingsPage.jsx`)
+   - New "Alertes Email" card with hover effect
+   - Direct link to alert configuration page
+   - Improved visual hierarchy
+
+## Previous Changes (November 27, 2025)
 
 ### Phase 2B: Direct POS Integrations (Self-Service)
 

@@ -163,3 +163,31 @@ export const posSyncLogs = pgTable('pos_sync_logs', {
   startedAt: timestamp('started_at').notNull().defaultNow(),
   completedAt: timestamp('completed_at')
 })
+
+export const alertPreferences = pgTable('alert_preferences', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  emailAlertsEnabled: boolean('email_alerts_enabled').default(true),
+  lowStockAlerts: boolean('low_stock_alerts').default(true),
+  expiryAlerts: boolean('expiry_alerts').default(true),
+  expiryDaysThreshold: integer('expiry_days_threshold').default(3),
+  alertFrequency: varchar('alert_frequency', { length: 20 }).default('daily'),
+  alertTime: varchar('alert_time', { length: 10 }).default('08:00'),
+  lastLowStockAlertAt: timestamp('last_low_stock_alert_at'),
+  lastExpiryAlertAt: timestamp('last_expiry_alert_at'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+})
+
+export const emailLogs = pgTable('email_logs', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  emailType: varchar('email_type', { length: 50 }).notNull(),
+  recipientEmail: varchar('recipient_email', { length: 255 }).notNull(),
+  subject: varchar('subject', { length: 500 }),
+  status: varchar('status', { length: 20 }).default('sent'),
+  messageId: varchar('message_id', { length: 255 }),
+  errorMessage: text('error_message'),
+  productIds: text('product_ids'),
+  sentAt: timestamp('sent_at').notNull().defaultNow()
+})

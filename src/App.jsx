@@ -16,6 +16,7 @@ import AnalyticsPage from './pages/AnalyticsPage'
 import HistoryPage from './pages/HistoryPage'
 import ProfilePage from './pages/ProfilePage'
 import SettingsPage from './pages/SettingsPage'
+import AlertSettingsPage from './pages/AlertSettingsPage'
 import ReferralPage from './pages/ReferralPage'
 import UpgradePage from './pages/UpgradePage'
 import AdminPage from './pages/AdminPage'
@@ -171,6 +172,10 @@ function App() {
         <Route 
           path="/settings" 
           element={session ? <SettingsPage session={session} /> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="/settings/alerts" 
+          element={session ? <AlertSettingsPage session={session} /> : <Navigate to="/login" />} 
         />
         <Route 
           path="/referral" 

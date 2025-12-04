@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Crown, Mail, Lock, Trash2, Briefcase } from 'lucide-react'
+import { useNavigate, Link } from 'react-router-dom'
+import { Crown, Mail, Lock, Trash2, Briefcase, Bell, ChevronRight } from 'lucide-react'
 import { supabase } from '../services/supabase'
 import Navigation from '../components/Navigation'
 
@@ -299,6 +299,44 @@ export default function SettingsPage({ session }) {
             {loading ? 'Mise à jour...' : 'Mettre à jour'}
           </button>
         </div>
+
+        <Link to="/settings/alerts" style={{ textDecoration: 'none' }}>
+          <div className="card" style={{ 
+            padding: '1.5rem', 
+            marginBottom: '1.5rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s',
+            border: '2px solid transparent'
+          }}
+          onMouseOver={(e) => e.currentTarget.style.borderColor = '#FFD700'}
+          onMouseOut={(e) => e.currentTarget.style.borderColor = 'transparent'}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '12px',
+                  background: 'linear-gradient(135deg, #FFD700, #FFA500)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <Bell size={24} color="#1F2937" />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '1.125rem', fontWeight: '600', margin: 0, color: '#111827' }}>
+                    Alertes Email
+                  </h3>
+                  <p style={{ fontSize: '0.875rem', color: '#6B7280', margin: '0.25rem 0 0 0' }}>
+                    Stocks bas, dates de péremption, notifications automatiques
+                  </p>
+                </div>
+              </div>
+              <ChevronRight size={24} color="#9CA3AF" />
+            </div>
+          </div>
+        </Link>
 
         <div className="card" style={{ padding: '1.5rem', marginBottom: '1.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
