@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Link2, Check, X, RefreshCw, ExternalLink, Zap, Store, AlertCircle, ChevronRight, Clock, Settings, ArrowRight } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { Link2, Check, X, RefreshCw, ExternalLink, Zap, Store, AlertCircle, ChevronRight, Clock, Settings, ArrowRight, CheckCircle } from 'lucide-react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import Navigation from '../components/Navigation'
 import { supabase } from '../services/supabase'
 import { useLanguage } from '../contexts/LanguageContext'
@@ -71,15 +71,39 @@ const POS_PROVIDERS = [
 export default function IntegrationsPage({ session }) {
   const { t } = useLanguage()
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [connections, setConnections] = useState([])
   const [loading, setLoading] = useState(true)
   const [connecting, setConnecting] = useState(null)
   const [filter, setFilter] = useState('all')
   const [syncing, setSyncing] = useState(null)
   const [error, setError] = useState(null)
+  const [success, setSuccess] = useState(null)
   const [showAllProviders, setShowAllProviders] = useState(false)
 
   useEffect(() => {
+    const urlError = searchParams.get('error')
+    const urlSuccess = searchParams.get('success')
+    const provider = searchParams.get('provider')
+    
+    if (urlError) {
+      const errorMessages = {
+        'missing_params': 'Parametres manquants dans la reponse OAuth',
+        'invalid_state': 'Session OAuth invalide - veuillez reessayer',
+        'callback_failed': 'Echec de la connexion - veuillez reessayer',
+        'access_denied': 'Acces refuse par le fournisseur'
+      }
+      setError(errorMessages[urlError] || `Erreur: ${urlError}`)
+      setSearchParams({})
+    }
+    
+    if (urlSuccess === 'true' && provider) {
+      const providerName = POS_PROVIDERS.find(p => p.id === provider)?.name || provider
+      setSuccess(`Connexion a ${providerName} reussie !`)
+      setSearchParams({})
+      setTimeout(() => setSuccess(null), 5000)
+    }
+    
     loadConnections()
   }, [])
 
@@ -311,6 +335,29 @@ export default function IntegrationsPage({ session }) {
             </div>
           </div>
         </div>
+
+        {success && (
+          <div style={{
+            background: '#D1FAE5',
+            border: '1px solid #A7F3D0',
+            borderRadius: '12px',
+            padding: '1rem',
+            marginBottom: '1.5rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.75rem',
+            color: '#059669'
+          }}>
+            <CheckCircle size={20} />
+            <span>{success}</span>
+            <button 
+              onClick={() => setSuccess(null)}
+              style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer' }}
+            >
+              <X size={18} color="#059669" />
+            </button>
+          </div>
+        )}
 
         {error && (
           <div style={{

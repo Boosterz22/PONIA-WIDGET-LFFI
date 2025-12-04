@@ -2226,16 +2226,20 @@ app.post('/api/integrations/connect', authenticateSupabaseUser, async (req, res)
 
 // OAuth callback handler for each provider
 app.get('/api/pos/callback/:provider', async (req, res) => {
+  console.log('OAuth callback received for provider:', req.params.provider)
+  console.log('Query params:', req.query)
+  
   try {
     const { provider } = req.params
-    const { code, state, error: oauthError } = req.query
+    const { code, state, error: oauthError, error_description } = req.query
 
     if (oauthError) {
-      console.error('OAuth error:', oauthError)
+      console.error('OAuth error from provider:', oauthError, error_description)
       return res.redirect('/integrations?error=' + encodeURIComponent(oauthError))
     }
 
     if (!code || !state) {
+      console.error('Missing code or state:', { code: !!code, state: !!state })
       return res.redirect('/integrations?error=missing_params')
     }
 
@@ -2243,15 +2247,19 @@ app.get('/api/pos/callback/:provider', async (req, res) => {
     let stateData
     try {
       stateData = JSON.parse(Buffer.from(state, 'base64').toString())
+      console.log('Decoded state:', stateData)
     } catch (e) {
+      console.error('Failed to decode state:', e)
       return res.redirect('/integrations?error=invalid_state')
     }
 
     const { userId, connectionId } = stateData
 
     // Get adapter and exchange code for tokens
+    console.log('Exchanging code for tokens with', provider, 'adapter...')
     const adapter = getAdapter(provider)
     const tokenData = await adapter.handleCallback(code, state)
+    console.log('Token exchange successful, merchantId:', tokenData.merchantId || tokenData.companyId)
 
     // Update connection with tokens
     await updatePosConnection(connectionId, {
@@ -2275,10 +2283,12 @@ app.get('/api/pos/callback/:provider', async (req, res) => {
       status: 'success'
     })
 
+    console.log('OAuth flow completed successfully for', provider)
     res.redirect('/integrations?success=true&provider=' + provider)
   } catch (error) {
-    console.error('OAuth callback error:', error)
-    res.redirect('/integrations?error=callback_failed')
+    console.error('OAuth callback error:', error.message || error)
+    console.error('Stack:', error.stack)
+    res.redirect('/integrations?error=callback_failed&detail=' + encodeURIComponent(error.message || 'unknown'))
   }
 })
 
