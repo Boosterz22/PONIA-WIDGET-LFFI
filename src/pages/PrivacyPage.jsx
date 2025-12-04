@@ -24,17 +24,8 @@ export default function PrivacyPage() {
         borderBottom: '1px solid rgba(255, 215, 0, 0.2)'
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }} onClick={() => navigate('/')}>
-            <img src="/ponia-icon.png" alt="PONIA" style={{ height: '40px' }} />
-            <span style={{ 
-              fontSize: '1.5rem', 
-              fontWeight: '700', 
-              background: 'linear-gradient(135deg, #FFD700, #FFA500)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
-            }}>
-              PONIA AI
-            </span>
+          <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => navigate('/')}>
+            <img src="/ponia-icon.png" alt="PONIA" style={{ height: '45px' }} />
           </div>
           <button
             onClick={() => navigate('/')}
@@ -104,7 +95,7 @@ export default function PrivacyPage() {
               </p>
             </div>
             <p>
-              PONIA AI s'engage à protéger la confidentialité de vos données personnelles conformément au RGPD.
+              PONIA s'engage à protéger la confidentialité de vos données personnelles conformément au RGPD.
             </p>
           </Section>
 
@@ -121,7 +112,7 @@ export default function PrivacyPage() {
           <Section title="3. Bases légales du traitement">
             <p>Nous traitons vos données sur les bases légales suivantes :</p>
             <ul style={{ lineHeight: '1.8', color: 'rgba(255, 255, 255, 0.8)', marginLeft: '1.5rem' }}>
-              <li><strong style={{ color: '#FFD700' }}>Exécution du contrat :</strong> Fourniture des services PONIA AI (article 6.1.b RGPD)</li>
+              <li><strong style={{ color: '#FFD700' }}>Exécution du contrat :</strong> Fourniture des services PONIA (article 6.1.b RGPD)</li>
               <li><strong style={{ color: '#FFD700' }}>Intérêt légitime :</strong> Amélioration du service, prévention des fraudes, sécurité (article 6.1.f RGPD)</li>
               <li><strong style={{ color: '#FFD700' }}>Consentement :</strong> Envoi de communications marketing (article 6.1.a RGPD)</li>
               <li><strong style={{ color: '#FFD700' }}>Obligation légale :</strong> Conservation des données de facturation (article 6.1.c RGPD)</li>
@@ -202,7 +193,7 @@ export default function PrivacyPage() {
 
           <Section title="8. Cookies et traceurs">
             <p>
-              PONIA AI utilise uniquement des cookies essentiels au fonctionnement du service (session utilisateur, authentification).
+              PONIA utilise uniquement des cookies essentiels au fonctionnement du service (session utilisateur, authentification).
               Nous n'utilisons pas de cookies publicitaires ou de suivi tiers.
             </p>
           </Section>

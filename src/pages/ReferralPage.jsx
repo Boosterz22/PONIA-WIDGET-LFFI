@@ -235,7 +235,7 @@ export default function ReferralPage({ session }) {
                   Votre filleul s'inscrit
                 </h3>
                 <p style={{ fontSize: '0.95rem', color: '#6B7280', lineHeight: '1.6' }}>
-                  Dès que votre filleul crée son compte PONIA AI avec votre lien, il est enregistré
+                  Dès que votre filleul crée son compte PONIA avec votre lien, il est enregistré
                 </p>
               </div>
             </div>
@@ -261,7 +261,7 @@ export default function ReferralPage({ session }) {
                   Vous gagnez €10
                 </h3>
                 <p style={{ fontSize: '0.95rem', color: '#6B7280', lineHeight: '1.6' }}>
-                  Recevez automatiquement <strong>€10 de crédit</strong> sur votre compte PONIA AI. Utilisez-le pour upgrader ou prolonger votre abonnement !
+                  Recevez automatiquement <strong>€10 de crédit</strong> sur votre compte PONIA. Utilisez-le pour upgrader ou prolonger votre abonnement !
                 </p>
               </div>
             </div>

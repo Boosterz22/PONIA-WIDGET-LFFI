@@ -92,7 +92,7 @@ export default function ProfilePage({ session }) {
             <span>Retour au Dashboard</span>
           </button>
           <Link to="/">
-            <img src="/ponia-icon.png" alt="PONIA AI" style={{ height: '36px' }} />
+            <img src="/ponia-icon.png" alt="PONIA" style={{ height: '36px' }} />
           </Link>
         </div>
       </nav>

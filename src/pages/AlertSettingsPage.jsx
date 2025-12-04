@@ -189,7 +189,7 @@ export default function AlertSettingsPage({ session }) {
             <span>Retour</span>
           </button>
           <Link to="/">
-            <img src="/ponia-icon.png" alt="PONIA AI" style={{ height: '36px' }} />
+            <img src="/ponia-icon.png" alt="PONIA" style={{ height: '36px' }} />
           </Link>
         </div>
       </nav>

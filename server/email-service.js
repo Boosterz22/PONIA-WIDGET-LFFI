@@ -23,7 +23,7 @@ export async function sendLowStockAlert(userEmail, businessName, products) {
 
   try {
     const { data, error } = await resend.emails.send({
-      from: `PONIA AI <${FROM_EMAIL}>`,
+      from: `PONIA <${FROM_EMAIL}>`,
       to: userEmail,
       subject: `⚠️ Alerte Stock Bas - ${products.length} produit(s) à commander`,
       text: `Bonjour ${businessName},
@@ -35,7 +35,7 @@ ${productsList}
 Connectez-vous à PONIA pour générer un bon de commande automatique.
 
 --
-L'équipe PONIA AI
+L'équipe PONIA
 https://myponia.fr`,
       html: `
 <!DOCTYPE html>
@@ -58,7 +58,7 @@ https://myponia.fr`,
 <body>
   <div class="container">
     <div class="header">
-      <h1>🛒 PONIA AI</h1>
+      <h1>🛒 PONIA</h1>
     </div>
     <div class="content">
       <p>Bonjour <strong>${businessName}</strong>,</p>
@@ -87,7 +87,7 @@ https://myponia.fr`,
       </center>
     </div>
     <div class="footer">
-      <p>Cet email a été envoyé automatiquement par PONIA AI.<br>
+      <p>Cet email a été envoyé automatiquement par PONIA.<br>
       <a href="https://myponia.fr/settings">Gérer mes préférences d'alertes</a></p>
     </div>
   </div>
@@ -137,7 +137,7 @@ export async function sendExpiryAlert(userEmail, businessName, products) {
 
   try {
     const { data, error } = await resend.emails.send({
-      from: `PONIA AI <${FROM_EMAIL}>`,
+      from: `PONIA <${FROM_EMAIL}>`,
       to: userEmail,
       subject: `📅 Alerte DLC - ${products.length} produit(s) à surveiller`,
       text: `Bonjour ${businessName},
@@ -149,7 +149,7 @@ ${productsList}
 Pensez à les mettre en avant ou à ajuster vos commandes.
 
 --
-L'équipe PONIA AI
+L'équipe PONIA
 https://myponia.fr`,
       html: `
 <!DOCTYPE html>
@@ -173,7 +173,7 @@ https://myponia.fr`,
 <body>
   <div class="container">
     <div class="header">
-      <h1>📅 PONIA AI</h1>
+      <h1>📅 PONIA</h1>
     </div>
     <div class="content">
       <p>Bonjour <strong>${businessName}</strong>,</p>
@@ -204,7 +204,7 @@ https://myponia.fr`,
       </center>
     </div>
     <div class="footer">
-      <p>Cet email a été envoyé automatiquement par PONIA AI.<br>
+      <p>Cet email a été envoyé automatiquement par PONIA.<br>
       <a href="https://myponia.fr/settings">Gérer mes préférences d'alertes</a></p>
     </div>
   </div>
@@ -233,9 +233,9 @@ export async function sendWelcomeEmail(userEmail, businessName) {
 
   try {
     const { data, error } = await resend.emails.send({
-      from: `PONIA AI <${FROM_EMAIL}>`,
+      from: `PONIA <${FROM_EMAIL}>`,
       to: userEmail,
-      subject: `🎉 Bienvenue sur PONIA AI, ${businessName} !`,
+      subject: `🎉 Bienvenue sur PONIA, ${businessName} !`,
       html: `
 <!DOCTYPE html>
 <html>
@@ -257,12 +257,12 @@ export async function sendWelcomeEmail(userEmail, businessName) {
 <body>
   <div class="container">
     <div class="header">
-      <h1>🎉 Bienvenue sur PONIA AI !</h1>
+      <h1>🎉 Bienvenue sur PONIA !</h1>
     </div>
     <div class="content">
       <p>Bonjour <strong>${businessName}</strong>,</p>
       
-      <p>Merci de faire confiance à PONIA AI pour gérer vos stocks intelligemment !</p>
+      <p>Merci de faire confiance à PONIA pour gérer vos stocks intelligemment !</p>
       
       <center>
         <div class="trial-badge">✨ Votre essai gratuit de 14 jours commence maintenant</div>
@@ -309,7 +309,7 @@ export async function sendWelcomeEmail(userEmail, businessName) {
       <p style="margin-top: 30px; color: #6B7280;">Une question ? Répondez directement à cet email, nous vous répondrons rapidement.</p>
     </div>
     <div class="footer">
-      <p>PONIA AI - L'IA qui gère vos stocks<br>
+      <p>PONIA - L'IA qui gère vos stocks<br>
       <a href="https://myponia.fr">myponia.fr</a></p>
     </div>
   </div>
@@ -337,9 +337,9 @@ export async function sendTestEmail(userEmail) {
 
   try {
     const { data, error } = await resend.emails.send({
-      from: `PONIA AI <${FROM_EMAIL}>`,
+      from: `PONIA <${FROM_EMAIL}>`,
       to: userEmail,
-      subject: '✅ Test alertes PONIA AI',
+      subject: '✅ Test alertes PONIA',
       html: `
 <!DOCTYPE html>
 <html>
@@ -349,7 +349,7 @@ export async function sendTestEmail(userEmail) {
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 20px;">
   <div style="max-width: 500px; margin: 0 auto; text-align: center;">
     <h1 style="color: #1F2937;">✅ Configuration réussie !</h1>
-    <p style="color: #6B7280;">Vos alertes email PONIA AI sont correctement configurées.</p>
+    <p style="color: #6B7280;">Vos alertes email PONIA sont correctement configurées.</p>
     <p style="color: #6B7280;">Vous recevrez désormais des notifications pour :</p>
     <ul style="text-align: left; color: #374151;">
       <li>Les stocks bas</li>

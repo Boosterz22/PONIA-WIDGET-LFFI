@@ -131,7 +131,7 @@ export default function VerifyEmailPage() {
                 margin: 0,
                 lineHeight: 1.5
               }}>
-                <strong>1. Ouvrez votre boîte email</strong> et cherchez un message de PONIA AI
+                <strong>1. Ouvrez votre boîte email</strong> et cherchez un message de PONIA
               </p>
             </div>
 

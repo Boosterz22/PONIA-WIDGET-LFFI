@@ -535,7 +535,7 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
         }}>
           <img 
             src={poniaLogo} 
-            alt="PONIA AI" 
+            alt="PONIA" 
             style={{ 
               height: '40px',
               objectFit: 'contain'

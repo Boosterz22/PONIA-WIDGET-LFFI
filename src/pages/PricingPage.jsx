@@ -13,7 +13,7 @@ export default function PricingPage() {
       priceYearly: 0,
       icon: Zap,
       color: '#6B7280',
-      description: 'Pour tester PONIA AI',
+      description: 'Pour tester PONIA',
       features: [
         { text: '10 produits maximum', included: true },
         { text: 'Alertes de stock simples', included: true },
@@ -74,7 +74,7 @@ export default function PricingPage() {
   const faqs = [
     {
       q: "L'essai gratuit nécessite-t-il une carte bancaire ?",
-      a: "Non ! Vous pouvez tester PONIA AI pendant 14 jours sans aucune carte bancaire. À la fin de l'essai, vous décidez si vous souhaitez vous abonner ou continuer avec le plan Basique gratuit."
+      a: "Non ! Vous pouvez tester PONIA pendant 14 jours sans aucune carte bancaire. À la fin de l'essai, vous décidez si vous souhaitez vous abonner ou continuer avec le plan Basique gratuit."
     },
     {
       q: "Puis-je changer de plan à tout moment ?",
@@ -308,7 +308,7 @@ export default function PricingPage() {
             <a href="mailto:support@myponia.fr" style={{ color: 'white', textDecoration: 'none', fontSize: '0.95rem' }}>Contact</a>
           </div>
           <p style={{ fontSize: '0.9rem', opacity: 0.8 }}>
-            © {new Date().getFullYear()} PONIA AI - Tous droits réservés
+            © {new Date().getFullYear()} PONIA - Tous droits réservés
           </p>
         </div>
       </footer>

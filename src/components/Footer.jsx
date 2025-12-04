@@ -26,7 +26,7 @@ export default function Footer() {
             style={{ height: '24px', objectFit: 'contain' }} 
           />
           <span style={{ fontSize: '0.8125rem', color: '#6B7280' }}>
-            © {new Date().getFullYear()} PONIA AI
+            © {new Date().getFullYear()} PONIA
           </span>
         </div>
 

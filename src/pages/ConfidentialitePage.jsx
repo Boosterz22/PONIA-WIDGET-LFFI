@@ -40,7 +40,7 @@ export default function ConfidentialitePage() {
           <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
             <img 
               src={poniaLogo} 
-              alt="PONIA AI" 
+              alt="PONIA" 
               style={{ height: '48px', marginBottom: '1rem' }} 
             />
             <h1 style={{ fontSize: '1.75rem', fontWeight: '700', color: '#111827', margin: 0 }}>
@@ -62,7 +62,7 @@ export default function ConfidentialitePage() {
               <h2 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#111827', marginBottom: '1rem' }}>
                 Données collectées
               </h2>
-              <p>Dans le cadre de l'utilisation de PONIA AI, nous collectons les données suivantes :</p>
+              <p>Dans le cadre de l'utilisation de PONIA, nous collectons les données suivantes :</p>
               <ul style={{ marginTop: '0.5rem', paddingLeft: '1.5rem' }}>
                 <li>Informations d'identification : nom, prénom, adresse email</li>
                 <li>Informations professionnelles : nom du commerce, type d'activité, adresse</li>
@@ -90,7 +90,7 @@ export default function ConfidentialitePage() {
                 Base légale
               </h2>
               <p>
-                Le traitement de vos données repose sur l'exécution du contrat (fourniture du service PONIA AI) 
+                Le traitement de vos données repose sur l'exécution du contrat (fourniture du service PONIA) 
                 et votre consentement lors de l'inscription. Certains traitements peuvent également être fondés 
                 sur notre intérêt légitime (amélioration des services, sécurité).
               </p>
@@ -153,7 +153,7 @@ export default function ConfidentialitePage() {
                 Cookies
               </h2>
               <p>
-                PONIA AI utilise des cookies essentiels au fonctionnement du service (session, authentification). 
+                PONIA utilise des cookies essentiels au fonctionnement du service (session, authentification). 
                 Aucun cookie publicitaire ou de tracking tiers n'est utilisé.
               </p>
             </section>

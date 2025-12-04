@@ -14,15 +14,15 @@ export default function ReferralModal({ referralCode, onClose }) {
 
   const handleShareWhatsApp = () => {
     const message = encodeURIComponent(
-      `👋 Hey ! Je te recommande PONIA AI pour gérer ton stock. C'est GRATUIT jusqu'à 10 produits et ça m'a fait économiser €400/mois.\n\nInscris-toi avec mon code : ${referralCode}\n${referralLink}\n\n🎁 Tu bénéficieras de -50% le 1er mois si tu upgrades !`
+      `👋 Hey ! Je te recommande PONIA pour gérer ton stock. C'est GRATUIT jusqu'à 10 produits et ça m'a fait économiser €400/mois.\n\nInscris-toi avec mon code : ${referralCode}\n${referralLink}\n\n🎁 Tu bénéficieras de -50% le 1er mois si tu upgrades !`
     )
     window.open(`https://wa.me/?text=${message}`, '_blank')
   }
 
   const handleShareEmail = () => {
-    const subject = encodeURIComponent('Découvre PONIA AI - Gestion de stock intelligente')
+    const subject = encodeURIComponent('Découvre PONIA - Gestion de stock intelligente')
     const body = encodeURIComponent(
-      `Salut,\n\nJe voulais te parler de PONIA AI, une app qui m'aide à gérer mon stock en 2 minutes par jour.\n\nC'est GRATUIT jusqu'à 10 produits, et personnellement ça m'a fait économiser €400/mois en réduisant le gaspillage.\n\nInscris-toi avec mon code parrainage : ${referralCode}\n${referralLink}\n\n🎁 Tu bénéficieras de -50% le 1er mois si tu passes au plan payant !\n\nÀ bientôt,`
+      `Salut,\n\nJe voulais te parler de PONIA, une app qui m'aide à gérer mon stock en 2 minutes par jour.\n\nC'est GRATUIT jusqu'à 10 produits, et personnellement ça m'a fait économiser €400/mois en réduisant le gaspillage.\n\nInscris-toi avec mon code parrainage : ${referralCode}\n${referralLink}\n\n🎁 Tu bénéficieras de -50% le 1er mois si tu passes au plan payant !\n\nÀ bientôt,`
     )
     window.location.href = `mailto:?subject=${subject}&body=${body}`
   }

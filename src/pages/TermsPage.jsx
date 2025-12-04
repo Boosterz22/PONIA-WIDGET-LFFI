@@ -24,17 +24,8 @@ export default function TermsPage() {
         borderBottom: '1px solid rgba(255, 215, 0, 0.2)'
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }} onClick={() => navigate('/')}>
-            <img src="/ponia-icon.png" alt="PONIA" style={{ height: '40px' }} />
-            <span style={{ 
-              fontSize: '1.5rem', 
-              fontWeight: '700', 
-              background: 'linear-gradient(135deg, #FFD700, #FFA500)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
-            }}>
-              PONIA AI
-            </span>
+          <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => navigate('/')}>
+            <img src="/ponia-icon.png" alt="PONIA" style={{ height: '45px' }} />
           </div>
           <button
             onClick={() => navigate('/')}
@@ -113,14 +104,14 @@ export default function TermsPage() {
 
           <Section title="2. Acceptation des conditions">
             <p>
-              En créant un compte PONIA AI, vous acceptez sans réserve les présentes Conditions Générales d'Utilisation (CGU). 
+              En créant un compte PONIA, vous acceptez sans réserve les présentes Conditions Générales d'Utilisation (CGU). 
               Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser nos services.
             </p>
           </Section>
 
           <Section title="3. Description du service">
             <p>
-              PONIA AI est une plateforme SaaS de gestion de stock intelligente destinée aux commerces de proximité 
+              PONIA est une plateforme SaaS de gestion de stock intelligente destinée aux commerces de proximité 
               (boulangeries, restaurants, bars, caves à vin, etc.). Le service comprend :
             </p>
             <ul style={{ lineHeight: '1.8', color: 'rgba(255, 255, 255, 0.8)', marginLeft: '1.5rem' }}>
@@ -178,7 +169,7 @@ export default function TermsPage() {
           </Section>
 
           <Section title="7. Responsabilités de l'utilisateur">
-            <p>En utilisant PONIA AI, vous vous engagez à :</p>
+            <p>En utilisant PONIA, vous vous engagez à :</p>
             <ul style={{ lineHeight: '1.8', color: 'rgba(255, 255, 255, 0.8)', marginLeft: '1.5rem' }}>
               <li>Fournir des informations exactes et à jour lors de votre inscription</li>
               <li>Maintenir la confidentialité de vos identifiants de connexion</li>
@@ -188,14 +179,14 @@ export default function TermsPage() {
             </ul>
           </Section>
 
-          <Section title="8. Responsabilités de PONIA AI">
+          <Section title="8. Responsabilités de PONIA">
             <div style={{ padding: '1.5rem', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '12px', marginBottom: '1rem', borderLeft: '4px solid #ef4444' }}>
               <p style={{ margin: 0, fontWeight: '600', color: '#ef4444' }}>
                 Clause de limitation de responsabilité importante
               </p>
             </div>
             <ul style={{ lineHeight: '1.8', color: 'rgba(255, 255, 255, 0.8)', marginLeft: '1.5rem' }}>
-              <li>PONIA AI est un outil d'aide à la décision, pas un garant de vos stocks</li>
+              <li>PONIA est un outil d'aide à la décision, pas un garant de vos stocks</li>
               <li>Les prédictions IA sont des estimations basées sur vos données historiques</li>
               <li>Vous restez seul responsable de vos décisions de commande et de gestion</li>
               <li>Nous garantissons une disponibilité du service de 99% (hors maintenance programmée)</li>
@@ -205,7 +196,7 @@ export default function TermsPage() {
 
           <Section title="9. Propriété intellectuelle">
             <p>
-              PONIA AI, son logo, ses fonctionnalités et son code source sont protégés par les droits d'auteur. 
+              PONIA, son logo, ses fonctionnalités et son code source sont protégés par les droits d'auteur. 
               Vous disposez d'un droit d'utilisation non-exclusif et non-transférable du service.
             </p>
             <p style={{ marginTop: '1rem', fontWeight: '600', color: '#FFD700' }}>

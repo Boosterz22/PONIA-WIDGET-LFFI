@@ -113,7 +113,7 @@ export default function LoginPage() {
           marginBottom: '0rem',
           alignSelf: 'flex-start'
         }}>
-          <img src="/ponia-logo.png" alt="PONIA AI" style={{ height: '120px' }} />
+          <img src="/ponia-logo.png" alt="PONIA" style={{ height: '120px' }} />
         </Link>
 
         <div style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }}>

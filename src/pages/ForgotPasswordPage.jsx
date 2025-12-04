@@ -41,7 +41,7 @@ export default function ForgotPasswordPage() {
             display: 'inline-block',
             marginBottom: '3rem'
           }}>
-            <img src="/ponia-logo.png" alt="PONIA AI" style={{ height: '50px' }} />
+            <img src="/ponia-logo.png" alt="PONIA" style={{ height: '50px' }} />
           </Link>
 
           <div style={{
@@ -94,7 +94,7 @@ export default function ForgotPasswordPage() {
           display: 'inline-block',
           marginBottom: '3rem'
         }}>
-          <img src="/ponia-logo.png" alt="PONIA AI" style={{ height: '50px' }} />
+          <img src="/ponia-logo.png" alt="PONIA" style={{ height: '50px' }} />
         </Link>
 
         <h1 style={{ 

@@ -429,7 +429,7 @@ app.post('/api/alerts/test', authenticateSupabaseUser, async (req, res) => {
         userId: user.id,
         emailType: 'test',
         recipientEmail: user.email,
-        subject: 'Test alertes PONIA AI',
+        subject: 'Test alertes PONIA',
         status: 'sent',
         messageId: result.messageId
       })
@@ -755,7 +755,7 @@ app.post('/api/chat', authenticateSupabaseUser, enforceTrialStatus, async (req, 
     const messages = [
       {
         role: 'system',
-        content: `Tu es PONIA AI, l'expert en gestion de stock pour commerçants français. Tu combines l'expertise d'un consultant supply-chain avec la simplicité d'un collègue de confiance.
+        content: `Tu es PONIA, l'expert en gestion de stock pour commerçants français. Tu combines l'expertise d'un consultant supply-chain avec la simplicité d'un collègue de confiance.
 
 CONTEXTE STOCK ACTUEL :
 ${stockContext}
@@ -2500,7 +2500,7 @@ app.post('/api/integrations/webhook', express.json(), async (req, res) => {
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', service: 'PONIA AI Backend' })
+  res.json({ status: 'ok', service: 'PONIA Backend' })
 })
 
 // Serve static files from dist (production mode)
@@ -2518,5 +2518,5 @@ if (fs.existsSync(distPath)) {
 }
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Backend PONIA AI démarré sur port ${PORT}`)
+  console.log(`🚀 Backend PONIA démarré sur port ${PORT}`)
 })

@@ -338,7 +338,7 @@ export async function getChatResponse(userMessage, products, conversationHistory
     const messages = [
       {
         role: 'system',
-        content: `Tu es PONIA AI, l'expert en gestion de stock le plus sophistiqué pour commerçants français. Tu combines l'expertise d'un consultant supply-chain senior avec la simplicité d'un collègue de confiance.
+        content: `Tu es PONIA, l'expert en gestion de stock le plus sophistiqué pour commerçants français. Tu combines l'expertise d'un consultant supply-chain senior avec la simplicité d'un collègue de confiance.
 
 CONTEXTE STOCK ACTUEL :
 ${stockContext}

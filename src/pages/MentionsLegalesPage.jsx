@@ -40,7 +40,7 @@ export default function MentionsLegalesPage() {
           <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
             <img 
               src={poniaLogo} 
-              alt="PONIA AI" 
+              alt="PONIA" 
               style={{ height: '48px', marginBottom: '1rem' }} 
             />
             <h1 style={{ fontSize: '1.75rem', fontWeight: '700', color: '#111827', margin: 0 }}>
@@ -73,7 +73,7 @@ export default function MentionsLegalesPage() {
                 Propriété intellectuelle
               </h2>
               <p>
-                L'ensemble des contenus présents sur le site PONIA AI (textes, images, graphismes, logo, icônes) 
+                L'ensemble des contenus présents sur le site PONIA (textes, images, graphismes, logo, icônes) 
                 sont la propriété exclusive d'Enock Ligue, sauf mention contraire. Toute reproduction, distribution, 
                 modification ou utilisation de ces contenus sans autorisation préalable est interdite.
               </p>
@@ -84,9 +84,9 @@ export default function MentionsLegalesPage() {
                 Responsabilité
               </h2>
               <p>
-                PONIA AI s'efforce d'assurer l'exactitude et la mise à jour des informations diffusées sur ce site. 
-                Toutefois, PONIA AI ne peut garantir l'exactitude, la précision ou l'exhaustivité des informations 
-                mises à disposition. En conséquence, PONIA AI décline toute responsabilité pour les éventuelles 
+                PONIA s'efforce d'assurer l'exactitude et la mise à jour des informations diffusées sur ce site. 
+                Toutefois, PONIA ne peut garantir l'exactitude, la précision ou l'exhaustivité des informations 
+                mises à disposition. En conséquence, PONIA décline toute responsabilité pour les éventuelles 
                 imprécisions, inexactitudes ou omissions.
               </p>
             </section>

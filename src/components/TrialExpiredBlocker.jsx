@@ -55,7 +55,7 @@ export default function TrialExpiredBlocker() {
           lineHeight: '1.6',
           marginBottom: '2rem'
         }}>
-          Votre période d'essai de 14 jours est terminée. Passez à un plan payant pour continuer à profiter de PONIA AI et optimiser votre gestion de stock.
+          Votre période d'essai de 14 jours est terminée. Passez à un plan payant pour continuer à profiter de PONIA et optimiser votre gestion de stock.
         </p>
 
         <div style={{
@@ -67,7 +67,7 @@ export default function TrialExpiredBlocker() {
           textAlign: 'left'
         }}>
           <div style={{ fontSize: '0.875rem', color: '#9A3412', marginBottom: '0.75rem', fontWeight: '600' }}>
-            Débloquez toute la puissance de PONIA AI :
+            Débloquez toute la puissance de PONIA :
           </div>
           <ul style={{
             listStyle: 'none',

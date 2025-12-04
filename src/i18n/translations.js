@@ -1,7 +1,7 @@
 const translations = {
   fr: {
     nav: {
-      poniaAI: 'PONIA AI'
+      poniaAI: 'PONIA'
     },
     dashboard: {
       title: 'Tableau de bord',
@@ -59,7 +59,7 @@ const translations = {
   },
   en: {
     nav: {
-      poniaAI: 'PONIA AI'
+      poniaAI: 'PONIA'
     },
     dashboard: {
       title: 'Dashboard',
@@ -175,7 +175,7 @@ const translations = {
   },
   ar: {
     nav: {
-      poniaAI: 'PONIA AI'
+      poniaAI: 'PONIA'
     },
     dashboard: {
       title: 'لوحة التحكم',
@@ -291,7 +291,7 @@ const translations = {
   },
   zh: {
     nav: {
-      poniaAI: 'PONIA AI'
+      poniaAI: 'PONIA'
     },
     dashboard: {
       title: '仪表板',

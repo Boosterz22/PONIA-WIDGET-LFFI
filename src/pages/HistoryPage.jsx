@@ -95,7 +95,7 @@ export default function HistoryPage() {
             <span>Dashboard</span>
           </button>
           <Link to="/">
-            <img src="/ponia-logo.png" alt="PONIA AI" style={{ height: '36px' }} />
+            <img src="/ponia-logo.png" alt="PONIA" style={{ height: '36px' }} />
           </Link>
         </div>
       </nav>

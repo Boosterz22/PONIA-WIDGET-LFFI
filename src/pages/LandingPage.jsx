@@ -9,7 +9,7 @@ function PricingCards() {
       price: 0,
       icon: Zap,
       color: '#6B7280',
-      description: 'Pour tester PONIA AI',
+      description: 'Pour tester PONIA',
       features: [
         { text: '10 produits maximum', included: true },
         { text: 'Alertes de stock simples', included: true },
