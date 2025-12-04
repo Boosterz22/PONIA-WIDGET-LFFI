@@ -4,6 +4,42 @@ import { supabase } from '../services/supabase'
 import { useLanguage } from '../contexts/LanguageContext'
 import poniaLogo from '../assets/ponia-logo.png'
 
+function TypingMessage({ content, onComplete, isNew = false }) {
+  const [displayedText, setDisplayedText] = useState(isNew ? '' : content)
+  const [isTyping, setIsTyping] = useState(isNew)
+  
+  useEffect(() => {
+    if (!isNew || !content) {
+      setDisplayedText(content)
+      setIsTyping(false)
+      return
+    }
+    
+    const words = content.split(' ')
+    let currentIndex = 0
+    
+    const typingInterval = setInterval(() => {
+      if (currentIndex < words.length) {
+        setDisplayedText(words.slice(0, currentIndex + 1).join(' '))
+        currentIndex++
+      } else {
+        clearInterval(typingInterval)
+        setIsTyping(false)
+        if (onComplete) onComplete()
+      }
+    }, 50)
+    
+    return () => clearInterval(typingInterval)
+  }, [content, isNew])
+  
+  return (
+    <span>
+      {displayedText}
+      {isTyping && <span className="typing-cursor">|</span>}
+    </span>
+  )
+}
+
 function cleanMarkdown(text) {
   if (!text) return text
   return text
@@ -56,6 +92,7 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
   const [showSidebar, setShowSidebar] = useState(true)
   const [editingConversationId, setEditingConversationId] = useState(null)
   const [editingTitle, setEditingTitle] = useState('')
+  const [typingMessageId, setTypingMessageId] = useState(null)
   const messagesEndRef = useRef(null)
 
   const scrollToBottom = () => {
@@ -276,7 +313,7 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
     const userMessage = input.trim()
     setInput('')
     
-    const newMessages = [...messages, { role: 'user', content: userMessage }]
+    const newMessages = [...messages, { role: 'user', content: userMessage, id: Date.now() }]
     setMessages(newMessages)
     setLoading(true)
 
@@ -284,14 +321,19 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
 
     try {
       const response = await getChatResponse(userMessage, products, messages, null)
-      setMessages(prev => [...prev, { role: 'assistant', content: response }])
+      const newMessageId = Date.now()
+      setMessages(prev => [...prev, { role: 'assistant', content: response, id: newMessageId }])
+      setTypingMessageId(newMessageId)
       await saveMessage('assistant', response)
     } catch (error) {
       const errorMessage = 'Désolé, j\'ai un souci technique. Réessayez dans quelques secondes.'
+      const errorMsgId = Date.now()
       setMessages(prev => [...prev, { 
         role: 'assistant', 
-        content: errorMessage
+        content: errorMessage,
+        id: errorMsgId
       }])
+      setTypingMessageId(errorMsgId)
       await saveMessage('assistant', errorMessage)
     } finally {
       setLoading(false)
@@ -552,7 +594,7 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
         }}>
           {messages.map((msg, idx) => (
             <div
-              key={idx}
+              key={msg.id || idx}
               style={{
                 marginBottom: '1rem',
                 display: 'flex',
@@ -574,7 +616,15 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
                   fontWeight: msg.role === 'user' ? '500' : '400'
                 }}
               >
-                {msg.content}
+                {msg.role === 'assistant' ? (
+                  <TypingMessage 
+                    content={msg.content} 
+                    isNew={msg.id === typingMessageId}
+                    onComplete={() => setTypingMessageId(null)}
+                  />
+                ) : (
+                  msg.content
+                )}
               </div>
             </div>
           ))}
