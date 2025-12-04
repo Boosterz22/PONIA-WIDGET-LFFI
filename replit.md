@@ -2,7 +2,7 @@
 
 ## Overview
 
-PONIA AI is an AI-powered inventory management system designed for small businesses in France, such as bakeries, restaurants, bars, and wine cellars. Its primary purpose is to provide a mobile-first application for real-time inventory tracking, intelligent low-stock alerts, and AI-optimized order suggestions. The system aims to significantly reduce waste and prevent stockouts, thereby increasing efficiency and profitability for its users. The project targets an ambitious monthly recurring revenue (MRR) of €4,000-€6,000 by serving 51-76 clients across tiered pricing plans (Basique, Standard, Pro).
+PONIA AI is an AI-powered inventory management system for small French businesses (bakeries, restaurants, bars, wine cellars). It provides a mobile-first application for real-time inventory tracking, intelligent low-stock alerts, and AI-optimized order suggestions to reduce waste and prevent stockouts, increasing efficiency and profitability. The project aims for an MRR of €4,000-€6,000 from 51-76 clients across tiered pricing plans.
 
 ## User Preferences
 
@@ -15,221 +15,39 @@ PONIA AI is an AI-powered inventory management system designed for small busines
 - Do not make changes to the folder `Z`
 - Do not make changes to the file `Y`
 
-## Recent Changes (December 4, 2025)
-
-### Phase 4: Chat UX & Commercial Tracking
-
-1. **Typing Effect for Chat AI Responses** (`src/components/ChatAICentral.jsx`)
-   - TypingMessage component with word-by-word display animation
-   - Blinking cursor effect during typing
-   - Only activates for new assistant messages (via typingMessageId state)
-   - Smooth, natural-feeling response display
-
-2. **Commercial Tracking Dashboard** (`src/pages/AdminPage.jsx`)
-   - New "Suivi Commerciaux" tab in admin dashboard
-   - Performance stats by referrer code:
-     - Total referred clients
-     - Paid conversions count
-     - Conversion rate with visual progress bar
-     - MRR generated per commercial
-     - Commission calculation (25% of MRR)
-   - Filter users by referrer code
-   - Expandable details showing clients per commercial
-   - Stats summary cards (total referred, avg conversion, total commissions)
-
-3. **User List Filter**
-   - Added referrer code filter dropdown in Users tab
-   - Quick filtering to see clients brought by specific commercial
-
-### Phase 3: Email Alerts & User Experience Improvements
-
-1. **Automatic Email Alerts System** (`server/email-service.js`)
-   - Resend API integration for transactional emails (support@myponia.fr)
-   - Low stock alerts with product list and direct action links
-   - Expiry date alerts (DLC) with urgency indicators and tips
-   - Welcome email for new users
-   - Test email functionality for verifying configuration
-   - Professional HTML templates with PONIA branding
-
-2. **Alert Preferences Management** (`src/pages/AlertSettingsPage.jsx`)
-   - Toggle email alerts on/off
-   - Configure low stock and expiry alerts separately
-   - Set expiry threshold (1-7 days before)
-   - Choose frequency (daily/weekly)
-   - Send test email button
-   - Manual "send alerts now" trigger
-   - Email history log display
-
-3. **Database Schema Additions** (`shared/schema.js`)
-   - `alertPreferences` table: user alert settings, last sent timestamps
-   - `emailLogs` table: email history with status tracking
-
-4. **API Endpoints** (`server/index.js`)
-   - `GET /api/alerts/preferences` - Get user's alert settings
-   - `PUT /api/alerts/preferences` - Update alert settings
-   - `POST /api/alerts/test` - Send test email
-   - `POST /api/alerts/send-now` - Trigger manual alerts
-   - `GET /api/alerts/logs` - Get email history
-   - `POST /api/cron/send-alerts` - Automated daily alert dispatch
-
-5. **Customer Numbering System**
-   - Auto-generated PONIA-XXXX format on user creation
-   - Displayed prominently on Profile page with gold gradient styling
-   - Used for referral program identification
-
-6. **Time-Saved Widget Connected to Real Data**
-   - API endpoint `/api/stats/time-saved` calculates actual savings
-   - Based on product count, stock movements, and active alerts
-   - Shows monetary value (€) saved per week
-
-7. **Settings Page Enhancement** (`src/pages/SettingsPage.jsx`)
-   - New "Alertes Email" card with hover effect
-   - Direct link to alert configuration page
-   - Improved visual hierarchy
-
-## Previous Changes (November 27, 2025)
-
-### Phase 2B: Direct POS Integrations (Self-Service)
-
-**STRATEGIC PIVOT**: Abandoned Chift unified API (required commercial meetings/partnerships incompatible with bootstrapped MVP launch) in favor of direct self-service POS integrations.
-
-1. **Modular Adapter Architecture** (`server/pos-adapters/`)
-   - `base.js` - Abstract base class defining interface: authenticate, getProducts, getSales, setupWebhook, getDemoProducts
-   - `index.js` - Factory pattern with getAdapter(), isDemoMode(), getSupportedProviders(), isProviderSupported()
-   - Each adapter implements OAuth or API key authentication with demo mode fallback
-
-2. **6 Operational POS Adapters** (covering ~80% French TPE market)
-   - `square.js` - Square (OAuth, catalog, orders, webhooks) - All business types
-   - `zettle.js` - Zettle/PayPal (OAuth, products, inventory) - Mobile/PopUp
-   - `hiboutik.js` - Hiboutik (API Key auth, products, sales) - French retail specialty
-   - `sumup.js` - SumUp/Tiller (OAuth, POS Pro V3 API) - Restaurants/Bars
-   - `lightspeed-x.js` - Lightspeed X-Series (OAuth/Vend API) - Retail
-   - `lightspeed-k.js` - Lightspeed K-Series (OAuth) - Restaurants
-
-3. **Updated IntegrationsPage** (`src/pages/IntegrationsPage.jsx`)
-   - Premium UI displaying only 6 operational POS systems
-   - No category filter (all 6 systems visible)
-   - Setup instructions with links to developer consoles
-   - Demo mode with realistic products per POS type
-
-4. **API Endpoints** (`server/index.js`)
-   - `GET /api/integrations/providers` - List supported POS systems
-   - `GET /api/integrations/connections` - User's POS connections
-   - `POST /api/integrations/connect` - Initiate OAuth or API key auth
-   - `GET /api/pos/callback/:provider` - Provider-specific OAuth callback
-   - `DELETE /api/integrations/connections/:id` - Disconnect POS
-   - `POST /api/integrations/sync/:id` - Sync products (demo or real)
-
-5. **Key Design Decisions**
-   - All 6 POS systems have self-service developer signup (no sales meetings required)
-   - Demo mode auto-activates when env vars not configured
-   - Each adapter generates realistic demo products for its business type
-   - Modular pattern allows easy addition of new POS systems
-
-### Previous: Phase 2A (Deprecated)
-
-*Chift unified API integration was abandoned due to requirement for commercial partnerships.*
-
-### Phase 1: AI Omnipresence & Time Savings Implementation (November 18, 2025)
-
-1. **ChatAICentral Component** (`src/components/ChatAICentral.jsx`)
-   - Primary dashboard interface replacing traditional KPI-first layout
-   - Suggested questions for immediate engagement
-   - Premium UI with gradient header and conversational design
-   - Voice assistant button (placeholder for future feature)
-
-2. **TimeSavedWidget Component** (`src/components/TimeSavedWidget.jsx`)
-   - Displays weekly/monthly time savings in hours and €
-   - Shows CA optimized, stockouts avoided, and waste saved metrics
-   - Dark theme with gold accents for visual prominence
-   - Reinforces ROI and "time = money" value proposition
-
-3. **OrderOptionsModal Component** (`src/components/OrderOptionsModal.jsx`)
-   - Enhanced order generation with three delivery options:
-     - PDF download
-     - WhatsApp copy (formatted message)
-     - Email send (planned)
-   - Emphasizes 50+ minute time savings in UI
-   - Modern modal design with action feedback
-
-4. **Multi-language System**
-   - `LanguageContext` (`src/contexts/LanguageContext.jsx`): Context provider for app-wide translations
-   - `translations.js` (`src/i18n/translations.js`): Translation keys for 6 languages
-   - `LanguageSelector` (`src/components/LanguageSelector.jsx`): Dropdown selector in navigation
-   - Supports: French, English, Spanish, Arabic, German, Chinese
-   - Automatic persistence in localStorage
-
-5. **DashboardPage Restructure** (`src/pages/DashboardPage.jsx`)
-   - ChatAICentral now appears first (AI-first interface)
-   - TimeSavedWidget prominently displayed second
-   - Traditional KPIs moved below to reinforce AI priority
-
-6. **Bug Fixes**
-   - Fixed port conflict in `start.sh` by adding process cleanup
-   - Fixed JSX closing tag in Navigation component
-
 ## System Architecture
 
-PONIA AI is a secure full-stack application utilizing a client-server architecture. The backend is built with Express.js (Node.js), and the frontend is developed using React 18 with Vite 5. Data persistence is handled by PostgreSQL, managed through Drizzle ORM. User authentication is powered by Supabase.
+PONIA AI is a secure full-stack application using a client-server architecture with an Express.js (Node.js) backend and React 18 (Vite 5) frontend. Data is persisted in PostgreSQL via Drizzle ORM, and user authentication is handled by Supabase.
 
 **Key Architectural Decisions and Features:**
 
-*   **Security:** OpenAI API calls are proxied server-side via the Express backend to protect API keys. JWT authentication secures all protected API endpoints.
-*   **AI Functionality:** A hybrid AI approach combines a local rules engine for immediate predictions (stockout, overstock, health score) with OpenAI's GPT-4o-mini (accessed via Replit AI Integrations) for advanced predictions (7-day for Standard, 30-day for Pro), expiry tracking, and intelligent order generation.
-*   **User Interface (UI/UX):** The design prioritizes a mobile-first, simple, and fast user experience, tailored for non-tech-savvy merchants.
-    *   **Dashboard:** Features a modern layout with AI-first interface, showcasing Chat AI Central as the primary interaction point, Time Saved widget highlighting merchant value, and KPI grids with active alerts.
-    *   **Chat AI Central:** NEW - Main dashboard interface featuring conversational AI with suggested questions, making AI omnipresent and immediately visible upon login.
-    *   **Time Saved Widget:** NEW - Displays weekly/monthly time savings and monetary value (€) to prove ROI and reinforce the "time = money" value proposition.
-    *   **Multi-language Support:** NEW - Complete i18n system supporting 6 languages (French, English, Spanish, Arabic, German, Chinese) with LanguageContext and LanguageSelector component.
-    *   **Smart Order Generation:** NEW - Enhanced order modal (OrderOptionsModal) with PDF download, WhatsApp copy, and email options, emphasizing 50+ minute time savings.
-    *   **Stock Management:** Offers a visual, color-coded product display with quick adjustment capabilities and integrated AI insights.
-    *   **Chat AI:** Provides both a floating conversational AI and central dashboard interface for inventory-related queries.
-    *   **Product & Supplier Management:** Simplified forms for efficient data entry.
-    *   **Navigation:** Professional horizontal navigation with language selector and comprehensive dropdown menu.
+*   **Security:** OpenAI API calls are proxied server-side, and JWT authentication secures all protected API endpoints.
+*   **AI Functionality:** A hybrid AI approach combines a local rules engine for immediate predictions (stockout, overstock, health score) with OpenAI's GPT-4o-mini (via Replit AI Integrations) for advanced predictions (7-day for Standard, 30-day for Pro), expiry tracking, and intelligent order generation. AI is omnipresent and immediately visible.
+*   **UI/UX:** Mobile-first, simple, and fast design for non-tech-savvy merchants.
+    *   **Dashboard:** AI-first interface with Chat AI Central as the primary interaction point, Time Saved widget highlighting value, and KPI grids.
+    *   **Chat AI Central:** Main dashboard interface with conversational AI and suggested questions.
+    *   **Time Saved Widget:** Displays weekly/monthly time savings and monetary value to reinforce ROI.
+    *   **Multi-language Support:** Complete i18n system for 6 languages (French, English, Spanish, Arabic, German, Chinese) with context and selector component.
+    *   **Smart Order Generation:** Enhanced order modal with PDF download, WhatsApp copy, and email options, emphasizing time savings.
+    *   **Stock Management:** Visual, color-coded product display with quick adjustments and integrated AI insights.
 *   **Core Technical Implementations:**
-    *   **Authentication & Subscription Management:** Email-based registration with Supabase, supporting a three-tier pricing model and a 14-day free trial. Integrates Stripe for secure subscription handling.
+    *   **Authentication & Subscription:** Email-based registration via Supabase, supporting a three-tier pricing model (14-day free trial) and Stripe for subscriptions.
+    *   **Email Alerts:** Automatic low-stock and expiry date email alerts (via Resend API) with customizable preferences and professional HTML templates.
     *   **AI-Powered Order Generation:** Automated generation of intelligent purchase orders in PDF format using GPT-4o-mini.
-    *   **Expiry Alerts:** AI-driven tracking of product expiration dates with proactive suggestions.
-    *   **Multi-store Support:** The database schema is designed to support multiple store locations per user.
-    *   **Admin Dashboard:** Provides tools for user management, real-time statistics, and CSV export, secured by an admin email whitelist.
-    *   **Geolocation & Address Autocomplete:** Integration with API Adresse (Base Adresse Nationale - BAN) for intelligent address autocomplete, including automatic capture of GPS coordinates for stores. Event filtering based on geographical proximity (5km radius).
-    *   **Optimistic UI Updates:** Stock management interface uses optimistic updates for instant responsiveness.
+    *   **Multi-store Support:** Database schema supports multiple store locations per user.
+    *   **Admin Dashboard:** Tools for user management, real-time statistics, CSV export, secured by an admin email whitelist. Includes commercial tracking dashboard for referrer performance.
+    *   **Geolocation & Address Autocomplete:** Integration with API Adresse (Base Adresse Nationale - BAN) for address autocomplete and GPS coordinates.
+    *   **Optimistic UI Updates:** Stock management interface uses optimistic updates.
+    *   **POS Integration Architecture:** Modular adapter pattern for direct, self-service POS integrations.
 
 ## External Dependencies
 
-*   **Backend:** Express, OpenAI SDK (GPT-4o-mini)
+*   **Backend:** Express, OpenAI SDK (GPT-4o-mini), Resend API
 *   **Frontend:** React, Vite, React Router DOM, Recharts, Lucide React
-*   **Database:** PostgreSQL, Drizzle ORM, Supabase client
+*   **Database:** PostgreSQL, Drizzle ORM
+*   **Authentication & Database Services:** Supabase
+*   **Payments:** Stripe
+*   **POS Integrations:** Direct adapters for Square, Zettle (PayPal), Hiboutik, SumUp/Tiller, Lightspeed X-Series, Lightspeed K-Series.
+*   **Address API:** API Adresse (Base Adresse Nationale - BAN, gouvernement français)
 *   **Weather:** OpenWeatherMap API
 *   **Calendar:** Google Calendar API
-*   **Payments:** Stripe
-*   **POS Integrations:** Direct adapters for 6 self-service POS systems (Square, Zettle, Hiboutik, SumUp, Lightspeed X-Series, Lightspeed K-Series)
-*   **Address API:** API Adresse (Base Adresse Nationale - BAN, gouvernement français)
-
-## POS Integration Architecture
-
-PONIA uses a modular adapter pattern with direct self-service POS integrations (no commercial partnerships required):
-
-**Supported POS Systems (6 operational - covering ~80% French TPE market):**
-- **Square** - All business types (OAuth, catalog API, orders API, webhooks)
-- **Zettle (PayPal)** - Mobile/PopUp (OAuth, products, inventory)
-- **Hiboutik** - French retail specialty (API Key auth, products, sales)
-- **SumUp/Tiller** - Restaurants/Bars (OAuth, POS Pro V3 API)
-- **Lightspeed X-Series** - Retail (OAuth via Vend API)
-- **Lightspeed K-Series** - Restaurants (OAuth)
-
-**Adapter Architecture:**
-- Base abstract class (`server/pos-adapters/base.js`) defines interface
-- Each POS has dedicated adapter with OAuth/API key auth
-- Factory pattern (`getAdapter()`) returns correct adapter by provider name
-- Demo mode auto-activates when env vars not configured
-
-**Integration Flow:**
-1. User selects their POS from the Integrations page (only 6 shown)
-2. OAuth 2.0 or API key authentication directly with POS provider
-3. Products are synced from POS to PONIA via adapter
-4. User maps POS products to PONIA products
-5. Real-time webhook updates stock when sales occur
-
-**Demo Mode:**
-When provider-specific env vars are not configured, each adapter returns realistic demo products matching that POS type (bakery, restaurant, retail, bar products).
