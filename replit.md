@@ -17,6 +17,30 @@ PONIA AI is an AI-powered inventory management system designed for small busines
 
 ## Recent Changes (December 4, 2025)
 
+### Phase 4: Chat UX & Commercial Tracking
+
+1. **Typing Effect for Chat AI Responses** (`src/components/ChatAICentral.jsx`)
+   - TypingMessage component with word-by-word display animation
+   - Blinking cursor effect during typing
+   - Only activates for new assistant messages (via typingMessageId state)
+   - Smooth, natural-feeling response display
+
+2. **Commercial Tracking Dashboard** (`src/pages/AdminPage.jsx`)
+   - New "Suivi Commerciaux" tab in admin dashboard
+   - Performance stats by referrer code:
+     - Total referred clients
+     - Paid conversions count
+     - Conversion rate with visual progress bar
+     - MRR generated per commercial
+     - Commission calculation (25% of MRR)
+   - Filter users by referrer code
+   - Expandable details showing clients per commercial
+   - Stats summary cards (total referred, avg conversion, total commissions)
+
+3. **User List Filter**
+   - Added referrer code filter dropdown in Users tab
+   - Quick filtering to see clients brought by specific commercial
+
 ### Phase 3: Email Alerts & User Experience Improvements
 
 1. **Automatic Email Alerts System** (`server/email-service.js`)
