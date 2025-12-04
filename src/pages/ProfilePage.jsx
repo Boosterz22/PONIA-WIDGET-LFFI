@@ -1,12 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { ArrowLeft, User, Mail, Briefcase, Crown, Calendar, Edit2, Save, X } from 'lucide-react'
+import { ArrowLeft, User, Mail, Briefcase, Crown, Calendar, Edit2, Save, X, Hash } from 'lucide-react'
 import { supabase } from '../services/supabase'
 
 export default function ProfilePage({ session }) {
   const navigate = useNavigate()
   const [isEditing, setIsEditing] = useState(false)
   const [businessName, setBusinessName] = useState(session.user.business_name || 'Mon Commerce')
+  const [clientNumber, setClientNumber] = useState('')
   const [saving, setSaving] = useState(false)
 
   const userPlan = localStorage.getItem('ponia_user_plan') || 'basique'
@@ -17,6 +18,31 @@ export default function ProfilePage({ session }) {
     month: 'long',
     year: 'numeric'
   })
+
+  useEffect(() => {
+    loadUserData()
+  }, [])
+
+  const loadUserData = async () => {
+    try {
+      const { data: { session: currentSession } } = await supabase.auth.getSession()
+      if (!currentSession) return
+
+      const response = await fetch('/api/users/me', {
+        headers: {
+          'Authorization': `Bearer ${currentSession.access_token}`
+        }
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        if (data.user.businessName) setBusinessName(data.user.businessName)
+        if (data.user.clientNumber) setClientNumber(data.user.clientNumber)
+      }
+    } catch (error) {
+      console.error('Erreur chargement utilisateur:', error)
+    }
+  }
 
   const handleSave = async () => {
     setSaving(true)
@@ -162,6 +188,27 @@ export default function ProfilePage({ session }) {
                 {businessType === 'other' && '🏬 Autre'}
                 {businessType === 'default' && '🏬 Commerce'}
               </div>
+            </div>
+
+            <div>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem', fontWeight: '600', color: '#374151', marginBottom: '0.5rem' }}>
+                <Hash size={16} />
+                <span>Numéro client</span>
+              </label>
+              <div style={{ 
+                padding: '0.75rem', 
+                background: 'linear-gradient(135deg, #FFD700, #FFA500)', 
+                borderRadius: '8px',
+                fontWeight: '700',
+                color: '#1F2937',
+                fontFamily: 'monospace',
+                fontSize: '1.125rem'
+              }}>
+                {clientNumber || 'PONIA-0001'}
+              </div>
+              <p style={{ fontSize: '0.75rem', color: '#6B7280', marginTop: '0.25rem' }}>
+                Votre identifiant unique pour le parrainage
+              </p>
             </div>
 
             <div>

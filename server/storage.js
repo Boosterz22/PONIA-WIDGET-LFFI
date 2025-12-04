@@ -13,12 +13,17 @@ export async function getUserBySupabaseId(supabaseId) {
 }
 
 export async function createUser(userData) {
+  const countResult = await db.select({ count: sql`COUNT(*)` }).from(users)
+  const userCount = parseInt(countResult[0]?.count || 0) + 1
+  const clientNumber = `PONIA-${String(userCount).padStart(4, '0')}`
+  
   const result = await db.insert(users).values({
     email: userData.email,
     businessName: userData.businessName,
     businessType: userData.businessType,
     posSystem: userData.posSystem || null,
     plan: userData.plan || 'basique',
+    clientNumber: clientNumber,
     referralCode: userData.referralCode,
     referredBy: userData.referredBy,
     supabaseId: userData.supabaseId
@@ -77,6 +82,9 @@ export async function createProduct(productData) {
   const result = await db.insert(products).values({
     userId: productData.userId,
     name: productData.name,
+    category: productData.category || null,
+    subcategory: productData.subcategory || null,
+    barcode: productData.barcode || null,
     currentQuantity: productData.currentQuantity.toString(),
     unit: productData.unit,
     alertThreshold: productData.alertThreshold.toString(),

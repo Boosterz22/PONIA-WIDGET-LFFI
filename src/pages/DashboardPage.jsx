@@ -17,6 +17,11 @@ export default function DashboardPage({ session }) {
   const [loading, setLoading] = useState(true)
   const [generatingPDF, setGeneratingPDF] = useState(false)
   const [businessName, setBusinessName] = useState('')
+  const [timeSavedStats, setTimeSavedStats] = useState({
+    timeSavedMinutes: 0,
+    moneyValue: 0,
+    stats: { caOptimized: 0, rupturesAvoided: 0, wasteSaved: 0 }
+  })
   const businessType = localStorage.getItem('ponia_business_type') || 'default'
   const userPlan = localStorage.getItem('ponia_user_plan') || 'basique'
   const { trialExpired, loading: trialLoading } = useTrialCheck()
@@ -24,6 +29,7 @@ export default function DashboardPage({ session }) {
   useEffect(() => {
     loadProducts()
     loadUserData()
+    loadTimeSavedStats()
   }, [])
 
   const loadProducts = async () => {
@@ -71,6 +77,26 @@ export default function DashboardPage({ session }) {
     }
   }
 
+  const loadTimeSavedStats = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) return
+
+      const response = await fetch('/api/stats/time-saved', {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`
+        }
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        setTimeSavedStats(data)
+      }
+    } catch (error) {
+      console.error('Erreur chargement stats:', error)
+    }
+  }
+
   const handleGenerateOrder = async () => {
     try {
       setGeneratingPDF(true)
@@ -112,13 +138,9 @@ export default function DashboardPage({ session }) {
         {/* Time Saved Widget */}
         <div style={{ marginBottom: '2rem' }}>
           <TimeSavedWidget 
-            timeSavedMinutes={157}
-            moneyValue={87}
-            stats={{
-              caOptimized: 12,
-              rupturesAvoided: 0,
-              wasteSaved: 23
-            }}
+            timeSavedMinutes={timeSavedStats.timeSavedMinutes}
+            moneyValue={timeSavedStats.moneyValue}
+            stats={timeSavedStats.stats}
           />
         </div>
 

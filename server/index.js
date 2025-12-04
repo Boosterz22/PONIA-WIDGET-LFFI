@@ -273,7 +273,6 @@ app.post('/api/users/sync', authenticateSupabaseUser, async (req, res) => {
 // Récupérer les données utilisateur complètes (SÉCURISÉ)
 app.get('/api/users/me', authenticateSupabaseUser, async (req, res) => {
   try {
-    // Use VERIFIED user ID from JWT
     const user = await getUserBySupabaseId(req.supabaseUserId)
     
     if (!user) {
@@ -283,6 +282,70 @@ app.get('/api/users/me', authenticateSupabaseUser, async (req, res) => {
     res.json({ user })
   } catch (error) {
     console.error('Erreur get user:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// Statistiques temps économisé (vraies données)
+app.get('/api/stats/time-saved', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
+    const products = await getProductsByUserId(user.id)
+    const stockMovements = await getAllStockHistory(user.id)
+    const sales = await getSalesHistory(user.id, 30)
+    
+    const productCount = products.length
+    const alertsActive = products.filter(p => parseFloat(p.currentQuantity) <= parseFloat(p.alertThreshold)).length
+    const movementsThisWeek = stockMovements.filter(m => {
+      const moveDate = new Date(m.createdAt)
+      const weekAgo = new Date()
+      weekAgo.setDate(weekAgo.getDate() - 7)
+      return moveDate >= weekAgo
+    }).length
+
+    const minutesSavedPerProduct = 5
+    const minutesSavedPerMovement = 2
+    const minutesSavedPerAlert = 15
+
+    const weeklyMinutesSaved = (productCount * minutesSavedPerProduct) + 
+                               (movementsThisWeek * minutesSavedPerMovement) + 
+                               (alertsActive * minutesSavedPerAlert)
+    
+    const hourlyRate = 20
+    const moneyValue = Math.round((weeklyMinutesSaved / 60) * hourlyRate)
+
+    const rupturesAvoided = alertsActive
+    const expiringProducts = products.filter(p => {
+      if (!p.expiryDate) return false
+      const expiry = new Date(p.expiryDate)
+      const inTwoWeeks = new Date()
+      inTwoWeeks.setDate(inTwoWeeks.getDate() + 14)
+      return expiry <= inTwoWeeks && expiry >= new Date()
+    }).length
+    
+    const wasteSaved = expiringProducts * 15
+
+    res.json({
+      timeSavedMinutes: weeklyMinutesSaved,
+      moneyValue,
+      stats: {
+        caOptimized: Math.min(15, Math.round(movementsThisWeek / 2)),
+        rupturesAvoided,
+        wasteSaved
+      },
+      details: {
+        productCount,
+        alertsActive,
+        movementsThisWeek,
+        expiringProducts
+      }
+    })
+  } catch (error) {
+    console.error('Erreur stats temps économisé:', error)
     res.status(500).json({ error: 'Erreur serveur' })
   }
 })
@@ -718,6 +781,125 @@ app.patch('/api/chat/conversations/:id', authenticateSupabaseUser, async (req, r
   }
 })
 
+// ============ DOCUMENT ANALYSIS & BARCODE API ============
+
+// Analyser un document (facture, bon de livraison, photo stock) avec IA
+app.post('/api/analyze-document', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
+    const { image, mimeType, businessType } = req.body
+    
+    if (!image) {
+      return res.status(400).json({ error: 'Image requise' })
+    }
+
+    const prompt = `Tu es un expert en gestion de stock pour les commerces alimentaires français (${businessType || 'commerce alimentaire'}).
+
+Analyse cette image (facture, bon de livraison, ou photo de stock) et extrait TOUS les produits visibles.
+
+Pour chaque produit, retourne un objet JSON avec:
+- name: nom du produit (en français, sans marque si possible)
+- currentQuantity: quantité détectée (nombre)
+- unit: unité (kg, L, pièces, bouteilles, sachets, boîtes, cartons)
+- category: catégorie appropriée
+- alertThreshold: seuil d'alerte suggéré (environ 20% de la quantité)
+
+Retourne UNIQUEMENT un tableau JSON valide, sans texte avant ou après.
+Exemple: [{"name":"Farine T55","currentQuantity":25,"unit":"kg","category":"Matières premières","alertThreshold":5}]
+
+Si tu ne détectes aucun produit, retourne un tableau vide: []`
+
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [
+        {
+          role: 'user',
+          content: [
+            { type: 'text', text: prompt },
+            {
+              type: 'image_url',
+              image_url: {
+                url: `data:${mimeType || 'image/jpeg'};base64,${image}`,
+                detail: 'high'
+              }
+            }
+          ]
+        }
+      ],
+      max_tokens: 2000
+    })
+
+    const content = response.choices[0].message.content
+    
+    let products = []
+    try {
+      const jsonMatch = content.match(/\[[\s\S]*\]/)
+      if (jsonMatch) {
+        products = JSON.parse(jsonMatch[0])
+      }
+    } catch (parseError) {
+      console.error('Erreur parsing réponse IA:', parseError)
+    }
+
+    res.json({ products })
+  } catch (error) {
+    console.error('Erreur analyse document:', error)
+    res.status(500).json({ error: 'Erreur serveur', message: error.message })
+  }
+})
+
+// Lookup code-barres (Open Food Facts API)
+app.get('/api/barcode-lookup/:code', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const { code } = req.params
+    
+    if (!code || code.length < 8) {
+      return res.status(400).json({ error: 'Code-barres invalide' })
+    }
+
+    const response = await fetch(`https://world.openfoodfacts.org/api/v2/product/${code}.json`)
+    
+    if (!response.ok) {
+      return res.json({ product: null })
+    }
+
+    const data = await response.json()
+    
+    if (data.status !== 1 || !data.product) {
+      return res.json({ product: null })
+    }
+
+    const product = data.product
+    const name = product.product_name_fr || product.product_name || null
+    const category = product.categories_tags?.[0]?.replace('en:', '').replace('fr:', '') || null
+    
+    let unit = 'pièces'
+    if (product.quantity) {
+      const qty = product.quantity.toLowerCase()
+      if (qty.includes('kg') || qty.includes('kilo')) unit = 'kg'
+      else if (qty.includes('g') && !qty.includes('kg')) unit = 'g'
+      else if (qty.includes('l') || qty.includes('litre')) unit = 'L'
+      else if (qty.includes('cl') || qty.includes('ml')) unit = 'cl'
+    }
+
+    res.json({
+      product: name ? {
+        name,
+        category,
+        unit,
+        barcode: code
+      } : null
+    })
+  } catch (error) {
+    console.error('Erreur lookup code-barres:', error)
+    res.json({ product: null })
+  }
+})
+
 // Endpoint génération bon de commande intelligent (SÉCURISÉ) - PDF
 app.post('/api/generate-order', authenticateSupabaseUser, enforceTrialStatus, async (req, res) => {
   try {
@@ -918,7 +1100,6 @@ app.get('/api/products', authenticateSupabaseUser, enforceTrialStatus, async (re
 
 app.post('/api/products', authenticateSupabaseUser, enforceTrialStatus, async (req, res) => {
   try {
-    // Use VERIFIED user ID from JWT
     const user = await getUserBySupabaseId(req.supabaseUserId)
     if (!user) {
       return res.status(404).json({ error: 'Utilisateur non trouvé' })
@@ -926,6 +1107,9 @@ app.post('/api/products', authenticateSupabaseUser, enforceTrialStatus, async (r
     
     const productData = {
       name: req.body.name,
+      category: req.body.category || null,
+      subcategory: req.body.subcategory || null,
+      barcode: req.body.barcode || null,
       currentQuantity: req.body.currentQuantity,
       unit: req.body.unit,
       alertThreshold: req.body.alertThreshold,
