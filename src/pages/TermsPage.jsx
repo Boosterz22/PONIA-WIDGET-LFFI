@@ -55,19 +55,19 @@ export default function TermsPage() {
                 PONIA SAS
               </p>
               <p style={{ margin: '0.25rem 0', color: '#444' }}>
-                Société par Actions Simplifiée au capital de [À compléter] €
+                Société par Actions Simplifiée
               </p>
               <p style={{ margin: '0.25rem 0', color: '#444' }}>
-                SIRET : [À compléter avant lancement]
+                SIRET : 99445226600012
               </p>
               <p style={{ margin: '0.25rem 0', color: '#444' }}>
-                Siège social : [Adresse à compléter]
+                Siège social : Paris, France
               </p>
               <p style={{ margin: '0.25rem 0', color: '#444' }}>
                 Email : support@myponia.fr
               </p>
               <p style={{ margin: '0.25rem 0', color: '#444' }}>
-                Directeur de la publication : [Nom du dirigeant]
+                Directeur de la publication : Enock Ligue
               </p>
               <p style={{ margin: '0.25rem 0', color: '#444' }}>
                 Hébergement : Supabase Inc. (serveurs européens conformes RGPD)

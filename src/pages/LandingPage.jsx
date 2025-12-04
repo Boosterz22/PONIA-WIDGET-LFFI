@@ -983,7 +983,7 @@ export default function LandingPage() {
           {/* RÉSEAUX SOCIAUX */}
           <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', marginBottom: '2rem' }}>
             <a 
-              href="https://x.com/ponia_ai" 
+              href="https://x.com/ponia_hq" 
               target="_blank" 
               rel="noopener noreferrer"
               style={{ 
@@ -1007,7 +1007,7 @@ export default function LandingPage() {
               </svg>
             </a>
             <a 
-              href="https://linkedin.com/company/ponia" 
+              href="https://www.linkedin.com/in/enock-ligue-238230396" 
               target="_blank" 
               rel="noopener noreferrer"
               style={{ 
