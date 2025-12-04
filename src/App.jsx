@@ -23,6 +23,8 @@ import AdminLoginPage from './pages/AdminLoginPage'
 import PrivacyPage from './pages/PrivacyPage'
 import TermsPage from './pages/TermsPage'
 import PricingPage from './pages/PricingPage'
+import MentionsLegalesPage from './pages/MentionsLegalesPage'
+import ConfidentialitePage from './pages/ConfidentialitePage'
 import IntegrationsPage from './pages/IntegrationsPage'
 import ProductMappingPage from './pages/ProductMappingPage'
 import { supabase } from './services/supabase'
@@ -120,6 +122,8 @@ function App() {
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/pricing" element={<PricingPage />} />
+        <Route path="/mentions-legales" element={<MentionsLegalesPage />} />
+        <Route path="/confidentialite" element={<ConfidentialitePage />} />
         <Route 
           path="/login" 
           element={session ? (needsProfile ? <Navigate to="/complete-profile" /> : <Navigate to="/chat" />) : <LoginPage />} 
