@@ -13,7 +13,10 @@ export class ZettleAdapter extends BasePosAdapter {
     this.displayName = 'Zettle (PayPal)'
     this.clientId = process.env.ZETTLE_CLIENT_ID
     this.clientSecret = process.env.ZETTLE_CLIENT_SECRET
-    this.redirectUri = process.env.ZETTLE_REDIRECT_URI || `${process.env.REPLIT_DEV_DOMAIN || 'https://myponia.fr'}/api/pos/callback/zettle`
+    const domain = process.env.REPLIT_DEV_DOMAIN 
+      ? `https://${process.env.REPLIT_DEV_DOMAIN}` 
+      : 'https://myponia.fr'
+    this.redirectUri = process.env.ZETTLE_REDIRECT_URI || `${domain}/api/pos/callback/zettle`
   }
 
   getAuthorizationUrl(state) {

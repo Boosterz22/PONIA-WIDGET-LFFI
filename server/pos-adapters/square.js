@@ -11,7 +11,10 @@ export class SquareAdapter extends BasePosAdapter {
     this.displayName = 'Square'
     this.clientId = process.env.SQUARE_CLIENT_ID
     this.clientSecret = process.env.SQUARE_CLIENT_SECRET
-    this.redirectUri = process.env.SQUARE_REDIRECT_URI || `${process.env.REPLIT_DEV_DOMAIN || 'https://myponia.fr'}/api/pos/callback/square`
+    const domain = process.env.REPLIT_DEV_DOMAIN 
+      ? `https://${process.env.REPLIT_DEV_DOMAIN}` 
+      : 'https://myponia.fr'
+    this.redirectUri = process.env.SQUARE_REDIRECT_URI || `${domain}/api/pos/callback/square`
   }
 
   getAuthorizationUrl(state) {

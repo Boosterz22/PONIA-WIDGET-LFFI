@@ -13,7 +13,10 @@ export class SumupAdapter extends BasePosAdapter {
     this.displayName = 'SumUp / Tiller'
     this.clientId = process.env.SUMUP_CLIENT_ID
     this.clientSecret = process.env.SUMUP_CLIENT_SECRET
-    this.redirectUri = process.env.SUMUP_REDIRECT_URI || `${process.env.REPLIT_DEV_DOMAIN || 'https://myponia.fr'}/api/pos/callback/sumup`
+    const domain = process.env.REPLIT_DEV_DOMAIN 
+      ? `https://${process.env.REPLIT_DEV_DOMAIN}` 
+      : 'https://myponia.fr'
+    this.redirectUri = process.env.SUMUP_REDIRECT_URI || `${domain}/api/pos/callback/sumup`
   }
 
   getAuthorizationUrl(state) {

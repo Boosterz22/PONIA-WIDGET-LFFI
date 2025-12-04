@@ -11,7 +11,10 @@ export class LightspeedKAdapter extends BasePosAdapter {
     this.displayName = 'Lightspeed K-Series (Restaurant)'
     this.clientId = process.env.LIGHTSPEED_K_CLIENT_ID
     this.clientSecret = process.env.LIGHTSPEED_K_CLIENT_SECRET
-    this.redirectUri = process.env.LIGHTSPEED_K_REDIRECT_URI || `${process.env.REPLIT_DEV_DOMAIN || 'https://myponia.fr'}/api/pos/callback/lightspeed-k`
+    const domain = process.env.REPLIT_DEV_DOMAIN 
+      ? `https://${process.env.REPLIT_DEV_DOMAIN}` 
+      : 'https://myponia.fr'
+    this.redirectUri = process.env.LIGHTSPEED_K_REDIRECT_URI || `${domain}/api/pos/callback/lightspeed-k`
   }
 
   getAuthorizationUrl(state) {

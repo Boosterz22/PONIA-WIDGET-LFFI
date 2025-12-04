@@ -11,7 +11,10 @@ export class LightspeedXAdapter extends BasePosAdapter {
     this.displayName = 'Lightspeed X-Series (Retail)'
     this.clientId = process.env.LIGHTSPEED_X_CLIENT_ID
     this.clientSecret = process.env.LIGHTSPEED_X_CLIENT_SECRET
-    this.redirectUri = process.env.LIGHTSPEED_X_REDIRECT_URI || `${process.env.REPLIT_DEV_DOMAIN || 'https://myponia.fr'}/api/pos/callback/lightspeed-x`
+    const domain = process.env.REPLIT_DEV_DOMAIN 
+      ? `https://${process.env.REPLIT_DEV_DOMAIN}` 
+      : 'https://myponia.fr'
+    this.redirectUri = process.env.LIGHTSPEED_X_REDIRECT_URI || `${domain}/api/pos/callback/lightspeed-x`
   }
 
   getAuthorizationUrl(state) {
