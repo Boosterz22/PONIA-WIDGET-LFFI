@@ -9,18 +9,18 @@ const POS_PROVIDERS = [
   { 
     id: 'square', 
     name: 'Square', 
-    logo: '🟦', 
-    country: '🌍', 
+    logo: '/assets/pos-logos/square.png', 
+    country: 'International', 
     popular: true, 
     category: 'all',
-    description: 'Caisse tout-en-un très populaire',
+    description: 'Caisse tout-en-un tres populaire',
     authType: 'oauth'
   },
   { 
     id: 'zettle', 
     name: 'Zettle (PayPal)', 
-    logo: '💰', 
-    country: '🌍', 
+    logo: '/assets/pos-logos/zettle.png', 
+    country: 'International', 
     popular: true, 
     category: 'all',
     description: 'Solution PayPal pour commerces',
@@ -29,18 +29,18 @@ const POS_PROVIDERS = [
   { 
     id: 'hiboutik', 
     name: 'Hiboutik', 
-    logo: '🛒', 
-    country: '🇫🇷', 
+    logo: '/assets/pos-logos/hiboutik.png', 
+    country: 'France', 
     popular: true, 
     category: 'retail',
-    description: 'Caisse française pour commerce de détail',
+    description: 'Caisse francaise pour commerce de detail',
     authType: 'apikey'
   },
   { 
     id: 'sumup', 
     name: 'SumUp / Tiller', 
-    logo: '📱', 
-    country: '🇫🇷🇪🇺', 
+    logo: null, 
+    country: 'France / Europe', 
     popular: true, 
     category: 'restaurant',
     description: 'Leader restauration en France',
@@ -49,8 +49,8 @@ const POS_PROVIDERS = [
   { 
     id: 'lightspeed-x', 
     name: 'Lightspeed X-Series', 
-    logo: '⚡', 
-    country: '🌍', 
+    logo: null, 
+    country: 'International', 
     popular: false, 
     category: 'retail',
     description: 'Solution retail internationale',
@@ -59,8 +59,8 @@ const POS_PROVIDERS = [
   { 
     id: 'lightspeed-k', 
     name: 'Lightspeed K-Series', 
-    logo: '🍽️', 
-    country: '🌍', 
+    logo: null, 
+    country: 'International', 
     popular: false, 
     category: 'restaurant',
     description: 'Solution restaurant internationale',
@@ -109,7 +109,13 @@ export default function IntegrationsPage({ session }) {
     
     try {
       const { data: { session: currentSession } } = await supabase.auth.getSession()
-      if (!currentSession) return
+      if (!currentSession) {
+        setError('Session expiree. Veuillez vous reconnecter.')
+        setConnecting(null)
+        return
+      }
+
+      console.log('Connecting to:', provider.id)
 
       const response = await fetch('/api/integrations/connect', {
         method: 'POST',
@@ -123,17 +129,44 @@ export default function IntegrationsPage({ session }) {
         })
       })
 
-      const data = await response.json()
-
-      if (response.ok && data.authUrl) {
-        window.open(data.authUrl, '_blank', 'width=600,height=700')
-      } else if (response.ok && data.connection) {
-        await loadConnections()
-      } else {
-        setError(data.error || 'Erreur de connexion')
+      let data
+      try {
+        data = await response.json()
+      } catch (parseError) {
+        console.error('Failed to parse response:', parseError)
+        const text = await response.text().catch(() => '')
+        setError(`Erreur serveur: ${response.status} ${response.statusText}`)
+        setConnecting(null)
+        return
       }
+      
+      console.log('Connection response:', data)
+
+      if (!response.ok) {
+        setError(data.error || data.message || `Erreur: ${response.status}`)
+        return
+      }
+
+      if (data.authUrl) {
+        window.location.href = data.authUrl
+        return
+      } 
+      
+      if (data.demoMode || data.connection) {
+        await loadConnections()
+        setError(null)
+        return
+      }
+      
+      if (data.requiresCredentials) {
+        setError('Cette caisse necessite des identifiants API. Rendez-vous dans les parametres.')
+        return
+      }
+      
+      setError('Reponse inattendue du serveur')
     } catch (err) {
-      setError('Erreur de connexion à la caisse')
+      console.error('Connection error:', err)
+      setError('Erreur de connexion a la caisse')
     } finally {
       setConnecting(null)
     }
@@ -320,7 +353,33 @@ export default function IntegrationsPage({ session }) {
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                        <span style={{ fontSize: '2rem' }}>{provider?.logo || '📦'}</span>
+                        {provider?.logo ? (
+                          <img 
+                            src={provider.logo} 
+                            alt={provider.name}
+                            style={{ 
+                              width: '40px', 
+                              height: '40px', 
+                              objectFit: 'contain',
+                              borderRadius: '8px'
+                            }} 
+                          />
+                        ) : (
+                          <div style={{
+                            width: '40px',
+                            height: '40px',
+                            background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+                            borderRadius: '8px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'white',
+                            fontWeight: 'bold',
+                            fontSize: '1rem'
+                          }}>
+                            {connection.providerName?.charAt(0) || 'P'}
+                          </div>
+                        )}
                         <div>
                           <div style={{ fontWeight: '600', color: '#111827' }}>{connection.providerName}</div>
                           <div style={{ 
@@ -330,7 +389,7 @@ export default function IntegrationsPage({ session }) {
                             alignItems: 'center',
                             gap: '0.25rem'
                           }}>
-                            <Check size={12} /> Connecté
+                            <Check size={12} /> Connecte
                           </div>
                         </div>
                       </div>
@@ -491,12 +550,38 @@ export default function IntegrationsPage({ session }) {
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <span style={{ fontSize: '2rem' }}>{provider.logo}</span>
+                    {provider.logo ? (
+                      <img 
+                        src={provider.logo} 
+                        alt={provider.name}
+                        style={{ 
+                          width: '40px', 
+                          height: '40px', 
+                          objectFit: 'contain',
+                          borderRadius: '8px'
+                        }} 
+                      />
+                    ) : (
+                      <div style={{
+                        width: '40px',
+                        height: '40px',
+                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        borderRadius: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'white',
+                        fontWeight: 'bold',
+                        fontSize: '1rem'
+                      }}>
+                        {provider.name.charAt(0)}
+                      </div>
+                    )}
                     <div>
                       <div style={{ fontWeight: '600', color: '#111827' }}>{provider.name}</div>
                       <div style={{ fontSize: '0.75rem', color: '#6B7280' }}>
                         {provider.country}
-                        {provider.popular && <span style={{ marginLeft: '0.5rem', color: '#F59E0B' }}>⭐ Populaire</span>}
+                        {provider.popular && <span style={{ marginLeft: '0.5rem', color: '#F59E0B' }}>Populaire</span>}
                       </div>
                     </div>
                   </div>
