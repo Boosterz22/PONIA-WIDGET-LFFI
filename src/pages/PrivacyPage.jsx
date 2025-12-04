@@ -79,7 +79,10 @@ export default function PrivacyPage() {
           <Section title="1. Responsable du traitement">
             <div style={{ padding: '1.5rem', background: 'rgba(255, 215, 0, 0.1)', borderRadius: '12px', marginBottom: '1rem', border: '1px solid rgba(255, 215, 0, 0.2)' }}>
               <p style={{ margin: '0 0 0.5rem 0', fontWeight: '600', color: '#FFD700' }}>
-                PONIA SAS
+                PONIA
+              </p>
+              <p style={{ margin: '0.25rem 0', color: 'rgba(255, 255, 255, 0.8)' }}>
+                Enock Ligue - Auto-entrepreneur
               </p>
               <p style={{ margin: '0.25rem 0', color: 'rgba(255, 255, 255, 0.8)' }}>
                 SIRET : 99445226600012
@@ -216,10 +219,10 @@ export default function PrivacyPage() {
           <Section title="11. Contact">
             <div style={{ padding: '1.5rem', background: 'rgba(255, 215, 0, 0.1)', borderRadius: '12px', marginTop: '1rem', border: '1px solid rgba(255, 215, 0, 0.2)' }}>
               <p style={{ margin: '0 0 0.5rem 0', fontWeight: '600', color: '#FFD700' }}>
-                PONIA SAS
+                PONIA
               </p>
               <p style={{ margin: '0.25rem 0', color: 'rgba(255, 255, 255, 0.8)' }}>
-                Représentant légal : Enock Ligue
+                Enock Ligue - Auto-entrepreneur
               </p>
               <p style={{ margin: '0.25rem 0', color: 'rgba(255, 255, 255, 0.8)' }}>
                 Email : <a href="mailto:support@myponia.fr" style={{ color: '#FFD700', fontWeight: '600', textDecoration: 'none' }}>support@myponia.fr</a>
@@ -247,7 +250,7 @@ export default function PrivacyPage() {
             </a>
           </div>
           <p style={{ fontSize: '0.85rem', opacity: 0.9 }}>
-            © {new Date().getFullYear()} PONIA SAS - Tous droits réservés
+            © {new Date().getFullYear()} PONIA - Tous droits réservés
           </p>
         </footer>
       </div>

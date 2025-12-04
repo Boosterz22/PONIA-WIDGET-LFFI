@@ -1138,7 +1138,7 @@ export default function LandingPage() {
               </a>
             </div>
             <p style={{ margin: '0 0 0.5rem', fontWeight: '500' }}>
-              © Copyright 2025 - Ponia SAS
+              © Copyright 2025 - PONIA
             </p>
             <p style={{ margin: 0, fontSize: '0.8rem' }}>
               Données hébergées en France • Conforme RGPD

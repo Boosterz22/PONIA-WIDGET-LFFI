@@ -79,10 +79,10 @@ export default function TermsPage() {
           <Section title="1. Identification de l'éditeur">
             <div style={{ padding: '1.5rem', background: 'rgba(255, 215, 0, 0.1)', borderRadius: '12px', marginBottom: '1rem', border: '1px solid rgba(255, 215, 0, 0.2)' }}>
               <p style={{ margin: '0 0 0.5rem 0', fontWeight: '600', color: '#FFD700' }}>
-                PONIA SAS
+                PONIA
               </p>
               <p style={{ margin: '0.25rem 0', color: 'rgba(255, 255, 255, 0.8)' }}>
-                Société par Actions Simplifiée
+                Enock Ligue - Auto-entrepreneur
               </p>
               <p style={{ margin: '0.25rem 0', color: 'rgba(255, 255, 255, 0.8)' }}>
                 SIRET : 99445226600012
@@ -294,7 +294,7 @@ export default function TermsPage() {
             </a>
           </div>
           <p style={{ fontSize: '0.85rem', opacity: 0.9 }}>
-            © {new Date().getFullYear()} PONIA SAS - Tous droits réservés
+            © {new Date().getFullYear()} PONIA - Tous droits réservés
           </p>
         </footer>
       </div>
