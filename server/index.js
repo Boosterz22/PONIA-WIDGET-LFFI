@@ -23,8 +23,15 @@ import {
   getSalesHistory,
   getSalesByPeriod,
   getSalesForProduct,
+  createConversation,
+  getConversations,
+  getConversationById,
+  updateConversation,
+  deleteConversation,
   createChatMessage,
   getChatMessages,
+  getMessagesByConversation,
+  deleteMessagesByConversation,
   createPosConnection,
   getPosConnectionsByUser,
   getPosConnectionById,
@@ -555,6 +562,158 @@ app.delete('/api/chat/messages/clear', authenticateSupabaseUser, async (req, res
     res.json({ success: true })
   } catch (error) {
     console.error('Erreur suppression messages:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// ============ CONVERSATIONS API ============
+
+// Créer une nouvelle conversation
+app.post('/api/chat/conversations', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
+    const { title } = req.body
+    const conversation = await createConversation(user.id, title || 'Nouvelle conversation')
+    
+    res.json({ conversation })
+  } catch (error) {
+    console.error('Erreur création conversation:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// Lister toutes les conversations
+app.get('/api/chat/conversations', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
+    const conversations = await getConversations(user.id)
+    res.json({ conversations })
+  } catch (error) {
+    console.error('Erreur récupération conversations:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// Récupérer les messages d'une conversation spécifique
+app.get('/api/chat/conversations/:id/messages', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
+    const conversationId = parseInt(req.params.id)
+    const conversation = await getConversationById(conversationId)
+    
+    if (!conversation || conversation.userId !== user.id) {
+      return res.status(404).json({ error: 'Conversation non trouvée' })
+    }
+
+    const messages = await getMessagesByConversation(conversationId)
+    res.json({ messages, conversation })
+  } catch (error) {
+    console.error('Erreur récupération messages conversation:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// Ajouter un message à une conversation
+app.post('/api/chat/conversations/:id/messages', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
+    const conversationId = parseInt(req.params.id)
+    const conversation = await getConversationById(conversationId)
+    
+    if (!conversation || conversation.userId !== user.id) {
+      return res.status(404).json({ error: 'Conversation non trouvée' })
+    }
+
+    const { role, content } = req.body
+    if (!role || !content) {
+      return res.status(400).json({ error: 'Role et content requis' })
+    }
+
+    const message = await createChatMessage({
+      userId: user.id,
+      conversationId,
+      role,
+      content
+    })
+
+    // Mettre à jour le titre de la conversation si c'est le premier message utilisateur
+    if (role === 'user' && conversation.title === 'Nouvelle conversation') {
+      const newTitle = content.length > 50 ? content.substring(0, 50) + '...' : content
+      await updateConversation(conversationId, { title: newTitle })
+    } else {
+      await updateConversation(conversationId, {})
+    }
+
+    res.json({ message })
+  } catch (error) {
+    console.error('Erreur ajout message:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// Supprimer une conversation
+app.delete('/api/chat/conversations/:id', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
+    const conversationId = parseInt(req.params.id)
+    const conversation = await getConversationById(conversationId)
+    
+    if (!conversation || conversation.userId !== user.id) {
+      return res.status(404).json({ error: 'Conversation non trouvée' })
+    }
+
+    await deleteConversation(conversationId)
+    res.json({ success: true })
+  } catch (error) {
+    console.error('Erreur suppression conversation:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// Renommer une conversation
+app.patch('/api/chat/conversations/:id', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+
+    const conversationId = parseInt(req.params.id)
+    const conversation = await getConversationById(conversationId)
+    
+    if (!conversation || conversation.userId !== user.id) {
+      return res.status(404).json({ error: 'Conversation non trouvée' })
+    }
+
+    const { title } = req.body
+    if (!title) {
+      return res.status(400).json({ error: 'Titre requis' })
+    }
+
+    const updated = await updateConversation(conversationId, { title })
+    res.json({ conversation: updated })
+  } catch (error) {
+    console.error('Erreur renommage conversation:', error)
     res.status(500).json({ error: 'Erreur serveur' })
   }
 })

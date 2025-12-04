@@ -80,9 +80,18 @@ export const notifications = pgTable('notifications', {
   createdAt: timestamp('created_at').notNull().defaultNow()
 })
 
+export const chatConversations = pgTable('chat_conversations', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  title: varchar('title', { length: 255 }).default('Nouvelle conversation'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+})
+
 export const chatMessages = pgTable('chat_messages', {
   id: serial('id').primaryKey(),
   userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  conversationId: integer('conversation_id').references(() => chatConversations.id, { onDelete: 'cascade' }),
   role: varchar('role', { length: 20 }).notNull(),
   content: text('content').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow()

@@ -1,5 +1,5 @@
 import { db } from './db.js'
-import { users, products, stockHistory, salesHistory, notifications, stores, chatMessages, posConnections, posProductMappings, posSales, posSyncLogs } from '../shared/schema.js'
+import { users, products, stockHistory, salesHistory, notifications, stores, chatMessages, chatConversations, posConnections, posProductMappings, posSales, posSyncLogs } from '../shared/schema.js'
 import { eq, and, desc, gte, sql } from 'drizzle-orm'
 
 export async function getUserByEmail(email) {
@@ -243,9 +243,47 @@ export async function getSalesForProduct(productId, daysBack = 30) {
     .orderBy(desc(salesHistory.saleDate))
 }
 
+export async function createConversation(userId, title = 'Nouvelle conversation') {
+  const result = await db.insert(chatConversations).values({
+    userId,
+    title
+  }).returning()
+  return result[0]
+}
+
+export async function getConversations(userId, limit = 50) {
+  return await db.select()
+    .from(chatConversations)
+    .where(eq(chatConversations.userId, userId))
+    .orderBy(desc(chatConversations.updatedAt))
+    .limit(limit)
+}
+
+export async function getConversationById(conversationId) {
+  const result = await db.select()
+    .from(chatConversations)
+    .where(eq(chatConversations.id, conversationId))
+    .limit(1)
+  return result[0] || null
+}
+
+export async function updateConversation(conversationId, updates) {
+  const result = await db.update(chatConversations)
+    .set({ ...updates, updatedAt: new Date() })
+    .where(eq(chatConversations.id, conversationId))
+    .returning()
+  return result[0]
+}
+
+export async function deleteConversation(conversationId) {
+  await db.delete(chatMessages).where(eq(chatMessages.conversationId, conversationId))
+  await db.delete(chatConversations).where(eq(chatConversations.id, conversationId))
+}
+
 export async function createChatMessage(messageData) {
   const result = await db.insert(chatMessages).values({
     userId: messageData.userId,
+    conversationId: messageData.conversationId || null,
     role: messageData.role,
     content: messageData.content
   }).returning()
@@ -258,6 +296,18 @@ export async function getChatMessages(userId, limit = 100) {
     .where(eq(chatMessages.userId, userId))
     .orderBy(desc(chatMessages.createdAt))
     .limit(limit)
+}
+
+export async function getMessagesByConversation(conversationId, limit = 100) {
+  return await db.select()
+    .from(chatMessages)
+    .where(eq(chatMessages.conversationId, conversationId))
+    .orderBy(chatMessages.createdAt)
+    .limit(limit)
+}
+
+export async function deleteMessagesByConversation(conversationId) {
+  await db.delete(chatMessages).where(eq(chatMessages.conversationId, conversationId))
 }
 
 export async function createPosConnection(connectionData) {

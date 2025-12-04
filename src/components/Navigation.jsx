@@ -32,8 +32,7 @@ export default function Navigation() {
     { path: '/stock', icon: Package, label: 'Stocks' },
     { path: '/insights', icon: Brain, label: 'Insights IA' },
     { path: '/analytics', icon: Activity, label: 'Analytics' },
-    { path: '/history', icon: History, label: 'Historique' },
-    { path: '/settings', icon: Settings, label: 'Paramètres' }
+    { path: '/history', icon: History, label: 'Historique' }
   ]
 
   const isActive = (path) => location.pathname === path
@@ -212,58 +211,6 @@ export default function Navigation() {
                 <button
                   onClick={() => {
                     setShowUserMenu(false)
-                    navigate('/referral')
-                  }}
-                  style={{
-                    width: '100%',
-                    textAlign: 'left',
-                    padding: '0.75rem 1rem',
-                    background: 'transparent',
-                    border: 'none',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.75rem',
-                    fontSize: '0.875rem',
-                    color: '#374151',
-                    transition: 'background 0.15s'
-                  }}
-                  onMouseEnter={(e) => e.target.style.background = '#F3F4F6'}
-                  onMouseLeave={(e) => e.target.style.background = 'transparent'}
-                >
-                  <Gift size={16} />
-                  <span>Parrainage</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    setShowUserMenu(false)
-                    navigate('/settings')
-                  }}
-                  style={{
-                    width: '100%',
-                    textAlign: 'left',
-                    padding: '0.75rem 1rem',
-                    background: 'transparent',
-                    border: 'none',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.75rem',
-                    fontSize: '0.875rem',
-                    color: '#374151',
-                    transition: 'background 0.15s'
-                  }}
-                  onMouseEnter={(e) => e.target.style.background = '#F3F4F6'}
-                  onMouseLeave={(e) => e.target.style.background = 'transparent'}
-                >
-                  <Settings size={16} />
-                  <span>Paramètres</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    setShowUserMenu(false)
                     navigate('/integrations')
                   }}
                   style={{
@@ -290,6 +237,32 @@ export default function Navigation() {
                 <button
                   onClick={() => {
                     setShowUserMenu(false)
+                    navigate('/referral')
+                  }}
+                  style={{
+                    width: '100%',
+                    textAlign: 'left',
+                    padding: '0.75rem 1rem',
+                    background: 'transparent',
+                    border: 'none',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    fontSize: '0.875rem',
+                    color: '#374151',
+                    transition: 'background 0.15s'
+                  }}
+                  onMouseEnter={(e) => e.target.style.background = '#F3F4F6'}
+                  onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                >
+                  <Gift size={16} />
+                  <span>Parrainage</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setShowUserMenu(false)
                     window.location.href = 'mailto:support@myponia.fr'
                   }}
                   style={{
@@ -311,6 +284,32 @@ export default function Navigation() {
                 >
                   <Mail size={16} />
                   <span>Contact</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setShowUserMenu(false)
+                    navigate('/settings')
+                  }}
+                  style={{
+                    width: '100%',
+                    textAlign: 'left',
+                    padding: '0.75rem 1rem',
+                    background: 'transparent',
+                    border: 'none',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    fontSize: '0.875rem',
+                    color: '#374151',
+                    transition: 'background 0.15s'
+                  }}
+                  onMouseEnter={(e) => e.target.style.background = '#F3F4F6'}
+                  onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                >
+                  <Settings size={16} />
+                  <span>Paramètres</span>
                 </button>
 
                 <div style={{ height: '1px', background: '#E5E7EB', margin: '0.5rem 0' }} />
