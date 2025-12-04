@@ -8,9 +8,52 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/favicon.png">
   <link rel="shortcut icon" href="/favicon.png">
+  <style>
+    #loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #FFFDF5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    #loading-screen.hidden { display: none; }
+    .loading-logo {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #F59E0B;
+      margin-bottom: 1rem;
+    }
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #FEF3C7;
+      border-top-color: #F59E0B;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
 </head>
 <body>
+  <div id="loading-screen">
+    <div class="loading-logo">PONIA</div>
+    <div class="loading-spinner"></div>
+  </div>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
+  <script>
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        var loader = document.getElementById('loading-screen');
+        if (loader) loader.classList.add('hidden');
+      }, 100);
+    });
+  </script>
 </body>
 </html>
