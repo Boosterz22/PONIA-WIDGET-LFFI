@@ -3,10 +3,13 @@ import { Link } from 'react-router-dom'
 import { TrendingUp, Clock, Shield, Zap, BarChart3, CheckCircle, Star, Users, X, Check, AlertCircle, Sparkles, Target, ArrowRight, Linkedin, Building2 } from 'lucide-react'
 
 function PricingCards() {
+  const [billingPeriod, setBillingPeriod] = useState('monthly')
+  
   const plans = [
     {
       name: 'Basique',
       price: 0,
+      priceYearly: 0,
       icon: Zap,
       color: '#6B7280',
       description: 'Pour tester PONIA',
@@ -26,6 +29,8 @@ function PricingCards() {
     {
       name: 'Standard',
       price: 49,
+      priceYearly: 39,
+      savings: 120,
       icon: TrendingUp,
       color: '#FFD700',
       description: 'Pour commerces sérieux',
@@ -44,6 +49,8 @@ function PricingCards() {
     {
       name: 'Pro',
       price: 69,
+      priceYearly: 55,
+      savings: 168,
       icon: Building2,
       color: '#FFD700',
       description: 'Pour réseaux et chaînes',
@@ -63,113 +70,199 @@ function PricingCards() {
   ]
 
   return (
-    <div style={{
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-      gap: '2rem',
-      marginBottom: '2rem'
-    }}>
-      {plans.map((plan, idx) => {
-        const Icon = plan.icon
-        return (
-          <div key={idx} style={{
-            background: 'white',
-            borderRadius: '16px',
-            padding: '2.5rem',
-            boxShadow: plan.popular ? '0 10px 40px rgba(255, 215, 0, 0.3)' : '0 4px 20px rgba(0,0,0,0.08)',
-            border: plan.popular ? `3px solid ${plan.color}` : '1px solid #e5e7eb',
-            position: 'relative',
-            transform: plan.popular ? 'scale(1.05)' : 'scale(1)',
-            transition: 'transform 0.3s'
-          }}>
-            {plan.popular && (
-              <div style={{
-                position: 'absolute',
-                top: '-15px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                background: plan.color,
-                color: '#1a1a1a',
-                padding: '0.4rem 1.5rem',
-                borderRadius: '20px',
-                fontSize: '0.85rem',
-                fontWeight: '700',
-                boxShadow: '0 4px 12px rgba(255, 215, 0, 0.4)'
-              }}>
-                ⭐ RECOMMANDÉ
-              </div>
-            )}
+    <>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        marginBottom: '2.5rem'
+      }}>
+        <div style={{
+          display: 'flex',
+          background: 'rgba(255, 255, 255, 0.1)',
+          borderRadius: '50px',
+          padding: '5px',
+          border: '1px solid rgba(255, 215, 0, 0.3)'
+        }}>
+          <button
+            onClick={() => setBillingPeriod('monthly')}
+            style={{
+              padding: '0.75rem 1.5rem',
+              borderRadius: '50px',
+              border: 'none',
+              fontSize: '0.95rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              background: billingPeriod === 'monthly' ? '#FFD700' : 'transparent',
+              color: billingPeriod === 'monthly' ? '#1a1a1a' : 'rgba(255, 255, 255, 0.7)'
+            }}
+          >
+            Mensuel
+          </button>
+          <button
+            onClick={() => setBillingPeriod('yearly')}
+            style={{
+              padding: '0.75rem 1.5rem',
+              borderRadius: '50px',
+              border: 'none',
+              fontSize: '0.95rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              background: billingPeriod === 'yearly' ? '#FFD700' : 'transparent',
+              color: billingPeriod === 'yearly' ? '#1a1a1a' : 'rgba(255, 255, 255, 0.7)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
+            }}
+          >
+            Annuel
+            <span style={{
+              background: '#22c55e',
+              color: 'white',
+              padding: '2px 8px',
+              borderRadius: '12px',
+              fontSize: '0.75rem',
+              fontWeight: '700'
+            }}>
+              -20%
+            </span>
+          </button>
+        </div>
+      </div>
 
-            <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-              <Icon size={40} color={plan.color} style={{ marginBottom: '1rem' }} />
-              <h3 style={{ fontSize: '1.8rem', fontWeight: '700', color: '#1a1a1a', marginBottom: '0.5rem' }}>
-                {plan.name}
-              </h3>
-              <p style={{ fontSize: '0.95rem', color: '#666', marginBottom: '1.5rem' }}>
-                {plan.description}
-              </p>
-              <div style={{ marginBottom: '1.5rem' }}>
-                {plan.price === 0 ? (
-                  <div style={{ fontSize: '3rem', fontWeight: '700', color: plan.color }}>
-                    Gratuit
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+        gap: '2rem',
+        marginBottom: '2rem'
+      }}>
+        {plans.map((plan, idx) => {
+          const Icon = plan.icon
+          const displayPrice = billingPeriod === 'yearly' ? plan.priceYearly : plan.price
+          return (
+            <div key={idx} style={{
+              background: 'white',
+              borderRadius: '16px',
+              padding: '2.5rem',
+              boxShadow: plan.popular ? '0 10px 40px rgba(255, 215, 0, 0.3)' : '0 4px 20px rgba(0,0,0,0.08)',
+              border: plan.popular ? `3px solid ${plan.color}` : '1px solid #e5e7eb',
+              position: 'relative',
+              transform: plan.popular ? 'scale(1.05)' : 'scale(1)',
+              transition: 'transform 0.3s'
+            }}>
+              {plan.popular && (
+                <div style={{
+                  position: 'absolute',
+                  top: '-15px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  background: plan.color,
+                  color: '#1a1a1a',
+                  padding: '0.4rem 1.5rem',
+                  borderRadius: '20px',
+                  fontSize: '0.85rem',
+                  fontWeight: '700',
+                  boxShadow: '0 4px 12px rgba(255, 215, 0, 0.4)'
+                }}>
+                  ⭐ RECOMMANDÉ
+                </div>
+              )}
+
+              <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                <Icon size={40} color={plan.color} style={{ marginBottom: '1rem' }} />
+                <h3 style={{ fontSize: '1.8rem', fontWeight: '700', color: '#1a1a1a', marginBottom: '0.5rem' }}>
+                  {plan.name}
+                </h3>
+                <p style={{ fontSize: '0.95rem', color: '#666', marginBottom: '1.5rem' }}>
+                  {plan.description}
+                </p>
+                <div style={{ marginBottom: '0.5rem' }}>
+                  {displayPrice === 0 ? (
+                    <div style={{ fontSize: '3rem', fontWeight: '700', color: plan.color }}>
+                      Gratuit
+                    </div>
+                  ) : (
+                    <>
+                      {billingPeriod === 'yearly' && plan.price > 0 && (
+                        <span style={{ 
+                          fontSize: '1.2rem', 
+                          color: '#999', 
+                          textDecoration: 'line-through',
+                          marginRight: '0.5rem'
+                        }}>
+                          {plan.price}€
+                        </span>
+                      )}
+                      <span style={{ fontSize: '3rem', fontWeight: '700', color: plan.color }}>
+                        {displayPrice}€
+                      </span>
+                      <span style={{ fontSize: '1.1rem', color: '#666' }}>/mois</span>
+                    </>
+                  )}
+                </div>
+                {billingPeriod === 'yearly' && plan.savings > 0 && (
+                  <div style={{
+                    background: 'linear-gradient(135deg, #dcfce7, #bbf7d0)',
+                    color: '#166534',
+                    padding: '0.4rem 1rem',
+                    borderRadius: '20px',
+                    fontSize: '0.85rem',
+                    fontWeight: '600',
+                    display: 'inline-block'
+                  }}>
+                    Économisez {plan.savings}€/an
                   </div>
-                ) : (
-                  <>
-                    <span style={{ fontSize: '3rem', fontWeight: '700', color: plan.color }}>
-                      {plan.price}€
-                    </span>
-                    <span style={{ fontSize: '1.1rem', color: '#666' }}>/mois</span>
-                  </>
                 )}
               </div>
+
+              <Link
+                to="/login"
+                style={{
+                  width: '100%',
+                  display: 'block',
+                  textAlign: 'center',
+                  background: plan.popular ? plan.color : 'white',
+                  color: plan.popular ? '#1a1a1a' : plan.color,
+                  border: `2px solid ${plan.color}`,
+                  padding: '1rem',
+                  borderRadius: '10px',
+                  fontSize: '1.05rem',
+                  fontWeight: '700',
+                  textDecoration: 'none',
+                  transition: 'all 0.2s',
+                  marginBottom: '2rem'
+                }}
+              >
+                {plan.cta}
+              </Link>
+
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                {plan.features.map((feature, idx) => (
+                  <li key={idx} style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    marginBottom: '0.9rem',
+                    fontSize: '0.95rem',
+                    color: feature.included ? '#1a1a1a' : '#999'
+                  }}>
+                    {feature.included ? (
+                      <Check size={20} color={plan.color} style={{ flexShrink: 0 }} />
+                    ) : (
+                      <X size={20} color="#cbd5e1" style={{ flexShrink: 0 }} />
+                    )}
+                    <span style={{ textDecoration: feature.included ? 'none' : 'line-through' }}>
+                      {feature.text}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </div>
-
-            <Link
-              to="/login"
-              style={{
-                width: '100%',
-                display: 'block',
-                textAlign: 'center',
-                background: plan.popular ? plan.color : 'white',
-                color: plan.popular ? '#1a1a1a' : plan.color,
-                border: `2px solid ${plan.color}`,
-                padding: '1rem',
-                borderRadius: '10px',
-                fontSize: '1.05rem',
-                fontWeight: '700',
-                textDecoration: 'none',
-                transition: 'all 0.2s',
-                marginBottom: '2rem'
-              }}
-            >
-              {plan.cta}
-            </Link>
-
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-              {plan.features.map((feature, idx) => (
-                <li key={idx} style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.75rem',
-                  marginBottom: '0.9rem',
-                  fontSize: '0.95rem',
-                  color: feature.included ? '#1a1a1a' : '#999'
-                }}>
-                  {feature.included ? (
-                    <Check size={20} color={plan.color} style={{ flexShrink: 0 }} />
-                  ) : (
-                    <X size={20} color="#cbd5e1" style={{ flexShrink: 0 }} />
-                  )}
-                  <span style={{ textDecoration: feature.included ? 'none' : 'line-through' }}>
-                    {feature.text}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )
-      })}
-    </div>
+          )
+        })}
+      </div>
+    </>
   )
 }
 
