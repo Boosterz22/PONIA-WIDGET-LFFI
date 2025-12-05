@@ -23,27 +23,26 @@
       z-index: 9999;
     }
     #loading-screen.hidden { display: none; }
-    .loading-logo {
-      font-size: 2rem;
-      font-weight: bold;
-      color: #F59E0B;
-      margin-bottom: 1rem;
+    .loading-logo-img {
+      width: 80px;
+      height: auto;
+      animation: neonPulse 1s ease-in-out infinite;
     }
-    .loading-spinner {
-      width: 40px;
-      height: 40px;
-      border: 4px solid #FEF3C7;
-      border-top-color: #F59E0B;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
+    @keyframes neonPulse {
+      0%, 100% {
+        opacity: 1;
+        filter: drop-shadow(0 0 8px #FFD700) drop-shadow(0 0 20px #F59E0B) drop-shadow(0 0 30px #FFD700);
+      }
+      50% {
+        opacity: 0.4;
+        filter: drop-shadow(0 0 2px #FFD700) drop-shadow(0 0 4px #F59E0B);
+      }
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
   <div id="loading-screen">
-    <div class="loading-logo">PONIA</div>
-    <div class="loading-spinner"></div>
+    <img src="/ponia-loader.png" alt="PONIA" class="loading-logo-img">
   </div>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
