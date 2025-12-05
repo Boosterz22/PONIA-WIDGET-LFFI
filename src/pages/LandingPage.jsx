@@ -637,6 +637,220 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* IA CONVERSATIONNELLE - SECTION STAR */}
+      <section style={{ 
+        padding: '5rem 0',
+        background: 'linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #0d0d1a 100%)',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        {/* Effet de particules/étoiles en arrière-plan */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.08) 0%, transparent 50%)',
+          pointerEvents: 'none'
+        }} />
+        
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <div style={{ 
+              display: 'inline-flex', 
+              alignItems: 'center', 
+              gap: '0.75rem', 
+              background: 'rgba(255, 215, 0, 0.15)', 
+              padding: '0.5rem 1.25rem', 
+              borderRadius: '50px',
+              marginBottom: '1.5rem',
+              border: '1px solid rgba(255, 215, 0, 0.3)'
+            }}>
+              <Sparkles size={20} color="#FFD700" />
+              <span style={{ color: '#FFD700', fontWeight: '600', fontSize: '0.95rem' }}>EXCLUSIVITÉ PONIA</span>
+            </div>
+            
+            <h2 style={{ 
+              fontSize: 'clamp(2rem, 5vw, 3.5rem)', 
+              color: 'white',
+              marginBottom: '1rem',
+              lineHeight: 1.2
+            }}>
+              Parlez à votre <span style={{ 
+                background: 'linear-gradient(135deg, #FFD700, #FFA500)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}>Assistant IA</span>
+            </h2>
+            <p style={{ 
+              fontSize: '1.3rem', 
+              color: 'rgba(255, 255, 255, 0.7)', 
+              maxWidth: '700px', 
+              margin: '0 auto',
+              lineHeight: 1.6
+            }}>
+              Posez vos questions en français, obtenez des réponses instantanées. 
+              Comme avoir un expert en gestion à vos côtés 24h/24.
+            </p>
+          </div>
+
+          {/* Interface de chat simulée */}
+          <div style={{
+            maxWidth: '800px',
+            margin: '0 auto',
+            background: 'rgba(26, 26, 46, 0.95)',
+            borderRadius: '24px',
+            padding: '2rem',
+            boxShadow: '0 25px 80px rgba(0, 0, 0, 0.5), 0 0 60px rgba(255, 215, 0, 0.1)',
+            border: '1px solid rgba(255, 215, 0, 0.2)'
+          }}>
+            {/* Header du chat */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '1rem',
+              marginBottom: '2rem',
+              paddingBottom: '1.5rem',
+              borderBottom: '1px solid rgba(255, 215, 0, 0.1)'
+            }}>
+              <div style={{
+                width: '50px',
+                height: '50px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #FFD700, #FFA500)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 20px rgba(255, 215, 0, 0.3)'
+              }}>
+                <Sparkles size={24} color="#0a0a1a" />
+              </div>
+              <div>
+                <div style={{ color: 'white', fontWeight: '700', fontSize: '1.1rem' }}>PONIA Assistant</div>
+                <div style={{ color: '#22c55e', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span style={{ width: '8px', height: '8px', background: '#22c55e', borderRadius: '50%', animation: 'pulse 2s infinite' }}></span>
+                  En ligne 24/7
+                </div>
+              </div>
+            </div>
+
+            {/* Questions stratégiques */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <p style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '0.9rem', marginBottom: '0.5rem', textAlign: 'center' }}>
+                Exemples de questions que vous pouvez poser :
+              </p>
+              
+              {[
+                { q: "Quels produits risquent la rupture ce weekend avec l'affluence prévue ?", icon: "🎯" },
+                { q: "Mon beurre expire dans 3 jours, que puis-je préparer pour éviter le gaspillage ?", icon: "💡" },
+                { q: "Génère ma commande fournisseur optimale pour les 7 prochains jours", icon: "📦" },
+                { q: "Analyse mes pertes du mois dernier et dis-moi comment les réduire", icon: "📊" },
+                { q: "Quel est mon produit le plus rentable vs le plus gaspillé ?", icon: "💰" }
+              ].map((item, i) => (
+                <div 
+                  key={i}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '1rem',
+                    padding: '1rem 1.25rem',
+                    background: 'rgba(255, 215, 0, 0.08)',
+                    borderRadius: '12px',
+                    border: '1px solid rgba(255, 215, 0, 0.15)',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 215, 0, 0.15)'
+                    e.currentTarget.style.borderColor = 'rgba(255, 215, 0, 0.4)'
+                    e.currentTarget.style.transform = 'translateX(10px)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 215, 0, 0.08)'
+                    e.currentTarget.style.borderColor = 'rgba(255, 215, 0, 0.15)'
+                    e.currentTarget.style.transform = 'translateX(0)'
+                  }}
+                >
+                  <span style={{ fontSize: '1.5rem' }}>{item.icon}</span>
+                  <span style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '1rem', lineHeight: 1.5 }}>
+                    "{item.q}"
+                  </span>
+                  <ArrowRight size={18} color="#FFD700" style={{ marginLeft: 'auto', opacity: 0.6 }} />
+                </div>
+              ))}
+            </div>
+
+            {/* Barre de saisie simulée */}
+            <div style={{
+              marginTop: '2rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '1rem',
+              padding: '1rem 1.5rem',
+              background: 'rgba(255, 255, 255, 0.05)',
+              borderRadius: '16px',
+              border: '1px solid rgba(255, 215, 0, 0.2)'
+            }}>
+              <span style={{ color: 'rgba(255, 255, 255, 0.4)', flex: 1 }}>Posez votre question à l'IA...</span>
+              <div style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #FFD700, #FFA500)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <ArrowRight size={18} color="#0a0a1a" />
+              </div>
+            </div>
+          </div>
+
+          {/* Stats IA */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: '2rem',
+            marginTop: '4rem',
+            maxWidth: '900px',
+            margin: '4rem auto 0'
+          }}>
+            {[
+              { value: '<2s', label: 'Temps de réponse' },
+              { value: '24/7', label: 'Disponible non-stop' },
+              { value: '100%', label: 'En français naturel' },
+              { value: '∞', label: 'Questions illimitées' }
+            ].map((stat, i) => (
+              <div key={i} style={{ textAlign: 'center' }}>
+                <div style={{ 
+                  fontSize: '2.5rem', 
+                  fontWeight: '800', 
+                  background: 'linear-gradient(135deg, #FFD700, #FFA500)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  marginBottom: '0.5rem'
+                }}>
+                  {stat.value}
+                </div>
+                <div style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '0.95rem' }}>{stat.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <div style={{ textAlign: 'center', marginTop: '3rem' }}>
+            <Link to="/login" className="btn btn-primary" style={{ 
+              fontSize: '1.2rem', 
+              padding: '1.15rem 2.5rem',
+              boxShadow: '0 10px 40px rgba(255, 215, 0, 0.3)'
+            }}>
+              Essayer l'IA Gratuitement
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* FONCTIONNALITÉS */}
       <section id="fonctionnalites" style={{ 
         padding: '5rem 0',
@@ -663,10 +877,10 @@ export default function LandingPage() {
             </div>
 
             <div className="card" style={{ textAlign: 'center', padding: '2.5rem 1.5rem' }}>
-              <TrendingUp size={48} color="#FFD700" style={{ margin: '0 auto 1.5rem' }} />
-              <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>IA Prédictive</h3>
+              <Sparkles size={48} color="#FFD700" style={{ margin: '0 auto 1.5rem' }} />
+              <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>IA Conversationnelle</h3>
               <p style={{ color: 'var(--text-muted)', lineHeight: 1.7 }}>
-                <strong>L'IA vous alerte 3 jours avant</strong> chaque rupture. Elle analyse vos ventes et anticipe vos besoins.
+                <strong>Parlez à votre assistant comme à un expert.</strong> Posez vos questions, obtenez des conseils personnalisés instantanément.
               </p>
             </div>
 
