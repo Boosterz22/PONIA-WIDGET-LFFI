@@ -196,7 +196,7 @@ export default function OnboardingPage() {
         <div style={{
           textAlign: 'center'
         }}>
-          <div className="spinner" style={{ marginBottom: '1rem' }}></div>
+          <img src="/ponia-loader.png" alt="PONIA" className="ponia-loader" style={{ marginBottom: '1rem' }} />
           <p style={{ color: '#6B7280' }}>{t('onboarding.processing')}</p>
         </div>
       )}

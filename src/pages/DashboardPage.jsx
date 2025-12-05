@@ -125,7 +125,7 @@ export default function DashboardPage({ session }) {
   const healthyProducts = products.filter(p => p.currentQuantity > (p.alertThreshold || 10))
 
   if (trialLoading) {
-    return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}><div className="spinner"></div></div>
+    return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#FFFDF5' }}><img src="/ponia-loader.png" alt="PONIA" className="ponia-loader" /></div>
   }
 
   return (

@@ -106,8 +106,8 @@ function App() {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-        <div className="spinner"></div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#FFFDF5' }}>
+        <img src="/ponia-loader.png" alt="PONIA" className="ponia-loader" />
       </div>
     )
   }

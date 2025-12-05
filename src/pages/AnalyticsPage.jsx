@@ -137,10 +137,9 @@ export default function AnalyticsPage() {
 
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', background: '#F9FAFB' }}>
-        <Navigation />
-        <div style={{ padding: '4rem 2rem', textAlign: 'center' }}>
-          <div className="spinner"></div>
+      <div style={{ minHeight: '100vh', background: '#FFFDF5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ textAlign: 'center' }}>
+          <img src="/ponia-loader.png" alt="PONIA" className="ponia-loader" />
           <p style={{ marginTop: '1rem', color: '#6B7280' }}>Chargement des analytics...</p>
         </div>
       </div>

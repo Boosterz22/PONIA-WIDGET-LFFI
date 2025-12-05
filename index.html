@@ -24,18 +24,18 @@
     }
     #loading-screen.hidden { display: none; }
     .loading-logo-img {
-      width: 80px;
+      width: 60px;
       height: auto;
-      animation: neonPulse 1s ease-in-out infinite;
+      animation: neonPulse 1.2s ease-in-out infinite;
     }
     @keyframes neonPulse {
       0%, 100% {
         opacity: 1;
-        filter: drop-shadow(0 0 8px #FFD700) drop-shadow(0 0 20px #F59E0B) drop-shadow(0 0 30px #FFD700);
+        filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.6));
       }
       50% {
-        opacity: 0.4;
-        filter: drop-shadow(0 0 2px #FFD700) drop-shadow(0 0 4px #F59E0B);
+        opacity: 0.5;
+        filter: none;
       }
     }
   </style>
