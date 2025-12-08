@@ -39,6 +39,7 @@ PONIA AI is a secure full-stack application using a client-server architecture w
     *   **Admin Dashboard:** Tools for user management, real-time statistics, CSV export, secured by an admin email whitelist. Includes commercial tracking dashboard for referrer performance.
     *   **Geolocation & Address Autocomplete:** Integration with API Adresse (Base Adresse Nationale - BAN) for address autocomplete and GPS coordinates.
     *   **Optimistic UI Updates:** Stock management interface uses optimistic updates.
+    *   **Global Data Caching (DataContext):** Centralized caching system with localStorage persistence (5-min cache) for instant page transitions. Products, userData, timeSavedStats, and trialExpired are cached globally and refreshed in background. useTrialCheck hook uses cached state to eliminate blocking API calls.
     *   **POS Integration Architecture:** Modular adapter pattern for direct, self-service POS integrations.
 
 ## External Dependencies
