@@ -2,7 +2,7 @@ import express from 'express'
 import OpenAI from 'openai'
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
-import { eq, and } from 'drizzle-orm'
+import { eq, and, gte, sql } from 'drizzle-orm'
 import { db } from './db.js'
 import { users, stores, chatMessages } from '../shared/schema.js'
 import { 
@@ -741,13 +741,47 @@ async function buildStockContext(products, insights = null, includeExternalConte
   return context
 }
 
-// Endpoint chat IA sécurisé
-app.post('/api/chat', authenticateSupabaseUser, enforceTrialStatus, async (req, res) => {
+// Endpoint chat IA sécurisé (basique users allowed with 5 msg/day limit)
+app.post('/api/chat', authenticateSupabaseUser, async (req, res) => {
   try {
     const { userMessage, products, conversationHistory = [], insights = null } = req.body
     
     if (!userMessage) {
       return res.status(400).json({ error: 'Message utilisateur requis' })
+    }
+    
+    // Get user to check plan and enforce message limit for free plan
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+    
+    // Limit for free plan: 5 messages per day
+    if (user.plan === 'basique') {
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      
+      const todayMessages = await db.select({ count: sql`count(*)` })
+        .from(chatMessages)
+        .where(
+          and(
+            eq(chatMessages.userId, user.id),
+            eq(chatMessages.role, 'user'),
+            gte(chatMessages.createdAt, today)
+          )
+        )
+      
+      const messageCount = parseInt(todayMessages[0]?.count || 0)
+      
+      if (messageCount >= 5) {
+        return res.status(403).json({ 
+          error: 'Limite atteinte',
+          message: 'Vous avez atteint la limite de 5 messages IA par jour avec le plan Basique. Passez au plan Standard pour un accès illimité.',
+          upgradeRequired: true,
+          currentCount: messageCount,
+          limit: 5
+        })
+      }
     }
     
     const stockContext = await buildStockContext(products || [], insights, true)

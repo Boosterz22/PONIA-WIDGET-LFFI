@@ -70,6 +70,13 @@ async function getChatResponse(userMessage, products, conversationHistory, insig
       })
     })
 
+    if (response.status === 403) {
+      const errorData = await response.json()
+      if (errorData.upgradeRequired) {
+        return `⚠️ ${errorData.message}\n\n👉 Rendez-vous dans Paramètres → Abonnement pour passer au plan Standard et profiter du chat IA illimité !`
+      }
+    }
+
     if (!response.ok) {
       throw new Error(`Erreur API: ${response.status}`)
     }

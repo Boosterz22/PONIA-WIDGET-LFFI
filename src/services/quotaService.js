@@ -1,21 +1,30 @@
 const QUOTA_LIMITS = {
   basique: {
-    voiceCommands: 5,
+    voiceCommands: 0,
     dailyActions: 20,
     maxProducts: 10,
-    historyDays: 0
+    historyDays: 0,
+    aiMessagesPerDay: 5,
+    posIntegrations: false,
+    support: null
   },
   standard: {
-    voiceCommands: 50,
+    voiceCommands: 0,
     dailyActions: Infinity,
-    maxProducts: 100,
-    historyDays: 30
+    maxProducts: 50,
+    historyDays: 30,
+    aiMessagesPerDay: Infinity,
+    posIntegrations: true,
+    support: 'email'
   },
   pro: {
     voiceCommands: Infinity,
     dailyActions: Infinity,
     maxProducts: Infinity,
-    historyDays: 90
+    historyDays: 90,
+    aiMessagesPerDay: Infinity,
+    posIntegrations: true,
+    support: 'priority'
   }
 }
 
@@ -53,9 +62,28 @@ export function incrementVoiceCommands() {
 
 export function canUseVoiceCommand(userPlan = 'basique') {
   const quotas = getUserQuotas(userPlan)
-  const used = getVoiceCommandsUsed()
   
+  if (quotas.voiceCommands === 0) {
+    return false
+  }
+  
+  const used = getVoiceCommandsUsed()
   return used < quotas.voiceCommands
+}
+
+export function hasVoiceCommandAccess(userPlan = 'basique') {
+  const quotas = getUserQuotas(userPlan)
+  return quotas.voiceCommands > 0
+}
+
+export function hasPosIntegrationAccess(userPlan = 'basique') {
+  const quotas = getUserQuotas(userPlan)
+  return quotas.posIntegrations === true
+}
+
+export function getSupportType(userPlan = 'basique') {
+  const quotas = getUserQuotas(userPlan)
+  return quotas.support
 }
 
 export function getDailyActionsUsed() {

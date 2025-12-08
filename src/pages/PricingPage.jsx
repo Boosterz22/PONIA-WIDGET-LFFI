@@ -17,12 +17,12 @@ export default function PricingPage() {
       features: [
         { text: '10 produits maximum', included: true },
         { text: 'Alertes de stock simples', included: true },
+        { text: 'Chat IA limité (5 msg/jour)', included: true },
         { text: 'Gestion manuelle', included: true },
-        { text: 'Support email standard', included: true },
         { text: 'Prédictions IA', included: false },
-        { text: 'Génération de commandes', included: false },
-        { text: 'Alertes expiration', included: false },
-        { text: 'Multi-magasins', included: false }
+        { text: 'Intégrations caisses', included: false },
+        { text: 'Multi-magasins', included: false },
+        { text: 'Support', included: false }
       ],
       cta: 'Commencer gratuitement',
       popular: false
@@ -37,12 +37,12 @@ export default function PricingPage() {
       description: 'Pour commerces sérieux',
       features: [
         { text: '50 produits maximum', included: true },
+        { text: 'Chat IA illimité', included: true },
         { text: 'Prédictions IA 7 jours', included: true },
         { text: 'Génération commandes auto', included: true },
         { text: 'Alertes expiration produits', included: true },
-        { text: 'Commandes vocales', included: true },
-        { text: 'Chat IA illimité', included: true },
-        { text: 'Support prioritaire', included: true },
+        { text: 'Intégrations caisses (Square, Zettle...)', included: true },
+        { text: 'Support par email', included: true },
         { text: 'Multi-magasins', included: false }
       ],
       cta: 'Essai gratuit 14 jours',
@@ -61,10 +61,10 @@ export default function PricingPage() {
         { text: 'Prédictions IA 30 jours', included: true },
         { text: 'Multi-magasins illimité', included: true },
         { text: 'Génération commandes avancée', included: true },
+        { text: 'Intégrations caisses (Square, Zettle...)', included: true },
+        { text: 'Commandes vocales', included: true },
         { text: 'Analytics avancées', included: true },
-        { text: 'Support prioritaire 24/7', included: true },
-        { text: 'Onboarding personnalisé', included: true },
-        { text: 'Intégrations POS (Square, etc.)', included: true }
+        { text: 'Support prioritaire (poniapro@proton.me)', included: true }
       ],
       cta: 'Essai gratuit 14 jours',
       popular: true
