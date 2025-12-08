@@ -60,6 +60,16 @@ import { sendLowStockAlert, sendExpiryAlert, sendTestEmail, sendWelcomeEmail } f
 import { getAdapter, isDemoMode, getSupportedProviders, isProviderSupported } from './pos-adapters/index.js'
 import { generateOrderPDF } from './pdfService.js'
 import { weatherService } from './weatherService.js'
+import { 
+  generateAllSuggestions, 
+  getUserSuggestions, 
+  getUnreadCount, 
+  markSuggestionViewed, 
+  dismissSuggestion, 
+  actOnSuggestion, 
+  shouldShowPopup,
+  cleanupExpiredSuggestions
+} from './suggestionsEngine.js'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import fs from 'fs'
@@ -1648,6 +1658,138 @@ app.get('/api/weather/forecast', authenticateSupabaseUser, async (req, res) => {
     res.json({ forecast })
   } catch (error) {
     console.error('Erreur récupération prévisions météo:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// ============================================
+// AI SUGGESTIONS API
+// ============================================
+
+app.get('/api/suggestions', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+    
+    const limit = parseInt(req.query.limit) || 20
+    const includeViewed = req.query.includeViewed !== 'false'
+    
+    const suggestions = await getUserSuggestions(user.id, { limit, includeViewed })
+    const unreadInfo = await getUnreadCount(user.id)
+    
+    res.json({ 
+      suggestions,
+      unreadCount: unreadInfo.count,
+      hasCritical: unreadInfo.hasCritical
+    })
+  } catch (error) {
+    console.error('Erreur récupération suggestions:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+app.get('/api/suggestions/popup-status', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+    
+    const popupStatus = await shouldShowPopup(user.id)
+    
+    res.json(popupStatus)
+  } catch (error) {
+    console.error('Erreur vérification popup:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+app.post('/api/suggestions/generate', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+    
+    const result = await generateAllSuggestions(user.id)
+    
+    res.json({ 
+      success: true,
+      generated: result.generated,
+      message: `${result.generated} nouvelle(s) suggestion(s) générée(s)`
+    })
+  } catch (error) {
+    console.error('Erreur génération suggestions:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+app.post('/api/suggestions/:id/view', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+    
+    const suggestionId = parseInt(req.params.id)
+    await markSuggestionViewed(suggestionId, user.id)
+    
+    res.json({ success: true })
+  } catch (error) {
+    console.error('Erreur marquage suggestion vue:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+app.post('/api/suggestions/:id/dismiss', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+    
+    const suggestionId = parseInt(req.params.id)
+    await dismissSuggestion(suggestionId, user.id)
+    
+    res.json({ success: true })
+  } catch (error) {
+    console.error('Erreur dismiss suggestion:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+app.post('/api/suggestions/:id/act', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+    
+    const suggestionId = parseInt(req.params.id)
+    const { action } = req.body
+    await actOnSuggestion(suggestionId, user.id, action || 'clicked')
+    
+    res.json({ success: true })
+  } catch (error) {
+    console.error('Erreur action suggestion:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+app.get('/api/suggestions/unread-count', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+    
+    const unreadInfo = await getUnreadCount(user.id)
+    
+    res.json(unreadInfo)
+  } catch (error) {
+    console.error('Erreur comptage suggestions:', error)
     res.status(500).json({ error: 'Erreur serveur' })
   }
 })

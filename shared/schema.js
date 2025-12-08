@@ -191,3 +191,39 @@ export const emailLogs = pgTable('email_logs', {
   productIds: text('product_ids'),
   sentAt: timestamp('sent_at').notNull().defaultNow()
 })
+
+export const aiSuggestions = pgTable('ai_suggestions', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  type: varchar('type', { length: 50 }).notNull(),
+  priority: varchar('priority', { length: 20 }).notNull().default('info'),
+  title: varchar('title', { length: 255 }).notNull(),
+  message: text('message').notNull(),
+  actionType: varchar('action_type', { length: 50 }),
+  actionData: text('action_data'),
+  productId: integer('product_id').references(() => products.id, { onDelete: 'set null' }),
+  expiresAt: timestamp('expires_at'),
+  status: varchar('status', { length: 20 }).notNull().default('pending'),
+  contentHash: varchar('content_hash', { length: 64 }),
+  createdAt: timestamp('created_at').notNull().defaultNow()
+})
+
+export const aiSuggestionEvents = pgTable('ai_suggestion_events', {
+  id: serial('id').primaryKey(),
+  suggestionId: integer('suggestion_id').notNull().references(() => aiSuggestions.id, { onDelete: 'cascade' }),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  eventType: varchar('event_type', { length: 20 }).notNull(),
+  metadata: text('metadata'),
+  createdAt: timestamp('created_at').notNull().defaultNow()
+})
+
+export const userSuggestionPreferences = pgTable('user_suggestion_preferences', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  popupFrequencyMinutes: integer('popup_frequency_minutes').notNull().default(120),
+  lastPopupAt: timestamp('last_popup_at'),
+  engagementScore: integer('engagement_score').notNull().default(0),
+  lastEngagementResetAt: timestamp('last_engagement_reset_at'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+})

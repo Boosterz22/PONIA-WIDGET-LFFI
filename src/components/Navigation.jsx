@@ -1,9 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Package, Brain, Activity, History, Settings, User, LogOut, Gift, Mail, MessageSquare, Link2 } from 'lucide-react'
+import { LayoutDashboard, Package, Brain, Activity, History, Settings, User, LogOut, Gift, Mail, MessageSquare, Link2, Bell } from 'lucide-react'
 import { supabase } from '../services/supabase'
 import LanguageSelector from './LanguageSelector'
 import { useLanguage } from '../contexts/LanguageContext'
+import SuggestionsDrawer from './SuggestionsDrawer'
+import SuggestionsPopup from './SuggestionsPopup'
+import { useSuggestions } from '../hooks/useSuggestions'
 
 const businessTypeLabels = {
   'bakery': 'Boulangerie / Pâtisserie',
@@ -24,7 +27,22 @@ export default function Navigation() {
   const { t } = useLanguage()
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [businessName, setBusinessName] = useState('Mon Commerce')
+  const [showSuggestionsDrawer, setShowSuggestionsDrawer] = useState(false)
   const menuRef = useRef(null)
+  
+  const {
+    suggestions,
+    unreadCount,
+    hasCritical,
+    loading: suggestionsLoading,
+    showPopup,
+    popupSuggestions,
+    markViewed,
+    dismiss,
+    act,
+    closePopup,
+    postponePopup
+  } = useSuggestions()
   
   const navItems = [
     { path: '/chat', icon: MessageSquare, label: t('nav.poniaAI') },
@@ -80,6 +98,10 @@ export default function Navigation() {
         @media (max-width: 640px) {
           .nav-label { display: none; }
           .business-name { display: none; }
+        }
+        @keyframes pulse {
+          0%, 100% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.1); opacity: 0.8; }
         }
       `}</style>
       <nav style={{
@@ -148,6 +170,48 @@ export default function Navigation() {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <button
+              onClick={() => setShowSuggestionsDrawer(true)}
+              style={{
+                position: 'relative',
+                background: 'transparent',
+                border: 'none',
+                padding: '8px',
+                cursor: 'pointer',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'background 0.2s'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.background = '#F3F4F6'}
+              onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+              aria-label="Suggestions IA"
+            >
+              <Bell size={20} color={hasCritical ? '#dc2626' : '#6B7280'} />
+              {unreadCount > 0 && (
+                <span style={{
+                  position: 'absolute',
+                  top: '2px',
+                  right: '2px',
+                  background: hasCritical ? '#dc2626' : '#E5A835',
+                  color: 'white',
+                  fontSize: '10px',
+                  fontWeight: '600',
+                  minWidth: '16px',
+                  height: '16px',
+                  borderRadius: '8px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '0 4px',
+                  animation: hasCritical ? 'pulse 1.5s infinite' : 'none'
+                }}>
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
+            </button>
+            
             <LanguageSelector />
             
             <div ref={menuRef} style={{ position: 'relative' }}>
@@ -346,6 +410,27 @@ export default function Navigation() {
           </div>
         </div>
       </nav>
+      
+      <SuggestionsDrawer
+        isOpen={showSuggestionsDrawer}
+        onClose={() => setShowSuggestionsDrawer(false)}
+        suggestions={suggestions}
+        onDismiss={dismiss}
+        onAct={act}
+        onView={markViewed}
+        loading={suggestionsLoading}
+      />
+      
+      {showPopup && popupSuggestions.length > 0 && (
+        <SuggestionsPopup
+          suggestions={popupSuggestions}
+          onClose={closePopup}
+          onPostpone={postponePopup}
+          onDismiss={dismiss}
+          onAct={act}
+          onView={markViewed}
+        />
+      )}
     </>
   )
 }
