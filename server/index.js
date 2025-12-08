@@ -1358,6 +1358,86 @@ RÈGLES :
       `${mainStore.address}${mainStore.postalCode ? ', ' + mainStore.postalCode : ''}${mainStore.city ? ' ' + mainStore.city : ''}` : 
       null
 
+    // Récupérer TOUS les produits de la base pour les stats complètes
+    const allDbProducts = await getProductsByUserId(user.id)
+    const stockMovements = await getAllStockHistory(user.id)
+
+    // Récupérer les suggestions IA
+    let suggestions = []
+    try {
+      suggestions = await getUserSuggestions(user.id)
+    } catch (e) {
+      console.error('Error fetching suggestions for PDF:', e)
+    }
+
+    // Récupérer météo
+    let weatherData = null
+    try {
+      if (mainStore?.city) {
+        weatherData = await weatherService.getWeatherForecast(mainStore.city)
+      }
+    } catch (e) {
+      console.error('Error fetching weather for PDF:', e)
+    }
+
+    // Calculer score de santé stock (sur TOUS les produits DB)
+    const totalProducts = allDbProducts.length
+    const dbCritical = allDbProducts.filter(p => {
+      const qty = parseFloat(p.currentQuantity) || 0
+      const threshold = parseFloat(p.alertThreshold) || 10
+      return qty <= threshold * 0.5
+    })
+    const dbLow = allDbProducts.filter(p => {
+      const qty = parseFloat(p.currentQuantity) || 0
+      const threshold = parseFloat(p.alertThreshold) || 10
+      return qty > threshold * 0.5 && qty <= threshold
+    })
+    const dbHealthy = allDbProducts.filter(p => {
+      const qty = parseFloat(p.currentQuantity) || 0
+      const threshold = parseFloat(p.alertThreshold) || 10
+      return qty > threshold
+    })
+    const stockHealthScore = totalProducts > 0 ? Math.round((dbHealthy.length / totalProducts) * 100) : 100
+
+    // Alertes péremption (produits DB avec date de péremption valide)
+    const expiryAlerts = allDbProducts.filter(p => {
+      if (!p.expiryDate) return false
+      const expiry = new Date(p.expiryDate)
+      if (isNaN(expiry.getTime())) return false
+      const daysUntil = Math.ceil((expiry - new Date()) / (1000 * 60 * 60 * 24))
+      return daysUntil <= 7 && daysUntil >= 0
+    }).map(p => {
+      const expiry = new Date(p.expiryDate)
+      return {
+        name: p.name,
+        expiryDate: p.expiryDate,
+        daysUntil: Math.ceil((expiry - new Date()) / (1000 * 60 * 60 * 24)),
+        quantity: parseFloat(p.currentQuantity) || 0,
+        unit: p.unit
+      }
+    })
+
+    // Temps économisé (même logique que /api/stats/time-saved)
+    const alertsActive = allDbProducts.filter(p => parseFloat(p.currentQuantity) <= parseFloat(p.alertThreshold)).length
+    const movementsThisWeek = stockMovements.filter(m => {
+      const moveDate = new Date(m.createdAt)
+      const weekAgo = new Date()
+      weekAgo.setDate(weekAgo.getDate() - 7)
+      return moveDate >= weekAgo
+    }).length
+    
+    const minutesSavedPerProduct = 5
+    const minutesSavedPerMovement = 2
+    const minutesSavedPerAlert = 15
+    const weeklyMinutesSaved = (totalProducts * minutesSavedPerProduct) + 
+                               (movementsThisWeek * minutesSavedPerMovement) + 
+                               (alertsActive * minutesSavedPerAlert)
+    const hourlyRate = 20
+    const timeSavedValue = Math.round((weeklyMinutesSaved / 60) * hourlyRate)
+
+    // Code parrainage utilisateur
+    const referralCode = user.referralCode || `PONIA-${user.id.toString().slice(0, 6).toUpperCase()}`
+
     const pdfData = {
       storeName: businessName,
       storeAddress: storeAddress,
@@ -1365,7 +1445,23 @@ RÈGLES :
       urgentProducts: aiData.urgentProducts,
       weeklyProducts: aiData.weeklyProducts,
       recommendations: aiData.recommendations,
-      totalAmount: totalAmount
+      totalAmount: totalAmount,
+      suggestions: suggestions.slice(0, 5),
+      weatherData: weatherData,
+      stockHealth: {
+        score: stockHealthScore,
+        total: totalProducts,
+        critical: dbCritical.length,
+        low: dbLow.length,
+        healthy: dbHealthy.length
+      },
+      expiryAlerts: expiryAlerts,
+      timeSaved: {
+        minutes: weeklyMinutesSaved,
+        value: timeSavedValue
+      },
+      referralCode: referralCode,
+      userPlan: user.subscriptionTier || 'basique'
     }
 
     const pdfDoc = generateOrderPDF(pdfData)
