@@ -2785,11 +2785,16 @@ app.post('/api/integrations/webhook', express.json(), async (req, res) => {
 app.get('/api/guide-ponia-az', (req, res) => {
   try {
     const doc = generateGuidePDF()
+    const pdfPath = path.join(__dirname, '../public/Guide-PONIA-A-Z.pdf')
+    
+    const writeStream = fs.createWriteStream(pdfPath)
+    doc.pipe(writeStream)
+    doc.pipe(res)
     
     res.setHeader('Content-Type', 'application/pdf')
     res.setHeader('Content-Disposition', 'attachment; filename="Guide-PONIA-A-Z.pdf"')
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
     
-    doc.pipe(res)
     doc.end()
   } catch (error) {
     console.error('Erreur generation guide PDF:', error)
