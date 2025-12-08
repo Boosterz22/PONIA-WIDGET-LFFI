@@ -10,92 +10,22 @@ import ChatAI from '../components/ChatAI'
 import TimeSavedWidget from '../components/TimeSavedWidget'
 import { useTrialCheck } from '../hooks/useTrialCheck'
 import { checkExpiryAlerts } from '../services/expiryService'
+import { useData } from '../contexts/DataContext'
 
 export default function DashboardPage({ session }) {
   const navigate = useNavigate()
-  const [products, setProducts] = useState([])
-  const [loading, setLoading] = useState(true)
+  const { products, userData, timeSavedStats, fetchProducts, isRefreshing } = useData()
   const [generatingPDF, setGeneratingPDF] = useState(false)
-  const [businessName, setBusinessName] = useState('')
-  const [timeSavedStats, setTimeSavedStats] = useState({
-    timeSavedMinutes: 0,
-    moneyValue: 0,
-    stats: { caOptimized: 0, rupturesAvoided: 0, wasteSaved: 0 }
-  })
   const businessType = localStorage.getItem('ponia_business_type') || 'default'
   const userPlan = localStorage.getItem('ponia_user_plan') || 'basique'
   const { trialExpired, loading: trialLoading } = useTrialCheck()
+  
+  const businessName = userData?.businessName || 'Mon Commerce'
+  const loading = false
 
   useEffect(() => {
-    loadProducts()
-    loadUserData()
-    loadTimeSavedStats()
+    fetchProducts()
   }, [])
-
-  const loadProducts = async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) {
-        navigate('/login')
-        return
-      }
-
-      const response = await fetch('/api/products', {
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`
-        }
-      })
-
-      if (response.ok) {
-        const data = await response.json()
-        setProducts(data.products || [])
-      }
-    } catch (error) {
-      console.error('Erreur chargement produits:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const loadUserData = async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) return
-
-      const response = await fetch('/api/users/me', {
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`
-        }
-      })
-      
-      if (response.ok) {
-        const data = await response.json()
-        setBusinessName(data.user.businessName || 'Mon Commerce')
-      }
-    } catch (error) {
-      console.error('Erreur chargement utilisateur:', error)
-    }
-  }
-
-  const loadTimeSavedStats = async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) return
-
-      const response = await fetch('/api/stats/time-saved', {
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`
-        }
-      })
-      
-      if (response.ok) {
-        const data = await response.json()
-        setTimeSavedStats(data)
-      }
-    } catch (error) {
-      console.error('Erreur chargement stats:', error)
-    }
-  }
 
   const handleGenerateOrder = async () => {
     try {

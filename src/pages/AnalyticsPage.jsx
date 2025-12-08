@@ -5,14 +5,14 @@ import { TrendingUp, Package, AlertTriangle, DollarSign, Activity, Calendar } fr
 import Navigation from '../components/Navigation'
 import ChatAI from '../components/ChatAI'
 import { supabase } from '../services/supabase'
+import { useData } from '../contexts/DataContext'
 
 export default function AnalyticsPage() {
   const navigate = useNavigate()
+  const { products, stockHistory, fetchProducts, fetchStockHistory } = useData()
   const [user, setUser] = useState(null)
-  const [products, setProducts] = useState([])
-  const [stockHistory, setStockHistory] = useState([])
-  const [loading, setLoading] = useState(true)
   const [timeRange, setTimeRange] = useState('7d')
+  const loading = false
 
   useEffect(() => {
     checkAuth()
@@ -20,7 +20,8 @@ export default function AnalyticsPage() {
 
   useEffect(() => {
     if (user) {
-      loadData()
+      fetchProducts()
+      fetchStockHistory()
     }
   }, [user, timeRange])
 
@@ -31,42 +32,6 @@ export default function AnalyticsPage() {
       return
     }
     setUser(session.user)
-  }
-
-  const loadData = async () => {
-    setLoading(true)
-    try {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) {
-        navigate('/login')
-        return
-      }
-
-      const token = session.access_token
-
-      const [productsRes, historyRes] = await Promise.all([
-        fetch('/api/products', { 
-          headers: { 'Authorization': `Bearer ${token}` } 
-        }),
-        fetch('/api/stock-history', { 
-          headers: { 'Authorization': `Bearer ${token}` } 
-        })
-      ])
-
-      if (productsRes.ok) {
-        const data = await productsRes.json()
-        setProducts(data.products || [])
-      }
-
-      if (historyRes.ok) {
-        const data = await historyRes.json()
-        setStockHistory(data.history || [])
-      }
-    } catch (error) {
-      console.error('Erreur chargement données:', error)
-    } finally {
-      setLoading(false)
-    }
   }
 
   const getStockTrendData = () => {

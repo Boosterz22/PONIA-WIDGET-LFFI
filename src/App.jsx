@@ -30,6 +30,7 @@ import IntegrationsPage from './pages/IntegrationsPage'
 import ProductMappingPage from './pages/ProductMappingPage'
 import { supabase } from './services/supabase'
 import { LanguageProvider } from './contexts/LanguageContext'
+import { DataProvider } from './contexts/DataContext'
 
 function App() {
   const [session, setSession] = useState(null)
@@ -114,8 +115,9 @@ function App() {
 
   return (
     <LanguageProvider>
-      <BrowserRouter>
-        <Routes>
+      <DataProvider>
+        <BrowserRouter>
+          <Routes>
         <Route 
           path="/" 
           element={session ? (needsProfile ? <Navigate to="/complete-profile" /> : <Navigate to="/chat" />) : <LandingPage />} 
@@ -201,8 +203,9 @@ function App() {
           path="/admin" 
           element={session ? <AdminPage /> : <Navigate to="/admin-login" />} 
         />
-      </Routes>
-      </BrowserRouter>
+          </Routes>
+        </BrowserRouter>
+      </DataProvider>
     </LanguageProvider>
   )
 }

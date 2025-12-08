@@ -9,47 +9,21 @@ import ProductCard from '../components/ProductCard'
 import AddProductModal from '../components/AddProductModal'
 import ChatAI from '../components/ChatAI'
 import { useTrialCheck } from '../hooks/useTrialCheck'
+import { useData } from '../contexts/DataContext'
 
 export default function StockPage({ session }) {
   const navigate = useNavigate()
-  const [products, setProducts] = useState([])
-  const [loading, setLoading] = useState(true)
+  const { products, fetchProducts, updateProduct, addProduct: addProductToCache, removeProduct } = useData()
   const [showAddModal, setShowAddModal] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const businessType = localStorage.getItem('ponia_business_type') || 'default'
   const userPlan = localStorage.getItem('ponia_user_plan') || 'basique'
   const { trialExpired, loading: trialLoading } = useTrialCheck()
+  const loading = false
 
   useEffect(() => {
-    loadProducts()
+    fetchProducts()
   }, [])
-
-  const loadProducts = async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) {
-        navigate('/login')
-        return
-      }
-
-      const response = await fetch('/api/products', {
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`
-        }
-      })
-
-      if (response.ok) {
-        const data = await response.json()
-        setProducts(data.products || [])
-      } else {
-        console.error('Erreur chargement produits:', response.statusText)
-      }
-    } catch (error) {
-      console.error('Erreur chargement produits:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const handleAddProduct = async (newProduct) => {
     if (userPlan === 'basique' && products.length >= 10) {
@@ -87,11 +61,9 @@ export default function StockPage({ session }) {
       if (response.ok) {
         const { product } = await response.json()
         
-        // Fermer modal immédiatement pour UX fluide
         setShowAddModal(false)
         
-        // Ajouter optimistiquement à la liste locale (pas de rechargement)
-        setProducts(prev => [...prev, product])
+        addProductToCache(product)
       } else {
         const error = await response.json()
         alert(`Erreur: ${error.message || 'Impossible d\'ajouter le produit'}`)
@@ -103,29 +75,18 @@ export default function StockPage({ session }) {
   }
 
   const handleUpdateQuantity = async (id, change) => {
-    let previousQuantity = null
-    let newQuantity = null
+    const product = products.find(p => p.id === id)
+    if (!product) return
 
-    // ⚡ OPTIMISTIC UPDATE - Interface instantanée avec functional setter
-    setProducts(prev => {
-      const product = prev.find(p => p.id === id)
-      if (!product) return prev
+    const previousQuantity = parseFloat(product.currentQuantity)
+    const newQuantity = Math.max(0, previousQuantity + change)
 
-      previousQuantity = parseFloat(product.currentQuantity)
-      newQuantity = Math.max(0, previousQuantity + change)
+    updateProduct(id, { currentQuantity: newQuantity.toString() })
 
-      return prev.map(p => 
-        p.id === id ? { ...p, currentQuantity: newQuantity.toString() } : p
-      )
-    })
-
-    if (previousQuantity === null) return
-
-    // Requête en arrière-plan
     try {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) {
-        await loadProducts()
+        await fetchProducts(true)
         return
       }
 
@@ -143,11 +104,11 @@ export default function StockPage({ session }) {
       })
 
       if (!response.ok) {
-        await loadProducts()
+        await fetchProducts(true)
         console.error('Erreur lors de la mise à jour')
       }
     } catch (error) {
-      await loadProducts()
+      await fetchProducts(true)
       console.error('Erreur update quantité:', error)
     }
   }
@@ -155,22 +116,15 @@ export default function StockPage({ session }) {
   const handleDeleteProduct = async (id) => {
     if (!confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) return
 
-    let deletedProduct = null
-
-    // ⚡ OPTIMISTIC DELETE - Interface instantanée avec functional setter
-    setProducts(prev => {
-      deletedProduct = prev.find(p => p.id === id)
-      if (!deletedProduct) return prev
-      return prev.filter(p => p.id !== id)
-    })
-
+    const deletedProduct = products.find(p => p.id === id)
     if (!deletedProduct) return
 
-    // Requête en arrière-plan
+    removeProduct(id)
+
     try {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) {
-        await loadProducts()
+        await fetchProducts(true)
         return
       }
 
@@ -182,11 +136,11 @@ export default function StockPage({ session }) {
       })
 
       if (!response.ok) {
-        await loadProducts()
+        await fetchProducts(true)
         alert('Erreur lors de la suppression')
       }
     } catch (error) {
-      await loadProducts()
+      await fetchProducts(true)
       console.error('Erreur suppression produit:', error)
       alert('Erreur lors de la suppression')
     }
