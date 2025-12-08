@@ -34,7 +34,7 @@ PONIA AI is a secure full-stack application using a client-server architecture w
 *   **Core Technical Implementations:**
     *   **Authentication & Subscription:** Email-based registration via Supabase, supporting a three-tier pricing model (14-day free trial) and Stripe for subscriptions.
     *   **Email Alerts:** Automatic low-stock and expiry date email alerts (via Resend API) with customizable preferences and professional HTML templates.
-    *   **AI-Powered Order Generation:** Automated generation of intelligent purchase orders in PDF format using GPT-4o-mini.
+    *   **AI-Powered Order Generation:** Automated generation of intelligent purchase orders in PDF format using GPT-4o-mini. PDF includes: AI suggestions (8 types), stock health score gauge, time saved widget, expiry alerts, weather forecast with sales impact, 3-step onboarding guide, pricing comparison, referral program (25% commission), and commercial footer.
     *   **Multi-store Support:** Database schema supports multiple store locations per user.
     *   **Admin Dashboard:** Tools for user management, real-time statistics, CSV export, secured by an admin email whitelist. Includes commercial tracking dashboard for referrer performance.
     *   **Geolocation & Address Autocomplete:** Integration with API Adresse (Base Adresse Nationale - BAN) for address autocomplete and GPS coordinates.
