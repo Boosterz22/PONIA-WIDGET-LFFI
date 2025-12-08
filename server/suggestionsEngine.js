@@ -1,7 +1,14 @@
 import { db } from './db.js'
-import { aiSuggestions, aiSuggestionEvents, userSuggestionPreferences, products, salesHistory, users } from '../shared/schema.js'
+import { aiSuggestions, aiSuggestionEvents, userSuggestionPreferences, products, salesHistory, users, stores } from '../shared/schema.js'
 import { eq, and, gte, lte, lt, desc, sql, isNull, or } from 'drizzle-orm'
 import crypto from 'crypto'
+import OpenAI from 'openai'
+import { weatherService } from './weatherService.js'
+
+const openai = new OpenAI({
+  baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY
+})
 
 const SUGGESTION_TYPES = {
   EXPIRY: 'expiry',
@@ -375,6 +382,215 @@ async function generateRappelCommandeSuggestions(userId, userProducts) {
   return suggestions
 }
 
+async function getStoreInfo(userId) {
+  try {
+    const [store] = await db.select()
+      .from(stores)
+      .where(eq(stores.userId, userId))
+      .limit(1)
+    return store || { type: 'restaurant', city: 'Paris' }
+  } catch {
+    return { type: 'restaurant', city: 'Paris' }
+  }
+}
+
+async function getStoreType(userId) {
+  const store = await getStoreInfo(userId)
+  return store?.type || 'restaurant'
+}
+
+async function generateMeteoSuggestions(userId, userProducts) {
+  const suggestions = []
+  
+  try {
+    const store = await getStoreInfo(userId)
+    const city = store?.city || 'Paris'
+    
+    const forecast = await weatherService.getForecast(city, 'FR', 3)
+    if (!forecast?.forecasts?.length) return suggestions
+    
+    const tomorrow = forecast.forecasts[1] || forecast.forecasts[0]
+    if (!tomorrow) return suggestions
+    
+    const storeType = store?.type || 'restaurant'
+    
+    const weatherImpacts = {
+      hot: { threshold: 28, products: ['glaces', 'boissons fraîches', 'eau', 'bière', 'rosé', 'smoothie'], message: 'Canicule prévue' },
+      cold: { threshold: 5, products: ['soupes', 'café', 'chocolat', 'vin rouge', 'plats chauds'], message: 'Vague de froid' },
+      rain: { conditions: ['rain', 'drizzle', 'thunderstorm'], effect: 'moins de passage', message: 'Pluie annoncée' },
+      sun: { conditions: ['clear', 'sunny'], effect: 'plus de passage terrasse', message: 'Grand soleil prévu' }
+    }
+    
+    if (tomorrow.tempMax >= weatherImpacts.hot.threshold) {
+      const hotProducts = userProducts.filter(p => 
+        weatherImpacts.hot.products.some(kw => 
+          p.name.toLowerCase().includes(kw) || 
+          (p.category && p.category.toLowerCase().includes(kw))
+        )
+      )
+      
+      if (hotProducts.length > 0) {
+        const lowStockHot = hotProducts.filter(p => 
+          parseFloat(p.currentQuantity) <= parseFloat(p.alertThreshold) * 2
+        )
+        
+        if (lowStockHot.length > 0) {
+          suggestions.push({
+            type: SUGGESTION_TYPES.METEO,
+            priority: PRIORITIES.IMPORTANT,
+            title: `☀️ ${weatherImpacts.hot.message} demain (${tomorrow.tempMax}°C)`,
+            message: `Prévoyez plus de stock pour : ${lowStockHot.slice(0, 3).map(p => p.name).join(', ')}. La demande sera forte !`,
+            actionType: 'view_products',
+            actionData: { productIds: lowStockHot.map(p => p.id), reason: 'canicule' }
+          })
+        }
+      }
+    }
+    
+    if (tomorrow.tempMin <= weatherImpacts.cold.threshold) {
+      const coldProducts = userProducts.filter(p => 
+        weatherImpacts.cold.products.some(kw => 
+          p.name.toLowerCase().includes(kw) || 
+          (p.category && p.category.toLowerCase().includes(kw))
+        )
+      )
+      
+      if (coldProducts.length > 0) {
+        const lowStockCold = coldProducts.filter(p => 
+          parseFloat(p.currentQuantity) <= parseFloat(p.alertThreshold) * 2
+        )
+        
+        if (lowStockCold.length > 0) {
+          suggestions.push({
+            type: SUGGESTION_TYPES.METEO,
+            priority: PRIORITIES.INFO,
+            title: `❄️ ${weatherImpacts.cold.message} demain (${tomorrow.tempMin}°C)`,
+            message: `Les clients voudront du chaud ! Vérifiez vos stocks de : ${lowStockCold.slice(0, 3).map(p => p.name).join(', ')}.`,
+            actionType: 'view_products',
+            actionData: { productIds: lowStockCold.map(p => p.id), reason: 'froid' }
+          })
+        }
+      }
+    }
+    
+    if (weatherImpacts.rain.conditions.includes(tomorrow.condition)) {
+      if (storeType === 'restaurant' || storeType === 'bar') {
+        suggestions.push({
+          type: SUGGESTION_TYPES.METEO,
+          priority: PRIORITIES.INFO,
+          title: `🌧️ Pluie prévue demain`,
+          message: `Attendez-vous à 15-25% moins de passage. Bon jour pour les livraisons ou événements privés !`,
+          actionType: 'info'
+        })
+      }
+    }
+    
+  } catch (error) {
+    console.error('Erreur suggestions météo:', error.message)
+  }
+  
+  return suggestions
+}
+
+async function generateAIPlatJourSuggestions(userId, userProducts) {
+  const suggestions = []
+  
+  try {
+    const now = new Date()
+    const threeDaysFromNow = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000)
+    
+    const productsToUse = userProducts.filter(p => {
+      if (p.expiryDate) {
+        const expiry = new Date(p.expiryDate)
+        return expiry <= threeDaysFromNow && expiry >= now
+      }
+      if (parseFloat(p.currentQuantity) > parseFloat(p.alertThreshold) * 3) {
+        return true
+      }
+      return false
+    })
+    
+    if (productsToUse.length === 0) return suggestions
+    
+    const storeType = await getStoreType(userId)
+    
+    const storePrompts = {
+      bakery: "boulangerie-pâtisserie",
+      restaurant: "restaurant",
+      bar: "bar à cocktails",
+      wine_cellar: "cave à vins",
+      cheese_shop: "fromagerie"
+    }
+    
+    const productList = productsToUse.slice(0, 5).map(p => {
+      let info = `${p.name} (stock: ${p.currentQuantity}${p.unit ? ' ' + p.unit : ''})`
+      if (p.expiryDate) {
+        const days = Math.ceil((new Date(p.expiryDate) - now) / (24 * 60 * 60 * 1000))
+        info += ` [expire dans ${days} jour${days > 1 ? 's' : ''}]`
+      }
+      return info
+    }).join(', ')
+    
+    const prompt = `Tu es un chef créatif pour une ${storePrompts[storeType] || 'commerce alimentaire'} française. 
+    
+Produits à écouler rapidement: ${productList}
+
+Propose UNE SEULE idée créative et concrète pour utiliser/vendre ces produits:
+- Pour un bar: un cocktail du jour
+- Pour un restaurant: un plat du jour ou menu spécial
+- Pour une boulangerie: une viennoiserie ou formule spéciale  
+- Pour une cave: un accord mets-vins ou offre découverte
+- Pour une fromagerie: un plateau ou suggestion d'affinage
+
+Format ta réponse en JSON:
+{
+  "titre": "Nom accrocheur de l'offre (max 30 caractères)",
+  "description": "Description courte et vendeuse (max 100 caractères)",
+  "produits_utilises": ["produit1", "produit2"]
+}`
+
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [
+        { role: 'system', content: 'Tu réponds uniquement en JSON valide, sans markdown ni explication.' },
+        { role: 'user', content: prompt }
+      ],
+      max_tokens: 200,
+      temperature: 0.8
+    })
+    
+    const responseText = completion.choices[0]?.message?.content?.trim() || ''
+    
+    let parsed
+    try {
+      const cleanJson = responseText.replace(/```json\n?|\n?```/g, '').trim()
+      parsed = JSON.parse(cleanJson)
+    } catch {
+      console.log('Réponse IA non-JSON:', responseText)
+      return suggestions
+    }
+    
+    if (parsed.titre && parsed.description) {
+      suggestions.push({
+        type: SUGGESTION_TYPES.PLAT_JOUR,
+        priority: PRIORITIES.INFO,
+        title: `💡 ${parsed.titre}`,
+        message: `${parsed.description}. Produits : ${parsed.produits_utilises?.join(', ') || productList}`,
+        actionType: 'create_special',
+        actionData: { 
+          suggestion: parsed,
+          products: productsToUse.slice(0, 5).map(p => ({ id: p.id, name: p.name }))
+        },
+        expiresAt: new Date(now.getTime() + 12 * 60 * 60 * 1000)
+      })
+    }
+  } catch (error) {
+    console.error('Erreur IA plat du jour:', error.message)
+  }
+  
+  return suggestions
+}
+
 export async function generateAllSuggestions(userId) {
   try {
     const userProducts = await db.select()
@@ -385,17 +601,26 @@ export async function generateAllSuggestions(userId) {
       return { generated: 0, suggestions: [] }
     }
     
-    const allSuggestionPromises = [
-      generateExpirySuggestions(userId, userProducts),
-      generateRuptureSuggestions(userId, userProducts),
-      generateSurstockSuggestions(userId, userProducts),
-      generateAnomalySuggestions(userId, userProducts),
-      generateTendanceSuggestions(userId, userProducts),
-      generateRappelCommandeSuggestions(userId, userProducts)
-    ]
+    const [rulesResults, aiResults, meteoResults] = await Promise.all([
+      Promise.all([
+        generateExpirySuggestions(userId, userProducts),
+        generateRuptureSuggestions(userId, userProducts),
+        generateSurstockSuggestions(userId, userProducts),
+        generateAnomalySuggestions(userId, userProducts),
+        generateTendanceSuggestions(userId, userProducts),
+        generateRappelCommandeSuggestions(userId, userProducts)
+      ]),
+      generateAIPlatJourSuggestions(userId, userProducts).catch(err => {
+        console.error('Erreur suggestions IA:', err.message)
+        return []
+      }),
+      generateMeteoSuggestions(userId, userProducts).catch(err => {
+        console.error('Erreur suggestions météo:', err.message)
+        return []
+      })
+    ])
     
-    const results = await Promise.all(allSuggestionPromises)
-    const allSuggestions = results.flat()
+    const allSuggestions = [...rulesResults.flat(), ...aiResults, ...meteoResults]
     
     const createdSuggestions = []
     for (const suggestion of allSuggestions) {
