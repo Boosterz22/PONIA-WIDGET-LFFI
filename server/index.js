@@ -59,6 +59,7 @@ import {
 import { sendLowStockAlert, sendExpiryAlert, sendTestEmail, sendWelcomeEmail } from './email-service.js'
 import { getAdapter, isDemoMode, getSupportedProviders, isProviderSupported } from './pos-adapters/index.js'
 import { generateOrderPDF } from './pdfService.js'
+import { generateGuidePDF } from './guideService.js'
 import { weatherService } from './weatherService.js'
 import { 
   generateAllSuggestions, 
@@ -2777,6 +2778,22 @@ app.post('/api/integrations/webhook', express.json(), async (req, res) => {
   } catch (error) {
     console.error('Webhook error:', error)
     res.status(500).json({ error: 'Webhook processing failed' })
+  }
+})
+
+// Endpoint téléchargement Guide PONIA A-Z (PUBLIC)
+app.get('/api/guide-ponia-az', (req, res) => {
+  try {
+    const doc = generateGuidePDF()
+    
+    res.setHeader('Content-Type', 'application/pdf')
+    res.setHeader('Content-Disposition', 'attachment; filename="Guide-PONIA-A-Z.pdf"')
+    
+    doc.pipe(res)
+    doc.end()
+  } catch (error) {
+    console.error('Erreur generation guide PDF:', error)
+    res.status(500).json({ error: 'Erreur lors de la generation du guide' })
   }
 })
 
