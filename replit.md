@@ -23,6 +23,7 @@ PONIA AI is a secure full-stack application using a client-server architecture w
 
 *   **Security:** OpenAI API calls are proxied server-side, and JWT authentication secures all protected API endpoints.
 *   **AI Functionality:** A hybrid AI approach combines a local rules engine for immediate predictions (stockout, overstock, health score) with OpenAI's GPT-4o-mini (via Replit AI Integrations) for advanced predictions (7-day for Standard, 30-day for Pro), expiry tracking, and intelligent order generation. AI is omnipresent and immediately visible.
+    *   **Proactive AI Suggestions System:** Real-time intelligent suggestions engine with 8 types: expiry alerts, stockout predictions, overstock warnings, weather-based predictions (hot/cold/rain), anomaly detection, dish-of-day ideas (GPT-4o-mini creative), order reminders, and sales trends. Adaptive popup frequency based on user engagement (2h-4h+). Bell icon with badge in navbar, drawer grouped by priority, and contextual actions per suggestion type.
 *   **UI/UX:** Mobile-first, simple, and fast design for non-tech-savvy merchants.
     *   **Dashboard:** AI-first interface with Chat AI Central as the primary interaction point, Time Saved widget highlighting value, and KPI grids.
     *   **Chat AI Central:** Main dashboard interface with conversational AI and suggested questions.
