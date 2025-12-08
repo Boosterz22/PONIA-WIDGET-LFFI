@@ -21,7 +21,6 @@ export default function DashboardPage({ session }) {
   const { trialExpired } = useTrialCheck()
   
   const businessName = userData?.businessName || 'Mon Commerce'
-  const loading = false
 
   useEffect(() => {
     fetchProducts()

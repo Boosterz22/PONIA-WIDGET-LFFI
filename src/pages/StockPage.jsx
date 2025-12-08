@@ -19,7 +19,6 @@ export default function StockPage({ session }) {
   const businessType = localStorage.getItem('ponia_business_type') || 'default'
   const userPlan = localStorage.getItem('ponia_user_plan') || 'basique'
   const { trialExpired } = useTrialCheck()
-  const loading = false
 
   useEffect(() => {
     fetchProducts()
@@ -144,17 +143,6 @@ export default function StockPage({ session }) {
       console.error('Erreur suppression produit:', error)
       alert('Erreur lors de la suppression')
     }
-  }
-
-  if (loading || trialLoading) {
-    return (
-      <div style={{ minHeight: '100vh', background: '#FFFDF5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ textAlign: 'center' }}>
-          <img src="/ponia-loader.png" alt="PONIA" className="ponia-loader" />
-          <p style={{ marginTop: '1rem', color: '#6B7280' }}>Chargement de vos produits...</p>
-        </div>
-      </div>
-    )
   }
 
   // Filtrage par recherche
