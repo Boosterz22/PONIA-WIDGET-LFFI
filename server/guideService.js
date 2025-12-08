@@ -25,7 +25,7 @@ export function generateGuidePDF() {
   doc.rect(0, 0, pageWidth, 842).fill(BLACK)
 
   try {
-    const logoPath = path.join(process.cwd(), 'public', 'ponia-logo-cover.png')
+    const logoPath = path.join(process.cwd(), 'public', 'ponia-logo.png')
     doc.image(logoPath, (pageWidth - 180) / 2, 80, { width: 180 })
   } catch (error) {
     doc.fontSize(48).fillColor('white').font('Helvetica-Bold')
@@ -579,7 +579,7 @@ export function generateGuidePDF() {
   doc.moveDown(1)
 
   try {
-    const logoPath = path.join(process.cwd(), 'public', 'ponia-logo-cover.png')
+    const logoPath = path.join(process.cwd(), 'public', 'ponia-logo.png')
     doc.image(logoPath, (pageWidth - 60) / 2, doc.y, { width: 60 })
   } catch (error) {
     doc.fontSize(14).fillColor(BLACK).font('Helvetica-Bold')
