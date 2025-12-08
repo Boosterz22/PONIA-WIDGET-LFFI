@@ -59,7 +59,6 @@ import {
 import { sendLowStockAlert, sendExpiryAlert, sendTestEmail, sendWelcomeEmail } from './email-service.js'
 import { getAdapter, isDemoMode, getSupportedProviders, isProviderSupported } from './pos-adapters/index.js'
 import { generateOrderPDF } from './pdfService.js'
-import { generateGuidePDF, saveGuidePDF } from './guideService.js'
 import { weatherService } from './weatherService.js'
 import { 
   generateAllSuggestions, 
@@ -1484,33 +1483,6 @@ RÈGLES :
         message: 'Impossible de générer le bon de commande.'
       })
     }
-  }
-})
-
-// Generate Guide PONIA A-Z PDF
-app.get('/api/generate-guide', async (req, res) => {
-  try {
-    const pdfDoc = generateGuidePDF()
-    
-    res.setHeader('Content-Type', 'application/pdf')
-    res.setHeader('Content-Disposition', 'attachment; filename=Guide-PONIA-A-Z.pdf')
-    
-    pdfDoc.pipe(res)
-    pdfDoc.end()
-  } catch (error) {
-    console.error('Erreur génération guide:', error.message)
-    res.status(500).json({ error: 'Erreur serveur', message: 'Impossible de générer le guide.' })
-  }
-})
-
-// Save Guide PDF to public folder (admin only)
-app.post('/api/save-guide', async (req, res) => {
-  try {
-    const filePath = await saveGuidePDF()
-    res.json({ success: true, path: filePath })
-  } catch (error) {
-    console.error('Erreur sauvegarde guide:', error.message)
-    res.status(500).json({ error: 'Erreur serveur', message: error.message })
   }
 })
 
