@@ -641,15 +641,15 @@ writeText(
 writeTitle('FORMULE BASIQUE - Gratuit', 3);
 
 writeText(
-  "Ideale pour les tres petits commerces qui debutent avec la gestion de stock digitale."
+  "Ideale pour decouvrir PONIA et tester l'IA sur un petit catalogue."
 );
 
-writeBullet("Jusqu'a 50 produits dans votre catalogue");
+writeBullet("Jusqu'a 10 produits dans votre catalogue");
 writeBullet("1 seul etablissement");
-writeBullet("PONIA Chat avec reponses basiques");
+writeBullet("PONIA Chat IA limite a 5 messages par jour");
 writeBullet("Alertes de stock simples");
 writeBullet("Tableau de bord simplifie");
-writeBullet("Support par email sous 72h");
+writeBullet("Aucun support (autonome)");
 
 writeTitle('FORMULE STANDARD - 49 euros/mois (ou 39 euros/mois en annuel)', 3);
 
@@ -657,15 +657,15 @@ writeText(
   "Ideale pour la majorite des commerces alimentaires independants."
 );
 
-writeBullet("Produits illimites dans votre catalogue");
+writeBullet("Jusqu'a 50 produits dans votre catalogue");
 writeBullet("Jusqu'a 2 etablissements");
-writeBullet("PONIA Chat IA complet avec analyse avancee");
+writeBullet("PONIA Chat IA ILLIMITE avec analyse avancee");
 writeBullet("Predictions de ventes a 7 jours");
 writeBullet("Alertes intelligentes : rupture, peremption, surstock");
 writeBullet("Generation automatique des commandes fournisseurs");
-writeBullet("Connexion a votre caisse enregistreuse");
+writeBullet("Connexion a votre caisse enregistreuse (Square, SumUp, Zettle...)");
 writeBullet("Export des donnees en CSV et PDF");
-writeBullet("Support prioritaire par email sous 48h et chat");
+writeBullet("Support par email");
 
 writeTitle('FORMULE PRO - 69 euros/mois (ou 55 euros/mois en annuel)', 3);
 
@@ -673,15 +673,16 @@ writeText(
   "Ideale pour les commerces multi-sites et ceux qui veulent le maximum d'automatisation."
 );
 
-writeBullet("Tout le Standard, plus :");
+writeBullet("Produits ILLIMITES dans votre catalogue");
 writeBullet("Etablissements illimites avec vue consolidee");
-writeBullet("Predictions de ventes a 30 jours");
+writeBullet("Tout le Standard, plus :");
+writeBullet("Predictions de ventes a 30 jours (au lieu de 7)");
+writeBullet("Commandes vocales pour gerer vos stocks les mains occupees");
 writeBullet("Analyse avancee meteo et evenements locaux");
 writeBullet("Suggestions de transferts entre etablissements");
 writeBullet("Rapports personnalises avec votre logo");
 writeBullet("API pour integrations personnalisees");
-writeBullet("Support telephonique dedie");
-writeBullet("Formation personnalisee a l'onboarding");
+writeBullet("Support PRIORITAIRE dedie : poniapro@proton.me");
 
 writeTitle('Retour sur investissement', 2);
 
