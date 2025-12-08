@@ -3,6 +3,9 @@ import { supabase } from '../services/supabase'
 
 const POLLING_INTERVAL = 5 * 60 * 1000
 const CACHE_KEY = 'ponia_suggestions_cache'
+const SESSION_POPUP_KEY = 'ponia_session_popup_shown'
+const POPUP_COOLDOWN_KEY = 'ponia_popup_last_shown'
+const POPUP_COOLDOWN_MS = 2 * 60 * 60 * 1000
 
 export function useSuggestions() {
   const [suggestions, setSuggestions] = useState([])
@@ -13,6 +16,7 @@ export function useSuggestions() {
   const [showPopup, setShowPopup] = useState(false)
   const [popupSuggestions, setPopupSuggestions] = useState([])
   const pollingRef = useRef(null)
+  const hasShownSessionPopup = useRef(false)
 
   const getAuthHeaders = useCallback(async () => {
     const { data: { session } } = await supabase.auth.getSession()
@@ -79,6 +83,48 @@ export function useSuggestions() {
     }
   }, [getAuthHeaders, saveToCache])
 
+  const shouldShowPopup = useCallback(() => {
+    const lastShown = localStorage.getItem(POPUP_COOLDOWN_KEY)
+    if (lastShown) {
+      const elapsed = Date.now() - parseInt(lastShown, 10)
+      if (elapsed < POPUP_COOLDOWN_MS) {
+        return false
+      }
+    }
+    return true
+  }, [])
+
+  const triggerPopup = useCallback((suggestionsList, force = false) => {
+    if (!force && !shouldShowPopup()) return false
+    
+    const pendingSuggestions = suggestionsList.filter(s => s.status === 'pending')
+    
+    const critical = pendingSuggestions.filter(s => s.priority === 'critical')
+    if (critical.length > 0) {
+      setPopupSuggestions(critical.slice(0, 3))
+      setShowPopup(true)
+      localStorage.setItem(POPUP_COOLDOWN_KEY, Date.now().toString())
+      return true
+    }
+    
+    const important = pendingSuggestions.filter(s => s.priority === 'important')
+    if (important.length > 0) {
+      setPopupSuggestions(important.slice(0, 3))
+      setShowPopup(true)
+      localStorage.setItem(POPUP_COOLDOWN_KEY, Date.now().toString())
+      return true
+    }
+    
+    if (pendingSuggestions.length > 0 && force) {
+      setPopupSuggestions(pendingSuggestions.slice(0, 3))
+      setShowPopup(true)
+      localStorage.setItem(POPUP_COOLDOWN_KEY, Date.now().toString())
+      return true
+    }
+    
+    return false
+  }, [shouldShowPopup])
+
   const checkPopupStatus = useCallback(async () => {
     try {
       const headers = await getAuthHeaders()
@@ -90,19 +136,12 @@ export function useSuggestions() {
       const status = await response.json()
       
       if (status.show) {
-        const criticalAndImportant = suggestions.filter(
-          s => s.status === 'pending' && (s.priority === 'critical' || s.priority === 'important')
-        ).slice(0, 3)
-        
-        if (criticalAndImportant.length > 0) {
-          setPopupSuggestions(criticalAndImportant)
-          setShowPopup(true)
-        }
+        triggerPopup(suggestions, true)
       }
     } catch (err) {
       console.error('Check popup status error:', err)
     }
-  }, [getAuthHeaders, suggestions])
+  }, [getAuthHeaders, suggestions, triggerPopup])
 
   const generateSuggestions = useCallback(async () => {
     try {
@@ -204,12 +243,10 @@ export function useSuggestions() {
   useEffect(() => {
     const init = async () => {
       loadFromCache()
-      await fetchSuggestions()
-      await generateSuggestions()
       
-      setTimeout(() => {
-        checkPopupStatus()
-      }, 2000)
+      const response = await fetchSuggestions()
+      
+      await generateSuggestions()
     }
     
     init()
@@ -224,6 +261,36 @@ export function useSuggestions() {
       }
     }
   }, [])
+  
+  useEffect(() => {
+    if (hasShownSessionPopup.current) return
+    if (loading) return
+    if (suggestions.length === 0) return
+    
+    const sessionKey = sessionStorage.getItem(SESSION_POPUP_KEY)
+    if (sessionKey === 'true') {
+      hasShownSessionPopup.current = true
+      return
+    }
+    
+    const pendingSuggestions = suggestions.filter(s => s.status === 'pending')
+    if (pendingSuggestions.length > 0) {
+      setTimeout(() => {
+        const hasCriticalOrImportant = pendingSuggestions.some(
+          s => s.priority === 'critical' || s.priority === 'important'
+        )
+        
+        if (hasCriticalOrImportant) {
+          triggerPopup(suggestions, true)
+        } else if (pendingSuggestions.length >= 2) {
+          triggerPopup(suggestions, true)
+        }
+        
+        sessionStorage.setItem(SESSION_POPUP_KEY, 'true')
+        hasShownSessionPopup.current = true
+      }, 1500)
+    }
+  }, [suggestions, loading, triggerPopup])
 
   return {
     suggestions,
