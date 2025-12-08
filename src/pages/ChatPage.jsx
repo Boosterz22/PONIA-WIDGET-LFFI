@@ -10,7 +10,7 @@ import { useData } from '../contexts/DataContext'
 export default function ChatPage({ session }) {
   const navigate = useNavigate()
   const { products, userData, fetchProducts } = useData()
-  const { trialExpired, loading: trialLoading } = useTrialCheck()
+  const { trialExpired } = useTrialCheck()
   
   const businessName = userData?.businessName || 'Mon Commerce'
 

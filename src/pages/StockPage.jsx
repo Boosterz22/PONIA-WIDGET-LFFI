@@ -18,7 +18,7 @@ export default function StockPage({ session }) {
   const [searchQuery, setSearchQuery] = useState('')
   const businessType = localStorage.getItem('ponia_business_type') || 'default'
   const userPlan = localStorage.getItem('ponia_user_plan') || 'basique'
-  const { trialExpired, loading: trialLoading } = useTrialCheck()
+  const { trialExpired } = useTrialCheck()
   const loading = false
 
   useEffect(() => {

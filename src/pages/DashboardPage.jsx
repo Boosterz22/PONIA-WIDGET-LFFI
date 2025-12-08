@@ -18,7 +18,7 @@ export default function DashboardPage({ session }) {
   const [generatingPDF, setGeneratingPDF] = useState(false)
   const businessType = localStorage.getItem('ponia_business_type') || 'default'
   const userPlan = localStorage.getItem('ponia_user_plan') || 'basique'
-  const { trialExpired, loading: trialLoading } = useTrialCheck()
+  const { trialExpired } = useTrialCheck()
   
   const businessName = userData?.businessName || 'Mon Commerce'
   const loading = false
@@ -54,10 +54,6 @@ export default function DashboardPage({ session }) {
   const expiryAlerts = checkExpiryAlerts(products)
   const healthyProducts = products.filter(p => p.currentQuantity > (p.alertThreshold || 10))
 
-  if (trialLoading) {
-    return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#FFFDF5' }}><img src="/ponia-loader.png" alt="PONIA" className="ponia-loader" /></div>
-  }
-
   return (
     <div style={{ minHeight: '100vh', background: '#F9FAFB' }}>
       {trialExpired && <TrialExpiredBlocker />}
@@ -68,9 +64,9 @@ export default function DashboardPage({ session }) {
         {/* Time Saved Widget */}
         <div style={{ marginBottom: '2rem' }}>
           <TimeSavedWidget 
-            timeSavedMinutes={timeSavedStats.timeSavedMinutes}
-            moneyValue={timeSavedStats.moneyValue}
-            stats={timeSavedStats.stats}
+            timeSavedMinutes={timeSavedStats?.timeSavedMinutes || 0}
+            moneyValue={timeSavedStats?.moneyValue || 0}
+            stats={timeSavedStats?.stats || {}}
           />
         </div>
 
