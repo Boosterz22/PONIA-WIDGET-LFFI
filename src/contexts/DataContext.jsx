@@ -10,6 +10,8 @@ export function DataProvider({ children }) {
   const [stockHistory, setStockHistory] = useState([])
   const [userData, setUserData] = useState(null)
   const [timeSavedStats, setTimeSavedStats] = useState(null)
+  const [trialExpired, setTrialExpired] = useState(false)
+  const [trialEndsAt, setTrialEndsAt] = useState(null)
   const [isInitialized, setIsInitialized] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
   
@@ -48,7 +50,20 @@ export function DataProvider({ children }) {
         if (Date.now() - timestamp < CACHE_DURATION) {
           setUserData(data)
           lastFetchRef.current.userData = timestamp
+          
+          if (data?.trialEndsAt) {
+            setTrialEndsAt(data.trialEndsAt)
+            const trialEnd = new Date(data.trialEndsAt)
+            setTrialExpired(trialEnd <= new Date())
+          }
         }
+      }
+      
+      const cachedTrial = localStorage.getItem('ponia_cache_trial')
+      if (cachedTrial) {
+        const { expired, endsAt } = JSON.parse(cachedTrial)
+        setTrialExpired(expired)
+        setTrialEndsAt(endsAt)
       }
       
       if (cachedTimeSaved) {
@@ -139,6 +154,21 @@ export function DataProvider({ children }) {
         setUserData(data.user)
         lastFetchRef.current.userData = now
         saveToLocalStorage('userData', data.user)
+        
+        if (data.user?.trialEndsAt) {
+          const trialEnd = new Date(data.user.trialEndsAt)
+          const expired = trialEnd <= new Date()
+          setTrialEndsAt(data.user.trialEndsAt)
+          setTrialExpired(expired)
+          localStorage.setItem('ponia_cache_trial', JSON.stringify({
+            expired,
+            endsAt: data.user.trialEndsAt
+          }))
+        } else {
+          setTrialExpired(false)
+          setTrialEndsAt(null)
+        }
+        
         return data.user
       }
     } catch (error) {
@@ -228,9 +258,12 @@ export function DataProvider({ children }) {
         setStockHistory([])
         setUserData(null)
         setTimeSavedStats(null)
+        setTrialExpired(false)
+        setTrialEndsAt(null)
         localStorage.removeItem('ponia_cache_products')
         localStorage.removeItem('ponia_cache_userData')
         localStorage.removeItem('ponia_cache_timeSaved')
+        localStorage.removeItem('ponia_cache_trial')
       }
     })
 
@@ -242,6 +275,8 @@ export function DataProvider({ children }) {
     stockHistory,
     userData,
     timeSavedStats,
+    trialExpired,
+    trialEndsAt,
     isInitialized,
     isRefreshing,
     fetchProducts,
