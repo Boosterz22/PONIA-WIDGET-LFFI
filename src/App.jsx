@@ -28,6 +28,8 @@ import MentionsLegalesPage from './pages/MentionsLegalesPage'
 import ConfidentialitePage from './pages/ConfidentialitePage'
 import IntegrationsPage from './pages/IntegrationsPage'
 import ProductMappingPage from './pages/ProductMappingPage'
+import PartnerComptablePage from './pages/PartnerComptablePage'
+import PartnerDashboardPage from './pages/PartnerDashboardPage'
 import { supabase } from './services/supabase'
 import { LanguageProvider } from './contexts/LanguageContext'
 import { DataProvider } from './contexts/DataContext'
@@ -202,6 +204,14 @@ function App() {
         <Route 
           path="/admin" 
           element={session ? <AdminPage /> : <Navigate to="/admin-login" />} 
+        />
+        <Route 
+          path="/partenaires/comptables" 
+          element={<PartnerComptablePage />} 
+        />
+        <Route 
+          path="/partenaire/dashboard" 
+          element={<PartnerDashboardPage />} 
         />
           </Routes>
         </BrowserRouter>

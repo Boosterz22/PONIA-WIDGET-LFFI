@@ -227,3 +227,22 @@ export const userSuggestionPreferences = pgTable('user_suggestion_preferences', 
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
 })
+
+export const partners = pgTable('partners', {
+  id: serial('id').primaryKey(),
+  name: varchar('name', { length: 255 }).notNull(),
+  companyName: varchar('company_name', { length: 255 }).notNull(),
+  email: varchar('email', { length: 255 }).notNull(),
+  phone: varchar('phone', { length: 50 }),
+  partnerType: varchar('partner_type', { length: 50 }).notNull().default('comptable'),
+  commissionRate: integer('commission_rate').notNull().default(50),
+  estimatedClients: integer('estimated_clients'),
+  referralCode: varchar('referral_code', { length: 20 }).notNull(),
+  status: varchar('status', { length: 50 }).default('pending'),
+  notes: text('notes'),
+  totalReferrals: integer('total_referrals').default(0),
+  totalRevenue: decimal('total_revenue', { precision: 10, scale: 2 }).default('0'),
+  totalCommission: decimal('total_commission', { precision: 10, scale: 2 }).default('0'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+})

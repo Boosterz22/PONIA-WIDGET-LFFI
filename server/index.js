@@ -6,7 +6,7 @@ import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
 import { eq, and, gte, sql } from 'drizzle-orm'
 import { db } from './db.js'
-import { users, stores, chatMessages } from '../shared/schema.js'
+import { users, stores, chatMessages, partners } from '../shared/schema.js'
 import { 
   getUserByEmail,
   getUserBySupabaseId, 
@@ -2374,6 +2374,147 @@ app.post('/api/admin/logout', (req, res) => {
     sameSite: 'strict'
   })
   res.json({ success: true, message: 'Admin session ended' })
+})
+
+// ============ PARTNER ENDPOINTS ============
+
+// Generate unique partner referral code
+function generatePartnerCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+  let code = 'CPT-'
+  for (let i = 0; i < 6; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length))
+  }
+  return code
+}
+
+// Register new partner (accountant)
+app.post('/api/partners', async (req, res) => {
+  try {
+    const { name, companyName, email, phone, partnerType, estimatedClients } = req.body
+
+    if (!name || !companyName || !email) {
+      return res.status(400).json({ error: 'Nom, cabinet et email requis' })
+    }
+
+    const existingPartner = await db.select().from(partners).where(eq(partners.email, email)).limit(1)
+    if (existingPartner.length > 0) {
+      return res.status(400).json({ error: 'Un partenaire avec cet email existe déjà' })
+    }
+
+    let referralCode = generatePartnerCode()
+    let codeExists = true
+    while (codeExists) {
+      const existing = await db.select().from(partners).where(eq(partners.referralCode, referralCode)).limit(1)
+      if (existing.length === 0) codeExists = false
+      else referralCode = generatePartnerCode()
+    }
+
+    const [newPartner] = await db.insert(partners).values({
+      name,
+      companyName,
+      email,
+      phone: phone || null,
+      partnerType: partnerType || 'comptable',
+      commissionRate: 50,
+      estimatedClients: estimatedClients || null,
+      referralCode,
+      status: 'active'
+    }).returning()
+
+    // Send welcome email
+    if (process.env.RESEND_API_KEY) {
+      try {
+        const { Resend } = await import('resend')
+        const resend = new Resend(process.env.RESEND_API_KEY)
+        
+        await resend.emails.send({
+          from: 'PONIA AI <noreply@myponia.fr>',
+          to: email,
+          subject: 'Bienvenue dans le programme partenaire PONIA - 50% de commission',
+          html: `
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            </head>
+            <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f9fafb;">
+              <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
+                <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border-radius: 16px 16px 0 0; padding: 32px; text-align: center;">
+                  <h1 style="color: white; font-size: 28px; margin: 0 0 8px;">Bienvenue ${name} !</h1>
+                  <p style="color: #9ca3af; margin: 0;">Vous êtes maintenant partenaire PONIA</p>
+                </div>
+                
+                <div style="background: white; padding: 32px; border-radius: 0 0 16px 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+                  <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 24px; margin-bottom: 24px; text-align: center;">
+                    <div style="font-size: 48px; font-weight: 800; color: #92400e;">50%</div>
+                    <div style="color: #78350f; font-weight: 600;">de commission sur chaque client</div>
+                  </div>
+                  
+                  <h2 style="color: #1a1a1a; font-size: 18px; margin-bottom: 16px;">Votre code partenaire :</h2>
+                  <div style="background: #f3f4f6; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 18px; text-align: center; font-weight: 700; color: #f59e0b; letter-spacing: 2px;">
+                    ${referralCode}
+                  </div>
+                  
+                  <h2 style="color: #1a1a1a; font-size: 18px; margin: 24px 0 16px;">Votre lien de parrainage :</h2>
+                  <div style="background: #f3f4f6; border-radius: 8px; padding: 16px; font-size: 14px; word-break: break-all;">
+                    https://myponia.fr/login?ref=${referralCode}
+                  </div>
+                  
+                  <div style="margin-top: 32px; text-align: center;">
+                    <a href="https://myponia.fr/partenaire/dashboard?code=${referralCode}" style="display: inline-block; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; text-decoration: none; padding: 16px 32px; border-radius: 12px; font-weight: 600; font-size: 16px;">
+                      Accéder à mon dashboard
+                    </a>
+                  </div>
+                  
+                  <p style="color: #6b7280; font-size: 14px; margin-top: 32px; text-align: center;">
+                    Partagez votre lien avec vos clients restaurateurs, boulangers, bars...<br>
+                    Vous recevrez 50% de leur abonnement mensuel !
+                  </p>
+                </div>
+                
+                <p style="color: #9ca3af; font-size: 12px; text-align: center; margin-top: 24px;">
+                  PONIA AI - support@myponia.fr
+                </p>
+              </div>
+            </body>
+            </html>
+          `
+        })
+      } catch (emailErr) {
+        console.error('Error sending partner welcome email:', emailErr)
+      }
+    }
+
+    res.json({ 
+      success: true, 
+      partner: newPartner,
+      message: 'Inscription réussie ! Vérifiez votre email.'
+    })
+  } catch (error) {
+    console.error('Error creating partner:', error)
+    res.status(500).json({ error: 'Erreur lors de l\'inscription' })
+  }
+})
+
+// Get partner data and their referrals
+app.get('/api/partners/:code', async (req, res) => {
+  try {
+    const { code } = req.params
+
+    const [partner] = await db.select().from(partners).where(eq(partners.referralCode, code)).limit(1)
+    if (!partner) {
+      return res.status(404).json({ error: 'Partenaire non trouvé' })
+    }
+
+    const referrals = await db.select().from(users).where(eq(users.referredBy, code))
+
+    res.json({ partner, referrals })
+  } catch (error) {
+    console.error('Error fetching partner:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
 })
 
 // Admin: Get all users and stats (SECURED with admin cookie)
