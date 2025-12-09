@@ -2468,7 +2468,7 @@ app.post('/api/partners', async (req, res) => {
                     <div style="display: flex; align-items: flex-start; margin-bottom: 16px;">
                       <div style="width: 28px; height: 28px; border-radius: 50%; background: #e5e7eb; color: #666; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; margin-right: 12px;">2</div>
                       <div>
-                        <div style="font-weight: 600; color: #1a1a1a;">Validation sous 24-48h</div>
+                        <div style="font-weight: 600; color: #1a1a1a;">Validation sous quelques minutes</div>
                         <div style="color: #666; font-size: 14px;">Nous vous recontacterons très rapidement</div>
                       </div>
                     </div>
