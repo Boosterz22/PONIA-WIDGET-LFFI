@@ -2585,8 +2585,8 @@ app.post('/api/partners', async (req, res) => {
       message: 'Inscription réussie ! Vérifiez votre email.'
     })
   } catch (error) {
-    console.error('Error creating partner:', error)
-    res.status(500).json({ error: 'Erreur lors de l\'inscription' })
+    console.error('Error creating partner:', error.message, error.stack)
+    res.status(500).json({ error: 'Erreur lors de l\'inscription: ' + error.message })
   }
 })
 
