@@ -2419,19 +2419,20 @@ app.post('/api/partners', async (req, res) => {
       commissionRate: 50,
       estimatedClients: estimatedClients || null,
       referralCode,
-      status: 'active'
+      status: 'pending'
     }).returning()
 
-    // Send welcome email
+    // Send emails
     if (process.env.RESEND_API_KEY) {
       try {
         const { Resend } = await import('resend')
         const resend = new Resend(process.env.RESEND_API_KEY)
         
+        // 1. Send confirmation email to partner (pending analysis)
         await resend.emails.send({
           from: 'PONIA AI <noreply@myponia.fr>',
           to: email,
-          subject: 'Bienvenue dans le programme partenaire PONIA - 50% de commission',
+          subject: 'Votre demande de partenariat PONIA a bien été reçue',
           html: `
             <!DOCTYPE html>
             <html>
@@ -2442,35 +2443,51 @@ app.post('/api/partners', async (req, res) => {
             <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f9fafb;">
               <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
                 <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border-radius: 16px 16px 0 0; padding: 32px; text-align: center;">
-                  <h1 style="color: white; font-size: 28px; margin: 0 0 8px;">Bienvenue ${name} !</h1>
-                  <p style="color: #9ca3af; margin: 0;">Vous êtes maintenant partenaire PONIA</p>
+                  <h1 style="color: white; font-size: 28px; margin: 0 0 8px;">Merci ${name} !</h1>
+                  <p style="color: #FFD700; margin: 0; font-weight: 600;">Votre demande a été reçue</p>
                 </div>
                 
                 <div style="background: white; padding: 32px; border-radius: 0 0 16px 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
-                  <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 24px; margin-bottom: 24px; text-align: center;">
-                    <div style="font-size: 48px; font-weight: 800; color: #92400e;">50%</div>
-                    <div style="color: #78350f; font-weight: 600;">de commission sur chaque client</div>
+                  <div style="background: linear-gradient(135deg, #FFD700 0%, #FFC000 100%); border-radius: 12px; padding: 24px; margin-bottom: 24px; text-align: center;">
+                    <div style="font-size: 48px; font-weight: 800; color: #1a1a1a;">50%</div>
+                    <div style="color: #333; font-weight: 600;">de commission pendant 6 mois</div>
                   </div>
                   
-                  <h2 style="color: #1a1a1a; font-size: 18px; margin-bottom: 16px;">Votre code partenaire :</h2>
-                  <div style="background: #f3f4f6; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 18px; text-align: center; font-weight: 700; color: #f59e0b; letter-spacing: 2px;">
-                    ${referralCode}
+                  <h2 style="color: #1a1a1a; font-size: 20px; margin-bottom: 16px; text-align: center;">Prochaines étapes</h2>
+                  
+                  <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                    <div style="display: flex; align-items: flex-start; margin-bottom: 16px;">
+                      <div style="width: 28px; height: 28px; border-radius: 50%; background: #FFD700; color: #1a1a1a; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; margin-right: 12px;">1</div>
+                      <div>
+                        <div style="font-weight: 600; color: #1a1a1a;">Analyse de votre dossier</div>
+                        <div style="color: #666; font-size: 14px;">Notre équipe examine votre candidature</div>
+                      </div>
+                    </div>
+                    <div style="display: flex; align-items: flex-start; margin-bottom: 16px;">
+                      <div style="width: 28px; height: 28px; border-radius: 50%; background: #e5e7eb; color: #666; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; margin-right: 12px;">2</div>
+                      <div>
+                        <div style="font-weight: 600; color: #1a1a1a;">Validation sous 24-48h</div>
+                        <div style="color: #666; font-size: 14px;">Nous vous recontacterons très rapidement</div>
+                      </div>
+                    </div>
+                    <div style="display: flex; align-items: flex-start;">
+                      <div style="width: 28px; height: 28px; border-radius: 50%; background: #e5e7eb; color: #666; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; margin-right: 12px;">3</div>
+                      <div>
+                        <div style="font-weight: 600; color: #1a1a1a;">Votre code partenaire</div>
+                        <div style="color: #666; font-size: 14px;">Vous recevrez votre lien unique par email</div>
+                      </div>
+                    </div>
                   </div>
                   
-                  <h2 style="color: #1a1a1a; font-size: 18px; margin: 24px 0 16px;">Votre lien de parrainage :</h2>
-                  <div style="background: #f3f4f6; border-radius: 8px; padding: 16px; font-size: 14px; word-break: break-all;">
-                    https://myponia.fr/login?ref=${referralCode}
+                  <div style="background: #fef3c7; border-radius: 8px; padding: 16px; text-align: center;">
+                    <p style="color: #92400e; font-size: 14px; margin: 0;">
+                      <strong>Bon à savoir :</strong> Avec 10 clients Standard (49€/mois), vous gagnez <strong>1 470€ sur 6 mois</strong> de commission !
+                    </p>
                   </div>
                   
-                  <div style="margin-top: 32px; text-align: center;">
-                    <a href="https://myponia.fr/partenaire/dashboard?code=${referralCode}" style="display: inline-block; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; text-decoration: none; padding: 16px 32px; border-radius: 12px; font-weight: 600; font-size: 16px;">
-                      Accéder à mon dashboard
-                    </a>
-                  </div>
-                  
-                  <p style="color: #6b7280; font-size: 14px; margin-top: 32px; text-align: center;">
-                    Partagez votre lien avec vos clients restaurateurs, boulangers, bars...<br>
-                    Vous recevrez 50% de leur abonnement mensuel !
+                  <p style="color: #6b7280; font-size: 14px; margin-top: 24px; text-align: center;">
+                    Des questions ? Répondez directement à cet email.<br>
+                    Nous vous recontacterons dans les plus brefs délais.
                   </p>
                 </div>
                 
@@ -2482,8 +2499,75 @@ app.post('/api/partners', async (req, res) => {
             </html>
           `
         })
+        
+        // 2. Send notification to admin
+        const adminEmails = process.env.ADMIN_EMAILS ? process.env.ADMIN_EMAILS.split(',') : ['support@myponia.fr']
+        await resend.emails.send({
+          from: 'PONIA AI <noreply@myponia.fr>',
+          to: adminEmails,
+          subject: `Nouveau partenaire comptable : ${companyName}`,
+          html: `
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <meta charset="utf-8">
+            </head>
+            <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f9fafb;">
+              <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
+                <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 16px 16px 0 0; padding: 24px; text-align: center;">
+                  <h1 style="color: white; font-size: 24px; margin: 0;">Nouveau partenaire !</h1>
+                </div>
+                
+                <div style="background: white; padding: 32px; border-radius: 0 0 16px 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+                  <h2 style="color: #1a1a1a; font-size: 20px; margin-bottom: 20px;">Informations du partenaire</h2>
+                  
+                  <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: #666;">Nom</td>
+                      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; color: #1a1a1a;">${name}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: #666;">Cabinet</td>
+                      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; color: #1a1a1a;">${companyName}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: #666;">Email</td>
+                      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; color: #1a1a1a;"><a href="mailto:${email}">${email}</a></td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: #666;">Téléphone</td>
+                      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; color: #1a1a1a;">${phone || 'Non renseigné'}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: #666;">Clients food estimés</td>
+                      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; color: #1a1a1a;">${estimatedClients || 'Non renseigné'}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 12px; font-weight: 600; color: #666;">Code réservé</td>
+                      <td style="padding: 12px; color: #FFD700; font-weight: 700; font-family: monospace;">${referralCode}</td>
+                    </tr>
+                  </table>
+                  
+                  <div style="margin-top: 24px; padding: 16px; background: #fef3c7; border-radius: 8px;">
+                    <p style="margin: 0; color: #92400e; font-size: 14px;">
+                      <strong>Action requise :</strong> Valider ce partenaire dans l'admin pour activer son compte et lui envoyer son code.
+                    </p>
+                  </div>
+                  
+                  <div style="margin-top: 24px; text-align: center;">
+                    <a href="https://myponia.fr/admin" style="display: inline-block; background: linear-gradient(135deg, #FFD700 0%, #FFC000 100%); color: #1a1a1a; text-decoration: none; padding: 14px 28px; border-radius: 10px; font-weight: 600;">
+                      Aller dans l'admin
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </body>
+            </html>
+          `
+        })
+        
       } catch (emailErr) {
-        console.error('Error sending partner welcome email:', emailErr)
+        console.error('Error sending partner emails:', emailErr)
       }
     }
 

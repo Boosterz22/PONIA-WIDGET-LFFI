@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
-import { Calculator, Users, Euro, TrendingUp, CheckCircle, ArrowRight, Phone, Mail, Building, User, Clock, Gift, Shield, HelpCircle, ChevronDown, ChevronUp } from 'lucide-react'
+import { Calculator, Users, TrendingUp, CheckCircle, ArrowRight, Phone, Mail, Building, User, Clock, Gift, Shield, HelpCircle, ChevronDown, ChevronUp, Percent } from 'lucide-react'
 
 export default function PartnerComptablePage() {
   const { t } = useLanguage()
@@ -93,8 +93,8 @@ export default function PartnerComptablePage() {
           <button
             onClick={() => navigate('/')}
             style={{
-              background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-              color: 'white',
+              background: 'linear-gradient(135deg, #FFD700 0%, #FFC000 100%)',
+              color: '#1a1a1a',
               border: 'none',
               borderRadius: '12px',
               padding: '16px 32px',
@@ -122,22 +122,22 @@ export default function PartnerComptablePage() {
       }}>
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
           <img 
-            src="/logo-ponia-full.png" 
+            src="/logo-ponia-icon-yellow.png" 
             alt="PONIA" 
-            style={{ height: '50px', marginBottom: '24px' }}
+            style={{ height: '80px', marginBottom: '24px' }}
           />
           
           <div style={{
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
-            background: 'rgba(245,158,11,0.2)',
+            background: 'rgba(255,215,0,0.2)',
             padding: '8px 16px',
             borderRadius: '20px',
             marginBottom: '24px'
           }}>
-            <Calculator size={18} color="#f59e0b" />
-            <span style={{ color: '#f59e0b', fontWeight: '600', fontSize: '14px' }}>
+            <Calculator size={18} color="#FFD700" />
+            <span style={{ color: '#FFD700', fontWeight: '600', fontSize: '14px' }}>
               {t('partner.badge')}
             </span>
           </div>
@@ -153,27 +153,25 @@ export default function PartnerComptablePage() {
           <div style={{
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '16px',
-            background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-            padding: '20px 36px',
+            gap: '20px',
+            background: 'linear-gradient(135deg, #FFD700 0%, #FFC000 100%)',
+            padding: '24px 48px',
             borderRadius: '20px',
-            boxShadow: '0 10px 40px rgba(245,158,11,0.3)'
+            boxShadow: '0 10px 40px rgba(255,215,0,0.3)'
           }}>
-            <Euro size={36} color="white" />
-            <div style={{ textAlign: 'left' }}>
-              <div style={{ fontSize: '36px', fontWeight: '800', color: 'white' }}>50%</div>
-              <div style={{ fontSize: '14px', color: 'rgba(255,255,255,0.9)', fontWeight: '500' }}>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '56px', fontWeight: '800', color: '#1a1a1a' }}>50%</div>
+              <div style={{ fontSize: '14px', color: 'rgba(26,26,26,0.8)', fontWeight: '600' }}>
                 {t('partner.commissionLabel')}
               </div>
             </div>
             <div style={{
-              background: 'rgba(255,255,255,0.2)',
-              padding: '8px 14px',
-              borderRadius: '10px',
-              marginLeft: '8px'
+              background: 'rgba(26,26,26,0.1)',
+              padding: '12px 18px',
+              borderRadius: '12px'
             }}>
-              <div style={{ fontSize: '16px', fontWeight: '700', color: 'white' }}>6 {t('partner.months')}</div>
-              <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.8)' }}>{t('partner.recurring')}</div>
+              <div style={{ fontSize: '18px', fontWeight: '700', color: '#1a1a1a' }}>6 {t('partner.months')}</div>
+              <div style={{ fontSize: '12px', color: 'rgba(26,26,26,0.7)' }}>{t('partner.recurring')}</div>
             </div>
           </div>
         </div>
@@ -194,21 +192,21 @@ export default function PartnerComptablePage() {
               { step: '1', icon: User, title: t('partner.step1Title'), desc: t('partner.step1Desc') },
               { step: '2', icon: Gift, title: t('partner.step2Title'), desc: t('partner.step2Desc') },
               { step: '3', icon: Users, title: t('partner.step3Title'), desc: t('partner.step3Desc') },
-              { step: '4', icon: Euro, title: t('partner.step4Title'), desc: t('partner.step4Desc') }
+              { step: '4', icon: Percent, title: t('partner.step4Title'), desc: t('partner.step4Desc') }
             ].map((item, i) => (
               <div key={i} style={{ textAlign: 'center', position: 'relative' }}>
                 <div style={{
                   width: '60px',
                   height: '60px',
                   borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                  background: 'linear-gradient(135deg, #FFD700 0%, #FFC000 100%)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   margin: '0 auto 16px',
                   position: 'relative'
                 }}>
-                  <item.icon size={28} color="white" />
+                  <item.icon size={28} color="#1a1a1a" />
                   <div style={{
                     position: 'absolute',
                     top: '-8px',
@@ -249,7 +247,7 @@ export default function PartnerComptablePage() {
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               {[
-                { icon: Euro, title: t('partner.benefit1Title'), desc: t('partner.benefit1Desc') },
+                { icon: Percent, title: t('partner.benefit1Title'), desc: t('partner.benefit1Desc') },
                 { icon: Clock, title: t('partner.benefit2Title'), desc: t('partner.benefit2Desc') },
                 { icon: TrendingUp, title: t('partner.benefit3Title'), desc: t('partner.benefit3Desc') },
                 { icon: Shield, title: t('partner.benefit4Title'), desc: t('partner.benefit4Desc') }
@@ -266,13 +264,13 @@ export default function PartnerComptablePage() {
                     width: '48px',
                     height: '48px',
                     borderRadius: '12px',
-                    background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+                    background: 'linear-gradient(135deg, #FFD700 0%, #FFC000 100%)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     flexShrink: 0
                   }}>
-                    <benefit.icon size={24} color="#d97706" />
+                    <benefit.icon size={24} color="#1a1a1a" />
                   </div>
                   <div>
                     <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#1a1a1a', marginBottom: '4px' }}>
@@ -289,14 +287,14 @@ export default function PartnerComptablePage() {
             <div style={{
               marginTop: '32px',
               padding: '24px',
-              background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+              background: 'linear-gradient(135deg, #FFD700 0%, #FFC000 100%)',
               borderRadius: '16px',
-              border: '2px solid #f59e0b'
+              border: '2px solid #B8860B'
             }}>
-              <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#92400e', marginBottom: '12px' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#1a1a1a', marginBottom: '12px' }}>
                 {t('partner.exampleTitle')}
               </h3>
-              <p style={{ fontSize: '14px', color: '#78350f', lineHeight: '1.6' }}>
+              <p style={{ fontSize: '14px', color: '#333', lineHeight: '1.6' }}>
                 {t('partner.exampleText')}
               </p>
               <div style={{
@@ -306,22 +304,22 @@ export default function PartnerComptablePage() {
                 gap: '12px'
               }}>
                 <div style={{
-                  background: 'rgba(255,255,255,0.7)',
+                  background: 'rgba(255,255,255,0.8)',
                   padding: '12px',
                   borderRadius: '10px',
                   textAlign: 'center'
                 }}>
-                  <div style={{ fontSize: '24px', fontWeight: '700', color: '#92400e' }}>1 242€</div>
-                  <div style={{ fontSize: '12px', color: '#78350f' }}>{t('partner.earnings6Months')}</div>
+                  <div style={{ fontSize: '24px', fontWeight: '700', color: '#1a1a1a' }}>1 470€</div>
+                  <div style={{ fontSize: '12px', color: '#333' }}>{t('partner.earnings6Months')}</div>
                 </div>
                 <div style={{
-                  background: 'rgba(255,255,255,0.7)',
+                  background: 'rgba(255,255,255,0.8)',
                   padding: '12px',
                   borderRadius: '10px',
                   textAlign: 'center'
                 }}>
-                  <div style={{ fontSize: '24px', fontWeight: '700', color: '#92400e' }}>10 {t('partner.clientsWord')}</div>
-                  <div style={{ fontSize: '12px', color: '#78350f' }}>{t('partner.referredClients')}</div>
+                  <div style={{ fontSize: '24px', fontWeight: '700', color: '#1a1a1a' }}>10 {t('partner.clientsWord')}</div>
+                  <div style={{ fontSize: '12px', color: '#333' }}>{t('partner.referredClients')}</div>
                 </div>
               </div>
             </div>
@@ -380,7 +378,7 @@ export default function PartnerComptablePage() {
                     transition: 'border-color 0.2s',
                     boxSizing: 'border-box'
                   }}
-                  onFocus={(e) => e.target.style.borderColor = '#f59e0b'}
+                  onFocus={(e) => e.target.style.borderColor = '#FFD700'}
                   onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
                 />
               </div>
@@ -406,7 +404,7 @@ export default function PartnerComptablePage() {
                     transition: 'border-color 0.2s',
                     boxSizing: 'border-box'
                   }}
-                  onFocus={(e) => e.target.style.borderColor = '#f59e0b'}
+                  onFocus={(e) => e.target.style.borderColor = '#FFD700'}
                   onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
                 />
               </div>
@@ -432,7 +430,7 @@ export default function PartnerComptablePage() {
                     transition: 'border-color 0.2s',
                     boxSizing: 'border-box'
                   }}
-                  onFocus={(e) => e.target.style.borderColor = '#f59e0b'}
+                  onFocus={(e) => e.target.style.borderColor = '#FFD700'}
                   onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
                 />
               </div>
@@ -457,7 +455,7 @@ export default function PartnerComptablePage() {
                     transition: 'border-color 0.2s',
                     boxSizing: 'border-box'
                   }}
-                  onFocus={(e) => e.target.style.borderColor = '#f59e0b'}
+                  onFocus={(e) => e.target.style.borderColor = '#FFD700'}
                   onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
                 />
               </div>
@@ -483,7 +481,7 @@ export default function PartnerComptablePage() {
                     transition: 'border-color 0.2s',
                     boxSizing: 'border-box'
                   }}
-                  onFocus={(e) => e.target.style.borderColor = '#f59e0b'}
+                  onFocus={(e) => e.target.style.borderColor = '#FFD700'}
                   onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
                 />
               </div>
@@ -494,8 +492,8 @@ export default function PartnerComptablePage() {
                 style={{
                   width: '100%',
                   padding: '16px',
-                  background: loading ? '#9ca3af' : 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                  color: 'white',
+                  background: loading ? '#9ca3af' : 'linear-gradient(135deg, #FFD700 0%, #FFC000 100%)',
+                  color: '#1a1a1a',
                   border: 'none',
                   borderRadius: '12px',
                   fontSize: '16px',
@@ -567,16 +565,62 @@ export default function PartnerComptablePage() {
         </div>
       </div>
 
-      <div style={{
-        background: '#1a1a1a',
-        padding: '32px 20px',
+      <footer style={{ 
+        padding: '3rem 0 2rem', 
+        background: '#1a1a1a', 
         textAlign: 'center'
       }}>
-        <img src="/logo-ponia-full.png" alt="PONIA" style={{ height: '32px', marginBottom: '16px' }} />
-        <p style={{ color: '#9ca3af', fontSize: '14px' }}>
-          support@myponia.fr - myponia.fr
-        </p>
-      </div>
+        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
+            <img src="/logo-ponia-icon-yellow.png" alt="PONIA" style={{ height: '50px' }} />
+          </div>
+          
+          <p style={{ color: '#9ca3af', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
+            Gestion de stock par IA pour commerces français
+          </p>
+
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
+            <a 
+              href="https://x.com/ponia_hq" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{ color: '#9ca3af', textDecoration: 'none', display: 'flex', alignItems: 'center' }}
+            >
+              <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" width="24" height="24" style={{ fill: 'currentColor' }}>
+                <path d="M178.57 127.15 290.27 0h-26.46l-97.03 110.38L89.34 0H0l117.13 166.93L0 300.25h26.46l102.4-116.59 81.8 116.59h89.34M36.01 19.54H76.66l187.13 262.13h-40.66" />
+              </svg>
+            </a>
+            <a 
+              href="https://www.linkedin.com/in/enock-ligue-238230396" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{ color: '#9ca3af', textDecoration: 'none', display: 'flex', alignItems: 'center' }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style={{ fill: 'currentColor' }}>
+                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+              </svg>
+            </a>
+          </div>
+          
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            gap: '2rem', 
+            flexWrap: 'wrap',
+            paddingTop: '1.5rem',
+            borderTop: '1px solid rgba(255,255,255,0.1)'
+          }}>
+            <Link to="/tarifs" style={{ color: '#9ca3af', textDecoration: 'none', fontSize: '0.9rem' }}>Tarifs</Link>
+            <Link to="/confidentialite" style={{ color: '#9ca3af', textDecoration: 'none', fontSize: '0.9rem' }}>Confidentialité</Link>
+            <Link to="/cgv" style={{ color: '#9ca3af', textDecoration: 'none', fontSize: '0.9rem' }}>CGV</Link>
+            <Link to="/contact" style={{ color: '#9ca3af', textDecoration: 'none', fontSize: '0.9rem' }}>Contact</Link>
+          </div>
+          
+          <p style={{ color: '#6b7280', fontSize: '0.8rem', marginTop: '1.5rem' }}>
+            © 2025 PONIA - Tous droits réservés
+          </p>
+        </div>
+      </footer>
     </div>
   )
 }
