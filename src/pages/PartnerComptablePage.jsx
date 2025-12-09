@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLanguage } from '../contexts/LanguageContext'
-import { Calculator, Users, Euro, TrendingUp, CheckCircle, ArrowRight, Phone, Mail, Building, User } from 'lucide-react'
+import { Calculator, Users, Euro, TrendingUp, CheckCircle, ArrowRight, Phone, Mail, Building, User, Clock, Gift, Shield, HelpCircle, ChevronDown, ChevronUp } from 'lucide-react'
 
 export default function PartnerComptablePage() {
   const { t } = useLanguage()
@@ -16,6 +16,7 @@ export default function PartnerComptablePage() {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
+  const [openFaq, setOpenFaq] = useState(null)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -45,6 +46,13 @@ export default function PartnerComptablePage() {
       setLoading(false)
     }
   }
+
+  const faqs = [
+    { q: t('partner.faq1Q'), a: t('partner.faq1A') },
+    { q: t('partner.faq2Q'), a: t('partner.faq2A') },
+    { q: t('partner.faq3Q'), a: t('partner.faq3A') },
+    { q: t('partner.faq4Q'), a: t('partner.faq4A') }
+  ]
 
   if (success) {
     return (
@@ -109,10 +117,16 @@ export default function PartnerComptablePage() {
     }}>
       <div style={{
         background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)',
-        padding: '60px 20px',
+        padding: '40px 20px 60px',
         textAlign: 'center'
       }}>
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+          <img 
+            src="/logo-ponia-full.png" 
+            alt="PONIA" 
+            style={{ height: '50px', marginBottom: '24px' }}
+          />
+          
           <div style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -128,27 +142,99 @@ export default function PartnerComptablePage() {
             </span>
           </div>
           
-          <h1 style={{ fontSize: '42px', fontWeight: '800', color: 'white', marginBottom: '16px', lineHeight: '1.2' }}>
+          <h1 style={{ fontSize: '38px', fontWeight: '800', color: 'white', marginBottom: '16px', lineHeight: '1.2' }}>
             {t('partner.heroTitle')}
           </h1>
           
-          <p style={{ fontSize: '20px', color: '#9ca3af', maxWidth: '600px', margin: '0 auto 32px', lineHeight: '1.6' }}>
+          <p style={{ fontSize: '18px', color: '#9ca3af', maxWidth: '600px', margin: '0 auto 32px', lineHeight: '1.6' }}>
             {t('partner.heroSubtitle')}
           </p>
           
           <div style={{
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '12px',
+            gap: '16px',
             background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-            padding: '16px 32px',
-            borderRadius: '16px'
+            padding: '20px 36px',
+            borderRadius: '20px',
+            boxShadow: '0 10px 40px rgba(245,158,11,0.3)'
           }}>
-            <Euro size={32} color="white" />
+            <Euro size={36} color="white" />
             <div style={{ textAlign: 'left' }}>
-              <div style={{ fontSize: '32px', fontWeight: '800', color: 'white' }}>50%</div>
-              <div style={{ fontSize: '14px', color: 'rgba(255,255,255,0.9)' }}>{t('partner.commissionLabel')}</div>
+              <div style={{ fontSize: '36px', fontWeight: '800', color: 'white' }}>50%</div>
+              <div style={{ fontSize: '14px', color: 'rgba(255,255,255,0.9)', fontWeight: '500' }}>
+                {t('partner.commissionLabel')}
+              </div>
             </div>
+            <div style={{
+              background: 'rgba(255,255,255,0.2)',
+              padding: '8px 14px',
+              borderRadius: '10px',
+              marginLeft: '8px'
+            }}>
+              <div style={{ fontSize: '16px', fontWeight: '700', color: 'white' }}>6 {t('partner.months')}</div>
+              <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.8)' }}>{t('partner.recurring')}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{
+        background: 'white',
+        padding: '40px 20px',
+        borderBottom: '1px solid #e5e7eb'
+      }}>
+        <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+          <h2 style={{ fontSize: '24px', fontWeight: '700', color: '#1a1a1a', textAlign: 'center', marginBottom: '40px' }}>
+            {t('partner.howItWorksTitle')}
+          </h2>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '24px' }}>
+            {[
+              { step: '1', icon: User, title: t('partner.step1Title'), desc: t('partner.step1Desc') },
+              { step: '2', icon: Gift, title: t('partner.step2Title'), desc: t('partner.step2Desc') },
+              { step: '3', icon: Users, title: t('partner.step3Title'), desc: t('partner.step3Desc') },
+              { step: '4', icon: Euro, title: t('partner.step4Title'), desc: t('partner.step4Desc') }
+            ].map((item, i) => (
+              <div key={i} style={{ textAlign: 'center', position: 'relative' }}>
+                <div style={{
+                  width: '60px',
+                  height: '60px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 16px',
+                  position: 'relative'
+                }}>
+                  <item.icon size={28} color="white" />
+                  <div style={{
+                    position: 'absolute',
+                    top: '-8px',
+                    right: '-8px',
+                    width: '24px',
+                    height: '24px',
+                    borderRadius: '50%',
+                    background: '#1a1a1a',
+                    color: 'white',
+                    fontSize: '12px',
+                    fontWeight: '700',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    {item.step}
+                  </div>
+                </div>
+                <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#1a1a1a', marginBottom: '8px' }}>
+                  {item.title}
+                </h3>
+                <p style={{ fontSize: '14px', color: '#666', lineHeight: '1.5' }}>
+                  {item.desc}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -164,9 +250,9 @@ export default function PartnerComptablePage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               {[
                 { icon: Euro, title: t('partner.benefit1Title'), desc: t('partner.benefit1Desc') },
-                { icon: Users, title: t('partner.benefit2Title'), desc: t('partner.benefit2Desc') },
+                { icon: Clock, title: t('partner.benefit2Title'), desc: t('partner.benefit2Desc') },
                 { icon: TrendingUp, title: t('partner.benefit3Title'), desc: t('partner.benefit3Desc') },
-                { icon: CheckCircle, title: t('partner.benefit4Title'), desc: t('partner.benefit4Desc') }
+                { icon: Shield, title: t('partner.benefit4Title'), desc: t('partner.benefit4Desc') }
               ].map((benefit, i) => (
                 <div key={i} style={{
                   display: 'flex',
@@ -213,6 +299,31 @@ export default function PartnerComptablePage() {
               <p style={{ fontSize: '14px', color: '#78350f', lineHeight: '1.6' }}>
                 {t('partner.exampleText')}
               </p>
+              <div style={{
+                marginTop: '16px',
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '12px'
+              }}>
+                <div style={{
+                  background: 'rgba(255,255,255,0.7)',
+                  padding: '12px',
+                  borderRadius: '10px',
+                  textAlign: 'center'
+                }}>
+                  <div style={{ fontSize: '24px', fontWeight: '700', color: '#92400e' }}>1 242€</div>
+                  <div style={{ fontSize: '12px', color: '#78350f' }}>{t('partner.earnings6Months')}</div>
+                </div>
+                <div style={{
+                  background: 'rgba(255,255,255,0.7)',
+                  padding: '12px',
+                  borderRadius: '10px',
+                  textAlign: 'center'
+                }}>
+                  <div style={{ fontSize: '24px', fontWeight: '700', color: '#92400e' }}>10 {t('partner.clientsWord')}</div>
+                  <div style={{ fontSize: '12px', color: '#78350f' }}>{t('partner.referredClients')}</div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -220,11 +331,15 @@ export default function PartnerComptablePage() {
             background: 'white',
             borderRadius: '24px',
             padding: '32px',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.1)'
+            boxShadow: '0 20px 60px rgba(0,0,0,0.1)',
+            height: 'fit-content'
           }}>
-            <h2 style={{ fontSize: '24px', fontWeight: '700', color: '#1a1a1a', marginBottom: '8px' }}>
-              {t('partner.formTitle')}
-            </h2>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+              <img src="/logo-ponia-icon.png" alt="PONIA" style={{ width: '32px', height: '32px' }} />
+              <h2 style={{ fontSize: '24px', fontWeight: '700', color: '#1a1a1a' }}>
+                {t('partner.formTitle')}
+              </h2>
+            </div>
             <p style={{ fontSize: '14px', color: '#666', marginBottom: '24px' }}>
               {t('partner.formSubtitle')}
             </p>
@@ -398,6 +513,58 @@ export default function PartnerComptablePage() {
             </form>
           </div>
         </div>
+
+        <div style={{ marginTop: '60px' }}>
+          <h2 style={{ fontSize: '24px', fontWeight: '700', color: '#1a1a1a', textAlign: 'center', marginBottom: '32px' }}>
+            <HelpCircle size={24} style={{ display: 'inline', marginRight: '12px', verticalAlign: 'middle' }} />
+            {t('partner.faqTitle')}
+          </h2>
+          
+          <div style={{ maxWidth: '700px', margin: '0 auto' }}>
+            {faqs.map((faq, i) => (
+              <div 
+                key={i}
+                style={{
+                  background: 'white',
+                  borderRadius: '12px',
+                  marginBottom: '12px',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+                  overflow: 'hidden'
+                }}
+              >
+                <button
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  style={{
+                    width: '100%',
+                    padding: '18px 20px',
+                    background: 'transparent',
+                    border: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    cursor: 'pointer',
+                    textAlign: 'left'
+                  }}
+                >
+                  <span style={{ fontSize: '15px', fontWeight: '600', color: '#1a1a1a' }}>
+                    {faq.q}
+                  </span>
+                  {openFaq === i ? <ChevronUp size={20} color="#666" /> : <ChevronDown size={20} color="#666" />}
+                </button>
+                {openFaq === i && (
+                  <div style={{
+                    padding: '0 20px 18px',
+                    fontSize: '14px',
+                    color: '#666',
+                    lineHeight: '1.6'
+                  }}>
+                    {faq.a}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       <div style={{
@@ -405,8 +572,9 @@ export default function PartnerComptablePage() {
         padding: '32px 20px',
         textAlign: 'center'
       }}>
+        <img src="/logo-ponia-full.png" alt="PONIA" style={{ height: '32px', marginBottom: '16px' }} />
         <p style={{ color: '#9ca3af', fontSize: '14px' }}>
-          PONIA AI - support@myponia.fr - myponia.fr
+          support@myponia.fr - myponia.fr
         </p>
       </div>
     </div>
