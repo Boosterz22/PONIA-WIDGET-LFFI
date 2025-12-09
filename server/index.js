@@ -2431,7 +2431,7 @@ app.post('/api/partners', async (req, res) => {
         const resend = new Resend(process.env.RESEND_API_KEY)
         
         // 1. Send confirmation email to partner (pending analysis)
-        await resend.emails.send({
+        const partnerEmailResult = await resend.emails.send({
           from: 'PONIA AI <noreply@myponia.fr>',
           to: email,
           subject: 'Votre demande de partenariat PONIA a bien été reçue',
@@ -2501,10 +2501,12 @@ app.post('/api/partners', async (req, res) => {
             </html>
           `
         })
+        console.log('Partner email result:', JSON.stringify(partnerEmailResult, null, 2))
         
         // 2. Send notification to admin
         const adminEmails = process.env.ADMIN_EMAILS ? process.env.ADMIN_EMAILS.split(',') : ['support@myponia.fr']
-        await resend.emails.send({
+        console.log('Sending admin notification to:', adminEmails)
+        const adminEmailResult = await resend.emails.send({
           from: 'PONIA AI <noreply@myponia.fr>',
           to: adminEmails,
           subject: `Nouveau partenaire comptable : ${companyName}`,
@@ -2567,6 +2569,7 @@ app.post('/api/partners', async (req, res) => {
             </html>
           `
         })
+        console.log('Admin email result:', JSON.stringify(adminEmailResult, null, 2))
         
         console.log('Partner emails sent successfully!')
       } catch (emailErr) {
