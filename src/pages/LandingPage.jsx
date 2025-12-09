@@ -613,6 +613,12 @@ export default function LandingPage() {
                     <strong style={{ color: '#FFD700', fontSize: '1.05rem' }}>Bon de commande intelligent en 1 clic</strong> — l'IA calcule exactement ce qu'il faut commander. <span style={{ color: 'var(--text-muted)' }}>Envoyez-le par WhatsApp ou email directement.</span>
                   </div>
                 </div>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                  <CheckCircle size={22} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
+                  <div>
+                    <strong style={{ color: '#FFD700', fontSize: '1.05rem' }}>Et plein d'autres fonctionnalités...</strong> — scan code-barres, historique des mouvements, alertes email personnalisées, multi-langues, et bien plus encore.
+                  </div>
+                </div>
               </div>
 
               <div style={{ 
