@@ -2624,6 +2624,8 @@ app.get('/api/admin/users-by-code', requireAdminCookie, async (req, res) => {
     ).length
 
     const totalRevenue = allUsers.reduce((sum, u) => {
+      const isInTrial = u.trialEndsAt && new Date(u.trialEndsAt) > now
+      if (isInTrial) return sum
       if (u.plan === 'standard') return sum + 49
       if (u.plan === 'pro') return sum + 69
       return sum

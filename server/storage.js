@@ -26,7 +26,8 @@ export async function createUser(userData) {
     clientNumber: clientNumber,
     referralCode: userData.referralCode,
     referredBy: userData.referredBy,
-    supabaseId: userData.supabaseId
+    supabaseId: userData.supabaseId,
+    trialEndsAt: userData.trialEndsAt || null
   }).returning()
   return result[0]
 }

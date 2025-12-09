@@ -99,7 +99,8 @@ export default function AdminPage() {
         referrerMap[user.referredBy].totalReferred++
         referrerMap[user.referredBy].users.push(user)
         
-        if (user.plan !== 'basique') {
+        const isInTrial = user.trialEndsAt && new Date(user.trialEndsAt) > new Date()
+        if (user.plan !== 'basique' && !isInTrial) {
           referrerMap[user.referredBy].paidUsers++
           const monthlyRevenue = user.plan === 'pro' ? 69 : user.plan === 'standard' ? 49 : 0
           referrerMap[user.referredBy].revenue += monthlyRevenue
