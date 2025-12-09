@@ -574,37 +574,43 @@ export default function LandingPage() {
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
                   <CheckCircle size={22} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
                   <div>
-                    <strong style={{ color: '#FFD700', fontSize: '1.05rem' }}>2 minutes chrono par jour</strong> avec l'application mobile ultra-simple (boutons +1, -5, +10). <span style={{ color: 'var(--text-muted)' }}>Aussi facile que d'envoyer un SMS. Même votre grand-mère comprendrait.</span>
+                    <strong style={{ color: '#FFD700', fontSize: '1.05rem' }}>PONIA Chat : votre assistant IA personnel</strong> — posez vos questions en langage naturel. <span style={{ color: 'var(--text-muted)' }}>"Qu'est-ce que je dois commander cette semaine ?" L'IA répond instantanément.</span>
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
                   <CheckCircle size={22} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
                   <div>
-                    <strong style={{ color: '#FFD700', fontSize: '1.05rem' }}>€670 économisés chaque mois</strong> — gaspillage réduit à €130/mois (-84%). <span style={{ color: 'var(--text-muted)' }}>C'est €8,040/an qui restent dans votre poche. De quoi faire de beaux investissements.</span>
+                    <strong style={{ color: '#FFD700', fontSize: '1.05rem' }}>7 heures gagnées chaque semaine</strong> — fini les comptages manuels et les commandes au pif. <span style={{ color: 'var(--text-muted)' }}>Votre temps économisé s'affiche en direct sur votre tableau de bord.</span>
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
                   <CheckCircle size={22} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
                   <div>
-                    <strong style={{ color: '#FFD700', fontSize: '1.05rem' }}>Zéro rupture garantie</strong> — l'IA vous alerte 3 jours AVANT que vous manquiez de quelque chose. <span style={{ color: 'var(--text-muted)' }}>Vos clients sont toujours satisfaits, votre réputation monte en flèche.</span>
+                    <strong style={{ color: '#FFD700', fontSize: '1.05rem' }}>€670 économisés chaque mois</strong> — gaspillage réduit à €130/mois (-84%). <span style={{ color: 'var(--text-muted)' }}>C'est €8,040/an qui restent dans votre poche.</span>
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
                   <CheckCircle size={22} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
                   <div>
-                    <strong style={{ color: '#FFD700', fontSize: '1.05rem' }}>Sérénité absolue 24/7</strong> : dormez tranquille, PONIA surveille tout pour vous jour et nuit. <span style={{ color: 'var(--text-muted)' }}>Fini le stress. Vous pouvez enfin profiter de vos soirées et weekends en paix.</span>
+                    <strong style={{ color: '#FFD700', fontSize: '1.05rem' }}>Suggestions IA proactives</strong> — alertes météo, péremptions, anomalies détectées automatiquement. <span style={{ color: 'var(--text-muted)' }}>L'IA anticipe vos besoins avant même que vous y pensiez.</span>
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
                   <CheckCircle size={22} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
                   <div>
-                    <strong style={{ color: '#FFD700', fontSize: '1.05rem' }}>Tout centralisé sur votre téléphone</strong> — plus de carnets, plus de post-its, plus d'Excel. <span style={{ color: 'var(--text-muted)' }}>Une seule app claire et organisée. C'est magique.</span>
+                    <strong style={{ color: '#FFD700', fontSize: '1.05rem' }}>Zéro rupture garantie</strong> — l'IA vous alerte 3 jours AVANT que vous manquiez de quelque chose. <span style={{ color: 'var(--text-muted)' }}>Vos clients sont toujours satisfaits.</span>
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
                   <CheckCircle size={22} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
                   <div>
-                    <strong style={{ color: '#FFD700', fontSize: '1.05rem' }}>Bon de commande intelligent généré en 1 clic</strong> — l'IA calcule exactement ce qu'il faut commander. <span style={{ color: 'var(--text-muted)' }}>Plus de devinettes. Précision mathématique basée sur vos vraies données.</span>
+                    <strong style={{ color: '#FFD700', fontSize: '1.05rem' }}>Sync automatique avec votre caisse</strong> — Square, Zettle, SumUp, Lightspeed connectés en 2 clics. <span style={{ color: 'var(--text-muted)' }}>Vos ventes mettent à jour votre stock automatiquement.</span>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                  <CheckCircle size={22} color="#FFD700" style={{ flexShrink: 0, marginTop: '0.3rem' }} />
+                  <div>
+                    <strong style={{ color: '#FFD700', fontSize: '1.05rem' }}>Bon de commande intelligent en 1 clic</strong> — l'IA calcule exactement ce qu'il faut commander. <span style={{ color: 'var(--text-muted)' }}>Envoyez-le par WhatsApp ou email directement.</span>
                   </div>
                 </div>
               </div>
@@ -617,10 +623,10 @@ export default function LandingPage() {
                 borderLeft: '4px solid #FFD700'
               }}>
                 <p style={{ margin: 0, fontSize: '1.15rem', fontWeight: 'bold', color: '#FFD700', marginBottom: '0.5rem' }}>
-                  ✨ Résultat : Vous gagnez €9,200/an + 420h de temps libre
+                  ✨ Résultat : 7h/semaine récupérées + €8,040/an économisés
                 </p>
                 <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-muted)' }}>
-                  Pour seulement €49/mois. C'est du ROI x15 — impossible de refuser.
+                  Pour seulement €49/mois. ROI x15 — l'IA PONIA travaille pour vous 24/7.
                 </p>
               </div>
             </div>
