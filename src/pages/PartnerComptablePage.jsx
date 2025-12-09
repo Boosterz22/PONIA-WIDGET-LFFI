@@ -122,9 +122,9 @@ export default function PartnerComptablePage() {
       }}>
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
           <img 
-            src="/logo-ponia-icon-yellow.png" 
+            src="/logo-ponia-full.png" 
             alt="PONIA" 
-            style={{ height: '80px', marginBottom: '24px' }}
+            style={{ height: '120px', marginBottom: '32px', display: 'block', margin: '0 auto 32px' }}
           />
           
           <div style={{
