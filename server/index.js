@@ -190,7 +190,7 @@ async function authenticateSupabaseUser(req, res, next) {
   }
 }
 
-// Trial enforcement middleware - block expired trials and free users from premium endpoints
+// Trial enforcement middleware - handles expired trials and plan limits
 async function enforceTrialStatus(req, res, next) {
   try {
     const user = await getUserBySupabaseId(req.supabaseUserId)
@@ -199,7 +199,10 @@ async function enforceTrialStatus(req, res, next) {
       return res.status(404).json({ error: 'Utilisateur non trouvé' })
     }
 
-    // Si l'utilisateur a un plan payant (standard ou pro) ET pas de trial en cours, laisser passer
+    // Attach user to request for limit checks
+    req.poniaUser = user
+
+    // Si l'utilisateur a un plan payant (standard ou pro) sans trial, laisser passer
     if ((user.plan === 'standard' || user.plan === 'pro') && !user.trialEndsAt) {
       return next()
     }
@@ -214,30 +217,47 @@ async function enforceTrialStatus(req, res, next) {
         return next()
       }
 
-      // Si trial expiré, downgrader vers basique et bloquer immédiatement
-      if (user.plan === 'pro' || user.plan === 'standard') {
-        await updateUser(user.id, { plan: 'basique' })
-      }
-      
+      // Trial expiré - bloquer immédiatement et forcer le choix
       return res.status(403).json({ 
         error: 'Essai gratuit expiré',
         trialExpired: true,
-        message: 'Votre essai de 14 jours est terminé. Passez à un plan payant pour continuer à utiliser PONIA.'
+        requiresChoice: true,
+        message: 'Votre essai de 14 jours est terminé. Choisissez un plan pour continuer.'
       })
     }
 
-    // Bloquer tous les utilisateurs basique sans trial
+    // Utilisateur basique (sans trial) - laisser passer avec limites
+    // Les limites sont vérifiées dans chaque endpoint
     if (user.plan === 'basique') {
-      return res.status(403).json({ 
-        error: 'Accès premium requis',
-        trialExpired: true,
-        message: 'Passez à un plan payant pour accéder à cette fonctionnalité.'
-      })
+      return next()
     }
 
     next()
   } catch (error) {
     console.error('Erreur vérification essai:', error)
+    return res.status(500).json({ error: 'Erreur serveur' })
+  }
+}
+
+// Middleware to block basique users from premium features (POS integrations)
+async function requirePremiumPlan(req, res, next) {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+    
+    if (user.plan === 'basique') {
+      return res.status(403).json({
+        error: 'Fonctionnalité premium requise',
+        upgradeRequired: true,
+        message: 'Les intégrations POS sont disponibles avec les plans Standard et Pro.'
+      })
+    }
+    
+    next()
+  } catch (error) {
+    console.error('Erreur vérification plan premium:', error)
     return res.status(500).json({ error: 'Erreur serveur' })
   }
 }
@@ -1521,6 +1541,30 @@ app.post('/api/products', authenticateSupabaseUser, enforceTrialStatus, async (r
       return res.status(404).json({ error: 'Utilisateur non trouvé' })
     }
     
+    // Basique plan: max 10 products
+    if (user.plan === 'basique') {
+      const existingProducts = await getProductsByUserId(user.id)
+      if (existingProducts.length >= 10) {
+        return res.status(403).json({ 
+          error: 'Limite atteinte',
+          limitReached: true,
+          message: 'Le plan Basique est limité à 10 produits. Passez à Standard ou Pro pour ajouter plus de produits.'
+        })
+      }
+    }
+    
+    // Standard plan: max 50 products
+    if (user.plan === 'standard') {
+      const existingProducts = await getProductsByUserId(user.id)
+      if (existingProducts.length >= 50) {
+        return res.status(403).json({ 
+          error: 'Limite atteinte',
+          limitReached: true,
+          message: 'Le plan Standard est limité à 50 produits. Passez à Pro pour des produits illimités.'
+        })
+      }
+    }
+    
     const productData = {
       name: req.body.name,
       category: req.body.category || null,
@@ -1951,6 +1995,65 @@ app.put('/api/users/plan', authenticateSupabaseUser, async (req, res) => {
     res.json({ user: updatedUser })
   } catch (error) {
     console.error('Erreur mise à jour plan:', error)
+    res.status(500).json({ error: 'Erreur serveur', message: error.message })
+  }
+})
+
+// Downgrade to Basique (used when trial expires and user doesn't want to pay)
+// This endpoint handles product deletion and plan change in one transaction
+app.post('/api/users/downgrade-to-basique', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+    
+    const { productsToKeep } = req.body
+    
+    // If user has products to manage, verify they selected exactly 10 or less
+    const userProducts = await getProductsByUserId(user.id)
+    
+    if (userProducts.length > 10) {
+      if (!productsToKeep || !Array.isArray(productsToKeep)) {
+        return res.status(400).json({ 
+          error: 'Sélection requise',
+          message: 'Vous devez sélectionner les 10 produits à garder',
+          productCount: userProducts.length
+        })
+      }
+      
+      if (productsToKeep.length !== 10) {
+        return res.status(400).json({ 
+          error: 'Sélection invalide',
+          message: 'Vous devez sélectionner exactement 10 produits à garder'
+        })
+      }
+      
+      // Delete products not in the keep list
+      const productsToDelete = userProducts.filter(p => !productsToKeep.includes(p.id))
+      
+      for (const product of productsToDelete) {
+        await db.delete(products).where(eq(products.id, product.id))
+      }
+      
+      console.log(`[DOWNGRADE] Deleted ${productsToDelete.length} products for user ${user.email}`)
+    }
+    
+    // Update plan to basique and clear trial
+    const updatedUser = await updateUser(user.id, { 
+      plan: 'basique',
+      trialEndsAt: null
+    })
+    
+    console.log(`[DOWNGRADE] User ${user.email} downgraded to basique`)
+    
+    res.json({ 
+      success: true,
+      user: updatedUser,
+      message: 'Plan mis à jour vers Basique'
+    })
+  } catch (error) {
+    console.error('Erreur downgrade to basique:', error)
     res.status(500).json({ error: 'Erreur serveur', message: error.message })
   }
 })

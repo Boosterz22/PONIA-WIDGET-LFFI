@@ -12,6 +12,7 @@ export function DataProvider({ children }) {
   const [timeSavedStats, setTimeSavedStats] = useState(null)
   const [trialExpired, setTrialExpired] = useState(false)
   const [trialEndsAt, setTrialEndsAt] = useState(null)
+  const [requiresChoice, setRequiresChoice] = useState(false)
   const [isInitialized, setIsInitialized] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
   
@@ -61,9 +62,10 @@ export function DataProvider({ children }) {
       
       const cachedTrial = localStorage.getItem('ponia_cache_trial')
       if (cachedTrial) {
-        const { expired, endsAt } = JSON.parse(cachedTrial)
+        const { expired, endsAt, requiresChoice: cached_requiresChoice } = JSON.parse(cachedTrial)
         setTrialExpired(expired)
         setTrialEndsAt(endsAt)
+        setRequiresChoice(cached_requiresChoice || false)
       }
       
       if (cachedTimeSaved) {
@@ -160,13 +162,16 @@ export function DataProvider({ children }) {
           const expired = trialEnd <= new Date()
           setTrialEndsAt(data.user.trialEndsAt)
           setTrialExpired(expired)
+          setRequiresChoice(expired)
           localStorage.setItem('ponia_cache_trial', JSON.stringify({
             expired,
-            endsAt: data.user.trialEndsAt
+            endsAt: data.user.trialEndsAt,
+            requiresChoice: expired
           }))
         } else {
           setTrialExpired(false)
           setTrialEndsAt(null)
+          setRequiresChoice(false)
         }
         
         return data.user
@@ -260,6 +265,7 @@ export function DataProvider({ children }) {
         setTimeSavedStats(null)
         setTrialExpired(false)
         setTrialEndsAt(null)
+        setRequiresChoice(false)
         localStorage.removeItem('ponia_cache_products')
         localStorage.removeItem('ponia_cache_userData')
         localStorage.removeItem('ponia_cache_timeSaved')
@@ -270,6 +276,12 @@ export function DataProvider({ children }) {
     return () => subscription.unsubscribe()
   }, [refreshAll])
 
+  const clearTrialExpired = useCallback(() => {
+    setTrialExpired(false)
+    setRequiresChoice(false)
+    localStorage.removeItem('ponia_cache_trial')
+  }, [])
+
   const value = {
     products,
     stockHistory,
@@ -277,6 +289,7 @@ export function DataProvider({ children }) {
     timeSavedStats,
     trialExpired,
     trialEndsAt,
+    requiresChoice,
     isInitialized,
     isRefreshing,
     fetchProducts,
@@ -286,7 +299,8 @@ export function DataProvider({ children }) {
     refreshAll,
     updateProduct,
     addProduct,
-    removeProduct
+    removeProduct,
+    clearTrialExpired
   }
 
   return (

@@ -30,9 +30,32 @@ import IntegrationsPage from './pages/IntegrationsPage'
 import ProductMappingPage from './pages/ProductMappingPage'
 import PartnerComptablePage from './pages/PartnerComptablePage'
 import PartnerDashboardPage from './pages/PartnerDashboardPage'
+import DemoBlockerPage from './pages/DemoBlockerPage'
 import { supabase } from './services/supabase'
 import { LanguageProvider } from './contexts/LanguageContext'
-import { DataProvider } from './contexts/DataContext'
+import { DataProvider, useData } from './contexts/DataContext'
+import TrialExpiredBlocker from './components/TrialExpiredBlocker'
+
+function TrialBlockerWrapper({ children }) {
+  const { requiresChoice, clearTrialExpired, userData } = useData()
+  
+  const isAdmin = userData?.businessType === 'admin'
+  const isPaidUser = userData?.plan === 'standard' || userData?.plan === 'pro'
+  const hasNoTrial = !userData?.trialEndsAt
+  
+  const shouldBlock = requiresChoice && !isAdmin && !(isPaidUser && hasNoTrial)
+  
+  if (shouldBlock) {
+    return (
+      <>
+        {children}
+        <TrialExpiredBlocker onPlanSelected={clearTrialExpired} />
+      </>
+    )
+  }
+  
+  return children
+}
 
 function App() {
   const [session, setSession] = useState(null)
@@ -118,6 +141,7 @@ function App() {
   return (
     <LanguageProvider>
       <DataProvider>
+        <TrialBlockerWrapper>
         <BrowserRouter>
           <Routes>
         <Route 
@@ -213,8 +237,13 @@ function App() {
           path="/partenaire/dashboard" 
           element={<PartnerDashboardPage />} 
         />
+        <Route 
+          path="/demo-blocker" 
+          element={<DemoBlockerPage />} 
+        />
           </Routes>
         </BrowserRouter>
+        </TrialBlockerWrapper>
       </DataProvider>
     </LanguageProvider>
   )
