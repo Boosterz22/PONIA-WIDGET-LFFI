@@ -121,11 +121,13 @@ export default function PartnerComptablePage() {
         textAlign: 'center'
       }}>
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-          <img 
-            src="/logo-ponia-full.png" 
-            alt="PONIA" 
-            style={{ height: '120px', marginBottom: '32px', display: 'block', margin: '0 auto 32px' }}
-          />
+          <Link to="/" style={{ display: 'block', margin: '0 auto 32px' }}>
+            <img 
+              src="/logo-ponia-full.png" 
+              alt="PONIA" 
+              style={{ height: '120px', display: 'block', margin: '0 auto', cursor: 'pointer' }}
+            />
+          </Link>
           
           <div style={{
             display: 'inline-flex',
@@ -333,7 +335,7 @@ export default function PartnerComptablePage() {
             height: 'fit-content'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-              <img src="/logo-ponia-icon.png" alt="PONIA" style={{ width: '32px', height: '32px' }} />
+              <Link to="/"><img src="/logo-ponia-icon.png" alt="PONIA" style={{ width: '32px', height: '32px', cursor: 'pointer' }} /></Link>
               <h2 style={{ fontSize: '24px', fontWeight: '700', color: '#1a1a1a' }}>
                 {t('partner.formTitle')}
               </h2>
@@ -572,7 +574,7 @@ export default function PartnerComptablePage() {
       }}>
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
-            <img src="/logo-ponia-icon-yellow.png" alt="PONIA" style={{ height: '50px' }} />
+            <Link to="/"><img src="/logo-ponia-icon-yellow.png" alt="PONIA" style={{ height: '50px', cursor: 'pointer' }} /></Link>
           </div>
           
           <p style={{ color: '#9ca3af', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
