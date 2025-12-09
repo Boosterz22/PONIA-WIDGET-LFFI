@@ -2423,7 +2423,9 @@ app.post('/api/partners', async (req, res) => {
     }).returning()
 
     // Send emails
+    console.log('Checking RESEND_API_KEY for partner emails...')
     if (process.env.RESEND_API_KEY) {
+      console.log('RESEND_API_KEY found, sending partner emails...')
       try {
         const { Resend } = await import('resend')
         const resend = new Resend(process.env.RESEND_API_KEY)
@@ -2566,9 +2568,12 @@ app.post('/api/partners', async (req, res) => {
           `
         })
         
+        console.log('Partner emails sent successfully!')
       } catch (emailErr) {
         console.error('Error sending partner emails:', emailErr)
       }
+    } else {
+      console.log('RESEND_API_KEY not found, skipping emails')
     }
 
     res.json({ 
