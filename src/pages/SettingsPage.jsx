@@ -3,8 +3,10 @@ import { useNavigate, Link } from 'react-router-dom'
 import { Crown, Mail, Lock, Trash2, Briefcase, Bell, ChevronRight } from 'lucide-react'
 import { supabase } from '../services/supabase'
 import Navigation from '../components/Navigation'
+import { useLanguage } from '../contexts/LanguageContext'
 
 export default function SettingsPage({ session }) {
+  const { t } = useLanguage()
   const navigate = useNavigate()
   const [email, setEmail] = useState(session.user.email)
   const [newPassword, setNewPassword] = useState('')
@@ -43,11 +45,12 @@ export default function SettingsPage({ session }) {
     }
   }
 
-  const planInfo = {
-    basique: { name: 'Basique', color: '#22c55e', price: '€0/mois', features: ['10 produits max', 'Alertes basiques', 'Support email'] },
-    standard: { name: 'Standard', color: '#FFA500', price: '€49/mois', features: ['50 produits max', 'IA prédictive 7 jours', 'Chat AI', 'Support prioritaire'] },
-    pro: { name: 'Pro', color: '#a855f7', price: '€69/mois', features: ['Produits illimités', 'IA prédictive 30 jours', 'Multi-magasins', 'Support VIP 24/7'] }
-  }
+  const getPlanInfo = () => ({
+    basique: { name: t('plans.basic'), color: '#22c55e', price: `€0${t('common.perMonth')}`, features: t('plans.basicFeatures') },
+    standard: { name: t('plans.standard'), color: '#FFA500', price: `€49${t('common.perMonth')}`, features: t('plans.standardFeatures') },
+    pro: { name: t('plans.pro'), color: '#a855f7', price: `€69${t('common.perMonth')}`, features: t('plans.proFeatures') }
+  })
+  const planInfo = getPlanInfo()
 
   const handleUpdateEmail = async () => {
     setLoading(true)
@@ -55,9 +58,9 @@ export default function SettingsPage({ session }) {
     try {
       const { error } = await supabase.auth.updateUser({ email })
       if (error) throw error
-      setMessage('✅ Email mis à jour ! Vérifiez votre nouvelle adresse.')
+      setMessage(`✅ ${t('settings.emailUpdated')}`)
     } catch (error) {
-      setMessage('❌ Erreur : ' + error.message)
+      setMessage(`❌ ${t('common.error')}: ${error.message}`)
     } finally {
       setLoading(false)
     }
@@ -65,11 +68,11 @@ export default function SettingsPage({ session }) {
 
   const handleUpdatePassword = async () => {
     if (newPassword !== confirmPassword) {
-      setMessage('❌ Les mots de passe ne correspondent pas')
+      setMessage(`❌ ${t('settings.passwordMismatch')}`)
       return
     }
     if (newPassword.length < 6) {
-      setMessage('❌ Le mot de passe doit contenir au moins 6 caractères')
+      setMessage(`❌ ${t('settings.passwordTooShort')}`)
       return
     }
 
@@ -78,11 +81,11 @@ export default function SettingsPage({ session }) {
     try {
       const { error } = await supabase.auth.updateUser({ password: newPassword })
       if (error) throw error
-      setMessage('✅ Mot de passe mis à jour avec succès !')
+      setMessage(`✅ ${t('settings.passwordUpdated')}`)
       setNewPassword('')
       setConfirmPassword('')
     } catch (error) {
-      setMessage('❌ Erreur : ' + error.message)
+      setMessage(`❌ ${t('common.error')}: ${error.message}`)
     } finally {
       setLoading(false)
     }
@@ -90,7 +93,7 @@ export default function SettingsPage({ session }) {
 
   const handleUpdateBusinessInfo = async () => {
     if (!businessName.trim()) {
-      setMessage('❌ Le nom du commerce est requis')
+      setMessage(`❌ ${t('settings.businessNameRequired')}`)
       return
     }
 
@@ -113,15 +116,15 @@ export default function SettingsPage({ session }) {
       })
 
       if (response.ok) {
-        setMessage('✅ Informations mises à jour avec succès !')
+        setMessage(`✅ ${t('settings.infoUpdated')}`)
         localStorage.setItem('ponia_business_type', businessType)
         await loadUserData()
       } else {
         const error = await response.json()
-        setMessage(`❌ Erreur: ${error.message || 'Impossible de mettre à jour'}`)
+        setMessage(`❌ ${t('common.error')}: ${error.message}`)
       }
     } catch (error) {
-      setMessage('❌ Erreur : ' + error.message)
+      setMessage(`❌ ${t('common.error')}: ${error.message}`)
     } finally {
       setLoading(false)
     }
@@ -145,14 +148,14 @@ export default function SettingsPage({ session }) {
 
       if (response.ok) {
         localStorage.setItem('ponia_user_plan', newPlan)
-        setMessage(`✅ Plan changé vers ${planInfo[newPlan].name} !`)
+        setMessage(`✅ ${t('settings.planChanged')} ${planInfo[newPlan].name}!`)
         setTimeout(() => window.location.reload(), 800)
       } else {
         const error = await response.json()
-        setMessage(`❌ ${error.message || 'Mode test désactivé en production. Utilisez /upgrade'}`)
+        setMessage(`❌ ${t('common.error')}: ${error.message}`)
       }
     } catch (error) {
-      setMessage('❌ Erreur : ' + error.message)
+      setMessage(`❌ ${t('common.error')}: ${error.message}`)
     } finally {
       setLoading(false)
     }
@@ -165,10 +168,10 @@ export default function SettingsPage({ session }) {
       <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1rem' }}>
         <div style={{ marginBottom: '2rem' }}>
           <h1 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '0.5rem' }}>
-            Paramètres
+            {t('settings.title')}
           </h1>
           <p style={{ color: '#6B7280', fontSize: '0.95rem' }}>
-            Gérez votre compte et vos préférences
+            {t('settings.subtitle')}
           </p>
         </div>
 
@@ -189,7 +192,7 @@ export default function SettingsPage({ session }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
             <Crown size={24} color={planInfo[userPlan].color} />
             <h2 style={{ fontSize: '1.25rem', fontWeight: '600', margin: 0 }}>
-              Plan actuel
+              {t('settings.currentPlan')}
             </h2>
           </div>
 
@@ -216,14 +219,14 @@ export default function SettingsPage({ session }) {
                   style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
                 >
                   <Crown size={16} />
-                  Upgrader maintenant
+                  {t('settings.upgradeNow')}
                 </button>
               )}
             </div>
 
             <div style={{ borderTop: '1px solid #E5E7EB', paddingTop: '1rem' }}>
               <p style={{ fontSize: '0.875rem', fontWeight: '600', color: '#6B7280', marginBottom: '0.5rem' }}>
-                Fonctionnalités incluses :
+                {t('settings.featuresIncluded')}
               </p>
               {planInfo[userPlan].features.map((feature, idx) => (
                 <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
@@ -239,19 +242,19 @@ export default function SettingsPage({ session }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
             <Briefcase size={24} color="#111827" />
             <h2 style={{ fontSize: '1.25rem', fontWeight: '600', margin: 0 }}>
-              Informations du commerce
+              {t('settings.businessInfo')}
             </h2>
           </div>
 
           <div style={{ marginBottom: '1rem' }}>
             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>
-              Nom du commerce
+              {t('settings.businessName')}
             </label>
             <input
               type="text"
               value={businessName}
               onChange={(e) => setBusinessName(e.target.value)}
-              placeholder="Ex: Boulangerie Martin"
+              placeholder={t('settings.businessNamePlaceholder')}
               style={{
                 width: '100%',
                 padding: '0.75rem',
@@ -264,7 +267,7 @@ export default function SettingsPage({ session }) {
 
           <div style={{ marginBottom: '1rem' }}>
             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>
-              Type de commerce
+              {t('settings.businessType')}
             </label>
             <select
               value={businessType}
@@ -277,16 +280,16 @@ export default function SettingsPage({ session }) {
                 fontSize: '0.95rem'
               }}
             >
-              <option value="">Sélectionnez un type</option>
-              <option value="boulangerie">Boulangerie</option>
-              <option value="patisserie">Pâtisserie</option>
-              <option value="restaurant">Restaurant</option>
-              <option value="bar">Bar/Café</option>
-              <option value="cave">Cave à vin</option>
-              <option value="epicerie">Épicerie</option>
-              <option value="traiteur">Traiteur</option>
-              <option value="fromagerie">Fromagerie</option>
-              <option value="boucherie">Boucherie</option>
+              <option value="">{t('settings.selectType')}</option>
+              <option value="boulangerie">{t('settings.bakery')}</option>
+              <option value="patisserie">{t('settings.pastry')}</option>
+              <option value="restaurant">{t('settings.restaurant')}</option>
+              <option value="bar">{t('settings.bar')}</option>
+              <option value="cave">{t('settings.wineShop')}</option>
+              <option value="epicerie">{t('settings.grocery')}</option>
+              <option value="traiteur">{t('settings.caterer')}</option>
+              <option value="fromagerie">{t('settings.cheeseShop')}</option>
+              <option value="boucherie">{t('settings.butcher')}</option>
             </select>
           </div>
 
@@ -296,7 +299,7 @@ export default function SettingsPage({ session }) {
             className="btn btn-primary"
             style={{ opacity: !businessName.trim() ? 0.5 : 1 }}
           >
-            {loading ? 'Mise à jour...' : 'Mettre à jour'}
+            {loading ? t('settings.updating') : t('settings.update')}
           </button>
         </div>
 
@@ -326,10 +329,10 @@ export default function SettingsPage({ session }) {
                 </div>
                 <div>
                   <h3 style={{ fontSize: '1.125rem', fontWeight: '600', margin: 0, color: '#111827' }}>
-                    Alertes Email
+                    {t('settings.emailAlerts')}
                   </h3>
                   <p style={{ fontSize: '0.875rem', color: '#6B7280', margin: '0.25rem 0 0 0' }}>
-                    Stocks bas, dates de péremption, notifications automatiques
+                    {t('settings.emailAlertsDesc')}
                   </p>
                 </div>
               </div>
@@ -342,13 +345,13 @@ export default function SettingsPage({ session }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
             <Mail size={24} color="#111827" />
             <h2 style={{ fontSize: '1.25rem', fontWeight: '600', margin: 0 }}>
-              Email
+              {t('settings.email')}
             </h2>
           </div>
 
           <div style={{ marginBottom: '1rem' }}>
             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>
-              Adresse email
+              {t('settings.emailAddress')}
             </label>
             <input
               type="email"
@@ -370,7 +373,7 @@ export default function SettingsPage({ session }) {
             className="btn btn-primary"
             style={{ opacity: email === session.user.email ? 0.5 : 1 }}
           >
-            {loading ? 'Mise à jour...' : 'Mettre à jour l\'email'}
+            {loading ? t('settings.updating') : t('settings.updateEmail')}
           </button>
         </div>
 
@@ -378,19 +381,19 @@ export default function SettingsPage({ session }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
             <Lock size={24} color="#111827" />
             <h2 style={{ fontSize: '1.25rem', fontWeight: '600', margin: 0 }}>
-              Mot de passe
+              {t('settings.password')}
             </h2>
           </div>
 
           <div style={{ marginBottom: '1rem' }}>
             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>
-              Nouveau mot de passe
+              {t('settings.newPassword')}
             </label>
             <input
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="Minimum 6 caractères"
+              placeholder={t('settings.minChars')}
               style={{
                 width: '100%',
                 padding: '0.75rem',
@@ -403,13 +406,13 @@ export default function SettingsPage({ session }) {
 
           <div style={{ marginBottom: '1rem' }}>
             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.5rem' }}>
-              Confirmer le mot de passe
+              {t('settings.confirmPassword')}
             </label>
             <input
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Re-tapez le mot de passe"
+              placeholder={t('settings.retypePassword')}
               style={{
                 width: '100%',
                 padding: '0.75rem',
@@ -426,7 +429,7 @@ export default function SettingsPage({ session }) {
             className="btn btn-primary"
             style={{ opacity: !newPassword || !confirmPassword ? 0.5 : 1 }}
           >
-            {loading ? 'Mise à jour...' : 'Changer le mot de passe'}
+            {loading ? t('settings.updating') : t('settings.changePassword')}
           </button>
         </div>
 
@@ -434,18 +437,18 @@ export default function SettingsPage({ session }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
             <Trash2 size={24} color="#EF4444" />
             <h2 style={{ fontSize: '1.25rem', fontWeight: '600', margin: 0, color: '#EF4444' }}>
-              Zone de danger
+              {t('settings.dangerZone')}
             </h2>
           </div>
 
           <p style={{ fontSize: '0.875rem', color: '#6B7280', marginBottom: '1rem' }}>
-            La suppression de votre compte est définitive et irréversible. Toutes vos données seront perdues.
+            {t('settings.deleteWarning')}
           </p>
 
           <button
             onClick={() => {
-              if (confirm('Êtes-vous ABSOLUMENT sûr de vouloir supprimer votre compte ? Cette action est IRRÉVERSIBLE.')) {
-                alert('Fonctionnalité de suppression de compte à venir. Contactez le support pour le moment.')
+              if (confirm(t('settings.deleteConfirm'))) {
+                alert(t('settings.deleteFeature'))
               }
             }}
             style={{
@@ -459,7 +462,7 @@ export default function SettingsPage({ session }) {
               cursor: 'pointer'
             }}
           >
-            Supprimer mon compte
+            {t('settings.deleteAccount')}
           </button>
         </div>
       </div>

@@ -1,7 +1,9 @@
 import React from 'react'
 import { Clock, TrendingUp, CheckCircle, Recycle, Euro } from 'lucide-react'
+import { useLanguage } from '../contexts/LanguageContext'
 
 export default function TimeSavedWidget({ timeSavedMinutes = 0, moneyValue = 0, stats = {} }) {
+  const { t } = useLanguage()
   const hours = Math.floor(timeSavedMinutes / 60)
   const minutes = timeSavedMinutes % 60
 
@@ -12,6 +14,9 @@ export default function TimeSavedWidget({ timeSavedMinutes = 0, moneyValue = 0, 
     return `${minutes} min`
   }
 
+  const monthlyHours = Math.floor(timeSavedMinutes * 4 / 60)
+  const monthlyMinutes = Math.floor((timeSavedMinutes * 4) % 60)
+
   return (
     <div className="card" style={{
       padding: 0,
@@ -21,7 +26,6 @@ export default function TimeSavedWidget({ timeSavedMinutes = 0, moneyValue = 0, 
       overflow: 'hidden',
       position: 'relative'
     }}>
-      {/* Decorative background */}
       <div style={{
         position: 'absolute',
         top: 0,
@@ -33,7 +37,6 @@ export default function TimeSavedWidget({ timeSavedMinutes = 0, moneyValue = 0, 
       }} />
 
       <div style={{ padding: '1.5rem', position: 'relative', zIndex: 1 }}>
-        {/* Header */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
@@ -49,12 +52,11 @@ export default function TimeSavedWidget({ timeSavedMinutes = 0, moneyValue = 0, 
           </div>
           <div>
             <h3 style={{ fontSize: '1rem', fontWeight: '600', margin: 0, marginBottom: '0.25rem' }}>
-              CETTE SEMAINE, PONIA VOUS A FAIT GAGNER :
+              {t('timeSaved.title')}
             </h3>
           </div>
         </div>
 
-        {/* Main Stats */}
         <div style={{ marginBottom: '1.5rem' }}>
           <div style={{
             fontSize: '3rem',
@@ -73,11 +75,10 @@ export default function TimeSavedWidget({ timeSavedMinutes = 0, moneyValue = 0, 
             gap: '0.5rem'
           }}>
             <Euro size={20} />
-            <span>≈ {moneyValue}€ de temps récupéré</span>
+            <span>≈ {moneyValue}€ {t('timeSaved.recovered')}</span>
           </div>
         </div>
 
-        {/* Additional Stats Grid */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
@@ -93,7 +94,7 @@ export default function TimeSavedWidget({ timeSavedMinutes = 0, moneyValue = 0, 
               marginBottom: '0.25rem'
             }}>
               <TrendingUp size={16} color="#10B981" />
-              <span style={{ fontSize: '0.75rem', opacity: 0.7 }}>CA optimisé</span>
+              <span style={{ fontSize: '0.75rem', opacity: 0.7 }}>{t('timeSaved.caOptimized')}</span>
             </div>
             <div style={{ fontSize: '1rem', fontWeight: '600' }}>
               +{stats.caOptimized || 0}%
@@ -108,7 +109,7 @@ export default function TimeSavedWidget({ timeSavedMinutes = 0, moneyValue = 0, 
               marginBottom: '0.25rem'
             }}>
               <CheckCircle size={16} color="#10B981" />
-              <span style={{ fontSize: '0.75rem', opacity: 0.7 }}>Ruptures évitées</span>
+              <span style={{ fontSize: '0.75rem', opacity: 0.7 }}>{t('timeSaved.rupturesAvoided')}</span>
             </div>
             <div style={{ fontSize: '1rem', fontWeight: '600' }}>
               {stats.rupturesAvoided || 0}
@@ -123,7 +124,7 @@ export default function TimeSavedWidget({ timeSavedMinutes = 0, moneyValue = 0, 
               marginBottom: '0.25rem'
             }}>
               <Recycle size={16} color="#10B981" />
-              <span style={{ fontSize: '0.75rem', opacity: 0.7 }}>Économisé</span>
+              <span style={{ fontSize: '0.75rem', opacity: 0.7 }}>{t('timeSaved.wasteSaved')}</span>
             </div>
             <div style={{ fontSize: '1rem', fontWeight: '600' }}>
               {stats.wasteSaved || 0}€
@@ -131,7 +132,6 @@ export default function TimeSavedWidget({ timeSavedMinutes = 0, moneyValue = 0, 
           </div>
         </div>
 
-        {/* Monthly Summary */}
         <div style={{
           marginTop: '1.5rem',
           paddingTop: '1rem',
@@ -139,8 +139,8 @@ export default function TimeSavedWidget({ timeSavedMinutes = 0, moneyValue = 0, 
           fontSize: '0.875rem',
           opacity: 0.9
         }}>
-          <span style={{ opacity: 0.7 }}>Ce mois : </span>
-          <strong>{Math.floor(timeSavedMinutes * 4 / 60)}h{Math.floor((timeSavedMinutes * 4) % 60)}min = {moneyValue * 4}€</strong>
+          <span style={{ opacity: 0.7 }}>{t('timeSaved.thisMonth')} : </span>
+          <strong>{monthlyHours}h{monthlyMinutes}min = {moneyValue * 4}€</strong>
         </div>
       </div>
     </div>

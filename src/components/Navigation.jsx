@@ -8,25 +8,13 @@ import SuggestionsDrawer from './SuggestionsDrawer'
 import SuggestionsPopup from './SuggestionsPopup'
 import { useSuggestions } from '../hooks/useSuggestions'
 
-const businessTypeLabels = {
-  'bakery': 'Boulangerie / Pâtisserie',
-  'restaurant': 'Restaurant',
-  'bar': 'Bar / Café',
-  'wine': 'Cave à vin',
-  'grocery': 'Épicerie',
-  'butcher': 'Boucherie',
-  'fish': 'Poissonnerie',
-  'cheese': 'Fromagerie',
-  'hotel': 'Hôtel / Restauration',
-  'default': 'Mon Commerce'
-}
 
 export default function Navigation() {
   const location = useLocation()
   const navigate = useNavigate()
   const { t } = useLanguage()
   const [showUserMenu, setShowUserMenu] = useState(false)
-  const [businessName, setBusinessName] = useState('Mon Commerce')
+  const [businessName, setBusinessName] = useState('')
   const [showSuggestionsDrawer, setShowSuggestionsDrawer] = useState(false)
   const menuRef = useRef(null)
   
@@ -46,11 +34,11 @@ export default function Navigation() {
   
   const navItems = [
     { path: '/chat', icon: MessageSquare, label: t('nav.poniaAI') },
-    { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { path: '/stock', icon: Package, label: 'Stocks' },
-    { path: '/insights', icon: Brain, label: 'Insights IA' },
-    { path: '/analytics', icon: Activity, label: 'Analytics' },
-    { path: '/history', icon: History, label: 'Historique' }
+    { path: '/dashboard', icon: LayoutDashboard, label: t('nav.dashboard') },
+    { path: '/stock', icon: Package, label: t('nav.stock') },
+    { path: '/insights', icon: Brain, label: t('nav.insights') },
+    { path: '/analytics', icon: Activity, label: t('nav.analytics') },
+    { path: '/history', icon: History, label: t('nav.history') }
   ]
 
   const isActive = (path) => location.pathname === path
@@ -80,10 +68,10 @@ export default function Navigation() {
 
       if (response.ok) {
         const data = await response.json()
-        setBusinessName(data.user.businessName || 'Mon Commerce')
+        setBusinessName(data.user.businessName || '')
       }
     } catch (error) {
-      console.error('Erreur chargement nom commerce:', error)
+      console.error('Error loading business name:', error)
     }
   }
 
@@ -186,7 +174,7 @@ export default function Navigation() {
               }}
               onMouseEnter={(e) => e.currentTarget.style.background = '#F3F4F6'}
               onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-              aria-label="Suggestions IA"
+              aria-label={t('nav.suggestionsAI')}
             >
               <Bell size={20} color={hasCritical ? '#dc2626' : '#6B7280'} />
               {unreadCount > 0 && (
@@ -269,7 +257,7 @@ export default function Navigation() {
                   onMouseLeave={(e) => e.target.style.background = 'transparent'}
                 >
                   <User size={16} />
-                  <span>Mon Profil</span>
+                  <span>{t('nav.myProfile')}</span>
                 </button>
 
                 <button
@@ -295,7 +283,7 @@ export default function Navigation() {
                   onMouseLeave={(e) => e.target.style.background = 'transparent'}
                 >
                   <Link2 size={16} />
-                  <span>Intégrations Caisse</span>
+                  <span>{t('nav.posIntegrations')}</span>
                 </button>
 
                 <button
@@ -321,7 +309,7 @@ export default function Navigation() {
                   onMouseLeave={(e) => e.target.style.background = 'transparent'}
                 >
                   <Gift size={16} />
-                  <span>Parrainage</span>
+                  <span>{t('nav.referral')}</span>
                 </button>
 
                 <button
@@ -347,7 +335,7 @@ export default function Navigation() {
                   onMouseLeave={(e) => e.target.style.background = 'transparent'}
                 >
                   <Mail size={16} />
-                  <span>Contact</span>
+                  <span>{t('nav.contact')}</span>
                 </button>
 
                 <button
@@ -373,7 +361,7 @@ export default function Navigation() {
                   onMouseLeave={(e) => e.target.style.background = 'transparent'}
                 >
                   <Settings size={16} />
-                  <span>Paramètres</span>
+                  <span>{t('nav.settings')}</span>
                 </button>
 
                 <div style={{ height: '1px', background: '#E5E7EB', margin: '0.5rem 0' }} />
@@ -402,7 +390,7 @@ export default function Navigation() {
                   onMouseLeave={(e) => e.target.style.background = 'transparent'}
                 >
                   <LogOut size={16} />
-                  <span>Déconnexion</span>
+                  <span>{t('nav.logout')}</span>
                 </button>
               </div>
             )}
