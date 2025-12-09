@@ -1,4 +1,6 @@
 import express from 'express'
+import cookieParser from 'cookie-parser'
+import jwt from 'jsonwebtoken'
 import OpenAI from 'openai'
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
@@ -155,6 +157,12 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
 
 // Middleware - JSON parser for all other routes
 app.use(express.json())
+app.use(cookieParser())
+
+const ADMIN_JWT_SECRET = process.env.SUPABASE_SERVICE_ROLE_KEY?.slice(0, 64)
+if (!ADMIN_JWT_SECRET) {
+  console.error('CRITICAL: SUPABASE_SERVICE_ROLE_KEY is required for admin JWT signing')
+}
 
 // Auth middleware to verify Supabase JWT and extract user
 async function authenticateSupabaseUser(req, res, next) {
@@ -2277,10 +2285,22 @@ app.post('/api/admin/auth', async (req, res) => {
 
     console.log(`[ADMIN AUTH] ✅ Connexion réussie pour ${adminEmail} depuis IP: ${clientIp}`)
 
+    const adminJwt = jwt.sign(
+      { email: adminEmail, isAdmin: true },
+      ADMIN_JWT_SECRET,
+      { expiresIn: '24h' }
+    )
+
+    res.cookie('ponia_admin_token', adminJwt, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 24 * 60 * 60 * 1000
+    })
+
     res.json({
-      access_token: verified.session.access_token,
-      refresh_token: verified.session.refresh_token,
-      user: verified.user
+      success: true,
+      message: 'Admin session created'
     })
   } catch (error) {
     console.error('Erreur admin auth:', error)
@@ -2288,7 +2308,7 @@ app.post('/api/admin/auth', async (req, res) => {
   }
 })
 
-// Admin check middleware
+// Admin check middleware (for Supabase session based auth)
 async function requireAdmin(req, res, next) {
   try {
     const user = await getUserBySupabaseId(req.supabaseUserId)
@@ -2314,8 +2334,50 @@ async function requireAdmin(req, res, next) {
   }
 }
 
-// Admin: Get all users and stats (SECURED with admin check)
-app.get('/api/admin/users', authenticateSupabaseUser, requireAdmin, async (req, res) => {
+// Admin check middleware (for JWT cookie-based auth)
+function requireAdminCookie(req, res, next) {
+  try {
+    const adminToken = req.cookies?.ponia_admin_token
+    
+    if (!adminToken) {
+      return res.status(401).json({ error: 'Session admin expirée' })
+    }
+
+    try {
+      const decoded = jwt.verify(adminToken, ADMIN_JWT_SECRET)
+      if (!decoded.isAdmin) {
+        return res.status(403).json({ error: 'Accès admin non autorisé' })
+      }
+      req.adminEmail = decoded.email
+      next()
+    } catch (jwtError) {
+      return res.status(401).json({ error: 'Session admin invalide' })
+    }
+  } catch (error) {
+    console.error('Erreur vérification admin cookie:', error)
+    return res.status(500).json({ error: 'Erreur serveur' })
+  }
+}
+
+// Admin: Get all users - DEPRECATED, use /api/admin/users-by-code with httpOnly cookie
+app.get('/api/admin/users', (req, res) => {
+  res.status(410).json({ 
+    error: 'This endpoint is deprecated. Please use /admin-login to access admin dashboard.' 
+  })
+})
+
+// Admin logout - clear the admin session cookie
+app.post('/api/admin/logout', (req, res) => {
+  res.clearCookie('ponia_admin_token', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict'
+  })
+  res.json({ success: true, message: 'Admin session ended' })
+})
+
+// Admin: Get all users and stats (SECURED with admin cookie)
+app.get('/api/admin/users-by-code', requireAdminCookie, async (req, res) => {
   try {
     const allUsers = await db.select().from(users).orderBy(users.createdAt)
 
@@ -2344,7 +2406,7 @@ app.get('/api/admin/users', authenticateSupabaseUser, requireAdmin, async (req, 
       }
     })
   } catch (error) {
-    console.error('Erreur admin users:', error)
+    console.error('Erreur admin users-by-code:', error)
     res.status(500).json({ error: 'Erreur serveur' })
   }
 })

@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { supabase } from '../services/supabase'
 import { Shield, ArrowRight } from 'lucide-react'
 
 export default function AdminLoginPage() {
@@ -18,6 +17,7 @@ export default function AdminLoginPage() {
       const response = await fetch('/api/admin/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ code: code.trim() })
       })
 
@@ -25,16 +25,6 @@ export default function AdminLoginPage() {
 
       if (!response.ok) {
         setError(data.message || 'Code admin invalide')
-        return
-      }
-
-      const { error: authError } = await supabase.auth.setSession({
-        access_token: data.access_token,
-        refresh_token: data.refresh_token
-      })
-
-      if (authError) {
-        setError('Erreur de connexion')
         return
       }
 

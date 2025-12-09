@@ -22,11 +22,8 @@ export default function AdminPage() {
 
   const loadAdminData = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) return
-
-      const response = await fetch('/api/admin/users', {
-        headers: { 'Authorization': `Bearer ${session.access_token}` }
+      const response = await fetch('/api/admin/users-by-code', {
+        credentials: 'include'
       })
 
       if (response.ok) {
@@ -34,9 +31,13 @@ export default function AdminPage() {
         setUsers(data.users)
         setStats(data.stats)
         calculateCommercialStats(data.users)
+      } else if (response.status === 401) {
+        window.location.href = '/admin-login'
+      } else {
+        console.error('Admin API error:', response.status)
       }
     } catch (error) {
-      console.error('Erreur chargement données admin:', error)
+      console.error('Error loading admin data:', error)
     } finally {
       setLoading(false)
     }
