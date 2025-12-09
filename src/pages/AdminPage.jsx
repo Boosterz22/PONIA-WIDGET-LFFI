@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Users, TrendingUp, CreditCard, ShoppingBag, Download, UserCheck, Percent, Euro, Filter } from 'lucide-react'
+import { Users, TrendingUp, CreditCard, ShoppingBag, Download, UserCheck, Percent, Euro, Filter, Briefcase, CheckCircle } from 'lucide-react'
 import Navigation from '../components/Navigation'
 import { supabase } from '../services/supabase'
 
@@ -15,9 +15,12 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState('users')
   const [referrerFilter, setReferrerFilter] = useState('')
   const [commercialStats, setCommercialStats] = useState([])
+  const [partners, setPartners] = useState([])
+  const [validatingPartner, setValidatingPartner] = useState(null)
 
   useEffect(() => {
     loadAdminData()
+    loadPartners()
   }, [])
 
   const loadAdminData = async () => {
@@ -40,6 +43,42 @@ export default function AdminPage() {
       console.error('Error loading admin data:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const loadPartners = async () => {
+    try {
+      const response = await fetch('/api/admin/partners', {
+        credentials: 'include'
+      })
+      if (response.ok) {
+        const data = await response.json()
+        setPartners(data.partners || [])
+      }
+    } catch (error) {
+      console.error('Error loading partners:', error)
+    }
+  }
+
+  const validatePartner = async (partnerId) => {
+    setValidatingPartner(partnerId)
+    try {
+      const response = await fetch(`/api/admin/partners/${partnerId}/validate`, {
+        method: 'POST',
+        credentials: 'include'
+      })
+      if (response.ok) {
+        await loadPartners()
+        alert('Partenaire activé ! Un email avec son code lui a été envoyé.')
+      } else {
+        const data = await response.json()
+        alert(data.error || 'Erreur lors de la validation')
+      }
+    } catch (error) {
+      console.error('Error validating partner:', error)
+      alert('Erreur lors de la validation')
+    } finally {
+      setValidatingPartner(null)
     }
   }
 
@@ -246,6 +285,36 @@ export default function AdminPage() {
                 fontWeight: '700'
               }}>
                 {commercialStats.length}
+              </span>
+            )}
+          </button>
+          <button
+            onClick={() => setActiveTab('partners')}
+            style={{
+              padding: '0.75rem 1.5rem',
+              background: activeTab === 'partners' ? '#000' : '#fff',
+              color: activeTab === 'partners' ? '#fff' : '#374151',
+              border: activeTab === 'partners' ? 'none' : '1px solid #E5E7EB',
+              borderRadius: '8px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
+            }}
+          >
+            <Briefcase size={18} />
+            Partenaires
+            {partners.filter(p => p.status === 'pending').length > 0 && (
+              <span style={{
+                background: '#EF4444',
+                color: '#fff',
+                padding: '0.125rem 0.5rem',
+                borderRadius: '10px',
+                fontSize: '0.75rem',
+                fontWeight: '700'
+              }}>
+                {partners.filter(p => p.status === 'pending').length}
               </span>
             )}
           </button>
@@ -579,6 +648,103 @@ export default function AdminPage() {
                   ))}
                 </div>
               </>
+            )}
+          </div>
+        )}
+
+        {/* Onglet Partenaires */}
+        {activeTab === 'partners' && (
+          <div className="card" style={{ padding: '1.5rem' }}>
+            <div style={{ marginBottom: '1.5rem' }}>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.5rem' }}>
+                Gestion des Partenaires Comptables
+              </h2>
+              <p style={{ color: '#6B7280', fontSize: '0.875rem' }}>
+                Validez les demandes de partenariat pour activer leurs comptes
+              </p>
+            </div>
+
+            {partners.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '3rem', color: '#6B7280' }}>
+                Aucune demande de partenariat
+              </div>
+            ) : (
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '2px solid #E5E7EB', textAlign: 'left' }}>
+                      <th style={{ padding: '0.75rem', fontWeight: '600' }}>Nom</th>
+                      <th style={{ padding: '0.75rem', fontWeight: '600' }}>Cabinet</th>
+                      <th style={{ padding: '0.75rem', fontWeight: '600' }}>Email</th>
+                      <th style={{ padding: '0.75rem', fontWeight: '600' }}>Téléphone</th>
+                      <th style={{ padding: '0.75rem', fontWeight: '600' }}>Code</th>
+                      <th style={{ padding: '0.75rem', fontWeight: '600' }}>Statut</th>
+                      <th style={{ padding: '0.75rem', fontWeight: '600' }}>Inscription</th>
+                      <th style={{ padding: '0.75rem', fontWeight: '600' }}>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {partners.map((partner, idx) => (
+                      <tr key={partner.id} style={{ 
+                        borderBottom: '1px solid #F3F4F6',
+                        background: idx % 2 === 0 ? '#fff' : '#F9FAFB'
+                      }}>
+                        <td style={{ padding: '1rem', fontWeight: '500' }}>{partner.name}</td>
+                        <td style={{ padding: '1rem' }}>{partner.companyName}</td>
+                        <td style={{ padding: '1rem' }}>{partner.email}</td>
+                        <td style={{ padding: '1rem', color: '#6B7280' }}>{partner.phone || '-'}</td>
+                        <td style={{ padding: '1rem', fontFamily: 'monospace', fontWeight: '600', color: '#FFD700' }}>
+                          {partner.referralCode}
+                        </td>
+                        <td style={{ padding: '1rem' }}>
+                          <span style={{
+                            background: partner.status === 'active' ? '#D1FAE5' : '#FEF3C7',
+                            color: partner.status === 'active' ? '#065F46' : '#92400E',
+                            padding: '0.25rem 0.75rem',
+                            borderRadius: '12px',
+                            fontSize: '0.75rem',
+                            fontWeight: '600'
+                          }}>
+                            {partner.status === 'active' ? 'Actif' : 'En attente'}
+                          </span>
+                        </td>
+                        <td style={{ padding: '1rem', color: '#6B7280' }}>
+                          {new Date(partner.createdAt).toLocaleDateString('fr-FR')}
+                        </td>
+                        <td style={{ padding: '1rem' }}>
+                          {partner.status === 'pending' ? (
+                            <button
+                              onClick={() => validatePartner(partner.id)}
+                              disabled={validatingPartner === partner.id}
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.5rem',
+                                background: validatingPartner === partner.id ? '#9CA3AF' : 'linear-gradient(135deg, #10B981, #059669)',
+                                color: '#fff',
+                                border: 'none',
+                                padding: '0.5rem 1rem',
+                                borderRadius: '8px',
+                                fontWeight: '600',
+                                fontSize: '0.875rem',
+                                cursor: validatingPartner === partner.id ? 'not-allowed' : 'pointer'
+                              }}
+                            >
+                              <CheckCircle size={16} />
+                              {validatingPartner === partner.id ? 'Validation...' : 'Valider'}
+                            </button>
+                          ) : (
+                            <span style={{ color: '#10B981', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                              <CheckCircle size={16} />
+                              Activé
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
         )}

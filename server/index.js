@@ -2645,6 +2645,119 @@ app.get('/api/admin/users-by-code', requireAdminCookie, async (req, res) => {
 })
 
 // ==========================================
+// ADMIN: PARTNER MANAGEMENT
+// ==========================================
+
+// Admin: Get all partners
+app.get('/api/admin/partners', requireAdminCookie, async (req, res) => {
+  try {
+    const allPartners = await db.select().from(partners).orderBy(partners.createdAt)
+    res.json({ partners: allPartners })
+  } catch (error) {
+    console.error('Error fetching partners:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// Admin: Validate a partner (change status to active and send activation email)
+app.post('/api/admin/partners/:id/validate', requireAdminCookie, async (req, res) => {
+  try {
+    const partnerId = parseInt(req.params.id)
+    const { resend: resendEmail } = req.query
+    
+    const [partner] = await db.select().from(partners).where(eq(partners.id, partnerId)).limit(1)
+    if (!partner) {
+      return res.status(404).json({ error: 'Partenaire non trouvé' })
+    }
+    
+    const isAlreadyActive = partner.status === 'active'
+    
+    if (isAlreadyActive && resendEmail !== 'true') {
+      return res.status(400).json({ error: 'Ce partenaire est déjà actif. Utilisez ?resend=true pour renvoyer l\'email.' })
+    }
+    
+    // Send activation email FIRST, before updating status
+    if (!process.env.RESEND_API_KEY) {
+      console.error('RESEND_API_KEY not configured - cannot send activation email')
+      return res.status(500).json({ error: 'Configuration email manquante. Contactez le support.' })
+    }
+    
+    const resend = new Resend(process.env.RESEND_API_KEY)
+      
+      const dashboardUrl = 'https://myponia.fr/partenaire/dashboard'
+      
+      await resend.emails.send({
+        from: 'PONIA <noreply@myponia.fr>',
+        to: partner.email,
+        subject: 'Votre compte partenaire PONIA est activé !',
+        html: `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8">
+          </head>
+          <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f9fafb;">
+            <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
+              <div style="text-align: center; margin-bottom: 24px;">
+                <img src="https://myponia.fr/logo-ponia-full.png" alt="PONIA" style="height: 50px;" />
+              </div>
+              
+              <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 16px 16px 0 0; padding: 32px; text-align: center;">
+                <h1 style="color: white; font-size: 28px; margin: 0;">Félicitations ${partner.name} !</h1>
+                <p style="color: rgba(255,255,255,0.9); font-size: 16px; margin-top: 8px;">Votre compte partenaire est maintenant actif</p>
+              </div>
+              
+              <div style="background: white; padding: 32px; border-radius: 0 0 16px 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+                <div style="background: #FFF7E6; border: 2px solid #FFD700; border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 24px;">
+                  <p style="color: #92400e; font-size: 14px; margin: 0 0 8px 0; font-weight: 600;">Votre code de parrainage exclusif</p>
+                  <p style="font-size: 32px; font-weight: 800; color: #000; margin: 0; letter-spacing: 2px;">${partner.referralCode}</p>
+                </div>
+                
+                <p style="color: #374151; font-size: 15px; line-height: 1.6; margin-bottom: 20px;">
+                  Partagez ce code avec vos clients commerçants. Pour chaque client qui s'abonne à PONIA avec votre code, vous recevez <strong>50% de commission récurrente pendant 6 mois</strong>.
+                </p>
+                
+                <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                  <h3 style="color: #1a1a1a; font-size: 16px; margin: 0 0 12px 0;">Comment ça marche ?</h3>
+                  <ol style="color: #4b5563; font-size: 14px; line-height: 1.8; margin: 0; padding-left: 20px;">
+                    <li>Partagez votre code <strong>${partner.referralCode}</strong> à vos clients</li>
+                    <li>Ils l'entrent lors de leur inscription sur PONIA</li>
+                    <li>Vous gagnez 50% de leur abonnement pendant 6 mois</li>
+                  </ol>
+                </div>
+                
+                <a href="${dashboardUrl}" style="display: block; background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); color: #000; text-decoration: none; padding: 16px 32px; border-radius: 12px; font-weight: 700; font-size: 16px; text-align: center; margin-bottom: 24px;">
+                  Accéder à mon tableau de bord
+                </a>
+                
+                <p style="color: #6b7280; font-size: 14px; text-align: center;">
+                  Des questions ? Répondez à cet email ou contactez-nous à support@myponia.fr
+                </p>
+              </div>
+              
+              <p style="color: #9ca3af; font-size: 12px; text-align: center; margin-top: 24px;">
+                PONIA - support@myponia.fr
+              </p>
+            </div>
+          </body>
+          </html>
+        `
+    })
+    console.log('Activation email sent to partner:', partner.email)
+    
+    // Update status to active ONLY after email is successfully sent
+    if (!isAlreadyActive) {
+      await db.update(partners).set({ status: 'active' }).where(eq(partners.id, partnerId))
+    }
+    
+    res.json({ success: true, message: isAlreadyActive ? 'Email renvoyé avec succès' : 'Partenaire activé avec succès' })
+  } catch (error) {
+    console.error('Error validating partner:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// ==========================================
 // POS INTEGRATIONS (Direct Adapters)
 // ==========================================
 
