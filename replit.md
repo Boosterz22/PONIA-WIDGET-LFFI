@@ -1,8 +1,8 @@
-# PONIA AI - Gestion de Stock Intelligente avec IA
+# PONIA - Gestion de Stock Intelligente avec IA
 
 ## Overview
 
-PONIA AI is an AI-powered inventory management system for small French businesses (bakeries, restaurants, bars, wine cellars). It provides a mobile-first application for real-time inventory tracking, intelligent low-stock alerts, and AI-optimized order suggestions to reduce waste and prevent stockouts, increasing efficiency and profitability. The project aims for an MRR of €4,000-€6,000 from 51-76 clients across tiered pricing plans.
+PONIA is an AI-powered inventory management system for small French businesses (bakeries, restaurants, bars, wine cellars). It provides a mobile-first application for real-time inventory tracking, intelligent low-stock alerts, and AI-optimized order suggestions to reduce waste and prevent stockouts, increasing efficiency and profitability. The project aims for an MRR of €4,000-€6,000 from 51-76 clients across tiered pricing plans.
 
 ## User Preferences
 
@@ -17,7 +17,7 @@ PONIA AI is an AI-powered inventory management system for small French businesse
 
 ## System Architecture
 
-PONIA AI is a secure full-stack application using a client-server architecture with an Express.js (Node.js) backend and React 18 (Vite 5) frontend. Data is persisted in PostgreSQL via Drizzle ORM, and user authentication is handled by Supabase.
+PONIA is a secure full-stack application using a client-server architecture with an Express.js (Node.js) backend and React 18 (Vite 5) frontend. Data is persisted in PostgreSQL via Drizzle ORM, and user authentication is handled by Supabase.
 
 **Key Architectural Decisions and Features:**
 

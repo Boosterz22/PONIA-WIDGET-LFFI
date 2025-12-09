@@ -2432,7 +2432,7 @@ app.post('/api/partners', async (req, res) => {
         
         // 1. Send confirmation email to partner (pending analysis)
         const partnerEmailResult = await resend.emails.send({
-          from: 'PONIA AI <noreply@myponia.fr>',
+          from: 'PONIA <noreply@myponia.fr>',
           to: email,
           subject: 'Votre demande de partenariat PONIA a bien été reçue',
           html: `
@@ -2494,7 +2494,7 @@ app.post('/api/partners', async (req, res) => {
                 </div>
                 
                 <p style="color: #9ca3af; font-size: 12px; text-align: center; margin-top: 24px;">
-                  PONIA AI - support@myponia.fr
+                  PONIA - support@myponia.fr
                 </p>
               </div>
             </body>
@@ -2507,7 +2507,7 @@ app.post('/api/partners', async (req, res) => {
         const adminEmails = process.env.ADMIN_EMAILS ? process.env.ADMIN_EMAILS.split(',') : ['support@myponia.fr']
         console.log('Sending admin notification to:', adminEmails)
         const adminEmailResult = await resend.emails.send({
-          from: 'PONIA AI <noreply@myponia.fr>',
+          from: 'PONIA <noreply@myponia.fr>',
           to: adminEmails,
           subject: `Nouveau partenaire comptable : ${companyName}`,
           html: `
@@ -2585,8 +2585,8 @@ app.post('/api/partners', async (req, res) => {
       message: 'Inscription réussie ! Vérifiez votre email.'
     })
   } catch (error) {
-    console.error('Error creating partner:', error.message, error.stack)
-    res.status(500).json({ error: 'Erreur lors de l\'inscription: ' + error.message })
+    console.error('Error creating partner:', error)
+    res.status(500).json({ error: 'Erreur lors de l\'inscription' })
   }
 })
 

@@ -304,7 +304,7 @@ const translations = {
       generateOrder: 'Generate order'
     },
     chat: {
-      title: 'PONIA AI',
+      title: 'PONIA',
       subtitle: 'Your intelligent inventory assistant',
       placeholder: 'Ask your question...',
       greeting: 'Hello',
@@ -860,7 +860,7 @@ const translations = {
       generateOrder: 'إنشاء طلب'
     },
     chat: {
-      title: 'PONIA AI',
+      title: 'PONIA',
       subtitle: 'مساعدك الذكي للمخزون',
       placeholder: 'اطرح سؤالك...',
       greeting: 'مرحباً',
@@ -1416,7 +1416,7 @@ const translations = {
       generateOrder: '生成订单'
     },
     chat: {
-      title: 'PONIA AI',
+      title: 'PONIA',
       subtitle: '您的智能库存助手',
       placeholder: '提出您的问题...',
       greeting: '您好',

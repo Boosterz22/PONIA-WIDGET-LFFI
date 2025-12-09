@@ -6,7 +6,7 @@ pkill -f "vite" 2>/dev/null || true
 sleep 1
 
 # Démarrer le backend en arrière-plan
-echo "🚀 Démarrage backend PONIA AI (port 3000)..."
+echo "🚀 Démarrage backend PONIA (port 3000)..."
 node server/index.js &
 BACKEND_PID=$!
 
