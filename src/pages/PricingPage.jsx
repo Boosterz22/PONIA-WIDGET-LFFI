@@ -64,7 +64,7 @@ export default function PricingPage() {
         { text: 'Intégrations caisses (Square, Zettle...)', included: true },
         { text: 'Commandes vocales', included: true },
         { text: 'Analytics avancées', included: true },
-        { text: 'Support prioritaire (poniapro@proton.me)', included: true }
+        { text: 'Support prioritaire dédié', included: true }
       ],
       cta: 'Essai gratuit 14 jours',
       popular: false
