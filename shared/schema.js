@@ -228,6 +228,19 @@ export const userSuggestionPreferences = pgTable('user_suggestion_preferences', 
   updatedAt: timestamp('updated_at').defaultNow()
 })
 
+export const userAiMemory = pgTable('user_ai_memory', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  businessContext: text('business_context'),
+  preferredSuppliers: text('preferred_suppliers'),
+  busyDays: text('busy_days'),
+  peakHours: text('peak_hours'),
+  specialNotes: text('special_notes'),
+  lastUpdatedByAi: timestamp('last_updated_by_ai'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+})
+
 export const partners = pgTable('partners', {
   id: serial('id').primaryKey(),
   name: varchar('name', { length: 255 }).notNull(),

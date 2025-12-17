@@ -56,7 +56,10 @@ import {
   getExpiringProducts,
   createEmailLog,
   getEmailLogs,
-  getAllUsers
+  getAllUsers,
+  getUserAiMemory,
+  upsertUserAiMemory,
+  getSalesAnalytics
 } from './storage.js'
 import { sendLowStockAlert, sendExpiryAlert, sendTestEmail, sendWelcomeEmail } from './email-service.js'
 import { getAdapter, isDemoMode, getSupportedProviders, isProviderSupported } from './pos-adapters/index.js'
@@ -663,8 +666,8 @@ const openai = new OpenAI({
   apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY
 })
 
-// Helper pour construire le contexte stock enrichi avec météo et événements
-async function buildStockContext(products, insights = null, includeExternalContext = true) {
+// Helper pour construire le contexte stock enrichi avec ventes POS, météo et événements
+async function buildStockContext(products, insights = null, includeExternalContext = true, userId = null, aiMemory = null) {
   if (!products || products.length === 0) {
     return "Aucun produit en stock pour le moment."
   }
@@ -685,6 +688,54 @@ async function buildStockContext(products, insights = null, includeExternalConte
   })
   
   let context = `INVENTAIRE COMPLET (${products.length} produits) :\n\n`
+  
+  if (aiMemory) {
+    context += `🧠 MÉMOIRE COMMERCE (ce que je sais sur vous) :\n`
+    if (aiMemory.businessContext) context += `  - Contexte: ${aiMemory.businessContext}\n`
+    if (aiMemory.preferredSuppliers) context += `  - Fournisseurs favoris: ${aiMemory.preferredSuppliers}\n`
+    if (aiMemory.busyDays) context += `  - Jours chargés: ${aiMemory.busyDays}\n`
+    if (aiMemory.peakHours) context += `  - Heures de pointe: ${aiMemory.peakHours}\n`
+    if (aiMemory.specialNotes) context += `  - Notes: ${aiMemory.specialNotes}\n`
+    context += '\n'
+  }
+  
+  if (userId) {
+    try {
+      const salesData = await getSalesAnalytics(userId, 30)
+      if (salesData && salesData.length > 0) {
+        context += `📈 HISTORIQUE VENTES (30 derniers jours depuis votre caisse) :\n`
+        const topSellers = salesData.slice(0, 5)
+        topSellers.forEach(sale => {
+          const avgDaily = parseFloat(sale.avgDailySales) || 0
+          context += `  - ${sale.productName}: ${parseFloat(sale.totalSold).toFixed(1)} vendus (moy. ${avgDaily.toFixed(1)}/jour)\n`
+        })
+        
+        const totalSales = salesData.reduce((acc, s) => acc + parseFloat(s.totalSold || 0), 0)
+        context += `  → Total: ${totalSales.toFixed(0)} unités vendues sur ${salesData.length} produits\n`
+        
+        const productsWithStock = products.map(p => {
+          const saleData = salesData.find(s => s.productId === p.id)
+          if (saleData) {
+            const avgDaily = parseFloat(saleData.avgDailySales) || 0
+            const daysRemaining = avgDaily > 0 ? Math.floor(p.currentQuantity / avgDaily) : 999
+            return { ...p, avgDailySales: avgDaily, daysRemaining }
+          }
+          return p
+        })
+        
+        const lowCoverage = productsWithStock.filter(p => p.daysRemaining && p.daysRemaining < 7 && p.daysRemaining < 999)
+        if (lowCoverage.length > 0) {
+          context += `\n⚠️ PRODUITS À RISQUE (couverture < 7 jours basée sur ventes réelles) :\n`
+          lowCoverage.slice(0, 5).forEach(p => {
+            context += `  - ${p.name}: ${p.currentQuantity} ${p.unit} restants = ${p.daysRemaining}j de couverture\n`
+          })
+        }
+        context += '\n'
+      }
+    } catch (error) {
+      console.log('Données ventes non disponibles:', error.message)
+    }
+  }
   
   if (insights) {
     context += `📊 ANALYSE GLOBALE :\n`
@@ -789,13 +840,11 @@ app.post('/api/chat', authenticateSupabaseUser, async (req, res) => {
       return res.status(400).json({ error: 'Message utilisateur requis' })
     }
     
-    // Get user to check plan and enforce message limit for free plan
     const user = await getUserBySupabaseId(req.supabaseUserId)
     if (!user) {
       return res.status(404).json({ error: 'Utilisateur non trouvé' })
     }
     
-    // Limit for free plan: 5 messages per day
     if (user.plan === 'basique') {
       const today = new Date()
       today.setHours(0, 0, 0, 0)
@@ -823,47 +872,51 @@ app.post('/api/chat', authenticateSupabaseUser, async (req, res) => {
       }
     }
     
-    const stockContext = await buildStockContext(products || [], insights, true)
+    const aiMemory = await getUserAiMemory(user.id)
+    const stockContext = await buildStockContext(products || [], insights, true, user.id, aiMemory)
+    
+    const memoryInstructions = aiMemory ? '' : `
+MÉMOIRE LONG-TERME :
+Tu n'as pas encore d'informations mémorisées sur ce commerce. Si l'utilisateur te partage des informations importantes (type de commerce, jours chargés, heures de pointe, fournisseurs préférés, habitudes), retiens-les pour les prochaines conversations.`
     
     const messages = [
       {
         role: 'system',
         content: `Tu es PONIA, l'expert en gestion de stock pour commerçants français. Tu combines l'expertise d'un consultant supply-chain avec la simplicité d'un collègue de confiance.
 
+INFOS COMMERCE :
+- Nom: ${user.businessName || 'Non renseigné'}
+- Type: ${user.businessType || 'Non renseigné'}
+- Système de caisse: ${user.posSystem || 'Non connecté'}
+
 CONTEXTE STOCK ACTUEL :
 ${stockContext}
+${memoryInstructions}
 
 EXPERTISE & CAPACITÉS :
-- 🎯 Analyse prédictive : rotations FEFO/FIFO, couverture en jours, seuils optimaux
-- 📊 Calculs avancés : coûts de rupture, sur-stock, quantités économiques de commande (EOQ)
-- 🔮 Prédictions : anticipation des ruptures, analyse des tendances, saisonnalité
+- 🎯 Analyse prédictive basée sur les VRAIES ventes de ta caisse
+- 📊 Calculs avancés : coûts de rupture, sur-stock, quantités économiques
+- 🔮 Prédictions : anticipation des ruptures basées sur ton historique de ventes
 - 💡 Optimisation : réduction gaspillage, amélioration trésorerie, gestion DLC/DLUO
-- 📦 Expertise sectorielle : bakeries, restaurants, bars, caves à vin
-- 🌤️ Analyse contextuelle : impact météo sur DLC, événements locaux sur demande
+- 📦 Expertise sectorielle : boulangeries, restaurants, bars, caves à vin
+- 🌤️ Analyse contextuelle : impact météo sur ventes et DLC
 - 📅 Anticipation événements : pics de fréquentation, ajustements stock préventifs
 
 MÉTHODOLOGIE DE RÉPONSE :
-1. Analyse : État actuel + diagnostic rapide
+1. Analyse : État actuel + diagnostic basé sur tes ventes réelles
 2. Actions immédiates : Quoi faire MAINTENANT (produit, quantité, timing)
-3. Projection : Impact chiffré (économies, jours de couverture)
+3. Projection : Impact chiffré (économies, jours de couverture selon ta conso)
 4. Recommandations process : Amélioration continue
 
 RÈGLES STRICTES :
-- Réponds en français naturel et PRÉCIS (données exactes, calculs rigoureux)
-- Toujours justifier avec des chiffres : "15kg de farine = 7 jours de couverture à ta conso moyenne"
+- Réponds en français naturel et PRÉCIS (données exactes basées sur tes ventes)
+- Toujours justifier avec des chiffres de TES ventes : "Tu vends 3kg/jour de farine, 15kg = 5 jours"
 - Pense comme un expert : considère DLC, coûts, cash-flow, pas juste les quantités
-- Adapte au secteur : une boulangerie ≠ un bar ≠ un restaurant
+- Adapte au secteur du commerçant
 - Sois proactif : suggère des améliorations même si on ne demande pas
 - Utilise des emojis stratégiquement pour structurer (🔴 urgent, ⚠️ attention, ✅ ok, 📊 données)
 - NE JAMAIS utiliser de markdown (pas de ** ou *** ou __ ou # ou -)
 - Écris en texte simple et clair, utilise les emojis et sauts de ligne pour structurer
-
-EXEMPLES DE NIVEAU D'EXPERTISE :
-❌ Basique : "Tu manques de farine, commande-en"
-✅ Expert : "🔴 Farine T55 : 2kg restants = 1,5 jours de couverture. Risque rupture dimanche. Commande 25kg aujourd'hui (5 jours de prod + marge) via ton fournisseur habituel. Économie : -12% vs commande urgente."
-
-❌ Vague : "Fais attention aux DLC"
-✅ Expert : "⚠️ 3 produits expirent sous 48h (valeur 45€). Plan d'action : Beurre (1,2kg) → promo -30% aujourd'hui | Crème (0,8L) → intégrer menu du jour | Fromage (400g) → offre employés. Économie gaspillage : 35€."
 
 FORMAT DE RÉPONSE :
 Utilise UNIQUEMENT du texte simple avec :
@@ -872,7 +925,7 @@ Utilise UNIQUEMENT du texte simple avec :
 - Tirets simples (-) ou flèches (→) pour les listes
 - JAMAIS de gras, italique, ou autre formatage markdown
 
-Tu es l'outil qui transforme les commerçants en experts de leur propre stock.`
+Tu es l'outil qui transforme les commerçants en experts de leur propre stock grâce aux données de leur caisse.`
       },
       ...conversationHistory.map(msg => ({
         role: msg.role === 'user' ? 'user' : 'assistant',
@@ -888,10 +941,37 @@ Tu es l'outil qui transforme les commerçants en experts de leur propre stock.`
       model: 'gpt-4o-mini',
       messages: messages,
       temperature: 0.4,
-      max_tokens: 500
+      max_tokens: 600
     })
 
     const response = completion.choices[0].message.content
+    
+    const memoryPatterns = {
+      busyDays: /(?:jours? charg[ée]s?|pic d'activit[ée]|plus de monde|samedi|dimanche|week-?end)/i,
+      peakHours: /(?:heures? de pointe|rush|coup de feu|midi|soir|service)/i,
+      preferredSuppliers: /(?:fournisseur|je commande chez|j'ach[èe]te chez|mon fournisseur)/i,
+      businessContext: /(?:je suis|on est|c'est un|type de commerce|boulangerie|restaurant|bar|cave)/i
+    }
+    
+    const extractedMemory = {}
+    for (const [key, pattern] of Object.entries(memoryPatterns)) {
+      if (pattern.test(userMessage)) {
+        const sentences = userMessage.split(/[.!?]/).filter(s => pattern.test(s))
+        if (sentences.length > 0) {
+          extractedMemory[key] = sentences[0].trim().substring(0, 200)
+        }
+      }
+    }
+    
+    if (Object.keys(extractedMemory).length > 0) {
+      try {
+        const mergedMemory = aiMemory ? { ...aiMemory, ...extractedMemory } : extractedMemory
+        await upsertUserAiMemory(user.id, mergedMemory)
+      } catch (memErr) {
+        console.log('Erreur sauvegarde mémoire IA:', memErr.message)
+      }
+    }
+    
     res.json({ response })
 
   } catch (error) {

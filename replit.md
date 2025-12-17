@@ -8,7 +8,7 @@ PONIA is an AI-powered inventory management system for small French businesses (
 
 - **Simplicité absolue :** Les commerçants ne sont PAS tech-savvy
 - **Mobile-first :** Ils utilisent leur téléphone pendant l'inventaire
-- **Rapidité :** 2 minutes/jour maximum pour updater les stocks
+- **Synchronisation automatique :** Connexion caisse unique, mises à jour automatiques en temps réel
 - **Valeur immédiate :** Alertes dès le 1er jour d'utilisation
 - **AI Omnipresence:** AI must be visible and sophisticated immediately at dashboard opening (strategic differentiation vs competitors like SumUp)
 - **Time Savings Focus:** Core value proposition is "Time = money" - PONIA must prove it saves merchants 7+ hours/week
@@ -23,6 +23,8 @@ PONIA is a secure full-stack application using a client-server architecture with
 
 *   **Security:** OpenAI API calls are proxied server-side, and JWT authentication secures all protected API endpoints.
 *   **AI Functionality:** A hybrid AI approach combines a local rules engine for immediate predictions (stockout, overstock, health score) with OpenAI's GPT-4o-mini (via Replit AI Integrations) for advanced predictions (7-day for Standard, 30-day for Pro), expiry tracking, and intelligent order generation. AI is omnipresent and immediately visible.
+    *   **POS Sales Integration:** AI now reads real sales history from connected POS systems to calculate actual consumption patterns, days of coverage based on real sales velocity, and accurate stockout predictions.
+    *   **AI Long-term Memory:** New userAiMemory table stores business context (busy days, peak hours, preferred suppliers, special notes). AI automatically extracts and saves relevant business information from conversations for personalized future interactions.
     *   **Proactive AI Suggestions System:** Real-time intelligent suggestions engine with 8 types: expiry alerts, stockout predictions, overstock warnings, weather-based predictions (hot/cold/rain), anomaly detection, dish-of-day ideas (GPT-4o-mini creative), order reminders, and sales trends. Adaptive popup frequency based on user engagement (2h-4h+). Bell icon with badge in navbar, drawer grouped by priority, and contextual actions per suggestion type.
 *   **UI/UX:** Mobile-first, simple, and fast design for non-tech-savvy merchants.
     *   **Dashboard:** AI-first interface with Chat AI Central as the primary interaction point, Time Saved widget highlighting value, and KPI grids.

@@ -1,5 +1,5 @@
 import { db } from './db.js'
-import { users, products, stockHistory, salesHistory, notifications, stores, chatMessages, chatConversations, posConnections, posProductMappings, posSales, posSyncLogs, alertPreferences, emailLogs } from '../shared/schema.js'
+import { users, products, stockHistory, salesHistory, notifications, stores, chatMessages, chatConversations, posConnections, posProductMappings, posSales, posSyncLogs, alertPreferences, emailLogs, userAiMemory } from '../shared/schema.js'
 import { eq, and, desc, gte, lte, sql } from 'drizzle-orm'
 
 export async function getUserByEmail(email) {
@@ -575,4 +575,60 @@ export async function getEmailLogs(userId, limit = 50) {
 
 export async function getAllUsers() {
   return await db.select().from(users)
+}
+
+export async function getUserAiMemory(userId) {
+  const result = await db.select()
+    .from(userAiMemory)
+    .where(eq(userAiMemory.userId, userId))
+    .limit(1)
+  return result[0] || null
+}
+
+export async function upsertUserAiMemory(userId, memoryData) {
+  const existing = await getUserAiMemory(userId)
+  
+  if (existing) {
+    const result = await db.update(userAiMemory)
+      .set({
+        ...memoryData,
+        lastUpdatedByAi: new Date(),
+        updatedAt: new Date()
+      })
+      .where(eq(userAiMemory.userId, userId))
+      .returning()
+    return result[0]
+  } else {
+    const result = await db.insert(userAiMemory).values({
+      userId,
+      ...memoryData,
+      lastUpdatedByAi: new Date()
+    }).returning()
+    return result[0]
+  }
+}
+
+export async function getSalesAnalytics(userId, daysBack = 30) {
+  const startDate = new Date()
+  startDate.setDate(startDate.getDate() - daysBack)
+  
+  const sales = await db.select({
+    productId: salesHistory.productId,
+    productName: products.name,
+    category: products.category,
+    totalSold: sql`COALESCE(SUM(${salesHistory.quantitySold}), 0)`,
+    salesCount: sql`COUNT(*)`,
+    avgDailySales: sql`COALESCE(SUM(${salesHistory.quantitySold}), 0) / ${daysBack}`,
+    lastSaleDate: sql`MAX(${salesHistory.saleDate})`
+  })
+    .from(salesHistory)
+    .leftJoin(products, eq(salesHistory.productId, products.id))
+    .where(and(
+      eq(salesHistory.userId, userId),
+      gte(salesHistory.saleDate, startDate)
+    ))
+    .groupBy(salesHistory.productId, products.name, products.category)
+    .orderBy(sql`SUM(${salesHistory.quantitySold}) DESC`)
+  
+  return sales
 }
