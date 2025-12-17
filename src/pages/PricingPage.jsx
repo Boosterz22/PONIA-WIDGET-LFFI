@@ -36,7 +36,7 @@ export default function PricingPage() {
       color: '#FFD700',
       description: 'Pour commerces sérieux',
       features: [
-        { text: '50 produits maximum', included: true },
+        { text: '100 produits maximum', included: true },
         { text: 'Chat IA illimité', included: true },
         { text: 'Prédictions IA 7 jours', included: true },
         { text: 'Génération commandes auto', included: true },
@@ -46,7 +46,7 @@ export default function PricingPage() {
         { text: 'Multi-magasins', included: false }
       ],
       cta: 'Essai gratuit 14 jours',
-      popular: false
+      popular: true
     },
     {
       name: 'Pro',
@@ -67,7 +67,7 @@ export default function PricingPage() {
         { text: 'Support prioritaire (poniapro@proton.me)', included: true }
       ],
       cta: 'Essai gratuit 14 jours',
-      popular: true
+      popular: false
     }
   ]
 

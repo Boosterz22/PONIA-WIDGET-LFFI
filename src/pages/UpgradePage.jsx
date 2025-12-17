@@ -19,7 +19,7 @@ export default function UpgradePage() {
       color: '#FFD700',
       description: 'Pour commerces sérieux',
       features: [
-        { text: '50 produits maximum', included: true },
+        { text: '100 produits maximum', included: true },
         { text: 'Prédictions IA 7 jours', included: true },
         { text: 'Génération commandes auto', included: true },
         { text: 'Alertes expiration produits', included: true },
@@ -29,7 +29,7 @@ export default function UpgradePage() {
         { text: 'Multi-magasins', included: false }
       ],
       cta: 'Passer à Standard',
-      popular: false,
+      popular: true,
       planKey: 'standard'
     },
     {
@@ -51,7 +51,7 @@ export default function UpgradePage() {
         { text: 'Intégrations POS (Square, etc.)', included: true }
       ],
       cta: 'Passer à Pro',
-      popular: true,
+      popular: false,
       planKey: 'pro'
     }
   ]

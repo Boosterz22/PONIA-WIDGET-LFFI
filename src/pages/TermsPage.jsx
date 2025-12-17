@@ -137,7 +137,7 @@ export default function TermsPage() {
             <p><strong style={{ color: '#FFD700' }}>Plans disponibles :</strong></p>
             <ul style={{ lineHeight: '1.8', color: 'rgba(255, 255, 255, 0.8)', marginLeft: '1.5rem' }}>
               <li><strong style={{ color: '#FFD700' }}>Basique (Gratuit) :</strong> 10 produits max, alertes simples, pas d'IA</li>
-              <li><strong style={{ color: '#FFD700' }}>Standard (49€/mois) :</strong> 50 produits, prédictions IA 7 jours, génération commandes</li>
+              <li><strong style={{ color: '#FFD700' }}>Standard (49€/mois) :</strong> 100 produits, prédictions IA 7 jours, génération commandes</li>
               <li><strong style={{ color: '#FFD700' }}>Pro (69,99€/mois) :</strong> Produits illimités, prédictions IA 30 jours, multi-magasins, support prioritaire</li>
             </ul>
             <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.6)' }}>

@@ -95,7 +95,7 @@ function PricingCards() {
               cursor: 'pointer',
               transition: 'all 0.2s',
               background: billingPeriod === 'monthly' ? '#FFD700' : 'transparent',
-              color: billingPeriod === 'monthly' ? '#1a1a1a' : 'rgba(255, 255, 255, 0.7)'
+              color: billingPeriod === 'monthly' ? '#1a1a1a' : '#1a1a1a'
             }}
           >
             Mensuel
@@ -111,7 +111,7 @@ function PricingCards() {
               cursor: 'pointer',
               transition: 'all 0.2s',
               background: billingPeriod === 'yearly' ? '#FFD700' : 'transparent',
-              color: billingPeriod === 'yearly' ? '#1a1a1a' : 'rgba(255, 255, 255, 0.7)',
+              color: billingPeriod === 'yearly' ? '#1a1a1a' : '#1a1a1a',
               display: 'flex',
               alignItems: 'center',
               gap: '0.5rem'

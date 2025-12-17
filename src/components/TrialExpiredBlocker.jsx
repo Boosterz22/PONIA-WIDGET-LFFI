@@ -202,7 +202,7 @@ export default function TrialExpiredBlocker({ onPlanSelected }) {
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Check size={16} style={{ color: '#10B981' }} />
-              <span><strong>Standard (49€/mois)</strong> : 50 produits, IA illimitée, POS</span>
+              <span><strong>Standard (49€/mois)</strong> : 100 produits, IA illimitée, POS</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Check size={16} style={{ color: '#10B981' }} />
