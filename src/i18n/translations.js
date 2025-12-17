@@ -125,7 +125,7 @@ const translations = {
       addFirst: 'Ajoutez votre premier produit',
       limitReached: 'Limite atteinte',
       basicLimit: 'le plan Basique permet max 10 produits. Passez à Standard ou Pro.',
-      standardLimit: 'le plan Standard permet max 50 produits. Passez à Pro pour illimité.',
+      standardLimit: 'le plan Standard permet max 100 produits. Passez à Pro pour illimité.',
       deleteConfirm: 'Êtes-vous sûr de vouloir supprimer ce produit ?',
       productName: 'Nom du produit',
       quantity: 'Quantité',
@@ -273,7 +273,7 @@ const translations = {
       standard: 'Standard',
       pro: 'Pro',
       basicFeatures: ['10 produits max', 'Alertes basiques', 'Support email'],
-      standardFeatures: ['50 produits max', 'IA prédictive 7 jours', 'Chat AI', 'Support prioritaire'],
+      standardFeatures: ['100 produits max', 'IA prédictive 7 jours', 'Chat AI', 'Support prioritaire'],
       proFeatures: ['Produits illimités', 'IA prédictive 30 jours', 'Multi-magasins', 'Support VIP 24/7']
     }
   },
@@ -403,7 +403,7 @@ const translations = {
       addFirst: 'Add your first product',
       limitReached: 'Limit reached',
       basicLimit: 'Basic plan allows max 10 products. Upgrade to Standard or Pro.',
-      standardLimit: 'Standard plan allows max 50 products. Upgrade to Pro for unlimited.',
+      standardLimit: 'Standard plan allows max 100 products. Upgrade to Pro for unlimited.',
       deleteConfirm: 'Are you sure you want to delete this product?',
       productName: 'Product name',
       quantity: 'Quantity',
@@ -551,7 +551,7 @@ const translations = {
       standard: 'Standard',
       pro: 'Pro',
       basicFeatures: ['10 max products', 'Basic alerts', 'Email support'],
-      standardFeatures: ['50 max products', '7-day predictive AI', 'AI Chat', 'Priority support'],
+      standardFeatures: ['100 max products', '7-day predictive AI', 'AI Chat', 'Priority support'],
       proFeatures: ['Unlimited products', '30-day predictive AI', 'Multi-store', 'VIP 24/7 support']
     }
   },
@@ -681,7 +681,7 @@ const translations = {
       addFirst: 'Añade tu primer producto',
       limitReached: 'Límite alcanzado',
       basicLimit: 'el plan Básico permite máx 10 productos. Actualiza a Standard o Pro.',
-      standardLimit: 'el plan Standard permite máx 50 productos. Actualiza a Pro para ilimitado.',
+      standardLimit: 'el plan Standard permite máx 100 productos. Actualiza a Pro para ilimitado.',
       deleteConfirm: '¿Estás seguro de que quieres eliminar este producto?',
       productName: 'Nombre del producto',
       quantity: 'Cantidad',
@@ -829,7 +829,7 @@ const translations = {
       standard: 'Standard',
       pro: 'Pro',
       basicFeatures: ['10 productos máx', 'Alertas básicas', 'Soporte por email'],
-      standardFeatures: ['50 productos máx', 'IA predictiva 7 días', 'Chat IA', 'Soporte prioritario'],
+      standardFeatures: ['100 productos máx', 'IA predictiva 7 días', 'Chat IA', 'Soporte prioritario'],
       proFeatures: ['Productos ilimitados', 'IA predictiva 30 días', 'Multi-tienda', 'Soporte VIP 24/7']
     }
   },
@@ -959,7 +959,7 @@ const translations = {
       addFirst: 'أضف منتجك الأول',
       limitReached: 'تم الوصول للحد',
       basicLimit: 'الخطة الأساسية تسمح بـ 10 منتجات كحد أقصى. قم بالترقية إلى Standard أو Pro.',
-      standardLimit: 'خطة Standard تسمح بـ 50 منتج كحد أقصى. قم بالترقية إلى Pro للحصول على غير محدود.',
+      standardLimit: 'خطة Standard تسمح بـ 100 منتج كحد أقصى. قم بالترقية إلى Pro للحصول على غير محدود.',
       deleteConfirm: 'هل أنت متأكد من رغبتك في حذف هذا المنتج؟',
       productName: 'اسم المنتج',
       quantity: 'الكمية',
@@ -1107,7 +1107,7 @@ const translations = {
       standard: 'Standard',
       pro: 'Pro',
       basicFeatures: ['10 منتجات كحد أقصى', 'تنبيهات أساسية', 'دعم بالبريد الإلكتروني'],
-      standardFeatures: ['50 منتج كحد أقصى', 'ذكاء اصطناعي تنبؤي 7 أيام', 'دردشة ذكاء اصطناعي', 'دعم أولوية'],
+      standardFeatures: ['100 منتج كحد أقصى', 'ذكاء اصطناعي تنبؤي 7 أيام', 'دردشة ذكاء اصطناعي', 'دعم أولوية'],
       proFeatures: ['منتجات غير محدودة', 'ذكاء اصطناعي تنبؤي 30 يوماً', 'متعدد المتاجر', 'دعم VIP 24/7']
     }
   },
@@ -1237,7 +1237,7 @@ const translations = {
       addFirst: 'Fügen Sie Ihr erstes Produkt hinzu',
       limitReached: 'Limit erreicht',
       basicLimit: 'Basic-Plan erlaubt maximal 10 Produkte. Upgraden Sie auf Standard oder Pro.',
-      standardLimit: 'Standard-Plan erlaubt maximal 50 Produkte. Upgraden Sie auf Pro für unbegrenzt.',
+      standardLimit: 'Standard-Plan erlaubt maximal 100 Produkte. Upgraden Sie auf Pro für unbegrenzt.',
       deleteConfirm: 'Sind Sie sicher, dass Sie dieses Produkt löschen möchten?',
       productName: 'Produktname',
       quantity: 'Menge',
@@ -1385,7 +1385,7 @@ const translations = {
       standard: 'Standard',
       pro: 'Pro',
       basicFeatures: ['10 max Produkte', 'Grundlegende Alarme', 'E-Mail-Support'],
-      standardFeatures: ['50 max Produkte', '7-Tage-Vorhersage-KI', 'KI-Chat', 'Prioritäts-Support'],
+      standardFeatures: ['100 max Produkte', '7-Tage-Vorhersage-KI', 'KI-Chat', 'Prioritäts-Support'],
       proFeatures: ['Unbegrenzte Produkte', '30-Tage-Vorhersage-KI', 'Multi-Store', 'VIP-Support 24/7']
     }
   },
@@ -1515,7 +1515,7 @@ const translations = {
       addFirst: '添加您的第一个产品',
       limitReached: '已达到限制',
       basicLimit: '基本计划最多允许10个产品。升级到Standard或Pro。',
-      standardLimit: 'Standard计划最多允许50个产品。升级到Pro获得无限。',
+      standardLimit: 'Standard计划最多允许100个产品。升级到Pro获得无限。',
       deleteConfirm: '您确定要删除此产品吗？',
       productName: '产品名称',
       quantity: '数量',
@@ -1663,7 +1663,7 @@ const translations = {
       standard: 'Standard',
       pro: 'Pro',
       basicFeatures: ['最多10个产品', '基本警报', '电子邮件支持'],
-      standardFeatures: ['最多50个产品', '7天预测AI', 'AI聊天', '优先支持'],
+      standardFeatures: ['最多100个产品', '7天预测AI', 'AI聊天', '优先支持'],
       proFeatures: ['无限产品', '30天预测AI', '多店铺', 'VIP 24/7支持']
     }
   }

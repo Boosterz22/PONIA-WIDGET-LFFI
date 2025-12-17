@@ -1553,14 +1553,14 @@ app.post('/api/products', authenticateSupabaseUser, enforceTrialStatus, async (r
       }
     }
     
-    // Standard plan: max 50 products
+    // Standard plan: max 100 products
     if (user.plan === 'standard') {
       const existingProducts = await getProductsByUserId(user.id)
-      if (existingProducts.length >= 50) {
+      if (existingProducts.length >= 100) {
         return res.status(403).json({ 
           error: 'Limite atteinte',
           limitReached: true,
-          message: 'Le plan Standard est limité à 50 produits. Passez à Pro pour des produits illimités.'
+          message: 'Le plan Standard est limité à 100 produits. Passez à Pro pour des produits illimités.'
         })
       }
     }

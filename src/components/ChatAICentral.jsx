@@ -579,8 +579,7 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
           alignItems: 'center',
           justifyContent: 'center',
           padding: '1rem',
-          background: 'white',
-          borderBottom: '1px solid #E5E7EB'
+          background: 'white'
         }}>
           <img 
             src={poniaLogo} 
@@ -597,7 +596,8 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
           flex: 1,
           overflowY: 'auto',
           padding: '1.5rem',
-          paddingBottom: '0'
+          paddingBottom: '1rem',
+          scrollBehavior: 'smooth'
         }}>
           {messages.map((msg, idx) => (
             <div
@@ -702,8 +702,7 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
         <div style={{
           padding: '1rem 1.5rem',
           paddingBottom: '1.5rem',
-          background: 'white',
-          borderTop: '1px solid #E5E7EB'
+          background: 'white'
         }}>
           <div style={{
             display: 'flex',

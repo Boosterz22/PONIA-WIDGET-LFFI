@@ -31,8 +31,8 @@ export default function StockPage({ session }) {
       return
     }
     
-    if (userPlan === 'standard' && products.length >= 50) {
-      alert('Limite atteinte : le plan Standard permet max 50 produits. Passez à Pro pour illimité.')
+    if (userPlan === 'standard' && products.length >= 100) {
+      alert('Limite atteinte : le plan Standard permet max 100 produits. Passez à Pro pour illimité.')
       setShowAddModal(false)
       return
     }
