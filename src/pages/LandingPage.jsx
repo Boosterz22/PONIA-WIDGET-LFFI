@@ -994,10 +994,9 @@ export default function LandingPage() {
                 ❓ "Ça marche vraiment pour ma petite boulangerie/restaurant ?"
               </h3>
               <p style={{ fontSize: '1.05rem', lineHeight: 1.7, color: 'var(--text-muted)', margin: 0 }}>
-                <strong style={{ color: 'var(--text)' }}>✅ Fait exactement pour vous.</strong> PONIA a été conçu après 9 visites terrain 
-                auprès de petits commerçants parisiens (boulangeries, restaurants, bars, caves). 
-                6 sur 9 ont cité le stock comme leur plus gros problème. 
-                On a validé la solution directement avec eux. <strong>Marie (Boulangerie Paris 13e) économise €400/mois depuis 2 mois.</strong>
+                <strong style={{ color: 'var(--text)' }}>✅ C'est fait pour vous, pas pour les grandes chaînes.</strong> Que vous ayez 
+                20 produits ou 200, PONIA s'adapte à votre taille. Pas besoin de formation, pas de menu compliqué. 
+                Vous connectez votre caisse, et l'IA fait le reste. <strong>En 48h, vous voyez déjà ce qui va manquer la semaine prochaine.</strong>
               </p>
             </div>
 
