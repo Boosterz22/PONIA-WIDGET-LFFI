@@ -971,8 +971,8 @@ export default function LandingPage() {
                 ❓ "Je n'ai pas le temps d'apprendre un nouvel outil"
               </h3>
               <p style={{ fontSize: '1.05rem', lineHeight: 1.7, color: 'var(--text-muted)', margin: 0 }}>
-                <strong style={{ color: 'var(--text)' }}>✅ Connectez votre caisse une seule fois.</strong> Vos stocks et ventes se synchronisent automatiquement en temps réel. 
-                Plus besoin de compter ou de saisir manuellement. PONIA fait le travail pour vous, 24h/24.
+                <strong style={{ color: 'var(--text)' }}>✅ Zéro apprentissage.</strong> Connectez votre caisse, c'est terminé. 
+                Vos stocks se mettent à jour tout seuls. <strong>Vous ne touchez plus à rien.</strong>
               </p>
             </div>
 
@@ -982,21 +982,20 @@ export default function LandingPage() {
                 ❓ "Je ne suis pas à l'aise avec la technologie"
               </h3>
               <p style={{ fontSize: '1.05rem', lineHeight: 1.7, color: 'var(--text-muted)', margin: 0 }}>
-                <strong style={{ color: 'var(--text)' }}>✅ Aucune compétence technique requise.</strong> Si vous utilisez un téléphone pour appeler ou envoyer des SMS, 
-                vous savez utiliser PONIA. Des boutons gros et clairs. Des couleurs pour voir en 1 coup d'œil (🟢 OK, 🔴 urgent). 
-                Marie (62 ans, boulangère) l'utilise sans problème.
+                <strong style={{ color: 'var(--text)' }}>✅ Si vous savez envoyer un SMS, vous savez utiliser PONIA.</strong> 
+                Gros boutons. Couleurs claires (🟢 = OK, 🔴 = urgent). <strong>Rien à configurer, rien à comprendre.</strong>
               </p>
             </div>
 
             {/* FAQ 3 */}
             <div className="card" style={{ padding: '2rem' }}>
               <h3 style={{ fontSize: '1.3rem', marginBottom: '1rem', color: 'var(--primary)' }}>
-                ❓ "Ça marche vraiment pour ma petite boulangerie/restaurant ?"
+                ❓ "Ça marche vraiment pour mon commerce ?"
               </h3>
               <p style={{ fontSize: '1.05rem', lineHeight: 1.7, color: 'var(--text-muted)', margin: 0 }}>
-                <strong style={{ color: 'var(--text)' }}>✅ C'est fait pour vous, pas pour les grandes chaînes.</strong> Que vous ayez 
-                20 produits ou 200, PONIA s'adapte à votre taille. Pas besoin de formation, pas de menu compliqué. 
-                Vous connectez votre caisse, et l'IA fait le reste. <strong>En 48h, vous voyez déjà ce qui va manquer la semaine prochaine.</strong>
+                <strong style={{ color: 'var(--text)' }}>✅ 20 produits ou 2000, PONIA s'adapte.</strong> 
+                Boulangerie, restaurant, bar, cave à vin, fromagerie... L'IA apprend VOS habitudes. 
+                <strong>En 48h, vous savez déjà ce qui va manquer la semaine prochaine.</strong>
               </p>
             </div>
 
@@ -1006,10 +1005,9 @@ export default function LandingPage() {
                 ❓ "Et si ça ne marche pas pour moi ?"
               </h3>
               <p style={{ fontSize: '1.05rem', lineHeight: 1.7, color: 'var(--text-muted)', margin: 0 }}>
-                <strong style={{ color: 'var(--text)' }}>✅ 30 jours gratuits, sans carte bancaire.</strong> 
-                Testez PONIA pendant 1 mois. Si vous n'êtes pas convaincu, annulez en 1 clic. 
-                Pas de frais cachés. Pas d'engagement. Pas de justification à donner. 
-                <strong>Vous économisez dès le 1er mois</strong> ou vous partez sans rien payer.
+                <strong style={{ color: 'var(--text)' }}>✅ 14 jours gratuits. Pas de CB. Pas d'engagement.</strong> 
+                Vous testez, vous voyez les résultats. Si ça ne vous convient pas, vous partez en 1 clic. 
+                <strong>Zéro risque.</strong>
               </p>
             </div>
 
@@ -1019,10 +1017,9 @@ export default function LandingPage() {
                 ❓ "L'IA peut vraiment prédire mes ruptures ?"
               </h3>
               <p style={{ fontSize: '1.05rem', lineHeight: 1.7, color: 'var(--text-muted)', margin: 0 }}>
-                <strong style={{ color: 'var(--text)' }}>✅ Oui. Voici comment :</strong> PONIA analyse votre consommation des 7-30 derniers jours. 
-                Si vous utilisez 50 kg de farine par semaine en moyenne, et qu'il vous en reste 15 kg, 
-                l'IA calcule qu'il vous reste ~2 jours. Elle vous alerte immédiatement. 
-                Plus vous utilisez PONIA, plus les prédictions sont précises (elle apprend vos pics de weekend, fêtes, etc.).
+                <strong style={{ color: 'var(--text)' }}>✅ Oui. Elle lit vos ventes.</strong> 
+                Vous vendez 50 baguettes/jour, il en reste 80 ? L'IA sait qu'il vous reste 1,5 jour. 
+                Elle vous alerte AVANT la rupture. <strong>Plus jamais de "désolé, on n'en a plus".</strong>
               </p>
             </div>
           </div>
