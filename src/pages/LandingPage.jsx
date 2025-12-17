@@ -695,169 +695,69 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* COMMENT ÇA MARCHE - 3 ÉTAPES */}
+      {/* FONCTIONNALITÉS */}
       <section id="fonctionnalites" style={{ 
         padding: '5rem 0',
         background: 'white'
       }}>
         <div className="container">
           <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', textAlign: 'center', marginBottom: '1rem' }}>
-            3 étapes. Zéro effort.
+            Comment PONIA transforme votre quotidien
           </h2>
-          <p style={{ textAlign: 'center', fontSize: '1.25rem', color: 'var(--text-muted)', marginBottom: '4rem', maxWidth: '700px', margin: '0 auto 4rem' }}>
-            Connectez votre caisse, et laissez l'IA faire le reste
+          <p style={{ textAlign: 'center', fontSize: '1.25rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
+            Simple. Rapide. Intelligent.
+          </p>
+          <p style={{ textAlign: 'center', fontSize: '1rem', color: 'var(--text-muted)', marginBottom: '4rem', maxWidth: '700px', margin: '0 auto 4rem' }}>
+            Conçu pour les commerçants qui n'ont ni le temps ni l'envie d'apprendre un logiciel compliqué
           </p>
 
-          <div style={{ 
-            display: 'flex', 
-            flexDirection: 'column', 
-            gap: '0', 
-            maxWidth: '900px', 
-            margin: '0 auto 4rem',
-            position: 'relative'
-          }}>
-            <div style={{
-              position: 'absolute',
-              left: '40px',
-              top: '60px',
-              bottom: '60px',
-              width: '4px',
-              background: 'linear-gradient(180deg, #FFD700 0%, #FFD700 100%)',
-              borderRadius: '4px',
-              zIndex: 0
-            }} className="hide-mobile" />
-            
-            {[
-              { 
-                step: "1", 
-                title: "Connectez votre caisse", 
-                desc: "Square, Zettle, SumUp, Lightspeed... En 1 clic, vos produits et ventes sont synchronisés automatiquement.",
-                icon: Zap
-              },
-              { 
-                step: "2", 
-                title: "L'IA analyse vos ventes", 
-                desc: "PONIA apprend vos habitudes, détecte les tendances, et prédit vos besoins avant même que vous y pensiez.",
-                icon: Sparkles
-              },
-              { 
-                step: "3", 
-                title: "Recevez des alertes intelligentes", 
-                desc: "Ruptures anticipées, produits à risque d'expiration, commandes optimisées. Vous ne perdez plus rien.",
-                icon: Target
-              }
-            ].map((item, i) => {
-              const IconComponent = item.icon
-              return (
-                <div 
-                  key={i}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: '2rem',
-                    padding: '2rem 0',
-                    position: 'relative',
-                    zIndex: 1
-                  }}
-                >
-                  <div style={{
-                    width: '80px',
-                    height: '80px',
-                    borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #FFD700 0%, #FFC000 100%)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                    boxShadow: '0 8px 25px rgba(255, 215, 0, 0.3)'
-                  }}>
-                    <span style={{ 
-                      fontSize: '2rem', 
-                      fontWeight: 'bold', 
-                      color: 'white',
-                      textShadow: '0 2px 4px rgba(0,0,0,0.2)'
-                    }}>{item.step}</span>
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <h3 style={{ 
-                      fontSize: '1.5rem', 
-                      marginBottom: '0.75rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.75rem'
-                    }}>
-                      <IconComponent size={24} color="#FFD700" />
-                      {item.title}
-                    </h3>
-                    <p style={{ 
-                      color: 'var(--text-muted)', 
-                      lineHeight: 1.7, 
-                      fontSize: '1.1rem',
-                      margin: 0
-                    }}>
-                      {item.desc}
-                    </p>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2.5rem' }}>
+            <div className="card" style={{ textAlign: 'center', padding: '2.5rem 1.5rem' }}>
+              <Zap size={48} color="#FFD700" style={{ margin: '0 auto 1.5rem' }} />
+              <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Synchronisation automatique</h3>
+              <p style={{ color: 'var(--text-muted)', lineHeight: 1.7 }}>
+                Connectez votre caisse une seule fois. Vos ventes et stocks se mettent à jour automatiquement, en temps réel.
+              </p>
+            </div>
 
-          <div style={{ 
-            background: 'rgba(255, 215, 0, 0.08)', 
-            borderRadius: '20px', 
-            padding: '3rem 2rem',
-            border: '1px solid rgba(255, 215, 0, 0.2)'
-          }}>
-            <h3 style={{ 
-              fontSize: '1.75rem', 
-              textAlign: 'center', 
-              marginBottom: '2.5rem',
-              color: 'var(--text)'
-            }}>
-              Résultats garantis
-            </h3>
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
-              gap: '2rem' 
-            }}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ 
-                  fontSize: '3rem', 
-                  fontWeight: 'bold', 
-                  color: 'var(--primary)',
-                  marginBottom: '0.5rem'
-                }}>€767</div>
-                <div style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>économisés/mois</div>
-                <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-                  Moins de pertes, moins de gaspillage
-                </div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ 
-                  fontSize: '3rem', 
-                  fontWeight: 'bold', 
-                  color: 'var(--success)',
-                  marginBottom: '0.5rem'
-                }}>35h</div>
-                <div style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>gagnées/mois</div>
-                <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-                  Fini les comptages manuels
-                </div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ 
-                  fontSize: '3rem', 
-                  fontWeight: 'bold', 
-                  color: 'var(--primary)',
-                  marginBottom: '0.5rem'
-                }}>0</div>
-                <div style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>rupture de stock</div>
-                <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-                  L'IA anticipe vos besoins
-                </div>
-              </div>
+            <div className="card" style={{ textAlign: 'center', padding: '2.5rem 1.5rem' }}>
+              <Sparkles size={48} color="#FFD700" style={{ margin: '0 auto 1.5rem' }} />
+              <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>IA Conversationnelle</h3>
+              <p style={{ color: 'var(--text-muted)', lineHeight: 1.7 }}>
+                <strong>Parlez à votre assistant comme à un expert.</strong> Posez vos questions, obtenez des conseils personnalisés instantanément.
+              </p>
+            </div>
+
+            <div className="card" style={{ textAlign: 'center', padding: '2.5rem 1.5rem' }}>
+              <BarChart3 size={48} color="#FFD700" style={{ margin: '0 auto 1.5rem' }} />
+              <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>ROI x15 garanti</h3>
+              <p style={{ color: 'var(--text-muted)', lineHeight: 1.7 }}>
+                Investissez €49/mois, économisez €767/mois. Chaque euro investi vous rapporte <strong>€15 en retour</strong>. Rentable dès le premier mois.
+              </p>
+            </div>
+
+            <div className="card" style={{ textAlign: 'center', padding: '2.5rem 1.5rem' }}>
+              <Target size={48} color="#FFD700" style={{ margin: '0 auto 1.5rem' }} />
+              <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Alertes intelligentes</h3>
+              <p style={{ color: 'var(--text-muted)', lineHeight: 1.7 }}>
+                🔴 Rouge (critique), 🟠 Orange (faible), 🟢 Vert (OK). Vous savez en 1 coup d'œil ce qui urge.
+              </p>
+            </div>
+
+            <div className="card" style={{ textAlign: 'center', padding: '2.5rem 1.5rem' }}>
+              <Clock size={48} color="#FFD700" style={{ margin: '0 auto 1.5rem' }} />
+              <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Templates automatiques</h3>
+              <p style={{ color: 'var(--text-muted)', lineHeight: 1.7 }}>
+                Boulangerie, restaurant, cave à vin... Vos produits types sont pré-configurés. Démarrez en 1 clic.
+              </p>
+            </div>
+
+            <div className="card" style={{ textAlign: 'center', padding: '2.5rem 1.5rem' }}>
+              <Shield size={48} color="#FFD700" style={{ margin: '0 auto 1.5rem' }} />
+              <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>100% sécurisé</h3>
+              <p style={{ color: 'var(--text-muted)', lineHeight: 1.7 }}>
+                Vos données chiffrées et hébergées en France. Conforme RGPD. Sauvegarde automatique 24/7.
+              </p>
             </div>
           </div>
         </div>
