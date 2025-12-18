@@ -48,20 +48,21 @@ export function generateCommercialKitPDF() {
       
       try {
         const logoPath = path.join(__dirname, '../attached_assets/IMG_3757_2_1766021386713.png')
-        // Logo centré : (595 - 280) / 2 = 157.5
-        doc.image(logoPath, 157, 300, { width: 280 })
+        // Logo centré verticalement dans la moitié haute : (595 - 250) / 2 = 172.5
+        doc.image(logoPath, 172, 200, { width: 250 })
       } catch (e) {
-        doc.fontSize(52).fillColor('#FFD700').font('Helvetica-Bold').text('PONIA', 0, 340, { align: 'center' })
+        doc.fontSize(52).fillColor('#FFD700').font('Helvetica-Bold').text('PONIA', 0, 250, { align: 'center' })
       }
       
-      doc.fontSize(36).fillColor('#FFFFFF').font('Helvetica-Bold')
-         .text('KIT COMMERCIAL', 0, 480, { align: 'center' })
+      // Titre centré dans la moitié basse avec espace
+      doc.fontSize(38).fillColor('#FFFFFF').font('Helvetica-Bold')
+         .text('KIT COMMERCIAL', 0, 520, { align: 'center' })
       
       doc.fontSize(14).fillColor('#CCCCCC').font('Helvetica')
-         .text('Guide complet pour les commerciaux terrain', 0, 530, { align: 'center' })
+         .text('Guide complet pour les commerciaux terrain', 0, 580, { align: 'center' })
       
       doc.fontSize(11).fillColor('#888888').font('Helvetica')
-         .text('Document confidentiel - Usage interne uniquement', 0, 770, { align: 'center' })
+         .text('Document confidentiel - Usage interne uniquement', 0, 780, { align: 'center' })
 
       // ===============================================
       // PAGE 2 - SOMMAIRE
@@ -153,14 +154,18 @@ export function generateCommercialKitPDF() {
       y = 50
       
       doc.fontSize(20).fillColor(BLACK).font('Helvetica-Bold').text('2. PONIA CHAT : NOTRE DIFFÉRENCIATION MAJEURE', leftMargin, y)
-      y += 35
+      y += 45
       
       doc.fontSize(14).fillColor(BLACK).font('Helvetica-Bold').text('L\'intelligence artificielle conversationnelle au cœur de PONIA', leftMargin, y)
-      y += 22
+      y += 28
       
       doc.fontSize(10).fillColor(GRAY).font('Helvetica')
          .text('PONIA Chat est le cœur de notre solution et notre principal avantage concurrentiel. Contrairement aux logiciels de gestion de stock traditionnels qui nécessitent de naviguer dans des menus complexes, de remplir des formulaires et de comprendre des interfaces techniques, PONIA Chat permet au commerçant de simplement poser des questions en langage naturel, exactement comme il parlerait à un assistant humain.', leftMargin, y, { width: pageWidth, lineGap: 3 })
       y += 75
+      
+      doc.fontSize(10).fillColor(GRAY).font('Helvetica')
+         .text('PONIA Chat comprend le contexte, se souvient des conversations précédentes, et apprend les habitudes du commerçant au fil du temps. Plus le commerçant utilise PONIA Chat, plus les réponses deviennent pertinentes et personnalisées. C\'est une véritable intelligence artificielle qui s\'adapte à chaque commerce.', leftMargin, y, { width: pageWidth, lineGap: 3 })
+      y += 65
       
       doc.fontSize(10).fillColor(GRAY).font('Helvetica')
          .text('L\'interface de PONIA Chat est particulièrement agréable sur téléphone pour les interactions rapides en mobilité, mais elle fonctionne tout aussi bien sur ordinateur pour les sessions de travail plus longues. Le commerçant peut utiliser le support qui lui convient le mieux selon la situation.', leftMargin, y, { width: pageWidth, lineGap: 3 })
