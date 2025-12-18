@@ -48,21 +48,21 @@ export function generateCommercialKitPDF() {
       
       try {
         const logoPath = path.join(__dirname, '../attached_assets/IMG_3757_2_1766021386713.png')
-        // Logo centré verticalement dans la moitié haute : (595 - 250) / 2 = 172.5
-        doc.image(logoPath, 172, 200, { width: 250 })
+        // Logo centré : (595 - 220) / 2 = 187.5
+        doc.image(logoPath, 187, 280, { width: 220 })
       } catch (e) {
-        doc.fontSize(52).fillColor('#FFD700').font('Helvetica-Bold').text('PONIA', 0, 250, { align: 'center' })
+        doc.fontSize(48).fillColor('#FFD700').font('Helvetica-Bold').text('PONIA', 0, 320, { align: 'center' })
       }
       
-      // Titre centré dans la moitié basse avec espace
-      doc.fontSize(38).fillColor('#FFFFFF').font('Helvetica-Bold')
-         .text('KIT COMMERCIAL', 0, 520, { align: 'center' })
+      // Titre juste sous le logo
+      doc.fontSize(32).fillColor('#FFFFFF').font('Helvetica-Bold')
+         .text('Kit Commercial', 0, 540, { align: 'center' })
       
-      doc.fontSize(14).fillColor('#CCCCCC').font('Helvetica')
-         .text('Guide complet pour les commerciaux terrain', 0, 580, { align: 'center' })
+      doc.fontSize(13).fillColor('#CCCCCC').font('Helvetica')
+         .text('Guide complet pour les commerciaux terrain', 0, 590, { align: 'center' })
       
-      doc.fontSize(11).fillColor('#888888').font('Helvetica')
-         .text('Document confidentiel - Usage interne uniquement', 0, 780, { align: 'center' })
+      doc.fontSize(10).fillColor('#888888').font('Helvetica')
+         .text('Document confidentiel - Usage interne uniquement', 0, 750, { align: 'center' })
 
       // ===============================================
       // PAGE 2 - SOMMAIRE
