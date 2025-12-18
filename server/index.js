@@ -2846,13 +2846,13 @@ app.get('/api/commercials/:code', async (req, res) => {
 // Commercial Kit PDF Download
 app.get('/api/commercial-kit-pdf', async (req, res) => {
   try {
-    const doc = generateCommercialKitPDF()
+    const pdfBuffer = await generateCommercialKitPDF()
     
     res.setHeader('Content-Type', 'application/pdf')
     res.setHeader('Content-Disposition', 'attachment; filename=PONIA-Kit-Commercial.pdf')
+    res.setHeader('Content-Length', pdfBuffer.length)
     
-    doc.pipe(res)
-    doc.end()
+    res.send(pdfBuffer)
   } catch (error) {
     console.error('Error generating commercial kit PDF:', error)
     res.status(500).json({ error: 'Erreur lors de la génération du PDF' })
