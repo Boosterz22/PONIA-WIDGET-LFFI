@@ -48,18 +48,11 @@ export function generateCommercialKitPDF() {
       
       try {
         const logoPath = path.join(__dirname, '../attached_assets/IMG_3757_2_1766021386713.png')
-        // Logo centré : (595 - 220) / 2 = 187.5
-        doc.image(logoPath, 187, 280, { width: 220 })
+        // Logo centré au milieu de la page
+        doc.image(logoPath, 147, 350, { width: 300 })
       } catch (e) {
-        doc.fontSize(48).fillColor('#FFD700').font('Helvetica-Bold').text('PONIA', 0, 320, { align: 'center' })
+        doc.fontSize(56).fillColor('#FFD700').font('Helvetica-Bold').text('PONIA', 0, 400, { align: 'center' })
       }
-      
-      // Titre juste sous le logo
-      doc.fontSize(32).fillColor('#FFFFFF').font('Helvetica-Bold')
-         .text('KIT COMMERCIAL', 0, 500, { align: 'center' })
-      
-      doc.fontSize(13).fillColor('#CCCCCC').font('Helvetica')
-         .text('Guide complet pour les commerciaux terrain', 0, 590, { align: 'center' })
       
       doc.fontSize(10).fillColor('#888888').font('Helvetica')
          .text('Document confidentiel - Usage interne uniquement', 0, 750, { align: 'center' })
