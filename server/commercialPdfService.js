@@ -55,7 +55,7 @@ export function generateCommercialKitPDF() {
       }
       
       doc.fontSize(10).fillColor('#888888').font('Helvetica')
-         .text('Document confidentiel - Usage interne uniquement', 0, 800, { align: 'center' })
+         .text('Document confidentiel - Usage interne uniquement', 0, 700, { align: 'center' })
 
       // ===============================================
       // PAGE 2 - SOMMAIRE
