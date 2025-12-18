@@ -4,8 +4,9 @@ import jwt from 'jsonwebtoken'
 import OpenAI from 'openai'
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
-import { eq, and, gte, sql } from 'drizzle-orm'
+import { eq, and, gte, sql, desc } from 'drizzle-orm'
 import { db } from './db.js'
+import { generateCommercialKitPDF } from './commercialPdfService.js'
 import { users, stores, chatMessages, partners } from '../shared/schema.js'
 import { 
   getUserByEmail,
@@ -2789,6 +2790,120 @@ app.get('/api/partners/:code', async (req, res) => {
   } catch (error) {
     console.error('Error fetching partner:', error)
     res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// Commercial Dashboard - Get commercial data by code
+app.get('/api/commercials/:code', async (req, res) => {
+  try {
+    const code = req.params.code.toUpperCase()
+
+    const [commercial] = await db.select().from(partners)
+      .where(and(
+        eq(partners.referralCode, code),
+        eq(partners.partnerType, 'commercial')
+      ))
+      .limit(1)
+    
+    if (!commercial) {
+      return res.status(404).json({ error: 'Code commercial non trouvé' })
+    }
+
+    const referrals = await db.select().from(users).where(eq(users.referredBy, code))
+    
+    const now = new Date()
+    const sanitizedReferrals = referrals.map(r => {
+      const trialEnded = r.trialEndsAt && new Date(r.trialEndsAt) < now
+      const isPaying = (r.plan === 'standard' || r.plan === 'pro') && 
+                       (trialEnded || r.subscriptionStatus === 'active')
+      return {
+        email: r.email,
+        businessName: r.businessName,
+        businessType: r.businessType,
+        plan: r.plan,
+        createdAt: r.createdAt,
+        isPaying
+      }
+    })
+
+    const safeCommercial = {
+      id: commercial.id,
+      name: commercial.name,
+      email: commercial.email,
+      referralCode: commercial.referralCode,
+      commissionRate: commercial.commissionRate,
+      status: commercial.status,
+      createdAt: commercial.createdAt
+    }
+
+    res.json({ commercial: safeCommercial, referrals: sanitizedReferrals })
+  } catch (error) {
+    console.error('Error fetching commercial:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// Commercial Kit PDF Download
+app.get('/api/commercial-kit-pdf', async (req, res) => {
+  try {
+    const doc = generateCommercialKitPDF()
+    
+    res.setHeader('Content-Type', 'application/pdf')
+    res.setHeader('Content-Disposition', 'attachment; filename=PONIA-Kit-Commercial.pdf')
+    
+    doc.pipe(res)
+    doc.end()
+  } catch (error) {
+    console.error('Error generating commercial kit PDF:', error)
+    res.status(500).json({ error: 'Erreur lors de la génération du PDF' })
+  }
+})
+
+// Create commercial partner
+app.post('/api/commercials', async (req, res) => {
+  try {
+    const { name, email, phone } = req.body
+    
+    if (!name || !email) {
+      return res.status(400).json({ error: 'Nom et email requis' })
+    }
+
+    const generateCommercialCode = () => {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+      let code = 'COM-'
+      for (let i = 0; i < 6; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length))
+      }
+      return code
+    }
+
+    let referralCode = generateCommercialCode()
+    let codeExists = true
+    while (codeExists) {
+      const existing = await db.select().from(partners).where(eq(partners.referralCode, referralCode)).limit(1)
+      if (existing.length === 0) codeExists = false
+      else referralCode = generateCommercialCode()
+    }
+
+    const [newCommercial] = await db.insert(partners).values({
+      name,
+      companyName: 'Commercial PONIA',
+      email,
+      phone: phone || null,
+      partnerType: 'commercial',
+      commissionRate: 35,
+      referralCode,
+      status: 'active'
+    }).returning()
+
+    res.json({ 
+      success: true, 
+      commercial: newCommercial,
+      message: `Commercial créé avec le code ${referralCode}`
+    })
+  } catch (error) {
+    console.error('Error creating commercial:', error)
+    res.status(500).json({ error: 'Erreur lors de la création du commercial' })
   }
 })
 

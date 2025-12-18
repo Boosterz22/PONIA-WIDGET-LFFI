@@ -30,6 +30,7 @@ import IntegrationsPage from './pages/IntegrationsPage'
 import ProductMappingPage from './pages/ProductMappingPage'
 import PartnerComptablePage from './pages/PartnerComptablePage'
 import PartnerDashboardPage from './pages/PartnerDashboardPage'
+import CommercialDashboardPage from './pages/CommercialDashboardPage'
 import DemoBlockerPage from './pages/DemoBlockerPage'
 import { supabase } from './services/supabase'
 import { LanguageProvider } from './contexts/LanguageContext'
@@ -236,6 +237,10 @@ function App() {
         <Route 
           path="/partenaire/dashboard" 
           element={<PartnerDashboardPage />} 
+        />
+        <Route 
+          path="/commercial" 
+          element={<CommercialDashboardPage />} 
         />
         <Route 
           path="/demo-blocker" 

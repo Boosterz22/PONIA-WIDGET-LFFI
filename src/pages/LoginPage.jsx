@@ -1,10 +1,18 @@
-import React, { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { useNavigate, Link, useSearchParams } from 'react-router-dom'
 import { supabase } from '../services/supabase'
 
 export default function LoginPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const [isSignup, setIsSignup] = useState(true)
+  
+  useEffect(() => {
+    const refCode = searchParams.get('ref')
+    if (refCode) {
+      localStorage.setItem('ponia_referral_code_pending', refCode.toUpperCase())
+    }
+  }, [searchParams])
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')

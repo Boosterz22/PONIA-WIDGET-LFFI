@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link, useSearchParams } from 'react-router-dom'
 import { supabase } from '../services/supabase'
 
 export default function CompleteProfilePage({ session }) {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const [businessName, setBusinessName] = useState('')
   const [businessType, setBusinessType] = useState('boulangerie')
   const [posSystem, setPosSystem] = useState('non')
@@ -14,6 +15,14 @@ export default function CompleteProfilePage({ session }) {
   const [longitude, setLongitude] = useState(null)
   const [referredByCode, setReferredByCode] = useState('')
   const [loading, setLoading] = useState(false)
+  
+  useEffect(() => {
+    const refCode = searchParams.get('ref') || localStorage.getItem('ponia_referral_code_pending')
+    if (refCode) {
+      setReferredByCode(refCode.toUpperCase())
+      localStorage.setItem('ponia_referral_code_pending', refCode.toUpperCase())
+    }
+  }, [searchParams])
   const [suggestions, setSuggestions] = useState([])
   const [showSuggestions, setShowSuggestions] = useState(false)
   const suggestionsRef = useRef(null)
@@ -127,6 +136,7 @@ export default function CompleteProfilePage({ session }) {
       localStorage.setItem('ponia_referral_code', referralCode)
       localStorage.setItem('ponia_referrals', JSON.stringify([]))
       localStorage.setItem('ponia_free_months', '0')
+      localStorage.removeItem('ponia_referral_code_pending')
 
       window.location.href = '/onboarding'
     } catch (error) {
