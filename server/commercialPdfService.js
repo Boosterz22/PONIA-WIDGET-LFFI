@@ -48,14 +48,14 @@ export function generateCommercialKitPDF() {
       
       try {
         const logoPath = path.join(__dirname, '../attached_assets/IMG_3757_2_1766021386713.png')
-        // Logo centré au milieu de la page
-        doc.image(logoPath, 147, 350, { width: 300 })
+        // Logo parfaitement centré : (595 - 250) / 2 = 172.5, verticalement au milieu (842 - 250) / 2 ≈ 296
+        doc.image(logoPath, 172, 296, { width: 250 })
       } catch (e) {
-        doc.fontSize(56).fillColor('#FFD700').font('Helvetica-Bold').text('PONIA', 0, 400, { align: 'center' })
+        doc.fontSize(52).fillColor('#FFD700').font('Helvetica-Bold').text('PONIA', 0, 380, { align: 'center' })
       }
       
       doc.fontSize(10).fillColor('#888888').font('Helvetica')
-         .text('Document confidentiel - Usage interne uniquement', 0, 750, { align: 'center' })
+         .text('Document confidentiel - Usage interne uniquement', 0, 800, { align: 'center' })
 
       // ===============================================
       // PAGE 2 - SOMMAIRE
