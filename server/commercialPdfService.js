@@ -48,19 +48,20 @@ export function generateCommercialKitPDF() {
       
       try {
         const logoPath = path.join(__dirname, '../attached_assets/IMG_3757_2_1766021386713.png')
-        doc.image(logoPath, 175, 250, { width: 250 })
+        // Logo centré : (595 - 280) / 2 = 157.5
+        doc.image(logoPath, 157, 300, { width: 280 })
       } catch (e) {
-        doc.fontSize(48).fillColor('#FFD700').font('Helvetica-Bold').text('PONIA', 0, 290, { align: 'center' })
+        doc.fontSize(52).fillColor('#FFD700').font('Helvetica-Bold').text('PONIA', 0, 340, { align: 'center' })
       }
       
-      doc.fontSize(32).fillColor('#FFFFFF').font('Helvetica-Bold')
-         .text('KIT COMMERCIAL', 0, 450, { align: 'center' })
+      doc.fontSize(36).fillColor('#FFFFFF').font('Helvetica-Bold')
+         .text('KIT COMMERCIAL', 0, 480, { align: 'center' })
       
-      doc.fontSize(16).fillColor('#CCCCCC').font('Helvetica')
-         .text('Guide complet pour les commerciaux terrain', 0, 500, { align: 'center' })
+      doc.fontSize(14).fillColor('#CCCCCC').font('Helvetica')
+         .text('Guide complet pour les commerciaux terrain', 0, 530, { align: 'center' })
       
-      doc.fontSize(12).fillColor('#888888').font('Helvetica')
-         .text('Document confidentiel - Usage interne uniquement', 0, 760, { align: 'center' })
+      doc.fontSize(11).fillColor('#888888').font('Helvetica')
+         .text('Document confidentiel - Usage interne uniquement', 0, 770, { align: 'center' })
 
       // ===============================================
       // PAGE 2 - SOMMAIRE
@@ -331,62 +332,130 @@ export function generateCommercialKitPDF() {
          .text('[Attendez la réponse. Si le commerçant acquiesce ou partage son expérience, vous avez son attention. Rebondissez sur ce qu\'il dit.]', leftMargin, y, { width: pageWidth, lineGap: 3 })
       y += 40
       
-      doc.fontSize(14).fillColor(BLACK).font('Helvetica-Bold').text('Présentation de la solution (2-3 minutes)', leftMargin, y)
+      doc.fontSize(14).fillColor(BLACK).font('Helvetica-Bold').text('Présentation de la solution - PONIA Chat en star (3-5 minutes)', leftMargin, y)
       y += 22
       
       doc.fontSize(10).fillColor(GRAY).font('Helvetica')
-         .text('"PONIA, c\'est une application qui gère tout ça pour vous. Elle fonctionne sur ordinateur et sur téléphone. Le truc vraiment unique, c\'est qu\'on n\'a pas créé un logiciel compliqué avec des menus partout. On a créé un assistant intelligent à qui vous parlez normalement."', leftMargin, y, { width: pageWidth, lineGap: 3 })
+         .text('"PONIA, c\'est une application qui gère tout ça pour vous. Elle fonctionne sur ordinateur et sur téléphone. Mais le truc vraiment révolutionnaire, ce qui nous rend complètement différents de tout ce qui existe sur le marché, c\'est PONIA Chat."', leftMargin, y, { width: pageWidth, lineGap: 3 })
       y += 55
       
       doc.fontSize(10).fillColor(GRAY).font('Helvetica')
-         .text('[Ouvrez votre ordinateur portable et montrez l\'application PONIA avec le compte de démonstration]', leftMargin, y, { width: pageWidth })
+         .text('[Ouvrez votre ordinateur portable et montrez l\'application PONIA - Allez directement sur PONIA Chat]', leftMargin, y, { width: pageWidth })
+      y += 25
+      
+      doc.fontSize(10).fillColor(BLACK).font('Helvetica-Bold')
+         .text('DÉMONSTRATION DE PONIA CHAT (C\'EST LA STAR DE VOTRE PRÉSENTATION)', leftMargin, y, { width: pageWidth, underline: true })
       y += 25
       
       doc.fontSize(10).fillColor(GRAY).font('Helvetica')
-         .text('"Regardez, voici PONIA Chat. Je peux lui demander n\'importe quoi. Par exemple : Qu\'est-ce que je dois commander cette semaine ?"', leftMargin, y, { width: pageWidth, lineGap: 3 })
-      y += 40
+         .text('"Regardez, voici PONIA Chat. C\'est un assistant intelligent basé sur l\'intelligence artificielle. Vous lui parlez normalement, comme vous me parlez là, et il vous répond. Pas de menus compliqués, pas de boutons partout, pas de formation à suivre. Vous posez une question, vous avez la réponse."', leftMargin, y, { width: pageWidth, lineGap: 3 })
+      y += 65
       
       doc.fontSize(10).fillColor(GRAY).font('Helvetica')
-         .text('[Montrez la réponse de l\'IA qui génère une liste de commande]', leftMargin, y, { width: pageWidth })
+         .text('"Je vais vous montrer. Je lui demande : Qu\'est-ce que je dois commander cette semaine ?"', leftMargin, y, { width: pageWidth, lineGap: 3 })
+      y += 30
+      
+      doc.fontSize(10).fillColor(GRAY).font('Helvetica')
+         .text('[Montrez la réponse de l\'IA qui génère une liste de commande détaillée]', leftMargin, y, { width: pageWidth })
       y += 25
       
       doc.fontSize(10).fillColor(GRAY).font('Helvetica')
-         .text('"L\'IA analyse vos stocks actuels, regarde votre historique de ventes, et vous dit exactement quoi commander et en quelle quantité. Elle tient compte de tout : les tendances, la saisonnalité, même la météo prévue. Si vous avez une caisse comme SumUp, Zettle ou Square, vos ventes se synchronisent automatiquement. Chaque vente met à jour votre stock. Plus de comptage manuel."', leftMargin, y, { width: pageWidth, lineGap: 3 })
-      y += 80
+         .text('"Vous voyez ? En une seconde, l\'IA a analysé tous vos stocks, regardé votre historique de ventes des dernières semaines, tenu compte de la saisonnalité, et elle vous donne une liste de commande précise avec les quantités exactes. Essayez de faire ça à la main, ça vous prend combien de temps ? Une heure ? Deux heures ? Là c\'est instantané."', leftMargin, y, { width: pageWidth, lineGap: 3 })
+      y += 75
+      
+      doc.fontSize(10).fillColor(GRAY).font('Helvetica')
+         .text('"Mais ce n\'est pas tout. Je peux lui demander autre chose. Par exemple : Quels produits vont bientôt périmer ?"', leftMargin, y, { width: pageWidth, lineGap: 3 })
+      y += 30
+      
+      doc.fontSize(10).fillColor(GRAY).font('Helvetica')
+         .text('[Montrez la réponse sur les dates de péremption]', leftMargin, y, { width: pageWidth })
+      y += 25
+      
+      doc.fontSize(10).fillColor(GRAY).font('Helvetica')
+         .text('"L\'IA vous liste tous les produits qui arrivent à péremption, classés par urgence. Elle vous dit même quoi faire : mettre en promotion, consommer en priorité, ou retirer de la vente. Plus de produits jetés parce que vous n\'aviez pas vu la date."', leftMargin, y, { width: pageWidth, lineGap: 3 })
+      y += 60
+      
+      y = checkNewPage(y, 250)
+      
+      doc.fontSize(10).fillColor(GRAY).font('Helvetica')
+         .text('"Je peux aussi lui demander des analyses. Par exemple : Comment se sont passées mes ventes de croissants ce mois-ci ?"', leftMargin, y, { width: pageWidth, lineGap: 3 })
+      y += 30
+      
+      doc.fontSize(10).fillColor(GRAY).font('Helvetica')
+         .text('[Montrez la réponse analytique]', leftMargin, y, { width: pageWidth })
+      y += 25
+      
+      doc.fontSize(10).fillColor(GRAY).font('Helvetica')
+         .text('"L\'IA vous donne les chiffres précis, compare avec le mois dernier, identifie les tendances. Vous avez un vrai business analyst dans votre poche, disponible 24h/24."', leftMargin, y, { width: pageWidth, lineGap: 3 })
+      y += 50
+      
+      doc.fontSize(10).fillColor(GRAY).font('Helvetica')
+         .text('"Et le plus impressionnant : PONIA Chat a une mémoire. Elle retient vos préférences, vos fournisseurs habituels, vos jours de forte affluence. Si vous lui dites une fois que le samedi c\'est jour de marché et que vous vendez deux fois plus, elle s\'en souviendra. La prochaine fois qu\'elle vous propose une commande pour le week-end, elle en tiendra compte automatiquement. C\'est comme un assistant qui vous connaît parfaitement."', leftMargin, y, { width: pageWidth, lineGap: 3 })
+      y += 85
+      
+      doc.fontSize(10).fillColor(BLACK).font('Helvetica-Bold')
+         .text('PONIA Chat, c\'est vraiment ça notre différence. Aucun concurrent ne propose ça. C\'est ce qui fait de PONIA une solution unique.', leftMargin, y, { width: pageWidth, underline: true })
+      y += 35
+      
+      doc.fontSize(10).fillColor(GRAY).font('Helvetica')
+         .text('"Et si vous avez une caisse comme SumUp, Zettle, Square, Hiboutik ou Tiller, vos ventes se synchronisent automatiquement avec PONIA. Chaque vente en caisse met à jour votre stock. L\'IA sait exactement ce que vous avez vendu et peut faire des prédictions encore plus précises."', leftMargin, y, { width: pageWidth, lineGap: 3 })
+      y += 65
       
       y = checkNewPage(y, 200)
+      
+      doc.fontSize(10).fillColor(BLACK).font('Helvetica-Bold')
+         .text('LES AUTRES FONCTIONNALITÉS (après PONIA Chat)', leftMargin, y, { width: pageWidth, underline: true })
+      y += 25
       
       doc.fontSize(10).fillColor(GRAY).font('Helvetica')
          .text('[Montrez le Dashboard]', leftMargin, y, { width: pageWidth })
       y += 20
       
       doc.fontSize(10).fillColor(GRAY).font('Helvetica')
-         .text('"Ici c\'est votre tableau de bord. En un coup d\'œil vous voyez l\'état de vos stocks. Le score de santé vous dit si tout va bien ou s\'il y a des problèmes. Les alertes s\'affichent ici : produits bientôt en rupture, produits qui vont périmer. Vous voyez aussi combien de temps PONIA vous a fait gagner cette semaine."', leftMargin, y, { width: pageWidth, lineGap: 3 })
-      y += 70
+         .text('"En plus de PONIA Chat, vous avez le tableau de bord. C\'est votre vue d\'ensemble. En un coup d\'œil vous voyez l\'état de vos stocks avec un score de santé sur 100. Les alertes s\'affichent ici : produits bientôt en rupture, produits qui vont périmer. Et vous voyez combien de temps PONIA vous a fait gagner cette semaine - parce que le temps, c\'est de l\'argent."', leftMargin, y, { width: pageWidth, lineGap: 3 })
+      y += 75
       
       doc.fontSize(10).fillColor(GRAY).font('Helvetica')
          .text('[Montrez la page Stocks]', leftMargin, y, { width: pageWidth })
       y += 20
       
       doc.fontSize(10).fillColor(GRAY).font('Helvetica')
-         .text('"La page des stocks, c\'est très visuel. Chaque produit a sa carte avec un code couleur. Rouge = rupture, il faut commander tout de suite. Orange = stock bas, attention. Vert = tout va bien. Bleu = surstock, vous avez commandé trop. Vous pouvez ajuster les quantités en un clic, ajouter des produits, modifier les seuils d\'alerte."', leftMargin, y, { width: pageWidth, lineGap: 3 })
-      y += 70
+         .text('"La page des stocks est très visuelle. Chaque produit a sa carte avec un code couleur immédiatement compréhensible. Rouge = rupture urgente, il faut commander tout de suite. Orange = stock bas, attention. Vert = tout va bien. Bleu = surstock, vous avez commandé trop. Vous pouvez ajuster les quantités en un clic, ajouter des produits, modifier les seuils d\'alerte. Tout est pensé pour être rapide."', leftMargin, y, { width: pageWidth, lineGap: 3 })
+      y += 80
       
       doc.fontSize(10).fillColor(GRAY).font('Helvetica')
-         .text('[Montrez les Alertes]', leftMargin, y, { width: pageWidth })
+         .text('[Montrez les Alertes Proactives]', leftMargin, y, { width: pageWidth })
       y += 20
       
       doc.fontSize(10).fillColor(GRAY).font('Helvetica')
-         .text('"Les alertes sont intelligentes. PONIA ne vous alerte pas quand le stock est déjà vide, c\'est trop tard. Elle vous prévient AVANT. Elle calcule à quel rythme vous vendez et vous dit : dans 3 jours vous serez en rupture de baguettes si vous ne commandez pas. Vous avez le temps d\'agir."', leftMargin, y, { width: pageWidth, lineGap: 3 })
+         .text('"Les alertes sont intelligentes et proactives. PONIA ne vous alerte pas quand le stock est déjà vide - là c\'est trop tard. Elle vous prévient AVANT. Elle calcule à quel rythme vous vendez, analyse les tendances, et vous dit : dans 3 jours vous serez en rupture de baguettes si vous ne commandez pas maintenant. Elle regarde même la météo : s\'il fait très chaud, elle vous prévient de commander plus de boissons fraîches. Vous avez toujours le temps d\'agir."', leftMargin, y, { width: pageWidth, lineGap: 3 })
+      y += 90
+      
+      doc.fontSize(10).fillColor(GRAY).font('Helvetica')
+         .text('[Montrez l\'Historique]', leftMargin, y, { width: pageWidth })
+      y += 20
+      
+      doc.fontSize(10).fillColor(GRAY).font('Helvetica')
+         .text('"L\'historique vous permet de voir toutes vos ventes passées, jour par jour, semaine par semaine, mois par mois. Vous pouvez comparer les performances, identifier les tendances, comprendre quels produits marchent mieux à quelles périodes. C\'est précieux pour optimiser vos commandes."', leftMargin, y, { width: pageWidth, lineGap: 3 })
       y += 65
+      
+      y = checkNewPage(y, 150)
       
       doc.fontSize(10).fillColor(GRAY).font('Helvetica')
          .text('[Montrez la page Analytics]', leftMargin, y, { width: pageWidth })
       y += 20
       
       doc.fontSize(10).fillColor(GRAY).font('Helvetica')
-         .text('"Ici ce sont vos statistiques. Vous voyez quels produits se vendent le mieux, lesquels sont les plus rentables, comment évoluent vos ventes. Ces données vous aident à prendre les bonnes décisions pour votre commerce."', leftMargin, y, { width: pageWidth, lineGap: 3 })
-      y += 55
+         .text('"Et enfin les statistiques avancées. Vous voyez quels produits se vendent le mieux, lesquels sont les plus rentables, comment évoluent vos ventes dans le temps. Ces données vous aident à prendre les bonnes décisions pour développer votre commerce. C\'est comme avoir un comptable et un conseiller en gestion disponibles à tout moment."', leftMargin, y, { width: pageWidth, lineGap: 3 })
+      y += 70
+      
+      doc.fontSize(10).fillColor(GRAY).font('Helvetica')
+         .text('[Montrez la génération de commande]', leftMargin, y, { width: pageWidth })
+      y += 20
+      
+      doc.fontSize(10).fillColor(GRAY).font('Helvetica')
+         .text('"Et pour finir, PONIA peut générer automatiquement vos bons de commande. L\'IA calcule exactement ce dont vous avez besoin, crée un document propre que vous pouvez exporter en PDF, envoyer par email à votre fournisseur, ou copier pour WhatsApp. En 10 secondes, votre commande est prête. Combien de temps vous passez normalement à préparer vos commandes ?"', leftMargin, y, { width: pageWidth, lineGap: 3 })
+      y += 75
       
       y = checkNewPage(y, 150)
       
