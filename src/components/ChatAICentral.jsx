@@ -380,22 +380,57 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
     return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
   }
 
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 768 : false)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768
+      setIsMobile(mobile)
+      if (mobile) setShowSidebar(false)
+    }
+    window.addEventListener('resize', handleResize)
+    handleResize()
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
   return (
     <div style={{ 
       display: 'flex',
       height: '100%',
-      background: 'white'
+      background: 'white',
+      position: 'relative',
+      overflow: 'hidden'
     }}>
+      {isMobile && showSidebar && (
+        <div 
+          onClick={() => setShowSidebar(false)}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0,0,0,0.3)',
+            zIndex: 5
+          }}
+        />
+      )}
       {/* Sidebar des conversations */}
       <div style={{
-        width: showSidebar ? '280px' : '0px',
-        minWidth: showSidebar ? '280px' : '0px',
+        width: showSidebar ? (isMobile ? '280px' : '280px') : '0px',
+        minWidth: showSidebar ? (isMobile ? '280px' : '280px') : '0px',
         borderRight: showSidebar ? '1px solid #E5E7EB' : 'none',
         display: 'flex',
         flexDirection: 'column',
         background: '#F9FAFB',
         transition: 'all 0.3s ease',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        position: isMobile ? 'absolute' : 'relative',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        zIndex: isMobile ? 10 : 1
       }}>
         {/* Header sidebar */}
         <div style={{
@@ -544,22 +579,21 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
         onClick={() => setShowSidebar(!showSidebar)}
         style={{
           position: 'absolute',
-          left: showSidebar ? '268px' : '0px',
-          top: '50%',
-          transform: 'translateY(-50%)',
-          zIndex: 10,
-          width: '24px',
-          height: '48px',
+          left: showSidebar && !isMobile ? '268px' : (showSidebar && isMobile ? '268px' : '0px'),
+          top: isMobile ? '10px' : '50%',
+          transform: isMobile ? 'none' : 'translateY(-50%)',
+          zIndex: 15,
+          width: '32px',
+          height: '32px',
           background: 'white',
           border: '1px solid #E5E7EB',
-          borderLeft: showSidebar ? 'none' : '1px solid #E5E7EB',
-          borderRadius: showSidebar ? '0 8px 8px 0' : '0 8px 8px 0',
+          borderRadius: '8px',
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           transition: 'left 0.3s ease',
-          boxShadow: '2px 0 4px rgba(0,0,0,0.05)'
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
         }}
       >
         {showSidebar ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
@@ -571,21 +605,24 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
-        position: 'relative'
+        position: 'relative',
+        minWidth: 0
       }}>
         {/* Header avec logo */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: '1rem',
-          background: 'white'
+          padding: isMobile ? '0.75rem' : '1rem',
+          background: 'white',
+          flexShrink: 0,
+          paddingLeft: isMobile ? '48px' : '1rem'
         }}>
           <img 
             src={poniaLogo} 
             alt="PONIA" 
             style={{ 
-              height: '40px',
+              height: isMobile ? '32px' : '40px',
               objectFit: 'contain'
             }} 
           />
@@ -595,7 +632,7 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
         <div style={{
           flex: 1,
           overflowY: 'auto',
-          padding: '1.5rem',
+          padding: isMobile ? '1rem' : '1.5rem',
           paddingBottom: '1rem',
           scrollBehavior: 'smooth'
         }}>
@@ -655,32 +692,37 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
 
         {/* Questions suggérées */}
         {showSuggestions && (
-          <div style={{ padding: '0 1.5rem', marginBottom: '1rem' }}>
+          <div style={{ padding: isMobile ? '0 1rem' : '0 1.5rem', marginBottom: '0.75rem', flexShrink: 0 }}>
             <p style={{
               fontSize: '0.75rem',
               fontWeight: '600',
               color: '#6B7280',
-              marginBottom: '0.75rem',
+              marginBottom: '0.5rem',
               textTransform: 'uppercase',
               letterSpacing: '0.5px'
             }}>
               {t('chat.suggestedQuestions')}
             </p>
-            <div style={{ display: 'grid', gap: '0.5rem' }}>
+            <div style={{ 
+              display: 'flex', 
+              flexWrap: 'wrap',
+              gap: '0.5rem'
+            }}>
               {suggestedQuestions.map((question, idx) => (
                 <button
                   key={idx}
                   onClick={() => handleSuggestionClick(question)}
                   style={{
-                    padding: '0.75rem 1rem',
+                    padding: isMobile ? '0.5rem 0.75rem' : '0.75rem 1rem',
                     background: 'white',
                     border: '1px solid #E5E7EB',
                     borderRadius: '8px',
                     color: '#374151',
-                    fontSize: '0.875rem',
+                    fontSize: isMobile ? '0.8rem' : '0.875rem',
                     textAlign: 'left',
                     cursor: 'pointer',
-                    transition: 'all 0.2s'
+                    transition: 'all 0.2s',
+                    flex: isMobile ? '1 1 calc(50% - 0.25rem)' : 'none'
                   }}
                   onMouseEnter={(e) => {
                     e.target.style.background = '#F9FAFB'
@@ -700,13 +742,15 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
 
         {/* Barre de saisie */}
         <div style={{
-          padding: '1rem 1.5rem',
-          paddingBottom: '1.5rem',
-          background: 'white'
+          padding: isMobile ? '0.75rem 1rem' : '1rem 1.5rem',
+          paddingBottom: isMobile ? '1rem' : '1.5rem',
+          background: 'white',
+          flexShrink: 0,
+          borderTop: '1px solid #F3F4F6'
         }}>
           <div style={{
             display: 'flex',
-            gap: '0.75rem',
+            gap: '0.5rem',
             alignItems: 'center'
           }}>
             <input
@@ -718,12 +762,13 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
               disabled={loading}
               style={{
                 flex: 1,
-                padding: '0.875rem 1.25rem',
-                fontSize: '0.9375rem',
+                padding: isMobile ? '0.75rem 1rem' : '0.875rem 1.25rem',
+                fontSize: isMobile ? '16px' : '0.9375rem',
                 border: '1px solid #E5E7EB',
                 borderRadius: '24px',
                 outline: 'none',
-                transition: 'all 0.2s'
+                transition: 'all 0.2s',
+                minWidth: 0
               }}
               onFocus={(e) => e.target.style.borderColor = '#9CA3AF'}
               onBlur={(e) => e.target.style.borderColor = '#E5E7EB'}
@@ -732,7 +777,7 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
               onClick={handleSend}
               disabled={loading || !input.trim()}
               style={{
-                padding: '0.875rem',
+                padding: '0.75rem',
                 background: (loading || !input.trim()) ? '#E5E7EB' : '#000000',
                 border: 'none',
                 borderRadius: '50%',
@@ -742,11 +787,12 @@ export default function ChatAICentral({ products, userName = "Enock" }) {
                 alignItems: 'center',
                 justifyContent: 'center',
                 transition: 'all 0.2s',
-                width: '44px',
-                height: '44px'
+                width: isMobile ? '40px' : '44px',
+                height: isMobile ? '40px' : '44px',
+                flexShrink: 0
               }}
             >
-              {loading ? <Loader size={20} className="spin" /> : <Send size={20} />}
+              {loading ? <Loader size={18} className="spin" /> : <Send size={18} />}
             </button>
           </div>
         </div>

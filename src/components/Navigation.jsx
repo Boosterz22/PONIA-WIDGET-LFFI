@@ -83,19 +83,35 @@ export default function Navigation() {
   return (
     <>
       <style>{`
-        @media (max-width: 640px) {
+        @media (max-width: 768px) {
           .nav-label { display: none; }
           .business-name { display: none; }
+          .nav-right-items { gap: 0.5rem !important; }
+          .nav-right-items > * { flex-shrink: 0; }
         }
         @keyframes pulse {
           0%, 100% { transform: scale(1); opacity: 1; }
           50% { transform: scale(1.1); opacity: 0.8; }
         }
+        .nav-scrollable {
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+          flex: 1;
+          min-width: 0;
+        }
+        .nav-scrollable::-webkit-scrollbar {
+          display: none;
+        }
       `}</style>
       <nav style={{
         background: '#FFFFFF',
         borderBottom: '1px solid #E5E7EB',
-        padding: '0 1rem',
+        padding: '0 0.75rem',
         position: 'sticky',
         top: 0,
         zIndex: 100,
@@ -107,31 +123,29 @@ export default function Navigation() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          gap: '1rem'
+          gap: '0.5rem'
         }}>
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '1rem'
+            gap: '0.5rem',
+            flex: 1,
+            minWidth: 0,
+            overflow: 'hidden'
           }}>
             <div style={{
               padding: '0.75rem 0',
               fontWeight: '600',
               fontSize: '0.95rem',
               color: '#111827',
-              whiteSpace: 'nowrap'
+              whiteSpace: 'nowrap',
+              flexShrink: 0
             }}>
               <span className="business-name">{businessName}</span>
               <span style={{ display: 'none' }} className="business-icon">📦</span>
             </div>
             
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.25rem',
-              overflowX: 'auto',
-              WebkitOverflowScrolling: 'touch'
-            }}>
+            <div className="nav-scrollable">
               {navItems.map(({ path, icon: Icon, label }) => (
                 <Link
                   key={path}
@@ -140,14 +154,15 @@ export default function Navigation() {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '0.5rem',
-                    padding: '1rem 0.75rem',
+                    padding: '1rem 0.6rem',
                     textDecoration: 'none',
                     color: isActive(path) ? '#000000' : '#6B7280',
                     fontWeight: isActive(path) ? '600' : '500',
                     fontSize: '0.875rem',
                     borderBottom: isActive(path) ? '2px solid #000000' : '2px solid transparent',
                     transition: 'all 0.2s',
-                    whiteSpace: 'nowrap'
+                    whiteSpace: 'nowrap',
+                    flexShrink: 0
                   }}
                 >
                   <Icon size={18} />
@@ -157,7 +172,7 @@ export default function Navigation() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div className="nav-right-items" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0 }}>
             <button
               onClick={() => setShowSuggestionsDrawer(true)}
               style={{

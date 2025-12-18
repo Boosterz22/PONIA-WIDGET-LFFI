@@ -191,11 +191,21 @@ export default function StockPage({ session }) {
           </p>
         </div>
 
-        <div style={{
+        <style>{`
+          @media (min-width: 768px) {
+            .stock-summary-grid { grid-template-columns: repeat(4, 1fr) !important; }
+            .stock-products-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)) !important; }
+          }
+          @media (max-width: 767px) {
+            .stock-summary-grid { grid-template-columns: repeat(2, 1fr) !important; }
+            .stock-products-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          }
+        `}</style>
+        <div className="stock-summary-grid" style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-          gap: '1rem',
-          marginBottom: '2rem'
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: '0.75rem',
+          marginBottom: '1.5rem'
         }}>
           <div className="card" style={{ padding: '1.25rem', textAlign: 'center' }}>
             <div style={{ fontSize: '0.875rem', color: '#6B7280', marginBottom: '0.5rem' }}>Total</div>
@@ -329,7 +339,7 @@ export default function StockPage({ session }) {
             </button>
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
+          <div className="stock-products-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem' }}>
             {filteredProducts.map(product => (
               <ProductCard
                 key={product.id}

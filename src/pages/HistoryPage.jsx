@@ -100,15 +100,24 @@ export default function HistoryPage() {
         </div>
       </nav>
 
-      <div className="container" style={{ padding: '2rem 1rem', maxWidth: '1200px', margin: '0 auto' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
+      <div className="container" style={{ padding: '1.5rem 1rem', maxWidth: '1200px', margin: '0 auto' }}>
+        <style>{`
+          @media (max-width: 767px) {
+            .history-header { flex-direction: column !important; align-items: flex-start !important; gap: 1rem !important; }
+            .history-header h1 { font-size: 1.5rem !important; }
+            .history-header select { width: 100% !important; }
+            .history-item { flex-direction: column !important; align-items: flex-start !important; gap: 0.75rem !important; }
+            .history-item > div:last-child { text-align: left !important; }
+          }
+        `}</style>
+        <div className="history-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
-            <h1 style={{ fontSize: '2rem', fontWeight: '700', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <Calendar size={32} style={{ color: '#F59E0B' }} />
-              Historique des mouvements
+            <h1 style={{ fontSize: '1.75rem', fontWeight: '700', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <Calendar size={28} style={{ color: '#F59E0B' }} />
+              Historique
             </h1>
-            <p style={{ color: '#6B7280' }}>
-              Suivez l'évolution de vos stocks au fil du temps
+            <p style={{ color: '#6B7280', fontSize: '0.9rem' }}>
+              Évolution de vos stocks
             </p>
           </div>
           
@@ -121,7 +130,8 @@ export default function HistoryPage() {
               borderRadius: '8px',
               fontSize: '0.9rem',
               background: 'white',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              minWidth: '180px'
             }}
           >
             <option value="all">Tous les produits</option>
@@ -192,11 +202,12 @@ export default function HistoryPage() {
                   return (
                     <div
                       key={item.id}
+                      className="history-item"
                       style={{
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
-                        padding: '1rem',
+                        padding: '0.75rem',
                         background: '#F9FAFB',
                         borderRadius: '8px',
                         borderLeft: `4px solid ${isIncrease ? '#10B981' : '#EF4444'}`

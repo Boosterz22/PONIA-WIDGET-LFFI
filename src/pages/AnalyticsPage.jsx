@@ -162,7 +162,19 @@ export default function AnalyticsPage() {
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+        <style>{`
+          @media (min-width: 768px) {
+            .analytics-metrics-grid { grid-template-columns: repeat(4, 1fr) !important; }
+            .analytics-charts-grid { grid-template-columns: repeat(2, 1fr) !important; }
+            .analytics-bottom-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          }
+          @media (max-width: 767px) {
+            .analytics-metrics-grid { grid-template-columns: repeat(2, 1fr) !important; }
+            .analytics-charts-grid { grid-template-columns: 1fr !important; }
+            .analytics-bottom-grid { grid-template-columns: 1fr !important; }
+          }
+        `}</style>
+        <div className="analytics-metrics-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', marginBottom: '1.5rem' }}>
           <div className="card" style={{ padding: '1.5rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
               <Package size={20} style={{ color: '#6B7280' }} />
@@ -222,7 +234,7 @@ export default function AnalyticsPage() {
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+        <div className="analytics-charts-grid" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem', marginBottom: '1.5rem' }}>
           <div className="card" style={{ padding: '1.5rem' }}>
             <h2 style={{ margin: '0 0 1.5rem 0', fontSize: '1.125rem', fontWeight: '600' }}>
               📈 Tendance du stock moyen
@@ -287,7 +299,7 @@ export default function AnalyticsPage() {
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '1.5rem' }}>
+        <div className="analytics-bottom-grid" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
           <div className="card" style={{ padding: '1.5rem' }}>
             <h2 style={{ margin: '0 0 1.5rem 0', fontSize: '1.125rem', fontWeight: '600' }}>
               🎨 Distribution des stocks

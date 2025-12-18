@@ -17,11 +17,11 @@ export default function ProductCard({ product, onUpdateQuantity, onDelete, userP
   const status = statusColors[stockStatus]
 
   return (
-    <div className="card" style={{ borderColor: status.border, borderWidth: '2px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-        <div style={{ flex: 1 }}>
-          <h3 style={{ fontSize: '1.125rem', fontWeight: 600, marginBottom: '0.25rem' }}>{product.name}</h3>
-          <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>{product.supplier}</p>
+    <div className="card" style={{ borderColor: status.border, borderWidth: '2px', padding: '0.75rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <h3 style={{ fontSize: '0.9rem', fontWeight: 600, marginBottom: '0.15rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{product.name}</h3>
+          <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{product.supplier}</p>
         </div>
         <button 
           onClick={() => onDelete(product.id)}
@@ -31,64 +31,65 @@ export default function ProductCard({ product, onUpdateQuantity, onDelete, userP
             color: 'var(--text-muted)', 
             cursor: 'pointer',
             padding: '0.25rem',
-            transition: 'color 0.2s'
+            transition: 'color 0.2s',
+            flexShrink: 0
           }}
           onMouseOver={(e) => e.currentTarget.style.color = 'var(--danger)'}
           onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
         >
-          <Trash2 size={18} />
+          <Trash2 size={16} />
         </button>
       </div>
 
       <div style={{ 
         background: status.bg, 
-        padding: '1rem', 
-        borderRadius: '8px', 
-        marginBottom: '1rem',
+        padding: '0.6rem', 
+        borderRadius: '6px', 
+        marginBottom: '0.5rem',
         border: `1px solid ${status.border}`
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', marginBottom: '0.25rem' }}>
           {stockStatus === 'good' ? (
-            <CheckCircle size={20} color={status.color} />
+            <CheckCircle size={16} color={status.color} />
           ) : (
-            <AlertTriangle size={20} color={status.color} />
+            <AlertTriangle size={16} color={status.color} />
           )}
-          <span style={{ fontSize: '2rem', fontWeight: 'bold', color: status.color }}>
+          <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: status.color }}>
             {product.currentQuantity}
           </span>
-          <span style={{ fontSize: '1rem', color: 'var(--text-muted)' }}>{product.unit}</span>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{product.unit}</span>
         </div>
-        <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
-          Seuil d'alerte : {product.alertThreshold} {product.unit}
+        <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+          Seuil : {product.alertThreshold} {product.unit}
         </p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '0.5rem', marginBottom: '0.5rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '0.25rem' }}>
         <button 
           onClick={() => onUpdateQuantity(product.id, -10)}
           className="btn btn-secondary"
-          style={{ padding: '0.5rem', fontSize: '0.875rem' }}
+          style={{ padding: '0.4rem', fontSize: '0.75rem' }}
         >
           -10
         </button>
         <button 
           onClick={() => onUpdateQuantity(product.id, -1)}
           className="btn btn-secondary"
-          style={{ padding: '0.5rem' }}
+          style={{ padding: '0.4rem' }}
         >
-          <Minus size={18} />
+          <Minus size={14} />
         </button>
         <button 
           onClick={() => onUpdateQuantity(product.id, 1)}
           className="btn btn-secondary"
-          style={{ padding: '0.5rem' }}
+          style={{ padding: '0.4rem' }}
         >
-          <Plus size={18} />
+          <Plus size={14} />
         </button>
         <button 
           onClick={() => onUpdateQuantity(product.id, 10)}
           className="btn btn-secondary"
-          style={{ padding: '0.5rem', fontSize: '0.875rem' }}
+          style={{ padding: '0.4rem', fontSize: '0.75rem' }}
         >
           +10
         </button>

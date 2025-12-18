@@ -69,12 +69,31 @@ export default function DashboardPage({ session }) {
           />
         </div>
 
+        <style>{`
+          @media (min-width: 768px) {
+            .dashboard-stats-grid {
+              grid-template-columns: repeat(4, 1fr) !important;
+              gap: 1rem !important;
+            }
+            .dashboard-insights-grid {
+              grid-template-columns: 2fr 1fr !important;
+            }
+          }
+          @media (max-width: 767px) {
+            .dashboard-stats-grid {
+              grid-template-columns: repeat(2, 1fr) !important;
+            }
+            .dashboard-insights-grid {
+              grid-template-columns: 1fr !important;
+            }
+          }
+        `}</style>
         {/* Stats rapides */}
-        <div style={{
+        <div className="dashboard-stats-grid" style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: '1rem',
-          marginBottom: '2rem'
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: '0.75rem',
+          marginBottom: '1.5rem'
         }}>
           <div className="card" style={{ padding: '1.25rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
@@ -123,11 +142,11 @@ export default function DashboardPage({ session }) {
           </div>
         </div>
 
-        <div style={{
+        <div className="dashboard-insights-grid" style={{
           display: 'grid',
-          gridTemplateColumns: (critical.length > 0 || lowStock.length > 0 || expiryAlerts.length > 0) ? '2fr 1fr' : '1fr',
-          gap: '1.5rem',
-          marginBottom: '2rem'
+          gridTemplateColumns: '1fr',
+          gap: '1rem',
+          marginBottom: '1.5rem'
         }}>
           <AIInsights 
             products={products} 
