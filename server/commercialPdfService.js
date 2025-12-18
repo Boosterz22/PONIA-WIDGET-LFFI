@@ -54,8 +54,8 @@ export function generateCommercialKitPDF() {
         doc.fontSize(52).fillColor('#FFD700').font('Helvetica-Bold').text('PONIA', 0, 380, { align: 'center' })
       }
       
-      doc.fontSize(10).fillColor('#888888').font('Helvetica')
-         .text('Document confidentiel - Usage interne uniquement', 0, 700, { align: 'center' })
+      doc.fontSize(11).fillColor('#AAAAAA').font('Helvetica')
+         .text('Document confidentiel - Usage interne uniquement', 50, 750, { width: 495, align: 'center' })
 
       // ===============================================
       // PAGE 2 - SOMMAIRE
