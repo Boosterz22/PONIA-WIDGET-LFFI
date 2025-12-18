@@ -56,7 +56,7 @@ export function generateCommercialKitPDF() {
       
       // Titre juste sous le logo
       doc.fontSize(32).fillColor('#FFFFFF').font('Helvetica-Bold')
-         .text('Kit Commercial', 0, 540, { align: 'center' })
+         .text('KIT COMMERCIAL', 0, 500, { align: 'center' })
       
       doc.fontSize(13).fillColor('#CCCCCC').font('Helvetica')
          .text('Guide complet pour les commerciaux terrain', 0, 590, { align: 'center' })
