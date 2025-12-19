@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Package, Brain, Activity, History, Settings, User, LogOut, Gift, Mail, MessageSquare, Link2, Bell } from 'lucide-react'
+import { LayoutDashboard, Package, Brain, Activity, History, Settings, User, LogOut, Gift, Mail, MessageSquare, Link2, Bell, Radar } from 'lucide-react'
 import { supabase } from '../services/supabase'
 import LanguageSelector from './LanguageSelector'
 import { useLanguage } from '../contexts/LanguageContext'
@@ -36,6 +36,7 @@ export default function Navigation() {
     { path: '/chat', icon: MessageSquare, label: t('nav.poniaAI') },
     { path: '/dashboard', icon: LayoutDashboard, label: t('nav.dashboard') },
     { path: '/stock', icon: Package, label: t('nav.stock') },
+    { path: '/controle', icon: Radar, label: 'Contrôle', badge: unreadCount },
     { path: '/insights', icon: Brain, label: t('nav.insights') },
     { path: '/analytics', icon: Activity, label: t('nav.analytics') },
     { path: '/history', icon: History, label: t('nav.history') }
@@ -146,7 +147,7 @@ export default function Navigation() {
             </div>
             
             <div className="nav-scrollable">
-              {navItems.map(({ path, icon: Icon, label }) => (
+              {navItems.map(({ path, icon: Icon, label, badge }) => (
                 <Link
                   key={path}
                   to={path}
@@ -162,10 +163,33 @@ export default function Navigation() {
                     borderBottom: isActive(path) ? '2px solid #000000' : '2px solid transparent',
                     transition: 'all 0.2s',
                     whiteSpace: 'nowrap',
-                    flexShrink: 0
+                    flexShrink: 0,
+                    position: 'relative'
                   }}
                 >
-                  <Icon size={18} />
+                  <div style={{ position: 'relative' }}>
+                    <Icon size={18} />
+                    {badge > 0 && (
+                      <span style={{
+                        position: 'absolute',
+                        top: '-6px',
+                        right: '-8px',
+                        background: '#DC2626',
+                        color: 'white',
+                        fontSize: '10px',
+                        fontWeight: '600',
+                        minWidth: '16px',
+                        height: '16px',
+                        borderRadius: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: '0 4px'
+                      }}>
+                        {badge > 9 ? '9+' : badge}
+                      </span>
+                    )}
+                  </div>
                   <span className="nav-label">{label}</span>
                 </Link>
               ))}

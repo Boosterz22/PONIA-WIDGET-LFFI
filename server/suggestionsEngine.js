@@ -1,5 +1,5 @@
 import { db } from './db.js'
-import { aiSuggestions, aiSuggestionEvents, userSuggestionPreferences, products, salesHistory, users, stores } from '../shared/schema.js'
+import { aiSuggestions, aiSuggestionEvents, userSuggestionPreferences, products, salesHistory, users, stores, productCompositions } from '../shared/schema.js'
 import { eq, and, gte, lte, lt, desc, sql, isNull, or } from 'drizzle-orm'
 import crypto from 'crypto'
 import OpenAI from 'openai'
@@ -11,20 +11,83 @@ const openai = new OpenAI({
 })
 
 const SUGGESTION_TYPES = {
+  // Stock
   EXPIRY: 'expiry',
   RUPTURE: 'rupture',
   SURSTOCK: 'surstock',
-  METEO: 'meteo',
+  STOCK_DORMANT: 'stock_dormant',
+  ROTATION_LENTE: 'rotation_lente',
+  SAISONNALITE: 'saisonnalite',
+  STOCK_OPTIMAL: 'stock_optimal',
+  REAPPRO_AUTO: 'reappro_auto',
+  // Recettes
+  EROSION_MARGE: 'erosion_marge',
+  IMPACT_RUPTURE_RECETTE: 'impact_rupture_recette',
+  CAPACITE_PRODUCTION: 'capacite_production',
+  RENTABILITE_RECETTE: 'rentabilite_recette',
+  OPTIMISATION_RECETTE: 'optimisation_recette',
+  COUT_PRODUCTION: 'cout_production',
+  // Ventes
+  TENDANCE: 'tendance',
   ANOMALY: 'anomaly',
+  METEO: 'meteo',
+  PRODUIT_STAR: 'produit_star',
+  PRODUIT_DECLIN: 'produit_declin',
+  EFFET_JOUR: 'effet_jour',
+  PANIER_MOYEN: 'panier_moyen',
+  // Finance
+  CASH_FLOW: 'cash_flow',
+  MARGE_CATEGORIE: 'marge_categorie',
+  COUT_CACHE: 'cout_cache',
+  ECONOMIE_POTENTIELLE: 'economie_potentielle',
+  ROI_PRODUIT: 'roi_produit',
+  // Fournisseurs
+  MEILLEUR_PRIX: 'meilleur_prix',
+  DELAI_OPTIMAL: 'delai_optimal',
+  QUALITE_PRIX: 'qualite_prix',
+  NEGOCIATION: 'negociation',
+  DIVERSIFICATION: 'diversification',
+  // Conformité
+  DLC_REGLEMENTAIRE: 'dlc_reglementaire',
+  TRACABILITE: 'tracabilite',
+  HYGIENE: 'hygiene',
+  OBLIGATION_LEGALE: 'obligation_legale',
+  // Durabilité
+  GASPILLAGE: 'gaspillage',
+  INVENDUS: 'invendus',
+  CIRCUIT_COURT: 'circuit_court',
+  EMPREINTE_CARBONE: 'empreinte_carbone',
+  // Opérations
+  TEMPS_GAGNE: 'temps_gagne',
+  EFFICACITE: 'efficacite',
+  PLANIFICATION: 'planification',
   PLAT_JOUR: 'plat_jour',
-  RAPPEL_COMMANDE: 'rappel_commande',
-  TENDANCE: 'tendance'
+  RAPPEL_COMMANDE: 'rappel_commande'
+}
+
+const DOMAINS = {
+  STOCK: 'stock',
+  RECIPES: 'recipes',
+  SALES: 'sales',
+  FINANCE: 'finance',
+  SUPPLIERS: 'suppliers',
+  COMPLIANCE: 'compliance',
+  SUSTAINABILITY: 'sustainability',
+  OPERATIONS: 'operations'
 }
 
 const PRIORITIES = {
   CRITICAL: 'critical',
-  IMPORTANT: 'important',
-  INFO: 'info'
+  HIGH: 'high',
+  MEDIUM: 'medium',
+  LOW: 'low'
+}
+
+const SEVERITY_SCORES = {
+  CRITICAL: 100,
+  HIGH: 75,
+  MEDIUM: 50,
+  LOW: 25
 }
 
 function generateContentHash(type, productId, message) {
@@ -87,6 +150,11 @@ async function createSuggestion(userId, suggestion) {
   
   const expiresAt = suggestion.expiresAt || new Date(Date.now() + 24 * 60 * 60 * 1000)
   
+  const severityScore = suggestion.severityScore || 
+    (suggestion.priority === PRIORITIES.CRITICAL ? SEVERITY_SCORES.CRITICAL :
+     suggestion.priority === PRIORITIES.HIGH ? SEVERITY_SCORES.HIGH :
+     suggestion.priority === PRIORITIES.MEDIUM ? SEVERITY_SCORES.MEDIUM : SEVERITY_SCORES.LOW)
+  
   const [created] = await db.insert(aiSuggestions)
     .values({
       userId,
@@ -99,7 +167,11 @@ async function createSuggestion(userId, suggestion) {
       productId: suggestion.productId || null,
       expiresAt,
       status: 'pending',
-      contentHash
+      contentHash,
+      domain: suggestion.domain || DOMAINS.STOCK,
+      isRead: false,
+      impactValue: suggestion.impactValue ? String(suggestion.impactValue) : null,
+      severityScore
     })
     .returning()
   
@@ -135,7 +207,7 @@ async function generateExpirySuggestions(userId, userProducts) {
     } else if (expiryDate <= threeDaysFromNow) {
       suggestions.push({
         type: SUGGESTION_TYPES.EXPIRY,
-        priority: PRIORITIES.IMPORTANT,
+        priority: PRIORITIES.HIGH,
         title: `${product.name} expire bientôt`,
         message: `${quantity} ${product.unit} de ${product.name} expirent dans ${Math.ceil((expiryDate - now) / (24 * 60 * 60 * 1000))} jours. Pensez à l'écouler.`,
         actionType: 'view_product',
@@ -185,7 +257,7 @@ async function generateRuptureSuggestions(userId, userProducts) {
     } else if (daysUntilRupture <= 3) {
       suggestions.push({
         type: SUGGESTION_TYPES.RUPTURE,
-        priority: PRIORITIES.IMPORTANT,
+        priority: PRIORITIES.HIGH,
         title: `Stock ${product.name} bas`,
         message: `${quantity} ${product.unit} restants (seuil: ${threshold}). Rupture estimée dans ${daysUntilRupture} jours.`,
         actionType: 'order',
@@ -223,7 +295,7 @@ async function generateSurstockSuggestions(userId, userProducts) {
       const weeksOfStock = Math.floor(quantity / weeklyAvg)
       suggestions.push({
         type: SUGGESTION_TYPES.SURSTOCK,
-        priority: PRIORITIES.INFO,
+        priority: PRIORITIES.MEDIUM,
         title: `Surstock ${product.name}`,
         message: `${quantity} ${product.unit} en stock soit ${weeksOfStock} semaines de ventes. Envisagez une promotion pour écouler.`,
         actionType: 'create_promo',
@@ -271,7 +343,7 @@ async function generateAnomalySuggestions(userId, userProducts) {
       if (changePercent <= -30) {
         suggestions.push({
           type: SUGGESTION_TYPES.ANOMALY,
-          priority: PRIORITIES.IMPORTANT,
+          priority: PRIORITIES.HIGH,
           title: `Chute ventes ${product.name}`,
           message: `Ventes ${product.name} : ${Math.abs(Math.round(changePercent))}% cette semaine vs semaine précédente. Problème qualité ? Nouveau concurrent ?`,
           actionType: 'view_history',
@@ -281,7 +353,7 @@ async function generateAnomalySuggestions(userId, userProducts) {
       } else if (changePercent >= 50) {
         suggestions.push({
           type: SUGGESTION_TYPES.ANOMALY,
-          priority: PRIORITIES.INFO,
+          priority: PRIORITIES.MEDIUM,
           title: `${product.name} cartonne !`,
           message: `+${Math.round(changePercent)}% de ventes cette semaine. Augmentez la production pour capitaliser sur cette tendance.`,
           actionType: 'view_history',
@@ -324,7 +396,7 @@ async function generateTendanceSuggestions(userId, userProducts) {
       if (sold > avgPerDay * 1.3 && daySales.dayOfWeek === dayOfWeek) {
         suggestions.push({
           type: SUGGESTION_TYPES.TENDANCE,
-          priority: PRIORITIES.INFO,
+          priority: PRIORITIES.MEDIUM,
           title: `${product.name} populaire le ${dayNames[dayOfWeek]}`,
           message: `Historiquement, ${product.name} se vend +${Math.round((sold / avgPerDay - 1) * 100)}% le ${dayNames[dayOfWeek]}. Prévoyez plus de stock.`,
           actionType: 'view_product',
@@ -369,7 +441,7 @@ async function generateRappelCommandeSuggestions(userId, userProducts) {
       if (lowStockProducts.length > 0) {
         suggestions.push({
           type: SUGGESTION_TYPES.RAPPEL_COMMANDE,
-          priority: PRIORITIES.IMPORTANT,
+          priority: PRIORITIES.HIGH,
           title: `Commande ${supplier} à passer`,
           message: `C'est le jour de commande ${supplier}. ${lowStockProducts.length} produit(s) en stock bas : ${lowStockProducts.slice(0, 3).map(p => p.name).join(', ')}${lowStockProducts.length > 3 ? '...' : ''}.`,
           actionType: 'generate_order',
@@ -437,7 +509,7 @@ async function generateMeteoSuggestions(userId, userProducts) {
         if (lowStockHot.length > 0) {
           suggestions.push({
             type: SUGGESTION_TYPES.METEO,
-            priority: PRIORITIES.IMPORTANT,
+            priority: PRIORITIES.HIGH,
             title: `☀️ ${weatherImpacts.hot.message} demain (${tomorrow.tempMax}°C)`,
             message: `Prévoyez plus de stock pour : ${lowStockHot.slice(0, 3).map(p => p.name).join(', ')}. La demande sera forte !`,
             actionType: 'view_products',
@@ -463,7 +535,7 @@ async function generateMeteoSuggestions(userId, userProducts) {
         if (lowStockCold.length > 0) {
           suggestions.push({
             type: SUGGESTION_TYPES.METEO,
-            priority: PRIORITIES.INFO,
+            priority: PRIORITIES.MEDIUM,
             title: `❄️ ${weatherImpacts.cold.message} demain (${tomorrow.tempMin}°C)`,
             message: `Les clients voudront du chaud ! Vérifiez vos stocks de : ${lowStockCold.slice(0, 3).map(p => p.name).join(', ')}.`,
             actionType: 'view_products',
@@ -477,7 +549,7 @@ async function generateMeteoSuggestions(userId, userProducts) {
       if (storeType === 'restaurant' || storeType === 'bar') {
         suggestions.push({
           type: SUGGESTION_TYPES.METEO,
-          priority: PRIORITIES.INFO,
+          priority: PRIORITIES.MEDIUM,
           title: `🌧️ Pluie prévue demain`,
           message: `Attendez-vous à 15-25% moins de passage. Bon jour pour les livraisons ou événements privés !`,
           actionType: 'info'
@@ -573,7 +645,7 @@ Format ta réponse en JSON:
     if (parsed.titre && parsed.description) {
       suggestions.push({
         type: SUGGESTION_TYPES.PLAT_JOUR,
-        priority: PRIORITIES.INFO,
+        priority: PRIORITIES.MEDIUM,
         title: `💡 ${parsed.titre}`,
         message: `${parsed.description}. Produits : ${parsed.produits_utilises?.join(', ') || productList}`,
         actionType: 'create_special',
@@ -591,6 +663,365 @@ Format ta réponse en JSON:
   return suggestions
 }
 
+// ============================================
+// NOUVELLES FONCTIONS - Produits Composés (Recettes)
+// ============================================
+
+async function generateCompositeProductSuggestions(userId, userProducts) {
+  const suggestions = []
+  
+  const compositeProducts = userProducts.filter(p => p.isComposite)
+  
+  for (const recipe of compositeProducts) {
+    const compositions = await db.select()
+      .from(productCompositions)
+      .where(eq(productCompositions.productId, recipe.id))
+    
+    if (compositions.length === 0) continue
+    
+    let totalIngredientCost = 0
+    let hasRuptureRisk = false
+    let ruptureIngredients = []
+    let maxProductionUnits = Infinity
+    
+    for (const comp of compositions) {
+      const ingredient = userProducts.find(p => p.id === comp.ingredientId)
+      if (!ingredient) continue
+      
+      const ingredientPrice = parseFloat(ingredient.purchasePrice) || 0
+      const requiredQty = parseFloat(comp.quantity) || 0
+      totalIngredientCost += ingredientPrice * requiredQty
+      
+      const currentStock = parseFloat(ingredient.currentQuantity) || 0
+      const threshold = parseFloat(ingredient.alertThreshold) || 0
+      
+      if (currentStock <= threshold) {
+        hasRuptureRisk = true
+        ruptureIngredients.push(ingredient.name)
+      }
+      
+      if (requiredQty > 0) {
+        const possibleUnits = Math.floor(currentStock / requiredQty)
+        maxProductionUnits = Math.min(maxProductionUnits, possibleUnits)
+      }
+    }
+    
+    const salePrice = parseFloat(recipe.salePrice) || 0
+    const currentMargin = salePrice - totalIngredientCost
+    const marginPercent = salePrice > 0 ? (currentMargin / salePrice) * 100 : 0
+    
+    if (marginPercent < 30 && salePrice > 0) {
+      suggestions.push({
+        type: SUGGESTION_TYPES.EROSION_MARGE,
+        priority: PRIORITIES.HIGH,
+        domain: DOMAINS.RECIPES,
+        title: `Marge faible sur ${recipe.name}`,
+        message: `Marge de seulement ${marginPercent.toFixed(1)}% (${currentMargin.toFixed(2)}€). Coût ingrédients: ${totalIngredientCost.toFixed(2)}€, Prix vente: ${salePrice.toFixed(2)}€. Optimisez la recette ou augmentez le prix.`,
+        actionType: 'view_recipe',
+        actionData: { productId: recipe.id },
+        productId: recipe.id,
+        impactValue: Math.abs(currentMargin),
+        severityScore: marginPercent < 15 ? 90 : 70
+      })
+    }
+    
+    if (hasRuptureRisk) {
+      suggestions.push({
+        type: SUGGESTION_TYPES.IMPACT_RUPTURE_RECETTE,
+        priority: PRIORITIES.CRITICAL,
+        domain: DOMAINS.RECIPES,
+        title: `${recipe.name} en danger !`,
+        message: `Rupture imminente des ingrédients: ${ruptureIngredients.join(', ')}. Vous ne pourrez plus produire ${recipe.name}.`,
+        actionType: 'order_ingredients',
+        actionData: { productId: recipe.id, ingredients: ruptureIngredients },
+        productId: recipe.id,
+        impactValue: salePrice * 10,
+        severityScore: 95
+      })
+    }
+    
+    if (maxProductionUnits < 10 && maxProductionUnits > 0) {
+      suggestions.push({
+        type: SUGGESTION_TYPES.CAPACITE_PRODUCTION,
+        priority: PRIORITIES.HIGH,
+        domain: DOMAINS.RECIPES,
+        title: `Stock limité pour ${recipe.name}`,
+        message: `Vous pouvez produire seulement ${maxProductionUnits} unités de ${recipe.name} avec le stock actuel. Réapprovisionnez les ingrédients.`,
+        actionType: 'view_recipe',
+        actionData: { productId: recipe.id, maxUnits: maxProductionUnits },
+        productId: recipe.id,
+        impactValue: salePrice * maxProductionUnits,
+        severityScore: maxProductionUnits < 5 ? 80 : 60
+      })
+    }
+    
+    if (marginPercent > 50 && salePrice > 0) {
+      suggestions.push({
+        type: SUGGESTION_TYPES.RENTABILITE_RECETTE,
+        priority: PRIORITIES.MEDIUM,
+        domain: DOMAINS.RECIPES,
+        title: `${recipe.name} très rentable`,
+        message: `Excellente marge de ${marginPercent.toFixed(1)}%! Mettez ce produit en avant dans votre offre.`,
+        actionType: 'promote',
+        actionData: { productId: recipe.id },
+        productId: recipe.id,
+        impactValue: currentMargin * 5,
+        severityScore: 40
+      })
+    }
+  }
+  
+  return suggestions
+}
+
+// ============================================
+// NOUVELLES FONCTIONS - Finance
+// ============================================
+
+async function generateFinanceSuggestions(userId, userProducts) {
+  const suggestions = []
+  
+  let totalStockValue = 0
+  let expiringSoonValue = 0
+  const now = new Date()
+  const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000)
+  
+  for (const product of userProducts) {
+    const qty = parseFloat(product.currentQuantity) || 0
+    const price = parseFloat(product.purchasePrice) || 0
+    const value = qty * price
+    totalStockValue += value
+    
+    if (product.expiryDate) {
+      const expiryDate = new Date(product.expiryDate)
+      if (expiryDate <= sevenDaysFromNow && expiryDate > now) {
+        expiringSoonValue += value
+      }
+    }
+  }
+  
+  if (expiringSoonValue > 50) {
+    suggestions.push({
+      type: SUGGESTION_TYPES.CASH_FLOW,
+      priority: PRIORITIES.HIGH,
+      domain: DOMAINS.FINANCE,
+      title: `${expiringSoonValue.toFixed(0)}€ en stock périssable`,
+      message: `Valeur de stock qui expire dans 7 jours. Agissez vite pour récupérer cette valeur via promotions ou plat du jour.`,
+      actionType: 'view_expiring',
+      actionData: { value: expiringSoonValue },
+      impactValue: expiringSoonValue,
+      severityScore: 75
+    })
+  }
+  
+  const categories = {}
+  for (const product of userProducts) {
+    const cat = product.category || 'Autre'
+    if (!categories[cat]) {
+      categories[cat] = { cost: 0, value: 0, count: 0 }
+    }
+    const qty = parseFloat(product.currentQuantity) || 0
+    const purchasePrice = parseFloat(product.purchasePrice) || 0
+    const salePrice = parseFloat(product.salePrice) || 0
+    categories[cat].cost += qty * purchasePrice
+    categories[cat].value += qty * salePrice
+    categories[cat].count++
+  }
+  
+  for (const [catName, data] of Object.entries(categories)) {
+    if (data.cost > 0 && data.value > 0) {
+      const marginPercent = ((data.value - data.cost) / data.value) * 100
+      if (marginPercent < 25) {
+        suggestions.push({
+          type: SUGGESTION_TYPES.MARGE_CATEGORIE,
+          priority: PRIORITIES.HIGH,
+          domain: DOMAINS.FINANCE,
+          title: `Marge faible: ${catName}`,
+          message: `La catégorie "${catName}" a une marge de seulement ${marginPercent.toFixed(1)}%. Revoyez vos prix ou fournisseurs.`,
+          actionType: 'view_category',
+          actionData: { category: catName },
+          impactValue: data.cost * 0.1,
+          severityScore: 70
+        })
+      }
+    }
+  }
+  
+  return suggestions
+}
+
+// ============================================
+// NOUVELLES FONCTIONS - Durabilité
+// ============================================
+
+async function generateSustainabilitySuggestions(userId, userProducts) {
+  const suggestions = []
+  const now = new Date()
+  const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000)
+  
+  const expiredProducts = userProducts.filter(p => {
+    if (!p.expiryDate) return false
+    const expiryDate = new Date(p.expiryDate)
+    return expiryDate < now && parseFloat(p.currentQuantity) > 0
+  })
+  
+  if (expiredProducts.length > 0) {
+    const totalWasteValue = expiredProducts.reduce((sum, p) => {
+      return sum + (parseFloat(p.currentQuantity) || 0) * (parseFloat(p.purchasePrice) || 0)
+    }, 0)
+    
+    suggestions.push({
+      type: SUGGESTION_TYPES.GASPILLAGE,
+      priority: PRIORITIES.HIGH,
+      domain: DOMAINS.SUSTAINABILITY,
+      title: `${expiredProducts.length} produits périmés`,
+      message: `${totalWasteValue.toFixed(2)}€ de gaspillage. Envisagez Too Good To Go ou don à une association pour les prochaines fois.`,
+      actionType: 'view_expired',
+      actionData: { products: expiredProducts.map(p => p.id) },
+      impactValue: totalWasteValue,
+      severityScore: 80
+    })
+  }
+  
+  const expiringTomorrow = userProducts.filter(p => {
+    if (!p.expiryDate) return false
+    const expiryDate = new Date(p.expiryDate)
+    return expiryDate <= tomorrow && expiryDate > now && parseFloat(p.currentQuantity) > 0
+  })
+  
+  if (expiringTomorrow.length >= 3) {
+    const totalValue = expiringTomorrow.reduce((sum, p) => {
+      return sum + (parseFloat(p.currentQuantity) || 0) * (parseFloat(p.purchasePrice) || 0)
+    }, 0)
+    
+    suggestions.push({
+      type: SUGGESTION_TYPES.INVENDUS,
+      priority: PRIORITIES.HIGH,
+      domain: DOMAINS.SUSTAINABILITY,
+      title: `Panier anti-gaspi possible`,
+      message: `${expiringTomorrow.length} produits expirent demain (${totalValue.toFixed(0)}€). Créez un panier promotionnel ou proposez sur Too Good To Go.`,
+      actionType: 'create_bundle',
+      actionData: { products: expiringTomorrow.map(p => p.id) },
+      impactValue: totalValue * 0.5,
+      severityScore: 65
+    })
+  }
+  
+  return suggestions
+}
+
+// ============================================
+// NOUVELLES FONCTIONS - Opérations
+// ============================================
+
+async function generateOperationsSuggestions(userId, userProducts) {
+  const suggestions = []
+  
+  const lowStockCount = userProducts.filter(p => {
+    const qty = parseFloat(p.currentQuantity) || 0
+    const threshold = parseFloat(p.alertThreshold) || 0
+    return qty <= threshold
+  }).length
+  
+  if (lowStockCount >= 5) {
+    suggestions.push({
+      type: SUGGESTION_TYPES.RAPPEL_COMMANDE,
+      priority: PRIORITIES.HIGH,
+      domain: DOMAINS.OPERATIONS,
+      title: `${lowStockCount} produits à commander`,
+      message: `Gagnez du temps en passant une commande groupée. PONIA a identifié ${lowStockCount} produits en stock bas.`,
+      actionType: 'generate_order',
+      actionData: { count: lowStockCount },
+      impactValue: lowStockCount * 2,
+      severityScore: 60
+    })
+  }
+  
+  const productsWithoutThreshold = userProducts.filter(p => {
+    return !p.alertThreshold || parseFloat(p.alertThreshold) === 0
+  }).length
+  
+  if (productsWithoutThreshold > 5) {
+    suggestions.push({
+      type: SUGGESTION_TYPES.EFFICACITE,
+      priority: PRIORITIES.MEDIUM,
+      domain: DOMAINS.OPERATIONS,
+      title: `${productsWithoutThreshold} produits sans seuil d'alerte`,
+      message: `Configurez les seuils d'alerte pour recevoir des notifications automatiques et ne jamais être en rupture.`,
+      actionType: 'configure_alerts',
+      actionData: { count: productsWithoutThreshold },
+      impactValue: productsWithoutThreshold,
+      severityScore: 40
+    })
+  }
+  
+  return suggestions
+}
+
+// ============================================
+// NOUVELLES FONCTIONS - Ventes avancées
+// ============================================
+
+async function generateAdvancedSalesSuggestions(userId, userProducts) {
+  const suggestions = []
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+  
+  const productSales = []
+  for (const product of userProducts) {
+    const [sales] = await db.select({
+      totalSold: sql`COALESCE(SUM(${salesHistory.quantitySold}), 0)`,
+      totalRevenue: sql`COALESCE(SUM(${salesHistory.quantitySold} * ${salesHistory.unitPrice}), 0)`
+    })
+    .from(salesHistory)
+    .where(and(
+      eq(salesHistory.productId, product.id),
+      gte(salesHistory.saleDate, thirtyDaysAgo)
+    ))
+    
+    productSales.push({
+      product,
+      sold: parseFloat(sales?.totalSold || 0),
+      revenue: parseFloat(sales?.totalRevenue || 0)
+    })
+  }
+  
+  const sortedByRevenue = [...productSales].sort((a, b) => b.revenue - a.revenue)
+  const topProducts = sortedByRevenue.slice(0, 3).filter(p => p.revenue > 0)
+  
+  if (topProducts.length > 0 && topProducts[0].revenue > 50) {
+    const topProduct = topProducts[0]
+    suggestions.push({
+      type: SUGGESTION_TYPES.PRODUIT_STAR,
+      priority: PRIORITIES.MEDIUM,
+      domain: DOMAINS.SALES,
+      title: `${topProduct.product.name} est votre star`,
+      message: `${topProduct.revenue.toFixed(0)}€ de CA ce mois. Assurez-vous de toujours avoir ce produit en stock et mettez-le en avant.`,
+      actionType: 'promote',
+      actionData: { productId: topProduct.product.id },
+      productId: topProduct.product.id,
+      impactValue: topProduct.revenue,
+      severityScore: 35
+    })
+  }
+  
+  const bottomProducts = sortedByRevenue.filter(p => p.sold === 0 && parseFloat(p.product.currentQuantity) > 0)
+  if (bottomProducts.length >= 3) {
+    suggestions.push({
+      type: SUGGESTION_TYPES.PRODUIT_DECLIN,
+      priority: PRIORITIES.MEDIUM,
+      domain: DOMAINS.SALES,
+      title: `${bottomProducts.length} produits sans ventes`,
+      message: `Ces produits n'ont eu aucune vente ce mois. Envisagez une promotion ou arrêtez de les stocker.`,
+      actionType: 'view_products',
+      actionData: { products: bottomProducts.slice(0, 5).map(p => p.product.id) },
+      impactValue: bottomProducts.reduce((sum, p) => sum + (parseFloat(p.product.currentQuantity) || 0) * (parseFloat(p.product.purchasePrice) || 0), 0),
+      severityScore: 45
+    })
+  }
+  
+  return suggestions
+}
+
 export async function generateAllSuggestions(userId) {
   try {
     const userProducts = await db.select()
@@ -601,7 +1032,7 @@ export async function generateAllSuggestions(userId) {
       return { generated: 0, suggestions: [] }
     }
     
-    const [rulesResults, aiResults, meteoResults] = await Promise.all([
+    const [rulesResults, advancedResults, aiResults, meteoResults] = await Promise.all([
       Promise.all([
         generateExpirySuggestions(userId, userProducts),
         generateRuptureSuggestions(userId, userProducts),
@@ -610,6 +1041,16 @@ export async function generateAllSuggestions(userId) {
         generateTendanceSuggestions(userId, userProducts),
         generateRappelCommandeSuggestions(userId, userProducts)
       ]),
+      Promise.all([
+        generateCompositeProductSuggestions(userId, userProducts),
+        generateFinanceSuggestions(userId, userProducts),
+        generateSustainabilitySuggestions(userId, userProducts),
+        generateOperationsSuggestions(userId, userProducts),
+        generateAdvancedSalesSuggestions(userId, userProducts)
+      ]).catch(err => {
+        console.error('Erreur suggestions avancées:', err.message)
+        return []
+      }),
       generateAIPlatJourSuggestions(userId, userProducts).catch(err => {
         console.error('Erreur suggestions IA:', err.message)
         return []
@@ -620,7 +1061,12 @@ export async function generateAllSuggestions(userId) {
       })
     ])
     
-    const allSuggestions = [...rulesResults.flat(), ...aiResults, ...meteoResults]
+    const allSuggestions = [
+      ...rulesResults.flat(), 
+      ...(Array.isArray(advancedResults) ? advancedResults.flat() : []),
+      ...aiResults, 
+      ...meteoResults
+    ]
     
     const createdSuggestions = []
     for (const suggestion of allSuggestions) {

@@ -208,6 +208,11 @@ export const aiSuggestions = pgTable('ai_suggestions', {
   expiresAt: timestamp('expires_at'),
   status: varchar('status', { length: 20 }).notNull().default('pending'),
   contentHash: varchar('content_hash', { length: 64 }),
+  domain: varchar('domain', { length: 30 }).default('stock'),
+  isRead: boolean('is_read').default(false),
+  impactValue: decimal('impact_value', { precision: 10, scale: 2 }),
+  severityScore: integer('severity_score').default(50),
+  snoozeUntil: timestamp('snooze_until'),
   createdAt: timestamp('created_at').notNull().defaultNow()
 })
 

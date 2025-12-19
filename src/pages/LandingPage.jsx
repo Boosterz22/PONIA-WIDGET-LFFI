@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { TrendingUp, Clock, Shield, Zap, BarChart3, CheckCircle, Star, Users, X, Check, AlertCircle, Sparkles, Target, ArrowRight, Linkedin, Building2 } from 'lucide-react'
+import { TrendingUp, Clock, Shield, Zap, BarChart3, CheckCircle, Star, Users, X, Check, AlertCircle, Sparkles, Target, ArrowRight, Linkedin, Building2, Radar } from 'lucide-react'
 
 function PricingCards() {
   const [billingPeriod, setBillingPeriod] = useState('monthly')
@@ -737,10 +737,10 @@ export default function LandingPage() {
             </div>
 
             <div className="card" style={{ textAlign: 'center', padding: '2.5rem 1.5rem' }}>
-              <Target size={48} color="#FFD700" style={{ margin: '0 auto 1.5rem' }} />
-              <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Alertes intelligentes</h3>
+              <Radar size={48} color="#FFD700" style={{ margin: '0 auto 1.5rem' }} />
+              <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Tour de Contrôle IA</h3>
               <p style={{ color: 'var(--text-muted)', lineHeight: 1.7 }}>
-                🔴 Rouge (critique), 🟠 Orange (faible), 🟢 Vert (OK). Vous savez en 1 coup d'œil ce qui urge.
+                <strong>60+ types d'alertes intelligentes</strong> : stock, recettes, ventes, finance, conformité. Votre copilote IA surveille tout pour vous.
               </p>
             </div>
 

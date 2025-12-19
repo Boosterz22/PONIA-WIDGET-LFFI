@@ -471,7 +471,7 @@ export default function LoginPage() {
                 justifyContent: 'center',
                 fontSize: '0.75rem'
               }}>✓</div>
-              <span style={{ fontSize: '0.9375rem' }}>Alertes intelligentes en temps réel</span>
+              <span style={{ fontSize: '0.9375rem' }}>Tour de Contrôle IA avec 60+ alertes</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <div style={{

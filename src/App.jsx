@@ -32,6 +32,7 @@ import PartnerComptablePage from './pages/PartnerComptablePage'
 import PartnerDashboardPage from './pages/PartnerDashboardPage'
 import CommercialDashboardPage from './pages/CommercialDashboardPage'
 import DemoBlockerPage from './pages/DemoBlockerPage'
+import ControlCenterPage from './pages/ControlCenterPage'
 import { supabase } from './services/supabase'
 import { LanguageProvider } from './contexts/LanguageContext'
 import { DataProvider, useData } from './contexts/DataContext'
@@ -185,6 +186,10 @@ function App() {
         <Route 
           path="/insights" 
           element={session ? <InsightsPage /> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="/controle" 
+          element={session ? <ControlCenterPage /> : <Navigate to="/login" />} 
         />
         <Route 
           path="/analytics" 

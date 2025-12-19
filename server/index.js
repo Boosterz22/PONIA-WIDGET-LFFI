@@ -4,10 +4,10 @@ import jwt from 'jsonwebtoken'
 import OpenAI from 'openai'
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
-import { eq, and, gte, sql, desc } from 'drizzle-orm'
+import { eq, and, gte, lte, sql, desc, or, isNull, gt, ne } from 'drizzle-orm'
 import { db } from './db.js'
 import { generateCommercialKitPDF } from './commercialPdfService.js'
-import { users, stores, chatMessages, partners } from '../shared/schema.js'
+import { users, stores, chatMessages, partners, aiSuggestions } from '../shared/schema.js'
 import { 
   getUserByEmail,
   getUserBySupabaseId, 
@@ -2108,6 +2108,223 @@ app.get('/api/suggestions/unread-count', authenticateSupabaseUser, async (req, r
     res.status(500).json({ error: 'Erreur serveur' })
   }
 })
+
+// ============================================
+// Control Center API - Tour de Contrôle IA
+// ============================================
+
+app.get('/api/control-center/suggestions', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+    
+    await db.update(aiSuggestions)
+      .set({ status: 'pending', isRead: false, snoozeUntil: null })
+      .where(and(
+        eq(aiSuggestions.userId, user.id),
+        eq(aiSuggestions.status, 'snoozed'),
+        lte(aiSuggestions.snoozeUntil, new Date())
+      ))
+    
+    const { domain, severity, status, sort } = req.query
+    
+    let query = db.select().from(aiSuggestions).where(eq(aiSuggestions.userId, user.id))
+    
+    const conditions = [eq(aiSuggestions.userId, user.id)]
+    
+    if (domain && domain !== 'all') {
+      conditions.push(eq(aiSuggestions.domain, domain))
+    }
+    
+    if (severity && severity !== 'all') {
+      conditions.push(eq(aiSuggestions.priority, severity))
+    }
+    
+    if (status === 'unread') {
+      conditions.push(eq(aiSuggestions.isRead, false))
+    } else if (status === 'read') {
+      conditions.push(eq(aiSuggestions.isRead, true))
+    }
+    
+    conditions.push(
+      or(
+        isNull(aiSuggestions.expiresAt),
+        gt(aiSuggestions.expiresAt, new Date())
+      )
+    )
+    conditions.push(ne(aiSuggestions.status, 'dismissed'))
+    conditions.push(ne(aiSuggestions.status, 'applied'))
+    conditions.push(
+      or(
+        ne(aiSuggestions.status, 'snoozed'),
+        and(
+          eq(aiSuggestions.status, 'snoozed'),
+          lte(aiSuggestions.snoozeUntil, new Date())
+        )
+      )
+    )
+    
+    const suggestions = await db.select()
+      .from(aiSuggestions)
+      .where(and(...conditions))
+      .orderBy(
+        sort === 'date' ? desc(aiSuggestions.createdAt) :
+        sort === 'impact' ? desc(aiSuggestions.impactValue) :
+        desc(aiSuggestions.severityScore)
+      )
+      .limit(100)
+    
+    const allSuggestions = await db.select()
+      .from(aiSuggestions)
+      .where(and(
+        eq(aiSuggestions.userId, user.id),
+        ne(aiSuggestions.status, 'dismissed'),
+        ne(aiSuggestions.status, 'applied'),
+        or(
+          ne(aiSuggestions.status, 'snoozed'),
+          and(
+            eq(aiSuggestions.status, 'snoozed'),
+            lte(aiSuggestions.snoozeUntil, new Date())
+          )
+        ),
+        or(
+          isNull(aiSuggestions.expiresAt),
+          gt(aiSuggestions.expiresAt, new Date())
+        )
+      ))
+    
+    const stats = {
+      total: allSuggestions.length,
+      critical: allSuggestions.filter(s => s.priority === 'critical').length,
+      high: allSuggestions.filter(s => s.priority === 'high').length,
+      unread: allSuggestions.filter(s => !s.isRead).length,
+      potentialSavings: allSuggestions.reduce((sum, s) => sum + (parseFloat(s.impactValue) || 0), 0)
+    }
+    
+    res.json({ suggestions, stats })
+  } catch (error) {
+    console.error('Erreur control center suggestions:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+app.post('/api/control-center/suggestions/:id/read', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+    
+    const suggestionId = parseInt(req.params.id)
+    
+    await db.update(aiSuggestions)
+      .set({ isRead: true })
+      .where(and(
+        eq(aiSuggestions.id, suggestionId),
+        eq(aiSuggestions.userId, user.id)
+      ))
+    
+    res.json({ success: true })
+  } catch (error) {
+    console.error('Erreur marquage lu:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+app.post('/api/control-center/suggestions/:id/dismiss', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+    
+    const suggestionId = parseInt(req.params.id)
+    
+    await db.update(aiSuggestions)
+      .set({ status: 'dismissed' })
+      .where(and(
+        eq(aiSuggestions.id, suggestionId),
+        eq(aiSuggestions.userId, user.id)
+      ))
+    
+    res.json({ success: true })
+  } catch (error) {
+    console.error('Erreur dismiss suggestion:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+app.post('/api/control-center/suggestions/mark-all-read', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+    
+    await db.update(aiSuggestions)
+      .set({ isRead: true })
+      .where(eq(aiSuggestions.userId, user.id))
+    
+    res.json({ success: true })
+  } catch (error) {
+    console.error('Erreur tout marquer lu:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+app.post('/api/control-center/suggestions/:id/snooze', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+    
+    const suggestionId = parseInt(req.params.id)
+    const hours = parseInt(req.body.hours) || 24
+    const snoozeUntil = new Date(Date.now() + hours * 60 * 60 * 1000)
+    
+    await db.update(aiSuggestions)
+      .set({ status: 'snoozed', isRead: true, snoozeUntil })
+      .where(and(
+        eq(aiSuggestions.id, suggestionId),
+        eq(aiSuggestions.userId, user.id)
+      ))
+    
+    res.json({ success: true, snoozeUntil })
+  } catch (error) {
+    console.error('Erreur snooze suggestion:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+app.post('/api/control-center/suggestions/:id/apply', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' })
+    }
+    
+    const suggestionId = parseInt(req.params.id)
+    
+    await db.update(aiSuggestions)
+      .set({ status: 'applied', isRead: true })
+      .where(and(
+        eq(aiSuggestions.id, suggestionId),
+        eq(aiSuggestions.userId, user.id)
+      ))
+    
+    res.json({ success: true })
+  } catch (error) {
+    console.error('Erreur apply suggestion:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// ============================================
+// End Control Center API
+// ============================================
 
 // REMOVED: Insecure legacy endpoints that allowed user impersonation and data exfiltration
 // - POST /api/users (unauthenticated user creation)
