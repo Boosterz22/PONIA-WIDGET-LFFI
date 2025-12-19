@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Package, Plus, Search } from 'lucide-react'
+import { Package, Plus, Search, X } from 'lucide-react'
 import { supabase } from '../services/supabase'
 import Navigation from '../components/Navigation'
 import TrialBanner from '../components/TrialBanner'
 import TrialExpiredBlocker from '../components/TrialExpiredBlocker'
 import ProductCard from '../components/ProductCard'
 import AddProductModal from '../components/AddProductModal'
+import CompositeProductEditor from '../components/CompositeProductEditor'
 import ChatAI from '../components/ChatAI'
 import { useTrialCheck } from '../hooks/useTrialCheck'
 import { useData } from '../contexts/DataContext'
@@ -15,6 +16,7 @@ export default function StockPage({ session }) {
   const navigate = useNavigate()
   const { products, fetchProducts, updateProduct, addProduct: addProductToCache, removeProduct } = useData()
   const [showAddModal, setShowAddModal] = useState(false)
+  const [editingComposition, setEditingComposition] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const businessType = localStorage.getItem('ponia_business_type') || 'default'
   const userPlan = localStorage.getItem('ponia_user_plan') || 'basique'
@@ -53,7 +55,10 @@ export default function StockPage({ session }) {
           unit: newProduct.unit,
           alertThreshold: parseFloat(newProduct.alertThreshold),
           supplier: newProduct.supplier || null,
-          expiryDate: newProduct.expiryDate || null
+          expiryDate: newProduct.expiryDate || null,
+          purchasePrice: newProduct.purchasePrice ? parseFloat(newProduct.purchasePrice) : null,
+          salePrice: newProduct.salePrice ? parseFloat(newProduct.salePrice) : null,
+          isComposite: newProduct.isComposite || false
         })
       })
 
@@ -351,6 +356,7 @@ export default function StockPage({ session }) {
                 userPlan={userPlan}
                 onUpdateQuantity={handleUpdateQuantity}
                 onDelete={handleDeleteProduct}
+                onEditComposition={product.isComposite ? setEditingComposition : undefined}
               />
             ))}
           </div>
@@ -369,6 +375,58 @@ export default function StockPage({ session }) {
         currentQuantity: parseFloat(p.currentQuantity),
         alertThreshold: parseFloat(p.alertThreshold)
       }))} />
+
+      {editingComposition && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '1rem',
+          zIndex: 1000
+        }}>
+          <div style={{
+            background: 'white',
+            borderRadius: '16px',
+            width: '100%',
+            maxWidth: '600px',
+            maxHeight: '80vh',
+            overflow: 'auto',
+            padding: '1.5rem'
+          }}>
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'center',
+              marginBottom: '1rem'
+            }}>
+              <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: '600' }}>
+                Recette: {editingComposition.name}
+              </h2>
+              <button
+                onClick={() => setEditingComposition(null)}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: '0.5rem'
+                }}
+              >
+                <X size={24} />
+              </button>
+            </div>
+            <CompositeProductEditor
+              productId={editingComposition.id}
+              products={products}
+              onUpdate={() => {
+                fetchProducts(true)
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }

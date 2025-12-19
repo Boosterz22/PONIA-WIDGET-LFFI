@@ -1,7 +1,7 @@
 import React from 'react'
-import { Minus, Plus, Trash2, AlertTriangle, CheckCircle } from 'lucide-react'
+import { Minus, Plus, Trash2, AlertTriangle, CheckCircle, ChefHat, TrendingUp } from 'lucide-react'
 
-export default function ProductCard({ product, onUpdateQuantity, onDelete, userPlan = 'basique' }) {
+export default function ProductCard({ product, onUpdateQuantity, onDelete, onEditComposition, userPlan = 'basique' }) {
   const stockStatus = product.currentQuantity <= product.alertThreshold * 0.5 
     ? 'critical' 
     : product.currentQuantity <= product.alertThreshold 
@@ -63,6 +63,91 @@ export default function ProductCard({ product, onUpdateQuantity, onDelete, userP
           Seuil : {product.alertThreshold} {product.unit}
         </p>
       </div>
+
+      {product.isComposite && (
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between',
+          padding: '0.5rem',
+          background: '#F0FDF4',
+          borderRadius: '6px',
+          marginBottom: '0.5rem',
+          border: '1px solid #BBF7D0'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <ChefHat size={14} color="#16A34A" />
+            <span style={{ fontSize: '0.75rem', color: '#15803D', fontWeight: '500' }}>
+              Recette
+            </span>
+          </div>
+          {product.productionCost != null && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <div style={{ textAlign: 'right' }}>
+                <span style={{ fontSize: '0.7rem', color: '#6B7280' }}>Coût: </span>
+                <span style={{ fontSize: '0.8rem', fontWeight: '600', color: '#15803D' }}>
+                  {parseFloat(product.productionCost).toFixed(2)}€
+                </span>
+              </div>
+              {product.salePrice && parseFloat(product.salePrice) > 0 && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                  <TrendingUp size={12} color="#16A34A" />
+                  <span style={{ fontSize: '0.8rem', fontWeight: '600', color: '#16A34A' }}>
+                    +{(parseFloat(product.salePrice) - parseFloat(product.productionCost)).toFixed(2)}€
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+          {onEditComposition && (
+            <button
+              onClick={() => onEditComposition(product)}
+              style={{
+                background: '#16A34A',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                padding: '0.25rem 0.5rem',
+                fontSize: '0.7rem',
+                cursor: 'pointer',
+                fontWeight: '500'
+              }}
+            >
+              Modifier
+            </button>
+          )}
+        </div>
+      )}
+
+      {(product.purchasePrice || product.salePrice) && !product.isComposite && (
+        <div style={{ 
+          display: 'flex', 
+          gap: '0.75rem',
+          padding: '0.4rem 0.5rem',
+          background: '#F9FAFB',
+          borderRadius: '6px',
+          marginBottom: '0.5rem',
+          fontSize: '0.75rem'
+        }}>
+          {product.purchasePrice && (
+            <div>
+              <span style={{ color: '#6B7280' }}>Achat: </span>
+              <span style={{ fontWeight: '500' }}>{parseFloat(product.purchasePrice).toFixed(2)}€</span>
+            </div>
+          )}
+          {product.salePrice && (
+            <div>
+              <span style={{ color: '#6B7280' }}>Vente: </span>
+              <span style={{ fontWeight: '500' }}>{parseFloat(product.salePrice).toFixed(2)}€</span>
+            </div>
+          )}
+          {product.purchasePrice && product.salePrice && (
+            <div style={{ marginLeft: 'auto', color: '#16A34A', fontWeight: '500' }}>
+              +{(parseFloat(product.salePrice) - parseFloat(product.purchasePrice)).toFixed(2)}€
+            </div>
+          )}
+        </div>
+      )}
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '0.25rem' }}>
         <button 

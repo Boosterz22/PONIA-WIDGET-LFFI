@@ -21,6 +21,9 @@ export default function AddProductModal({ onClose, onSave, onSaveMultiple }) {
     unit: 'kg',
     alertThreshold: '',
     supplier: '',
+    purchasePrice: '',
+    salePrice: '',
+    isComposite: false,
     expiryDate: '',
     barcode: ''
   })
@@ -530,6 +533,98 @@ export default function AddProductModal({ onClose, onSave, onSaveMultiple }) {
                     }}
                   />
                 </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.875rem' }}>
+                    Prix d'achat (€)
+                  </label>
+                  <input
+                    type="number"
+                    name="purchasePrice"
+                    placeholder="0.00"
+                    value={formData.purchasePrice}
+                    onChange={handleChange}
+                    step="0.01"
+                    min="0"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 1rem',
+                      border: '1px solid #D1D5DB',
+                      borderRadius: '8px',
+                      fontSize: '0.9375rem'
+                    }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500', fontSize: '0.875rem' }}>
+                    Prix de vente (€)
+                  </label>
+                  <input
+                    type="number"
+                    name="salePrice"
+                    placeholder="0.00"
+                    value={formData.salePrice}
+                    onChange={handleChange}
+                    step="0.01"
+                    min="0"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 1rem',
+                      border: '1px solid #D1D5DB',
+                      borderRadius: '8px',
+                      fontSize: '0.9375rem'
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ 
+                marginBottom: '1.5rem', 
+                padding: '1rem', 
+                background: '#F9FAFB', 
+                borderRadius: '8px',
+                border: '1px solid #E5E7EB'
+              }}>
+                <label style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '0.75rem',
+                  cursor: 'pointer'
+                }}>
+                  <input
+                    type="checkbox"
+                    name="isComposite"
+                    checked={formData.isComposite}
+                    onChange={(e) => setFormData({ ...formData, isComposite: e.target.checked })}
+                    style={{
+                      width: '1.25rem',
+                      height: '1.25rem',
+                      accentColor: '#000'
+                    }}
+                  />
+                  <div>
+                    <span style={{ fontWeight: '500', fontSize: '0.9375rem' }}>
+                      Produit composé (recette)
+                    </span>
+                    <p style={{ fontSize: '0.75rem', color: '#6B7280', marginTop: '0.25rem' }}>
+                      Ce produit est fabriqué à partir d'ingrédients (ex: baguette = farine + levure)
+                    </p>
+                  </div>
+                </label>
+                {formData.isComposite && (
+                  <div style={{ 
+                    marginTop: '0.75rem', 
+                    padding: '0.75rem', 
+                    background: '#FEF3C7', 
+                    borderRadius: '6px',
+                    fontSize: '0.8125rem',
+                    color: '#92400E'
+                  }}>
+                    💡 Après création, vous pourrez ajouter les ingrédients et leurs quantités pour calculer automatiquement le coût de revient.
+                  </div>
+                )}
               </div>
 
               <div style={{ display: 'flex', gap: '0.75rem' }}>
