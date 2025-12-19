@@ -25,7 +25,14 @@ PONIA is a secure full-stack application using a client-server architecture with
 *   **AI Functionality:** A hybrid AI approach combines a local rules engine for immediate predictions (stockout, overstock, health score) with OpenAI's GPT-4o-mini (via Replit AI Integrations) for advanced predictions (7-day for Standard, 30-day for Pro), expiry tracking, and intelligent order generation. AI is omnipresent and immediately visible.
     *   **POS Sales Integration:** AI now reads real sales history from connected POS systems to calculate actual consumption patterns, days of coverage based on real sales velocity, and accurate stockout predictions.
     *   **AI Long-term Memory:** New userAiMemory table stores business context (busy days, peak hours, preferred suppliers, special notes). AI automatically extracts and saves relevant business information from conversations for personalized future interactions.
-    *   **Proactive AI Suggestions System:** Real-time intelligent suggestions engine with 8 types: expiry alerts, stockout predictions, overstock warnings, weather-based predictions (hot/cold/rain), anomaly detection, dish-of-day ideas (GPT-4o-mini creative), order reminders, and sales trends. Adaptive popup frequency based on user engagement (2h-4h+). Bell icon with badge in navbar, drawer grouped by priority, and contextual actions per suggestion type.
+    *   **Proactive AI Suggestions System:** Real-time intelligent suggestions engine with 60+ types covering 8 domains: stock, recipes, sales, finance, suppliers, compliance, sustainability, operations. Adaptive popup frequency based on user engagement (2h-4h+). Bell icon with badge in navbar, drawer grouped by priority, and contextual actions per suggestion type.
+    *   **Tour de Contrôle IA (AI Control Center):** Centralized command center (/controle) for all AI suggestions with:
+        - KPI dashboard showing total suggestions, critical alerts, unread count, and potential savings
+        - Multi-domain filtering (stock, recipes, sales, finance, suppliers, compliance, sustainability, operations)
+        - Severity-based prioritization (critical, high, medium, low)
+        - Quick actions per suggestion: Apply (mark done + navigate), Snooze (defer 24h + auto-resurface), View (navigate to relevant page)
+        - Toast notifications for high-priority suggestions
+        - Radar icon + unread badge in navigation
 *   **UI/UX:** Mobile-first, simple, and fast design for non-tech-savvy merchants.
     *   **Dashboard:** AI-first interface with Chat AI Central as the primary interaction point, Time Saved widget highlighting value, and KPI grids.
     *   **Chat AI Central:** Main dashboard interface with conversational AI and suggested questions.
