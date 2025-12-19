@@ -60,7 +60,13 @@ import {
   getAllUsers,
   getUserAiMemory,
   upsertUserAiMemory,
-  getSalesAnalytics
+  getSalesAnalytics,
+  getProductCompositions,
+  addProductComposition,
+  updateProductComposition,
+  deleteProductComposition,
+  deleteAllProductCompositions,
+  calculateProductCost
 } from './storage.js'
 import { sendLowStockAlert, sendExpiryAlert, sendTestEmail, sendWelcomeEmail } from './email-service.js'
 import { getAdapter, isDemoMode, getSupportedProviders, isProviderSupported } from './pos-adapters/index.js'
@@ -1655,11 +1661,27 @@ app.post('/api/products', authenticateSupabaseUser, enforceTrialStatus, async (r
       unit: req.body.unit,
       alertThreshold: req.body.alertThreshold,
       supplier: req.body.supplier || null,
+      purchasePrice: req.body.purchasePrice || null,
+      salePrice: req.body.salePrice || null,
+      isComposite: req.body.isComposite || false,
       expiryDate: req.body.expiryDate ? new Date(req.body.expiryDate) : null,
       userId: user.id
     }
     
     const product = await createProduct(productData)
+    
+    // Si c'est un produit composé avec des ingrédients
+    if (req.body.isComposite && req.body.ingredients && req.body.ingredients.length > 0) {
+      for (const ingredient of req.body.ingredients) {
+        await addProductComposition(
+          product.id,
+          ingredient.ingredientId,
+          ingredient.quantity,
+          ingredient.unit
+        )
+      }
+    }
+    
     res.json({ product })
   } catch (error) {
     console.error('Erreur création produit:', error)
@@ -1771,6 +1793,69 @@ app.delete('/api/products/:id', authenticateSupabaseUser, enforceTrialStatus, as
     res.json({ success: true })
   } catch (error) {
     console.error('Erreur suppression produit:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+// Product Compositions API
+app.get('/api/products/:id/compositions', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const productId = parseInt(req.params.id)
+    const product = await getProductById(productId)
+    
+    if (!product) {
+      return res.status(404).json({ error: 'Produit non trouvé' })
+    }
+    
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user || product.userId !== user.id) {
+      return res.status(403).json({ error: 'Accès refusé' })
+    }
+    
+    const compositions = await getProductCompositions(productId)
+    const cost = await calculateProductCost(productId)
+    
+    res.json({ compositions, cost })
+  } catch (error) {
+    console.error('Erreur récupération compositions:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+app.post('/api/products/:id/compositions', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const productId = parseInt(req.params.id)
+    const product = await getProductById(productId)
+    
+    if (!product) {
+      return res.status(404).json({ error: 'Produit non trouvé' })
+    }
+    
+    const user = await getUserBySupabaseId(req.supabaseUserId)
+    if (!user || product.userId !== user.id) {
+      return res.status(403).json({ error: 'Accès refusé' })
+    }
+    
+    const { ingredientId, quantity, unit } = req.body
+    const composition = await addProductComposition(productId, ingredientId, quantity, unit)
+    
+    // Marquer le produit comme composé
+    await updateProduct(productId, { isComposite: true })
+    
+    res.json({ composition })
+  } catch (error) {
+    console.error('Erreur ajout composition:', error)
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
+})
+
+app.delete('/api/compositions/:id', authenticateSupabaseUser, async (req, res) => {
+  try {
+    const compositionId = parseInt(req.params.id)
+    await deleteProductComposition(compositionId)
+    res.json({ success: true })
+  } catch (error) {
+    console.error('Erreur suppression composition:', error)
     res.status(500).json({ error: 'Erreur serveur' })
   }
 })

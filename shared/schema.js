@@ -46,6 +46,9 @@ export const products = pgTable('products', {
   unit: varchar('unit', { length: 50 }).notNull(),
   alertThreshold: decimal('alert_threshold', { precision: 10, scale: 2 }).notNull(),
   supplier: varchar('supplier', { length: 255 }),
+  purchasePrice: decimal('purchase_price', { precision: 10, scale: 2 }),
+  salePrice: decimal('sale_price', { precision: 10, scale: 2 }),
+  isComposite: boolean('is_composite').default(false),
   expiryDate: timestamp('expiry_date'),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
@@ -239,6 +242,15 @@ export const userAiMemory = pgTable('user_ai_memory', {
   lastUpdatedByAi: timestamp('last_updated_by_ai'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow()
+})
+
+export const productCompositions = pgTable('product_compositions', {
+  id: serial('id').primaryKey(),
+  productId: integer('product_id').notNull().references(() => products.id, { onDelete: 'cascade' }),
+  ingredientId: integer('ingredient_id').notNull().references(() => products.id, { onDelete: 'cascade' }),
+  quantity: decimal('quantity', { precision: 10, scale: 3 }).notNull(),
+  unit: varchar('unit', { length: 50 }).notNull(),
+  createdAt: timestamp('created_at').defaultNow()
 })
 
 export const partners = pgTable('partners', {

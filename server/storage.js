@@ -1,5 +1,5 @@
 import { db } from './db.js'
-import { users, products, stockHistory, salesHistory, notifications, stores, chatMessages, chatConversations, posConnections, posProductMappings, posSales, posSyncLogs, alertPreferences, emailLogs, userAiMemory } from '../shared/schema.js'
+import { users, products, stockHistory, salesHistory, notifications, stores, chatMessages, chatConversations, posConnections, posProductMappings, posSales, posSyncLogs, alertPreferences, emailLogs, userAiMemory, productCompositions } from '../shared/schema.js'
 import { eq, and, desc, gte, lte, sql } from 'drizzle-orm'
 
 export async function getUserByEmail(email) {
@@ -90,6 +90,9 @@ export async function createProduct(productData) {
     unit: productData.unit,
     alertThreshold: productData.alertThreshold.toString(),
     supplier: productData.supplier || null,
+    purchasePrice: productData.purchasePrice ? productData.purchasePrice.toString() : null,
+    salePrice: productData.salePrice ? productData.salePrice.toString() : null,
+    isComposite: productData.isComposite || false,
     expiryDate: productData.expiryDate || null
   }).returning()
   return result[0]
@@ -631,4 +634,67 @@ export async function getSalesAnalytics(userId, daysBack = 30) {
     .orderBy(sql`SUM(${salesHistory.quantitySold}) DESC`)
   
   return sales
+}
+
+// Product Compositions (Recettes)
+export async function getProductCompositions(productId) {
+  const compositions = await db.select({
+    id: productCompositions.id,
+    productId: productCompositions.productId,
+    ingredientId: productCompositions.ingredientId,
+    quantity: productCompositions.quantity,
+    unit: productCompositions.unit,
+    ingredientName: products.name,
+    ingredientUnit: products.unit,
+    ingredientPurchasePrice: products.purchasePrice,
+    ingredientCurrentQuantity: products.currentQuantity
+  })
+    .from(productCompositions)
+    .leftJoin(products, eq(productCompositions.ingredientId, products.id))
+    .where(eq(productCompositions.productId, productId))
+  
+  return compositions
+}
+
+export async function addProductComposition(productId, ingredientId, quantity, unit) {
+  const result = await db.insert(productCompositions).values({
+    productId,
+    ingredientId,
+    quantity,
+    unit
+  }).returning()
+  return result[0]
+}
+
+export async function updateProductComposition(compositionId, quantity, unit) {
+  const result = await db.update(productCompositions)
+    .set({ quantity, unit })
+    .where(eq(productCompositions.id, compositionId))
+    .returning()
+  return result[0]
+}
+
+export async function deleteProductComposition(compositionId) {
+  await db.delete(productCompositions).where(eq(productCompositions.id, compositionId))
+}
+
+export async function deleteAllProductCompositions(productId) {
+  await db.delete(productCompositions).where(eq(productCompositions.productId, productId))
+}
+
+export async function calculateProductCost(productId) {
+  const compositions = await getProductCompositions(productId)
+  
+  if (compositions.length === 0) {
+    return null
+  }
+  
+  let totalCost = 0
+  for (const comp of compositions) {
+    if (comp.ingredientPurchasePrice) {
+      totalCost += parseFloat(comp.ingredientPurchasePrice) * parseFloat(comp.quantity)
+    }
+  }
+  
+  return totalCost
 }
