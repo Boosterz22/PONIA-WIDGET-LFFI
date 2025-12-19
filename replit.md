@@ -44,6 +44,13 @@ PONIA is a secure full-stack application using a client-server architecture with
     *   **Optimistic UI Updates:** Stock management interface uses optimistic updates.
     *   **Global Data Caching (DataContext):** Centralized caching system with localStorage persistence (5-min cache) for instant page transitions. Products, userData, timeSavedStats, and trialExpired are cached globally and refreshed in background. useTrialCheck hook uses cached state to eliminate blocking API calls.
     *   **POS Integration Architecture:** Modular adapter pattern for direct, self-service POS integrations.
+    *   **Composite Products (Recipes):** Products can be marked as "composite" with ingredient compositions. Features include:
+        - `productCompositions` table linking products to ingredients with quantities and units
+        - Purchase price and sale price tracking for all products
+        - Automatic production cost calculation from ingredient prices
+        - Visual margin display on product cards (sale price - production cost)
+        - Recipe editor modal for managing ingredient compositions
+        - CompositeProductEditor component for adding/removing ingredients
 
 ## External Dependencies
 
