@@ -356,7 +356,7 @@ export default function StockPage({ session }) {
                 userPlan={userPlan}
                 onUpdateQuantity={handleUpdateQuantity}
                 onDelete={handleDeleteProduct}
-                onEditComposition={product.isComposite ? setEditingComposition : undefined}
+                onEditComposition={product.isComposite ? (p) => setEditingComposition(p) : undefined}
               />
             ))}
           </div>
